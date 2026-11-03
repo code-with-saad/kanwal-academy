@@ -17,7 +17,7 @@
 			"slug": "pages",
 			"label": "Pages",
 			"labelSingular": "Page",
-			"description": "Standard pages such as About, Terms of Service and Privacy Policy.",
+			"description": "Standard pages such as About, Terms of Service and Privacy Policy. The Home entry also sets the home hero copy.",
 			"icon": "file-text",
 			"group": "Content",
 			"sortOrder": 10,
@@ -33,9 +33,25 @@
 				},
 				{
 					"slug": "content",
-					"label": "Page content",
+					"label": "Page content (used on About, Terms and Privacy)",
 					"type": "portableText",
 					"searchable": true
+				},
+				{
+					"slug": "home_eyebrow",
+					"label": "Home hero: small label above the headline",
+					"type": "string"
+				},
+				{
+					"slug": "home_headline",
+					"label": "Home hero: headline",
+					"type": "string",
+					"searchable": true
+				},
+				{
+					"slug": "home_lead",
+					"label": "Home hero: introduction",
+					"type": "text"
 				}
 			]
 		},
@@ -789,18 +805,9 @@
 				"status": "published",
 				"data": {
 					"title": "Home",
-					"content": [
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Kanwal Quran Academy teaches Qur'anic recitation, tajweed and memorization online to students in 5+ countries. Every student starts with a free trial class."
-								}
-							]
-						}
-					]
+					"home_eyebrow": "Online Qur'an academy",
+					"home_headline": "Learn the Qur'an with a teacher who knows your name.",
+					"home_lead": "One-to-one lessons in recitation, tajweed and memorization. Start with a free trial class from wherever you are."
 				}
 			},
 			{

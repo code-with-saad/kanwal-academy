@@ -11,6 +11,9 @@ export interface Page {
   status: string;
   title: string;
   content?: PortableTextBlock[];
+  home_eyebrow?: string;
+  home_headline?: string;
+  home_lead?: string;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;

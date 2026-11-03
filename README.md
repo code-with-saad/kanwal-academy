@@ -33,7 +33,7 @@ Editors manage the site from `/_emdash/admin`. The seed creates these collection
 
 | Collection | What it holds |
 | --- | --- |
-| Pages | Home metadata, About, Terms of Service and Privacy Policy |
+| Pages | Home hero copy and metadata, About, Terms of Service and Privacy Policy |
 | Blog posts | Optional articles under `/blog` |
 | Courses | The three courses and their long descriptions |
 | Plans | The four monthly plans and prices |

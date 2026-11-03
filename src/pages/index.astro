@@ -55,6 +55,14 @@ const seo = homePage
 		})
 	: null;
 
+const heroEyebrow = homePage?.data.home_eyebrow?.trim() || "Online Qur'an academy";
+const heroHeadline =
+	homePage?.data.home_headline?.trim() ||
+	"Learn the Qur'an with a teacher who knows your name.";
+const heroLead =
+	homePage?.data.home_lead?.trim() ||
+	"One-to-one lessons in recitation, tajweed and memorization. Start with a free trial class from wherever you are.";
+
 const toPlanCard = (plan: (typeof plans)[number]) => ({
 	slug: plan.id,
 	name: plan.data.name,
@@ -95,12 +103,9 @@ const steps = [
 		<Container>
 			<div class="hero__grid">
 				<div class="hero__copy">
-					<Eyebrow>Online Qur'an academy</Eyebrow>
-					<h1>Learn the Qur'an with a teacher who knows your name.</h1>
-					<p class="hero__lead">
-						One-to-one lessons in recitation, tajweed and memorization. Start with a free trial
-						class from wherever you are.
-					</p>
+					<Eyebrow>{heroEyebrow}</Eyebrow>
+					<h1>{heroHeadline}</h1>
+					<p class="hero__lead">{heroLead}</p>
 					<div class="hero__actions">
 						<Button href="/free-trial" variant="primary" size="lg">Get free trial</Button>
 						<Button href="/courses" variant="secondary" size="lg">Explore courses</Button>
