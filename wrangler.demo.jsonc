@@ -1,0 +1,24 @@
+{
+	// Demo only. Production uses wrangler.jsonc with D1 and R2.
+	//
+	// This configuration has no R2 bucket and no Worker Loader binding, so it
+	// can deploy on a Cloudflare account with no payment method. Demo images
+	// live in public/images and are served as Worker static assets.
+	//
+	// For this file to work, astro.config.mjs must omit the EmDash R2 storage
+	// adapter and build with this Wrangler config. See DEMO.md.
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "kanwal-academy-demo",
+	"main": "./src/worker.ts",
+	"compatibility_date": "2026-02-24",
+	"compatibility_flags": ["nodejs_compat"],
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "kanwal-academy-demo",
+		},
+	],
+	// No r2_buckets: media uploads and the Media Library are disabled.
+	// No worker_loaders: sandboxed plugins are disabled.
+	// No triggers: scheduled publishing, backups and maintenance do not run.
+}
