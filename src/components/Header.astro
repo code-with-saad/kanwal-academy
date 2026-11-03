@@ -1,6 +1,5 @@
 ---
 import Button from "./Button.astro";
-import Container from "./Container.astro";
 import { site, type NavItem } from "../config/site";
 
 interface Props {
@@ -27,7 +26,8 @@ const isCurrent = (url: string) => {
 ---
 
 <header class:list={["site-header", tone === "dark" && "site-header--dark tone-dark"]}>
-	<Container class="header__inner">
+	<!-- Plain div, not Container: scoped styles must reach this element. -->
+	<div class="container header__inner">
 		<a href="/" class="header__wordmark" aria-label={`${siteName} home`}>
 			{siteName}
 		</a>
@@ -76,7 +76,7 @@ const isCurrent = (url: string) => {
 				<span></span>
 			</span>
 		</button>
-	</Container>
+	</div>
 </header>
 
 <script>
@@ -108,7 +108,7 @@ const isCurrent = (url: string) => {
 			}
 		});
 
-		const desktop = window.matchMedia("(min-width: 900px)");
+		const desktop = window.matchMedia("(min-width: 1024px)");
 		desktop.addEventListener("change", (event) => {
 			if (event.matches) close();
 		});
@@ -235,7 +235,7 @@ const isCurrent = (url: string) => {
 		transform: translateY(-2.5px) rotate(-45deg);
 	}
 
-	@media (min-width: 900px) {
+	@media (min-width: 1024px) {
 		.header__panel {
 			display: block;
 			position: static;

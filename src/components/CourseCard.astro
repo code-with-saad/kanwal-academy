@@ -1,0 +1,125 @@
+---
+/**
+ * Course card for the home page: image on top, then name, chips, summary and
+ * actions. The image follows the static convention /images/courses/<slug>.png;
+ * until the file exists a labelled placeholder is shown.
+ */
+import Button from "./Button.astro";
+import ImagePlaceholder from "./ImagePlaceholder.astro";
+
+interface Props {
+	slug: string;
+	title: string;
+	summary?: string;
+	level?: string;
+	href: string;
+	imageSrc?: string;
+	imageAlt?: string;
+}
+
+const { slug, title, summary, level, href, imageSrc, imageAlt } = Astro.props;
+---
+
+<article class="course-card">
+	<div class="course-card__media">
+		<ImagePlaceholder
+			src={imageSrc ?? `/images/courses/${slug}.png`}
+			label={title}
+			alt={imageAlt ?? `An open Qur'an on a wooden rehal for the ${title} course`}
+			ratio="16 / 10"
+		/>
+	</div>
+
+	<div class="course-card__body">
+		<h3 class="course-card__title">{title}</h3>
+
+		<ul class="course-card__chips">
+			{level && <li class="course-card__chip">{level}</li>}
+			<li class="course-card__chip course-card__chip--accent">Live one on one</li>
+		</ul>
+
+		{summary && <p class="course-card__summary">{summary}</p>}
+
+		<div class="course-card__cta">
+			<Button href={`/free-trial?course=${encodeURIComponent(slug)}`} variant="primary">
+				Book free trial
+			</Button>
+			<Button href={href} variant="secondary">See details</Button>
+		</div>
+	</div>
+</article>
+
+<style>
+	.course-card {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		overflow: hidden;
+		border: 1px solid var(--line);
+		border-radius: var(--radius-card);
+		background: var(--surface-raised);
+		color: var(--text);
+	}
+
+	.course-card__media {
+		border-bottom: 1px solid var(--line);
+	}
+
+	.course-card__body {
+		display: flex;
+		flex-direction: column;
+		align-items: start;
+		gap: var(--space-sm);
+		flex: 1;
+		padding: var(--space-lg);
+	}
+
+	.course-card__title {
+		font-size: 1.375rem;
+	}
+
+	.course-card__chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xs);
+	}
+
+	.course-card__chip {
+		padding: 4px 10px;
+		border: 1px solid var(--hairline-light);
+		border-radius: var(--radius-button);
+		background: color-mix(in srgb, var(--sand) 50%, transparent);
+		color: var(--muted-ink);
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.1em;
+		line-height: 1.4;
+		text-transform: uppercase;
+	}
+
+	.course-card__chip--accent {
+		border-color: color-mix(in srgb, var(--sage-deep) 45%, transparent);
+		background: color-mix(in srgb, var(--sage) 16%, transparent);
+		/* Sage-deep alone is 4.27:1 on this tint; darken it past 4.5:1. */
+		color: color-mix(in srgb, var(--sage-deep) 80%, var(--ink));
+	}
+
+	.course-card__summary {
+		color: var(--muted-ink);
+		font-size: var(--size-small);
+		line-height: 1.55;
+	}
+
+	.course-card__cta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xs);
+		width: 100%;
+		margin-top: auto;
+		padding-top: var(--space-md);
+	}
+
+	.course-card__cta :global(.btn) {
+		flex: 1 1 150px;
+	}
+</style>

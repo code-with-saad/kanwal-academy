@@ -3,12 +3,14 @@ import { getEmDashCollection, getEmDashEntry, getSeoMeta } from "emdash";
 import Base from "../layouts/Base.astro";
 import Button from "../components/Button.astro";
 import Container from "../components/Container.astro";
-import CourseRow from "../components/CourseRow.astro";
+import CourseCard from "../components/CourseCard.astro";
 import Eyebrow from "../components/Eyebrow.astro";
 import PlanCard from "../components/PlanCard.astro";
+import PlanCarousel from "../components/PlanCarousel.astro";
 import Section from "../components/Section.astro";
 import Step from "../components/Step.astro";
 import { site } from "../config/site";
+import { courseImages } from "../config/images";
 import { getSiteContact } from "../utils/site-config";
 
 const [coursesResult, plansResult, testimonialsResult, contactResult, homeResult] =
@@ -44,7 +46,10 @@ const testimonials = testimonialsResult.entries.filter(
 );
 const contact = contactResult.data;
 
-const featuredPlan = plans.find((plan) => plan.data.is_popular) ?? plans[0];
+const featuredIndex = Math.max(
+	plans.findIndex((plan) => plan.data.is_popular),
+	0,
+);
 const homePage = homeResult.entry;
 const seo = homePage
 	? getSeoMeta(homePage, {
@@ -56,12 +61,19 @@ const seo = homePage
 	: null;
 
 const heroEyebrow = homePage?.data.home_eyebrow?.trim() || "Online Qur'an academy";
+// A word wrapped in *asterisks* in the CMS headline becomes the sage
+// highlight in the h1, for example: Recite the *Qur'an* with a teacher...
 const heroHeadline =
 	homePage?.data.home_headline?.trim() ||
-	"Learn the Qur'an with a teacher who knows your name.";
+	"Recite the *Qur'an* with a teacher who knows your name.";
 const heroLead =
 	homePage?.data.home_lead?.trim() ||
 	"One-to-one lessons in recitation, tajweed and memorization. Start with a free trial class from wherever you are.";
+
+const headlineParts = heroHeadline
+	.split(/\*([^*]+)\*/g)
+	.map((text, index) => ({ text, highlight: index % 2 === 1 }))
+	.filter((part) => part.text !== "");
 
 const toPlanCard = (plan: (typeof plans)[number]) => ({
 	slug: plan.id,
@@ -104,28 +116,28 @@ const steps = [
 			<div class="hero__grid">
 				<div class="hero__copy">
 					<Eyebrow>{heroEyebrow}</Eyebrow>
-					<h1>{heroHeadline}</h1>
+					<h1>
+						{
+							headlineParts.map((part) =>
+								part.highlight ? (
+									<span class="hero__highlight">{part.text}</span>
+								) : (
+									part.text
+								),
+							)
+						}
+					</h1>
 					<p class="hero__lead">{heroLead}</p>
 					<div class="hero__actions">
 						<Button href="/free-trial" variant="primary" size="lg">Get free trial</Button>
 						<Button href="/courses" variant="secondary" size="lg">Explore courses</Button>
 					</div>
-					<p class="hero__note">
-						{contact.stats.years} years teaching. Students in {contact.stats.countries}
-						countries.
-					</p>
 				</div>
 
 				{
-					featuredPlan && (
+					plans.length > 0 && (
 						<div class="hero__plan">
-							<PlanCard
-								plan={toPlanCard(featuredPlan)}
-								variant="hero"
-								showBismillah
-								headingLevel={2}
-								href={`/free-trial?plan=${encodeURIComponent(featuredPlan.id)}`}
-							/>
+							<PlanCarousel plans={plans.map(toPlanCard)} initialIndex={featuredIndex} />
 						</div>
 					)
 				}
@@ -135,33 +147,32 @@ const steps = [
 
 	<Section>
 		<Container>
-			<div class="split">
-				<div class="split__intro">
-					<Eyebrow>Courses</Eyebrow>
-					<h2>Three paths through the Qur'an.</h2>
-					<p class="section-lead">
-						Start where you are. Your teacher will meet you there and build the lessons around
-						your level.
-					</p>
-					<div class="section-actions">
-						<Button href="/courses" variant="secondary">See all courses</Button>
-					</div>
-				</div>
+			<div class="section-head">
+				<Eyebrow>Courses</Eyebrow>
+				<h2>Explore our courses</h2>
+				<p class="section-lead">
+					Start where you are. Your teacher will meet you there and build the lessons around
+					your level.
+				</p>
+			</div>
 
-				<ol class="course-list">
-					{
-						courses.map((course, index) => (
-							<CourseRow
-								index={index + 1}
+			<ul class="course-grid">
+				{
+					courses.map((course) => (
+						<li>
+							<CourseCard
+								slug={course.id}
 								title={course.data.name}
 								summary={course.data.summary}
 								level={course.data.level}
 								href={`/courses/${course.id}`}
+								imageSrc={courseImages[course.id]?.src}
+								imageAlt={courseImages[course.id]?.alt}
 							/>
-						))
-					}
-				</ol>
-			</div>
+						</li>
+					))
+				}
+			</ul>
 		</Container>
 	</Section>
 
@@ -262,7 +273,8 @@ const steps = [
 </Base>
 
 <style>
-	.hero {
+	/* Section is a child component, so page styles reach it via :global. */
+	:global(.hero) {
 		padding-block: clamp(56px, 8vw, 112px) clamp(64px, 9vw, 128px);
 	}
 
@@ -274,8 +286,12 @@ const steps = [
 	}
 
 	.hero__copy h1 {
-		max-width: 13ch;
+		max-width: 17ch;
 		margin-top: var(--space-lg);
+	}
+
+	.hero__highlight {
+		color: var(--sage);
 	}
 
 	.hero__lead {
@@ -292,38 +308,16 @@ const steps = [
 		margin-top: var(--space-xl);
 	}
 
-	.hero__note {
-		margin-top: var(--space-xl);
-		color: var(--muted-on-dark);
-		font-size: var(--size-small);
-	}
-
 	.hero__plan {
 		justify-self: end;
 		width: 100%;
-		max-width: 380px;
-	}
-
-	.split {
-		display: grid;
-		grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-		gap: clamp(32px, 6vw, 80px);
-		align-items: start;
-	}
-
-	.split__intro h2 {
-		max-width: 12ch;
-		margin-top: var(--space-md);
+		max-width: 420px;
 	}
 
 	.section-lead {
 		max-width: 48ch;
 		margin-top: var(--space-md);
 		color: var(--muted);
-	}
-
-	.section-actions {
-		margin-top: var(--space-lg);
 	}
 
 	.section-head {
@@ -344,8 +338,10 @@ const steps = [
 		margin-inline: auto;
 	}
 
-	.course-list {
-		min-width: 0;
+	.course-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: var(--space-lg);
 	}
 
 	.numbers {
@@ -423,8 +419,7 @@ const steps = [
 	}
 
 	@media (max-width: 1000px) {
-		.hero__grid,
-		.split {
+		.hero__grid {
 			grid-template-columns: 1fr;
 		}
 
@@ -434,6 +429,12 @@ const steps = [
 
 		.plan-grid {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (min-width: 760px) {
+		.course-grid {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
 		}
 	}
 

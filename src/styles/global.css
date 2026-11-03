@@ -27,6 +27,8 @@
 	/* Semantic aliases */
 	--page: var(--cream);
 	--surface: var(--cream);
+	/* Cards that sit on the cream page lift a little towards white. */
+	--surface-raised: color-mix(in srgb, var(--cream) 45%, #ffffff);
 	--line: var(--hairline-light);
 	--text: var(--ink);
 	--muted: var(--muted-ink);

@@ -1,0 +1,345 @@
+---
+/**
+ * Featured plan card for the dark hero. Cycles through the plans from the
+ * plans collection with real previous/next buttons. No auto-play: the card
+ * only changes when a visitor asks it to.
+ *
+ * Every plan panel is server-rendered with its own links, so the card still
+ * shows the featured (popular) plan without JavaScript.
+ */
+import Button from "./Button.astro";
+import ImagePlaceholder from "./ImagePlaceholder.astro";
+import { heroImage } from "../config/images";
+import type { PlanCardData } from "./PlanCard.astro";
+import { formatUsdPrice } from "../utils/price";
+
+interface Props {
+	plans: PlanCardData[];
+	initialIndex?: number;
+}
+
+const { plans, initialIndex = 0 } = Astro.props;
+const last = Math.max(plans.length - 1, 0);
+const start = Math.min(Math.max(initialIndex, 0), last);
+---
+
+<div class="plan-carousel" data-plan-carousel data-plan-start={start}>
+	<div class="plan-carousel__card">
+		<div class="plan-carousel__media">
+			<ImagePlaceholder
+				src={heroImage.src}
+				label="Open Qur'an on a wooden rehal"
+				alt={heroImage.alt}
+				ratio="16 / 10"
+				eager
+			/>
+		</div>
+
+		{
+			plans.map((plan, index) => (
+				<div class="plan-carousel__panel" data-plan-panel hidden={index !== start}>
+					<div class="plan-carousel__head">
+						<h2 class="plan-carousel__name" data-plan-name>
+							{plan.name}
+						</h2>
+						{plan.isPopular && <span class="plan-carousel__badge">Most popular</span>}
+					</div>
+
+					<p class="plan-carousel__price">
+						<span class="plan-carousel__amount">{formatUsdPrice(plan.price)}</span>
+						<span class="plan-carousel__period">/ month</span>
+					</p>
+
+					<dl class="plan-carousel__meta">
+						<div>
+							<dt>Classes each week</dt>
+							<dd>{plan.classesPerWeek}</dd>
+						</div>
+						<div>
+							<dt>Classes each month</dt>
+							<dd>{plan.classesPerMonth}</dd>
+						</div>
+						<div>
+							<dt>Teaching hours each month</dt>
+							<dd>{plan.hoursPerMonth}</dd>
+						</div>
+					</dl>
+
+					<div class="plan-carousel__cta">
+						<Button
+							href={plan.slug
+								? `/free-trial?plan=${encodeURIComponent(plan.slug)}`
+								: "/free-trial"}
+							variant="primary"
+						>
+							Select plan
+						</Button>
+						<Button href="/pricing" variant="secondary">See details</Button>
+					</div>
+				</div>
+			))
+		}
+	</div>
+
+	<div class="plan-carousel__nav" data-plan-nav>
+		<button type="button" class="plan-carousel__arrow" data-plan-prev aria-label="Previous plan">
+			<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false">
+				<path
+					d="M12.5 4.5 7 10l5.5 5.5"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.6"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				/>
+			</svg>
+		</button>
+		<p class="plan-carousel__status" data-plan-status role="status">
+			{plans[start] ? `${plans[start].name}, plan ${start + 1} of ${plans.length}` : ""}
+		</p>
+		<button type="button" class="plan-carousel__arrow" data-plan-next aria-label="Next plan">
+			<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false">
+				<path
+					d="M7.5 4.5 13 10l-5.5 5.5"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.6"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				/>
+			</svg>
+		</button>
+	</div>
+</div>
+
+<noscript>
+	<style>
+		.plan-carousel [data-plan-nav] {
+			display: none;
+		}
+	</style>
+</noscript>
+
+<script>
+	const root = document.querySelector<HTMLElement>("[data-plan-carousel]");
+	if (root) {
+		const panels = Array.from(root.querySelectorAll<HTMLElement>("[data-plan-panel]"));
+		const prev = root.querySelector<HTMLButtonElement>("[data-plan-prev]");
+		const next = root.querySelector<HTMLButtonElement>("[data-plan-next]");
+		const status = root.querySelector<HTMLElement>("[data-plan-status]");
+		const count = panels.length;
+		let index = Number(root.dataset.planStart ?? 0);
+		if (!Number.isFinite(index) || index < 0 || index >= count) index = 0;
+
+		const render = () => {
+			panels.forEach((panel, panelIndex) => {
+				const show = panelIndex === index;
+				if (show && panel.hidden) {
+					panel.hidden = false;
+					panel.classList.remove("is-entering");
+					// Restart the entry animation.
+					void panel.offsetWidth;
+					panel.classList.add("is-entering");
+				} else {
+					panel.hidden = !show;
+				}
+			});
+			const name = panels[index]?.querySelector("[data-plan-name]")?.textContent?.trim();
+			if (status && name) status.textContent = `${name}, plan ${index + 1} of ${count}`;
+		};
+
+		prev?.addEventListener("click", () => {
+			index = (index - 1 + count) % count;
+			render();
+		});
+		next?.addEventListener("click", () => {
+			index = (index + 1) % count;
+			render();
+		});
+	}
+</script>
+
+<style>
+	.plan-carousel {
+		position: relative;
+	}
+
+	.plan-carousel__card {
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+		border: 1px solid var(--line-dark);
+		border-radius: var(--radius-card);
+		background: var(--surface-dark);
+		color: var(--text-on-dark);
+	}
+
+	.plan-carousel__media {
+		border-bottom: 1px solid var(--line-dark);
+	}
+
+	.plan-carousel__panel {
+		display: grid;
+		align-content: start;
+		padding: var(--space-lg) var(--space-xl) var(--space-xl);
+	}
+
+	.plan-carousel__panel[hidden] {
+		display: none;
+	}
+
+	.plan-carousel__panel.is-entering {
+		animation: plan-enter 240ms var(--ease-out);
+	}
+
+	@keyframes plan-enter {
+		from {
+			opacity: 0;
+			transform: translateY(4px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	.plan-carousel__head {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: var(--space-md);
+	}
+
+	.plan-carousel__name {
+		font-size: 1.375rem;
+	}
+
+	.plan-carousel__badge {
+		flex: none;
+		padding: 4px 8px;
+		border-radius: var(--radius-button);
+		background: var(--sage);
+		color: var(--bg-dark);
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		line-height: 1.2;
+		text-transform: uppercase;
+	}
+
+	.plan-carousel__price {
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-xs);
+		margin-top: var(--space-md);
+	}
+
+	.plan-carousel__amount {
+		font-family: var(--font-heading, Georgia, serif);
+		font-size: clamp(2.25rem, 3vw, 2.75rem);
+		font-weight: 600;
+		line-height: 1;
+		letter-spacing: -0.02em;
+	}
+
+	.plan-carousel__period {
+		color: var(--muted-on-dark);
+		font-size: var(--size-small);
+	}
+
+	.plan-carousel__meta {
+		display: grid;
+		margin: var(--space-md) 0 0;
+	}
+
+	.plan-carousel__meta > div {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--space-md);
+		padding-block: 10px;
+		border-top: 1px solid var(--line-dark);
+	}
+
+	.plan-carousel__meta dt {
+		color: var(--muted-on-dark);
+		font-size: var(--size-small);
+	}
+
+	.plan-carousel__meta dd {
+		margin: 0;
+		font-weight: 600;
+	}
+
+	.plan-carousel__cta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xs);
+		margin-top: var(--space-lg);
+	}
+
+	.plan-carousel__cta :global(.btn) {
+		flex: 1 1 130px;
+	}
+
+	.plan-carousel__nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-md);
+		margin-top: var(--space-md);
+	}
+
+	.plan-carousel__arrow {
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		flex: none;
+		border: 1px solid var(--line-dark);
+		border-radius: var(--radius-button);
+		background: var(--surface-dark);
+		color: var(--text-on-dark);
+		transition:
+			background-color var(--transition),
+			border-color var(--transition),
+			color var(--transition);
+	}
+
+	.plan-carousel__arrow:hover {
+		border-color: var(--sage);
+		background: var(--sage);
+		color: var(--bg-dark);
+	}
+
+	.plan-carousel__status {
+		color: var(--muted-on-dark);
+		font-size: var(--size-small);
+		text-align: center;
+	}
+
+	@media (min-width: 768px) {
+		.plan-carousel__nav {
+			position: absolute;
+			inset-inline: -20px;
+			top: 38%;
+			margin-top: 0;
+			pointer-events: none;
+		}
+
+		.plan-carousel__arrow {
+			pointer-events: auto;
+		}
+
+		/* The status stays announced by screen readers on wide screens. */
+		.plan-carousel__status {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			margin: 0;
+			overflow: hidden;
+			clip: rect(0 0 0 0);
+			white-space: nowrap;
+		}
+	}
+</style>
