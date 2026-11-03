@@ -48,7 +48,7 @@ Corners: buttons 6px, cards 10px. Max content width 1200px, side padding 32px (2
 Mobile first, check at 360px, 768px, 1280px.
 
 ## Hard rules (client taste, do not break)
-- Do not use the template's marketing blocks, its glass header, glows, logo marquee, or 3-plan pricing. Build our own Astro components and our own collections (courses, plans, teachers, testimonials, faqs, siteSettings) as planned. The home page reads from those collections.
+- Do not use the template's marketing blocks, its glass header, glows, logo marquee, or 3-plan pricing. Build our own Astro components and our own collections (courses, plans, teachers, testimonials, faqs, site_settings; EmDash requires snake_case slugs) as planned. The home page reads from those collections.
 - Do not add a "Powered by EmDash" credit to the footer.
 - No emojis, no gradients, no glassmorphism, no purple or neon colors.
 - No orbs, dot grids, sparkles or decorative animated arrows.

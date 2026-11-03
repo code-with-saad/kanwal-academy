@@ -13,13 +13,21 @@ export interface PlanCardData {
 
 interface Props {
 	plan: PlanCardData;
-	variant?: "default" | "inverted";
+	variant?: "default" | "inverted" | "hero";
 	showBismillah?: boolean;
 	href?: string;
+	headingLevel?: 2 | 3;
 }
 
-const { plan, variant = "default", showBismillah = false, href } = Astro.props;
-const inverted = variant === "inverted";
+const {
+	plan,
+	variant = "default",
+	showBismillah = false,
+	href,
+	headingLevel = 3,
+} = Astro.props;
+const inverted = variant === "inverted" || variant === "hero";
+const Heading = `h${headingLevel}` as "h2" | "h3";
 
 const numericPrice = typeof plan.price === "number" ? plan.price : Number(plan.price);
 const priceLabel = Number.isFinite(numericPrice)
@@ -34,7 +42,14 @@ const planHref =
 	href ?? (plan.slug ? `/free-trial?plan=${encodeURIComponent(plan.slug)}` : "/free-trial");
 ---
 
-<article class:list={["plan-card", inverted && "plan-card--inverted tone-dark"]}>
+<article
+	class:list={[
+		"plan-card",
+		variant === "inverted" && "plan-card--inverted",
+		variant === "hero" && "plan-card--hero",
+		inverted && "tone-dark",
+	]}
+>
 	{
 		showBismillah && (
 			<p class="plan-card__bismillah" lang="ar" dir="rtl">
@@ -44,7 +59,7 @@ const planHref =
 	}
 
 	<div class="plan-card__head">
-		<h3 class="plan-card__name">{plan.name}</h3>
+		<Heading class="plan-card__name">{plan.name}</Heading>
 		{plan.isPopular && <span class="plan-card__badge">Most popular</span>}
 	</div>
 
@@ -88,6 +103,12 @@ const planHref =
 	.plan-card--inverted {
 		border-color: var(--line-dark);
 		background: var(--bg-dark);
+		color: var(--text-on-dark);
+	}
+
+	.plan-card--hero {
+		border-color: var(--line-dark);
+		background: var(--surface-dark);
 		color: var(--text-on-dark);
 	}
 

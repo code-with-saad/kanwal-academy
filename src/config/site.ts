@@ -21,6 +21,12 @@ export const site = {
 	emailHref: "mailto:hello@kanwalquranacademy.com",
 	address: "Karachi, Pakistan",
 	bismillah: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+	stats: {
+		years: "5+",
+		countries: "5+",
+		students: "[000]+",
+		sessions: "[000]+",
+	},
 	nav: [
 		{ label: "Home", url: "/" },
 		{ label: "About", url: "/about" },

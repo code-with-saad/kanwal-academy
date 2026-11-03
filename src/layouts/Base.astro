@@ -6,6 +6,7 @@ import { EmDashBodyEnd, EmDashBodyStart, EmDashHead } from "emdash/ui";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import { site, type NavItem } from "../config/site";
+import { getSiteContact } from "../utils/site-config";
 import { resolveSiteIdentity } from "../utils/site";
 import "../styles/global.css";
 
@@ -31,14 +32,16 @@ const {
 	headerTone = Astro.url.pathname === "/" ? "dark" : "light",
 } = Astro.props;
 
-const [settingsResult, menuResult] = await Promise.all([
+const [settingsResult, menuResult, contactResult] = await Promise.all([
 	getSiteSettingsWithCacheHint(),
 	getMenuWithCacheHint("primary"),
+	getSiteContact(),
 ]);
 
 if (Astro.cache?.enabled) {
 	Astro.cache.set(settingsResult.cacheHint);
 	Astro.cache.set(menuResult.cacheHint);
+	Astro.cache.set(contactResult.cacheHint);
 }
 
 const { siteTitle, siteTagline, titleSeparator } = resolveSiteIdentity(settingsResult.data);
@@ -96,11 +99,12 @@ const pageCtx = createPublicPageContext({
 			cta={headerCta}
 			tone={headerTone}
 			currentPath={Astro.url.pathname}
+			siteName={siteTitle}
 		/>
 		<main id="main">
 			<slot />
 		</main>
-		<Footer />
+		<Footer contact={contactResult.data} siteName={siteTitle} />
 		<EmDashBodyEnd page={pageCtx} />
 	</body>
 </html>

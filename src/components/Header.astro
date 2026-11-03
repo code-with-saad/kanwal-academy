@@ -8,6 +8,7 @@ interface Props {
 	cta?: NavItem;
 	tone?: "dark" | "light";
 	currentPath?: string;
+	siteName?: string;
 }
 
 const {
@@ -15,6 +16,7 @@ const {
 	cta = site.cta,
 	tone = "light",
 	currentPath = Astro.url.pathname,
+	siteName = site.name,
 } = Astro.props;
 
 const path = currentPath.length > 1 ? currentPath.replace(/\/+$/, "") : "/";
@@ -26,8 +28,8 @@ const isCurrent = (url: string) => {
 
 <header class:list={["site-header", tone === "dark" && "site-header--dark tone-dark"]}>
 	<Container class="header__inner">
-		<a href="/" class="header__wordmark" aria-label={`${site.name} home`}>
-			{site.name}
+		<a href="/" class="header__wordmark" aria-label={`${siteName} home`}>
+			{siteName}
 		</a>
 
 		<div class="header__panel" id="site-menu" data-menu-panel>
@@ -68,7 +70,7 @@ const isCurrent = (url: string) => {
 			aria-expanded="false"
 			aria-controls="site-menu"
 		>
-			<span class="header__toggle-label">Menu</span>
+			<span class="header__toggle-label" data-menu-label>Menu</span>
 			<span class="header__toggle-icon" aria-hidden="true">
 				<span></span>
 				<span></span>
@@ -80,17 +82,19 @@ const isCurrent = (url: string) => {
 <script>
 	const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
 	const panel = document.querySelector<HTMLElement>("[data-menu-panel]");
+	const label = document.querySelector<HTMLElement>("[data-menu-label]");
 
 	if (toggle && panel) {
-		const close = () => {
-			panel.classList.remove("is-open");
-			toggle.setAttribute("aria-expanded", "false");
+		const setOpen = (open: boolean) => {
+			panel.classList.toggle("is-open", open);
+			toggle.setAttribute("aria-expanded", String(open));
+			if (label) label.textContent = open ? "Close" : "Menu";
 		};
 
+		const close = () => setOpen(false);
+
 		toggle.addEventListener("click", () => {
-			const open = toggle.getAttribute("aria-expanded") === "true";
-			panel.classList.toggle("is-open", !open);
-			toggle.setAttribute("aria-expanded", String(!open));
+			setOpen(toggle.getAttribute("aria-expanded") !== "true");
 		});
 
 		panel.addEventListener("click", (event) => {
@@ -154,12 +158,13 @@ const isCurrent = (url: string) => {
 
 	.header__panel.is-open {
 		display: block;
-		position: absolute;
-		inset-inline: 0;
-		top: 100%;
-		padding: var(--space-lg) var(--gutter);
+		position: fixed;
+		inset: var(--header-height) 0 0;
+		overflow-y: auto;
+		padding: var(--space-lg) var(--gutter) var(--space-2xl);
 		background: var(--surface);
 		border-bottom: 1px solid var(--line);
+		overscroll-behavior: contain;
 	}
 
 	.header__nav {
@@ -234,6 +239,8 @@ const isCurrent = (url: string) => {
 		.header__panel {
 			display: block;
 			position: static;
+			inset: auto;
+			overflow: visible;
 			margin-inline-start: auto;
 			padding: 0;
 			background: transparent;

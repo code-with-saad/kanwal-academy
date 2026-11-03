@@ -3,806 +3,408 @@
 	"version": "1",
 	"meta": {
 		"name": "Kanwal Quran Academy",
-		"description": "Content schema for the Kanwal Quran Academy website"
+		"description": "Content schema and launch content for the Kanwal Quran Academy website"
 	},
 	"settings": {
 		"title": "Kanwal Quran Academy",
-		"tagline": "",
+		"tagline": "Online Qur'an education from Karachi, Pakistan.",
 		"seo": {
 			"titleSeparator": "|"
 		}
 	},
-	"blockTypes": [
-		{
-			"slug": "marketing_hero",
-			"label": "Hero",
-			"description": "A prominent page introduction with optional calls to action and media",
-			"category": "Marketing",
-			"currentVersion": 1,
-			"versions": [
-				{
-					"version": 1,
-					"fields": [
-						{
-							"slug": "headline",
-							"label": "Headline",
-							"type": "string",
-							"required": true
-						},
-						{
-							"slug": "subheadline",
-							"label": "Subheadline",
-							"type": "text"
-						},
-						{
-							"slug": "primary_cta_label",
-							"label": "Primary button text",
-							"type": "string"
-						},
-						{
-							"slug": "primary_cta_url",
-							"label": "Primary button link (starts with /, https://, mailto:, tel: or #)",
-							"type": "string",
-							"validation": {
-								"pattern": "^(?:$|(?:https?://|mailto:|tel:|/(?!/)|#).+)$"
-							}
-						},
-						{
-							"slug": "secondary_cta_label",
-							"label": "Secondary button text",
-							"type": "string"
-						},
-						{
-							"slug": "secondary_cta_url",
-							"label": "Secondary button link (starts with /, https://, mailto:, tel: or #)",
-							"type": "string",
-							"validation": {
-								"pattern": "^(?:$|(?:https?://|mailto:|tel:|/(?!/)|#).+)$"
-							}
-						},
-						{
-							"slug": "image",
-							"label": "Image",
-							"type": "image"
-						},
-						{
-							"slug": "image_caption",
-							"label": "Image caption (shown on the photo)",
-							"type": "string"
-						},
-						{
-							"slug": "eyebrow",
-							"label": "Announcement (shown above the headline)",
-							"type": "string"
-						},
-						{
-							"slug": "eyebrow_url",
-							"label": "Announcement link (starts with /, https://, mailto:, tel: or #)",
-							"type": "string",
-							"validation": {
-								"pattern": "^(?:$|/(?!/|\\\\).*|(?:https?://|mailto:|tel:|#).+)$"
-							}
-						},
-						{
-							"slug": "centered",
-							"label": "Center the layout",
-							"type": "boolean",
-							"defaultValue": false
-						},
-						{
-							"slug": "anchor_id",
-							"label": "Section ID (lowercase, for links like /#pricing)",
-							"type": "string",
-							"validation": {
-								"pattern": "^(?:$|[a-z][a-z0-9_-]*)$"
-							}
-						}
-					]
-				}
-			]
-		},
-		{
-			"slug": "marketing_features",
-			"label": "Features",
-			"description": "A grid of product or service features",
-			"category": "Marketing",
-			"currentVersion": 1,
-			"versions": [
-				{
-					"version": 1,
-					"fields": [
-						{
-							"slug": "headline",
-							"label": "Headline",
-							"type": "string",
-							"required": true
-						},
-						{
-							"slug": "subheadline",
-							"label": "Second sentence (shown muted after the headline)",
-							"type": "text"
-						},
-						{
-							"slug": "eyebrow",
-							"label": "Label above headline",
-							"type": "string"
-						},
-						{
-							"slug": "features",
-							"label": "Features",
-							"type": "repeater",
-							"required": true,
-							"validation": {
-								"minItems": 1,
-								"maxItems": 12,
-								"subFields": [
-									{
-										"slug": "icon",
-										"label": "Icon",
-										"type": "select",
-										"required": true,
-										"options": [
-											"zap",
-											"shield",
-											"users",
-											"chart",
-											"code",
-											"globe",
-											"heart",
-											"star",
-											"check",
-											"lock",
-											"clock",
-											"cloud",
-											"building",
-											"leaf",
-											"gauge",
-											"thermometer",
-											"plug",
-											"bell",
-											"file",
-											"sun",
-											"trend"
-										]
-									},
-									{
-										"slug": "title",
-										"label": "Title",
-										"type": "string",
-										"required": true
-									},
-									{
-										"slug": "description",
-										"label": "Description (leave a blank line between paragraphs)",
-										"type": "text",
-										"required": true
-									}
-								]
-							}
-						},
-						{
-							"slug": "anchor_id",
-							"label": "Section ID (lowercase, for links like /#pricing)",
-							"type": "string",
-							"validation": {
-								"pattern": "^(?:$|[a-z][a-z0-9_-]*)$"
-							}
-						}
-					]
-				}
-			]
-		},
-		{
-			"slug": "marketing_testimonials",
-			"label": "Testimonials",
-			"description": "Customer quotes and attribution. The first quote is shown large",
-			"category": "Marketing",
-			"currentVersion": 1,
-			"versions": [
-				{
-					"version": 1,
-					"fields": [
-						{
-							"slug": "headline",
-							"label": "Section label (small text above the quotes)",
-							"type": "string"
-						},
-						{
-							"slug": "testimonials",
-							"label": "Testimonials",
-							"type": "repeater",
-							"required": true,
-							"validation": {
-								"minItems": 1,
-								"maxItems": 12,
-								"subFields": [
-									{
-										"slug": "quote",
-										"label": "Quote (leave a blank line between paragraphs)",
-										"type": "text",
-										"required": true
-									},
-									{
-										"slug": "author",
-										"label": "Author name",
-										"type": "string",
-										"required": true
-									},
-									{
-										"slug": "role",
-										"label": "Role or title",
-										"type": "string"
-									},
-									{
-										"slug": "company",
-										"label": "Company",
-										"type": "string"
-									},
-									{
-										"slug": "avatar",
-										"label": "Avatar (initials show when empty)",
-										"type": "image"
-									}
-								]
-							}
-						},
-						{
-							"slug": "anchor_id",
-							"label": "Section ID (lowercase, for links like /#pricing)",
-							"type": "string",
-							"validation": {
-								"pattern": "^(?:$|[a-z][a-z0-9_-]*)$"
-							}
-						}
-					]
-				}
-			]
-		},
-		{
-			"slug": "marketing_pricing",
-			"label": "Pricing",
-			"description": "A comparison of up to three pricing plans",
-			"category": "Marketing",
-			"currentVersion": 1,
-			"versions": [
-				{
-					"version": 1,
-					"fields": [
-						{
-							"slug": "headline",
-							"label": "Headline",
-							"type": "string"
-						},
-						{
-							"slug": "plans",
-							"label": "Plans",
-							"type": "repeater",
-							"required": true,
-							"validation": {
-								"minItems": 1,
-								"maxItems": 3,
-								"subFields": [
-									{
-										"slug": "name",
-										"label": "Plan name",
-										"type": "string",
-										"required": true
-									},
-									{
-										"slug": "price",
-										"label": "Price",
-										"type": "string",
-										"required": true
-									},
-									{
-										"slug": "period",
-										"label": "Period",
-										"type": "string"
-									},
-									{
-										"slug": "description",
-										"label": "Description (leave a blank line between paragraphs)",
-										"type": "text"
-									},
-									{
-										"slug": "features",
-										"label": "Features (one per line)",
-										"type": "text"
-									},
-									{
-										"slug": "cta_label",
-										"label": "Button text",
-										"type": "string",
-										"required": true
-									},
-									{
-										"slug": "cta_url",
-										"label": "Button link (starts with /, https://, mailto:, tel: or #)",
-										"type": "string",
-										"required": true
-									},
-									{
-										"slug": "highlighted",
-										"label": "Highlight this plan",
-										"type": "boolean"
-									},
-									{
-										"slug": "badge",
-										"label": "Badge text, for example Most popular",
-										"type": "string"
-									}
-								]
-							}
-						},
-						{
-							"slug": "anchor_id",
-							"label": "Section ID (lowercase, for links like /#pricing)",
-							"type": "string",
-							"validation": {
-								"pattern": "^(?:$|[a-z][a-z0-9_-]*)$"
-							}
-						}
-					]
-				}
-			]
-		},
-		{
-			"slug": "marketing_faq",
-			"label": "FAQ",
-			"description": "A list of frequently asked questions",
-			"category": "Marketing",
-			"currentVersion": 1,
-			"versions": [
-				{
-					"version": 1,
-					"fields": [
-						{
-							"slug": "headline",
-							"label": "Headline",
-							"type": "string"
-						},
-						{
-							"slug": "subheadline",
-							"label": "Subheadline",
-							"type": "text"
-						},
-						{
-							"slug": "items",
-							"label": "Questions",
-							"type": "repeater",
-							"required": true,
-							"validation": {
-								"minItems": 1,
-								"maxItems": 12,
-								"subFields": [
-									{
-										"slug": "question",
-										"label": "Question",
-										"type": "string",
-										"required": true
-									},
-									{
-										"slug": "answer",
-										"label": "Answer (leave a blank line between paragraphs)",
-										"type": "text",
-										"required": true
-									}
-								]
-							}
-						},
-						{
-							"slug": "anchor_id",
-							"label": "Section ID (lowercase, for links like /#pricing)",
-							"type": "string",
-							"validation": {
-								"pattern": "^(?:$|[a-z][a-z0-9_-]*)$"
-							}
-						}
-					]
-				}
-			]
-		},
-		{
-			"slug": "marketing_logos",
-			"label": "Logo wall",
-			"description": "A scrolling row of customer or partner logos. Names without a logo show as text",
-			"category": "Marketing",
-			"currentVersion": 1,
-			"versions": [
-				{
-					"version": 1,
-					"fields": [
-						{
-							"slug": "headline",
-							"label": "Section label (small text above the logos)",
-							"type": "string"
-						},
-						{
-							"slug": "logos",
-							"label": "Logos",
-							"type": "repeater",
-							"required": true,
-							"validation": {
-								"minItems": 1,
-								"maxItems": 24,
-								"subFields": [
-									{
-										"slug": "name",
-										"label": "Company name",
-										"type": "string",
-										"required": true
-									},
-									{
-										"slug": "logo",
-										"label": "Logo",
-										"type": "image"
-									}
-								]
-							}
-						},
-						{
-							"slug": "anchor_id",
-							"label": "Section ID (lowercase, for links like /#pricing)",
-							"type": "string",
-							"validation": {
-								"pattern": "^(?:$|[a-z][a-z0-9_-]*)$"
-							}
-						}
-					]
-				}
-			]
-		},
-		{
-			"slug": "marketing_split",
-			"label": "Text and image",
-			"description": "A headline, copy and checklist beside a photo",
-			"category": "Marketing",
-			"currentVersion": 1,
-			"versions": [
-				{
-					"version": 1,
-					"fields": [
-						{
-							"slug": "headline",
-							"label": "Headline",
-							"type": "string",
-							"required": true
-						},
-						{
-							"slug": "eyebrow",
-							"label": "Label above headline",
-							"type": "string"
-						},
-						{
-							"slug": "body",
-							"label": "Body (leave a blank line between paragraphs)",
-							"type": "text"
-						},
-						{
-							"slug": "points",
-							"label": "Checklist (one item per line)",
-							"type": "text"
-						},
-						{
-							"slug": "cta_label",
-							"label": "Link text",
-							"type": "string"
-						},
-						{
-							"slug": "cta_url",
-							"label": "Link (starts with /, https://, mailto:, tel: or #)",
-							"type": "string",
-							"validation": {
-								"pattern": "^(?:$|/(?!/|\\\\).*|(?:https?://|mailto:|tel:|#).+)$"
-							}
-						},
-						{
-							"slug": "image",
-							"label": "Image",
-							"type": "image"
-						},
-						{
-							"slug": "image_caption",
-							"label": "Image caption (shown on the photo)",
-							"type": "string"
-						},
-						{
-							"slug": "image_first",
-							"label": "Show the image first",
-							"type": "boolean",
-							"defaultValue": false
-						},
-						{
-							"slug": "anchor_id",
-							"label": "Section ID (lowercase, for links like /#pricing)",
-							"type": "string",
-							"validation": {
-								"pattern": "^(?:$|[a-z][a-z0-9_-]*)$"
-							}
-						}
-					]
-				}
-			]
-		},
-		{
-			"slug": "marketing_stats",
-			"label": "Stats",
-			"description": "Headline numbers on a dark panel",
-			"category": "Marketing",
-			"currentVersion": 1,
-			"versions": [
-				{
-					"version": 1,
-					"fields": [
-						{
-							"slug": "headline",
-							"label": "Headline",
-							"type": "string"
-						},
-						{
-							"slug": "subheadline",
-							"label": "Second sentence (shown muted after the headline)",
-							"type": "text"
-						},
-						{
-							"slug": "stats",
-							"label": "Stats",
-							"type": "repeater",
-							"required": true,
-							"validation": {
-								"minItems": 1,
-								"maxItems": 6,
-								"subFields": [
-									{
-										"slug": "value",
-										"label": "Value",
-										"type": "string",
-										"required": true
-									},
-									{
-										"slug": "label",
-										"label": "Label",
-										"type": "string",
-										"required": true
-									}
-								]
-							}
-						},
-						{
-							"slug": "anchor_id",
-							"label": "Section ID (lowercase, for links like /#pricing)",
-							"type": "string",
-							"validation": {
-								"pattern": "^(?:$|[a-z][a-z0-9_-]*)$"
-							}
-						}
-					]
-				}
-			]
-		},
-		{
-			"slug": "marketing_cta",
-			"label": "Call to action",
-			"description": "A closing call to action over a photo or dark panel",
-			"category": "Marketing",
-			"currentVersion": 1,
-			"versions": [
-				{
-					"version": 1,
-					"fields": [
-						{
-							"slug": "headline",
-							"label": "Headline",
-							"type": "string",
-							"required": true
-						},
-						{
-							"slug": "body",
-							"label": "Body (leave a blank line between paragraphs)",
-							"type": "text"
-						},
-						{
-							"slug": "primary_cta_label",
-							"label": "Primary button text",
-							"type": "string"
-						},
-						{
-							"slug": "primary_cta_url",
-							"label": "Primary button link (starts with /, https://, mailto:, tel: or #)",
-							"type": "string",
-							"validation": {
-								"pattern": "^(?:$|/(?!/|\\\\).*|(?:https?://|mailto:|tel:|#).+)$"
-							}
-						},
-						{
-							"slug": "secondary_cta_label",
-							"label": "Secondary button text",
-							"type": "string"
-						},
-						{
-							"slug": "secondary_cta_url",
-							"label": "Secondary button link (starts with /, https://, mailto:, tel: or #)",
-							"type": "string",
-							"validation": {
-								"pattern": "^(?:$|/(?!/|\\\\).*|(?:https?://|mailto:|tel:|#).+)$"
-							}
-						},
-						{
-							"slug": "image",
-							"label": "Background image",
-							"type": "image"
-						},
-						{
-							"slug": "anchor_id",
-							"label": "Section ID (lowercase, for links like /#pricing)",
-							"type": "string",
-							"validation": {
-								"pattern": "^(?:$|[a-z][a-z0-9_-]*)$"
-							}
-						}
-					]
-				}
-			]
-		},
-		{
-			"slug": "marketing_contact",
-			"label": "Contact options",
-			"description": "Cards that point readers to the right email address, phone number or page",
-			"category": "Marketing",
-			"currentVersion": 1,
-			"versions": [
-				{
-					"version": 1,
-					"fields": [
-						{
-							"slug": "headline",
-							"label": "Headline",
-							"type": "string"
-						},
-						{
-							"slug": "eyebrow",
-							"label": "Label above headline",
-							"type": "string"
-						},
-						{
-							"slug": "subheadline",
-							"label": "Subheadline",
-							"type": "text"
-						},
-						{
-							"slug": "options",
-							"label": "Contact options",
-							"type": "repeater",
-							"required": true,
-							"validation": {
-								"minItems": 1,
-								"maxItems": 6,
-								"subFields": [
-									{
-										"slug": "icon",
-										"label": "Icon",
-										"type": "select",
-										"required": true,
-										"options": [
-											"email",
-											"support",
-											"sales",
-											"phone",
-											"chat",
-											"location"
-										]
-									},
-									{
-										"slug": "title",
-										"label": "Title",
-										"type": "string",
-										"required": true
-									},
-									{
-										"slug": "description",
-										"label": "Description (leave a blank line between paragraphs)",
-										"type": "text"
-									},
-									{
-										"slug": "link_label",
-										"label": "Link text",
-										"type": "string",
-										"required": true
-									},
-									{
-										"slug": "link_url",
-										"label": "Link (starts with /, https://, mailto:, tel: or #)",
-										"type": "url",
-										"required": true
-									}
-								]
-							}
-						},
-						{
-							"slug": "anchor_id",
-							"label": "Section ID (lowercase, for links like /#pricing)",
-							"type": "string",
-							"validation": {
-								"pattern": "^(?:$|[a-z][a-z0-9_-]*)$"
-							}
-						}
-					]
-				}
-			]
-		},
-		{
-			"slug": "marketing_text",
-			"label": "Text",
-			"description": "Long-form text with headings, lists and links, for pages like About or Privacy",
-			"category": "Marketing",
-			"currentVersion": 1,
-			"versions": [
-				{
-					"version": 1,
-					"fields": [
-						{
-							"slug": "headline",
-							"label": "Headline",
-							"type": "string"
-						},
-						{
-							"slug": "body",
-							"label": "Body",
-							"type": "portableText",
-							"required": true
-						},
-						{
-							"slug": "anchor_id",
-							"label": "Section ID (lowercase, for links like /#pricing)",
-							"type": "string",
-							"validation": {
-								"pattern": "^(?:$|[a-z][a-z0-9_-]*)$"
-							}
-						}
-					]
-				}
-			]
-		}
-	],
 	"collections": [
 		{
 			"slug": "pages",
 			"label": "Pages",
 			"labelSingular": "Page",
+			"description": "Standard pages such as About, Terms of Service and Privacy Policy.",
+			"icon": "file-text",
+			"group": "Content",
+			"sortOrder": 10,
 			"urlPattern": "/{slug}",
-			"supports": [
-				"drafts",
-				"revisions",
-				"preview",
-				"seo"
-			],
+			"supports": ["drafts", "revisions", "preview", "search", "seo"],
 			"fields": [
 				{
 					"slug": "title",
 					"label": "Title",
 					"type": "string",
-					"required": true
+					"required": true,
+					"searchable": true
 				},
 				{
 					"slug": "content",
-					"label": "Content",
-					"type": "blocks",
+					"label": "Page content",
+					"type": "portableText",
+					"searchable": true
+				}
+			]
+		},
+		{
+			"slug": "posts",
+			"label": "Blog posts",
+			"labelSingular": "Blog post",
+			"description": "Optional blog articles. The blog is not linked in the navigation yet.",
+			"icon": "article",
+			"group": "Content",
+			"sortOrder": 20,
+			"urlPattern": "/blog/{slug}",
+			"supports": ["drafts", "revisions", "preview", "scheduling", "search", "seo"],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "excerpt",
+					"label": "Excerpt (shown on the blog index)",
+					"type": "text",
+					"searchable": true
+				},
+				{
+					"slug": "featured_image",
+					"label": "Featured image",
+					"type": "image"
+				},
+				{
+					"slug": "content",
+					"label": "Article",
+					"type": "portableText",
+					"searchable": true
+				}
+			]
+		},
+		{
+			"slug": "courses",
+			"label": "Courses",
+			"labelSingular": "Course",
+			"description": "The three Qur'an courses. The URL slug is generated from the entry slug in the sidebar.",
+			"icon": "book-open-text",
+			"group": "Academy",
+			"sortOrder": 30,
+			"urlPattern": "/courses/{slug}",
+			"titleField": "name",
+			"admin": {
+				"listColumns": ["level", "order"]
+			},
+			"supports": ["drafts", "revisions", "preview", "search", "seo"],
+			"fields": [
+				{
+					"slug": "name",
+					"label": "Course name",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "summary",
+					"label": "Summary (one sentence shown on cards and the home page)",
+					"type": "text",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "description",
+					"label": "Long description",
+					"type": "portableText",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "level",
+					"label": "Level",
+					"type": "select",
+					"required": true,
 					"validation": {
-						"allowedTypes": [
-							"marketing_hero",
-							"marketing_features",
-							"marketing_testimonials",
-							"marketing_pricing",
-							"marketing_faq",
-							"marketing_logos",
-							"marketing_split",
-							"marketing_stats",
-							"marketing_cta",
-							"marketing_contact",
-							"marketing_text"
-						],
-						"maxItems": 20
+						"options": ["All levels", "Beginner", "Intermediate", "Advanced"]
 					}
+				},
+				{
+					"slug": "order",
+					"label": "Display order (lowest first)",
+					"type": "integer",
+					"required": true,
+					"defaultValue": 0
+				}
+			]
+		},
+		{
+			"slug": "plans",
+			"label": "Plans",
+			"labelSingular": "Plan",
+			"description": "Monthly lesson plans. Prices are in US dollars.",
+			"icon": "currency-dollar",
+			"group": "Academy",
+			"sortOrder": 40,
+			"routable": false,
+			"titleField": "name",
+			"admin": {
+				"listColumns": ["price", "classes_per_week", "is_popular"]
+			},
+			"supports": ["drafts", "revisions", "preview"],
+			"fields": [
+				{
+					"slug": "name",
+					"label": "Plan name",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "price",
+					"label": "Price in US dollars, billed monthly",
+					"type": "number",
+					"required": true
+				},
+				{
+					"slug": "classes_per_week",
+					"label": "Classes each week",
+					"type": "integer",
+					"required": true
+				},
+				{
+					"slug": "classes_per_month",
+					"label": "Classes each month",
+					"type": "integer",
+					"required": true
+				},
+				{
+					"slug": "hours_per_month",
+					"label": "Teaching hours each month",
+					"type": "number",
+					"required": true
+				},
+				{
+					"slug": "is_popular",
+					"label": "Mark as the most popular plan",
+					"type": "boolean",
+					"defaultValue": false
+				},
+				{
+					"slug": "order",
+					"label": "Display order (lowest first)",
+					"type": "integer",
+					"required": true,
+					"defaultValue": 0
+				}
+			]
+		},
+		{
+			"slug": "teachers",
+			"label": "Teachers",
+			"labelSingular": "Teacher",
+			"description": "Teacher profiles. Add a photo from the Media Library, or leave it empty for an initials card.",
+			"icon": "users-three",
+			"group": "Academy",
+			"sortOrder": 50,
+			"routable": false,
+			"titleField": "name",
+			"admin": {
+				"listColumns": ["role", "order"]
+			},
+			"supports": ["drafts", "revisions", "preview", "seo"],
+			"fields": [
+				{
+					"slug": "name",
+					"label": "Full name",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "role",
+					"label": "Role (for example Qur'an teacher or Head of Tajweed)",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "photo",
+					"label": "Photo",
+					"type": "image"
+				},
+				{
+					"slug": "bio",
+					"label": "Short bio",
+					"type": "text"
+				},
+				{
+					"slug": "qualifications",
+					"label": "Qualifications (one per line)",
+					"type": "text"
+				},
+				{
+					"slug": "order",
+					"label": "Display order (lowest first)",
+					"type": "integer",
+					"required": true,
+					"defaultValue": 0
+				}
+			]
+		},
+		{
+			"slug": "testimonials",
+			"label": "Testimonials",
+			"labelSingular": "Testimonial",
+			"description": "Real student or parent reviews only. Only entries with consent marked are shown on the site.",
+			"icon": "quotes",
+			"group": "Academy",
+			"sortOrder": 60,
+			"routable": false,
+			"titleField": "author",
+			"admin": {
+				"listColumns": ["country", "consent_given", "order"]
+			},
+			"supports": ["drafts", "revisions", "preview"],
+			"fields": [
+				{
+					"slug": "quote",
+					"label": "Quote",
+					"type": "text",
+					"required": true
+				},
+				{
+					"slug": "author",
+					"label": "Author name",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "country",
+					"label": "Country",
+					"type": "string"
+				},
+				{
+					"slug": "consent_given",
+					"label": "The author has given permission to publish this review",
+					"type": "boolean",
+					"required": true,
+					"defaultValue": false
+				},
+				{
+					"slug": "order",
+					"label": "Display order (lowest first)",
+					"type": "integer",
+					"required": true,
+					"defaultValue": 0
+				}
+			]
+		},
+		{
+			"slug": "faqs",
+			"label": "FAQs",
+			"labelSingular": "FAQ",
+			"description": "Questions and answers used on the free trial and contact pages.",
+			"icon": "question",
+			"group": "Academy",
+			"sortOrder": 70,
+			"routable": false,
+			"titleField": "question",
+			"admin": {
+				"listColumns": ["order"]
+			},
+			"supports": ["drafts", "revisions", "preview", "search"],
+			"fields": [
+				{
+					"slug": "question",
+					"label": "Question",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "answer",
+					"label": "Answer",
+					"type": "text",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "order",
+					"label": "Display order (lowest first)",
+					"type": "integer",
+					"required": true,
+					"defaultValue": 0
+				}
+			]
+		},
+		{
+			"slug": "site_settings",
+			"label": "Site settings",
+			"labelSingular": "Site settings",
+			"description": "Contact details and headline numbers used across the site. Keep one entry.",
+			"icon": "gear-six",
+			"group": "Settings",
+			"sortOrder": 80,
+			"routable": false,
+			"titleField": "email",
+			"admin": {
+				"listColumns": ["phone", "address"]
+			},
+			"supports": [],
+			"fields": [
+				{
+					"slug": "phone",
+					"label": "Phone number",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "email",
+					"label": "Email address",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "address",
+					"label": "Address",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "social_links",
+					"label": "Social links",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "label",
+								"label": "Platform name",
+								"type": "string",
+								"required": true
+							},
+							{
+								"slug": "url",
+								"label": "Profile URL",
+								"type": "url",
+								"required": true
+							}
+						]
+					}
+				},
+				{
+					"slug": "years",
+					"label": "Years teaching (for example 5+)",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "countries",
+					"label": "Countries served (for example 5+)",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "students",
+					"label": "Students taught",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "sessions",
+					"label": "Sessions delivered",
+					"type": "string",
+					"required": true
 				}
 			]
 		}
@@ -849,22 +451,673 @@
 					"cssClasses": "button"
 				}
 			]
-		},
-		{
-			"name": "footer_product",
-			"label": "Product",
-			"items": []
-		},
-		{
-			"name": "footer_company",
-			"label": "Company",
-			"items": []
-		},
-		{
-			"name": "footer_support",
-			"label": "Support",
-			"items": []
 		}
 	],
-	"content": {}
+	"content": {
+		"courses": [
+			{
+				"id": "course-quranic-recitation",
+				"slug": "quranic-recitation",
+				"status": "published",
+				"data": {
+					"name": "Qur'anic Recitation",
+					"summary": "Build fluent, accurate recitation with a teacher who listens and corrects in real time.",
+					"level": "All levels",
+					"order": 1,
+					"description": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "This course is for students who want to read the Qur'an aloud with confidence. Lessons focus on pronunciation, rhythm and the correct articulation of each letter."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "What you will work on" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Your teacher listens to you recite, corrects mistakes as they happen and gives you a short practice plan for the week."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Students can start from the alphabet or from full surahs. The pace is set by you and your teacher."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Who it is for" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Children and adults who are beginning to read, or who want to return to recitation after a break."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "course-tajweed-proficiency",
+				"slug": "tajweed-proficiency",
+				"status": "published",
+				"data": {
+					"name": "Tajweed Proficiency",
+					"summary": "Learn the rules of tajweed and apply them consistently in your daily recitation.",
+					"level": "Intermediate",
+					"order": 2,
+					"description": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Tajweed lessons explain the rules behind correct recitation, then put them into practice on the surahs you already read."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "What you will work on" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Makharij, the characteristics of letters, the rules of noon and meem, madd, and the points where recitation should stop or continue."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Each rule is practised on real verses, not only memorised as a definition."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Who it is for" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Students who can already read Qur'anic Arabic and want to recite with more precision."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "course-memorization-excellence",
+				"slug": "memorization-excellence",
+				"status": "published",
+				"data": {
+					"name": "Memorization Excellence",
+					"summary": "Follow a structured hifz plan with regular revision and one-to-one accountability.",
+					"level": "Advanced",
+					"order": 3,
+					"description": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "This course is for students who want to memorise the Qur'an with a clear plan and regular revision."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "What you will work on" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "New portions, recent revision and long-term revision are scheduled together so that memorised surahs stay strong."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Your teacher checks your recitation each class and adjusts the plan when your pace changes."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Who it is for" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Students who can read accurately and are ready for a consistent daily memorisation routine."
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"plans": [
+			{
+				"id": "plan-i",
+				"slug": "plan-i",
+				"status": "published",
+				"data": {
+					"name": "Plan I",
+					"price": 20,
+					"classes_per_week": 1,
+					"classes_per_month": 4,
+					"hours_per_month": 2,
+					"is_popular": false,
+					"order": 1
+				}
+			},
+			{
+				"id": "plan-ii",
+				"slug": "plan-ii",
+				"status": "published",
+				"data": {
+					"name": "Plan II",
+					"price": 40,
+					"classes_per_week": 2,
+					"classes_per_month": 8,
+					"hours_per_month": 4,
+					"is_popular": true,
+					"order": 2
+				}
+			},
+			{
+				"id": "plan-iii",
+				"slug": "plan-iii",
+				"status": "published",
+				"data": {
+					"name": "Plan III",
+					"price": 82,
+					"classes_per_week": 4,
+					"classes_per_month": 16,
+					"hours_per_month": 8,
+					"is_popular": false,
+					"order": 3
+				}
+			},
+			{
+				"id": "plan-iv",
+				"slug": "plan-iv",
+				"status": "published",
+				"data": {
+					"name": "Plan IV",
+					"price": 102,
+					"classes_per_week": 5,
+					"classes_per_month": 20,
+					"hours_per_month": 10,
+					"is_popular": false,
+					"order": 4
+				}
+			}
+		],
+		"faqs": [
+			{
+				"id": "faq-free-trial",
+				"slug": "free-trial",
+				"status": "published",
+				"data": {
+					"question": "Is the trial class really free?",
+					"answer": "Yes. Every student starts with one free trial class. You can meet the teacher, ask questions and try the lesson before choosing a plan.",
+					"order": 1
+				}
+			},
+			{
+				"id": "faq-class-length",
+				"slug": "class-length",
+				"status": "published",
+				"data": {
+					"question": "How long is each class?",
+					"answer": "Classes are 30 minutes. The monthly hours for each plan are based on four classes in a week, so a plan with one class each week gives two teaching hours each month.",
+					"order": 2
+				}
+			},
+			{
+				"id": "faq-choose-course",
+				"slug": "choose-a-course",
+				"status": "published",
+				"data": {
+					"question": "Which course should I choose?",
+					"answer": "Choose Qur'anic Recitation if you are starting out or want to improve fluency. Choose Tajweed Proficiency if you can already read and want to refine your recitation. Choose Memorization Excellence if you are ready for a structured hifz plan. Your teacher can adjust the course after the trial class.",
+					"order": 3
+				}
+			},
+			{
+				"id": "faq-children",
+				"slug": "children-and-adults",
+				"status": "published",
+				"data": {
+					"question": "Do you teach children and adults?",
+					"answer": "Yes. We teach children and adults, and lessons are one to one. Tell us the student's age and experience when you book the trial so we can match the right teacher.",
+					"order": 4
+				}
+			},
+			{
+				"id": "faq-booking",
+				"slug": "booking-a-time",
+				"status": "published",
+				"data": {
+					"question": "How do I book a time?",
+					"answer": "Use the free trial form or contact us by phone or email. Tell us your time zone and the days that suit you, and we will confirm a slot.",
+					"order": 5
+				}
+			},
+			{
+				"id": "faq-after-plan",
+				"slug": "after-choosing-a-plan",
+				"status": "published",
+				"data": {
+					"question": "What happens after I choose a plan?",
+					"answer": "Select a plan and complete the enrolment form. We confirm your schedule, match you with a teacher and start your first paid month after the free trial.",
+					"order": 6
+				}
+			}
+		],
+		"site_settings": [
+			{
+				"id": "site-settings",
+				"slug": "site",
+				"status": "published",
+				"data": {
+					"phone": "+92 342 2766346",
+					"email": "hello@kanwalquranacademy.com",
+					"address": "Karachi, Pakistan",
+					"social_links": [],
+					"years": "5+",
+					"countries": "5+",
+					"students": "[000]+",
+					"sessions": "[000]+"
+				}
+			}
+		],
+		"pages": [
+			{
+				"id": "page-home",
+				"slug": "home",
+				"status": "published",
+				"data": {
+					"title": "Home",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Kanwal Quran Academy teaches Qur'anic recitation, tajweed and memorization online to students in 5+ countries. Every student starts with a free trial class."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "page-about",
+				"slug": "about",
+				"status": "published",
+				"data": {
+					"title": "About",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Kanwal Quran Academy is an online Qur'an academy based in Karachi, Pakistan. We teach students in 5+ countries."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "What we teach" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "We teach Qur'anic recitation, tajweed and memorization. Every lesson is one to one, so the teacher can hear the student, correct mistakes and move at the right pace."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "How we teach" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Every student starts with a free trial class. After that, your teacher builds a weekly plan around your level and goals. Progress comes from regular practice, clear correction and a teacher who listens."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Get in touch" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Phone +92 342 2766346. Email hello@kanwalquranacademy.com. We are based in Karachi, Pakistan and teach online."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "page-terms",
+				"slug": "terms-of-service",
+				"status": "published",
+				"data": {
+					"title": "Terms of Service",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "These terms explain how Kanwal Quran Academy provides online Qur'an classes. By using this website or enrolling in a class, you agree to them."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "The free trial" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Every new student can book one free trial class. The trial is for assessment and introduction. It does not create an obligation to enrol."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Plans and fees" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Plans are billed monthly in US dollars. The price, number of classes and teaching hours for each plan are shown on the Pricing page. Fees are due before the first class of each month."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Scheduling and attendance" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Class times are agreed with your teacher. Contact us as early as possible if you need to change a class so that we can arrange another time."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Conduct" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Students and guardians are expected to treat teachers and other students with respect. We may end a course if behaviour makes lessons unsafe or unworkable."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Ending a plan" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Contact us before the next billing date if you want to pause or end a plan. We will confirm the end date with you."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Changes to these terms" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "We may update these terms. The current version will always be on this page."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Contact" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Questions about these terms can be sent to hello@kanwalquranacademy.com or +92 342 2766346."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "page-privacy",
+				"slug": "privacy-policy",
+				"status": "published",
+				"data": {
+					"title": "Privacy Policy",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "This policy explains what information Kanwal Quran Academy collects and how we use it."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "What we collect" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "When you contact us or enrol, we may collect your name, email address, phone number, country, time zone and details about the course you want."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "How we use it" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "We use this information to reply to your enquiry, arrange a trial class, match you with a teacher and manage your enrolment."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Payments" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Payments are not processed on this website yet. If this changes, payment details will be handled by a payment provider and not stored by us."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Who we share it with" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "We do not sell your information. We share it only with the teacher assigned to you and with service providers that host the site or help us communicate."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Cookies" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "This site uses only the cookies needed to run the site and the admin panel. We do not use advertising cookies."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Your choices" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "You can ask us to correct or delete your information by emailing hello@kanwalquranacademy.com."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Contact" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Questions about this policy can be sent to hello@kanwalquranacademy.com or +92 342 2766346."
+								}
+							]
+						}
+					]
+				}
+			}
+		]
+	}
 }

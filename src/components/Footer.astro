@@ -1,7 +1,14 @@
 ---
 import Container from "./Container.astro";
 import { site } from "../config/site";
+import { emailHref, phoneHref, type SiteContact } from "../utils/site-config";
 
+interface Props {
+	contact: SiteContact;
+	siteName?: string;
+}
+
+const { contact, siteName = site.name } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
@@ -9,11 +16,24 @@ const year = new Date().getFullYear();
 	<Container>
 		<div class="footer__grid">
 			<div class="footer__brand">
-				<a href="/" class="footer__wordmark">{site.name}</a>
+				<a href="/" class="footer__wordmark">{siteName}</a>
 				<p class="footer__tagline">
 					Online Qur'an education from Karachi, Pakistan. Every student starts with a free trial
 					class.
 				</p>
+				{
+					contact.socialLinks.length > 0 && (
+						<ul class="footer__social">
+							{contact.socialLinks.map((link) => (
+								<li>
+									<a href={link.url} target="_blank" rel="noopener noreferrer">
+										{link.label}
+									</a>
+								</li>
+							))}
+						</ul>
+					)
+				}
 			</div>
 
 			<nav class="footer__column" aria-labelledby="footer-explore">
@@ -32,15 +52,15 @@ const year = new Date().getFullYear();
 			<div class="footer__column">
 				<h2 class="footer__heading">Contact</h2>
 				<address class="footer__address">
-					<span>{site.address}</span>
-					<a href={site.phoneHref}>{site.phone}</a>
-					<a href={site.emailHref}>{site.email}</a>
+					<span>{contact.address}</span>
+					<a href={phoneHref(contact.phone)}>{contact.phone}</a>
+					<a href={emailHref(contact.email)}>{contact.email}</a>
 				</address>
 			</div>
 		</div>
 
 		<div class="footer__bottom">
-			<p>&copy; {year} {site.name}. All rights reserved.</p>
+			<p>&copy; {year} {siteName}. All rights reserved.</p>
 			<ul class="footer__legal">
 				{
 					site.legal.map((item) => (
@@ -88,6 +108,25 @@ const year = new Date().getFullYear();
 		margin-top: var(--space-md);
 		color: var(--muted-on-dark);
 		font-size: var(--size-small);
+	}
+
+	.footer__social {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-md);
+		margin-top: var(--space-md);
+	}
+
+	.footer__social a {
+		color: var(--text-on-dark);
+		font-size: var(--size-small);
+		text-decoration: none;
+	}
+
+	.footer__social a:hover {
+		color: var(--sage);
+		text-decoration: underline;
+		text-underline-offset: 4px;
 	}
 
 	.footer__heading {

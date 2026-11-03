@@ -1,0 +1,395 @@
+---
+import { getEmDashCollection } from "emdash";
+import Base from "../layouts/Base.astro";
+import Button from "../components/Button.astro";
+import Container from "../components/Container.astro";
+import Eyebrow from "../components/Eyebrow.astro";
+import PlanCard from "../components/PlanCard.astro";
+import Section from "../components/Section.astro";
+import Step from "../components/Step.astro";
+import { emailHref, getSiteContact, phoneHref } from "../utils/site-config";
+
+const [plansResult, coursesResult, faqsResult, contactResult] = await Promise.all([
+	getEmDashCollection("plans", {
+		status: "published",
+		orderBy: { order: "asc" },
+	}),
+	getEmDashCollection("courses", {
+		status: "published",
+		orderBy: { order: "asc" },
+	}),
+	getEmDashCollection("faqs", {
+		status: "published",
+		orderBy: { order: "asc" },
+	}),
+	getSiteContact(),
+]);
+
+if (Astro.cache?.enabled) {
+	Astro.cache.set(plansResult.cacheHint);
+	Astro.cache.set(coursesResult.cacheHint);
+	Astro.cache.set(faqsResult.cacheHint);
+	Astro.cache.set(contactResult.cacheHint);
+}
+
+const plans = plansResult.entries;
+const courses = coursesResult.entries;
+const faqs = faqsResult.entries;
+const contact = contactResult.data;
+
+const planSlug = Astro.url.searchParams.get("plan");
+const courseSlug = Astro.url.searchParams.get("course");
+const selectedPlan = planSlug ? plans.find((plan) => plan.id === planSlug) : undefined;
+const selectedCourse = courseSlug ? courses.find((course) => course.id === courseSlug) : undefined;
+
+const toPlanCard = (plan: (typeof plans)[number]) => ({
+	slug: plan.id,
+	name: plan.data.name,
+	price: plan.data.price,
+	classesPerWeek: plan.data.classes_per_week,
+	classesPerMonth: plan.data.classes_per_month,
+	hoursPerMonth: plan.data.hours_per_month,
+	isPopular: plan.data.is_popular ?? false,
+});
+
+const planHref = (slug: string) => {
+	const params = new URLSearchParams({ plan: slug });
+	if (selectedCourse) params.set("course", selectedCourse.id);
+	return `/free-trial?${params.toString()}`;
+};
+
+const mailSubject = selectedPlan
+	? `Free trial request: ${selectedPlan.data.name}`
+	: "Free trial request";
+const mailBody = [
+	"Assalamu alaikum,",
+	"",
+	"I would like to book a free trial class.",
+	selectedPlan ? `Plan: ${selectedPlan.data.name}` : "",
+	selectedCourse ? `Course: ${selectedCourse.data.name}` : "",
+	"Student age:",
+	"Time zone:",
+	"Preferred days and times:",
+	"",
+	"JazakAllah khair.",
+]
+	.filter((line, index, lines) => line !== "" || lines[index - 1] !== "")
+	.join("\n");
+
+const bookingEmail = `${emailHref(contact.email)}?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
+
+const steps = [
+	{
+		title: "Choose a plan",
+		body: "Pick the number of classes that fits your week. The trial class is free and no payment is needed.",
+	},
+	{
+		title: "Tell us your times",
+		body: "Send your time zone and the days that suit you. We will reply with the next available slot.",
+	},
+	{
+		title: "Meet your teacher",
+		body: "Join the trial class, ask questions and decide whether the course and teacher are right for you.",
+	},
+];
+---
+
+<Base
+	title="Free Trial"
+	description="Book a free trial Qur'an class with Kanwal Quran Academy. No payment is needed."
+>
+	<Section space="tight">
+		<Container>
+			<div class="page-intro">
+				<Eyebrow>Free trial</Eyebrow>
+				<h1>Start with a free trial class.</h1>
+				<p>
+					Meet a teacher, try a lesson and ask questions before you choose a plan. The trial class
+					is free and no payment details are needed.
+				</p>
+			</div>
+		</Container>
+	</Section>
+
+	<Section space="tight">
+		<Container>
+			{
+				selectedPlan ? (
+					<div class="selected-plan">
+						<div class="selected-plan__copy">
+							<Eyebrow>Selected plan</Eyebrow>
+							<h2>{selectedPlan.data.name}</h2>
+							<p class="selected-plan__price">
+								${selectedPlan.data.price} <span>/ month</span>
+							</p>
+							<dl class="selected-plan__meta">
+								<div>
+									<dt>Classes each week</dt>
+									<dd>{selectedPlan.data.classes_per_week}</dd>
+								</div>
+								<div>
+									<dt>Classes each month</dt>
+									<dd>{selectedPlan.data.classes_per_month}</dd>
+								</div>
+								<div>
+									<dt>Teaching hours each month</dt>
+									<dd>{selectedPlan.data.hours_per_month}</dd>
+								</div>
+							</dl>
+							{selectedCourse && (
+								<p class="selected-plan__course">
+									Course: <strong>{selectedCourse.data.name}</strong>
+								</p>
+							)}
+							<div class="selected-plan__actions">
+								<Button href={bookingEmail} variant="primary">Book by email</Button>
+								<Button href={phoneHref(contact.phone)} variant="secondary">Call to book</Button>
+							</div>
+							<a href="/free-trial" class="selected-plan__change">Choose a different plan</a>
+						</div>
+						<div class="selected-plan__aside">
+							<p>
+								Send us the student's age, time zone and preferred days. We will reply with the
+								next available trial slot.
+							</p>
+							<p>
+								You can also reach us on{" "}
+								<a href={phoneHref(contact.phone)}>{contact.phone}</a>.
+							</p>
+						</div>
+					</div>
+				) : (
+					<>
+						<div class="section-head section-head--center">
+							<Eyebrow>Choose a plan</Eyebrow>
+							<h2>Pick a plan for your trial.</h2>
+							<p class="section-lead">
+								The trial class is free. Choosing a plan now helps us match you with the right
+								teacher and schedule.
+							</p>
+						</div>
+						<div class="plan-grid">
+							{plans.map((plan) => (
+								<PlanCard
+									plan={toPlanCard(plan)}
+									variant={plan.data.is_popular ? "inverted" : "default"}
+									href={planHref(plan.id)}
+								/>
+							))}
+						</div>
+					</>
+				)
+			}
+		</Container>
+	</Section>
+
+	<Section tone="sand">
+		<Container>
+			<div class="section-head">
+				<Eyebrow>How it works</Eyebrow>
+				<h2>Three simple steps</h2>
+			</div>
+			<ol class="steps">
+				{
+					steps.map((step, index) => (
+						<Step number={index + 1} title={step.title} body={step.body} />
+					))
+				}
+			</ol>
+		</Container>
+	</Section>
+
+	<Section space="tight">
+		<Container size="narrow">
+			<div class="section-head">
+				<Eyebrow>Questions</Eyebrow>
+				<h2>Before you book</h2>
+			</div>
+			<ul class="faq-list">
+				{
+					faqs.map((faq) => (
+						<li>
+							<details>
+								<summary>{faq.data.question}</summary>
+								<p>{faq.data.answer}</p>
+							</details>
+						</li>
+					))
+				}
+			</ul>
+		</Container>
+	</Section>
+</Base>
+
+<style>
+	.section-head {
+		max-width: 56ch;
+		margin-bottom: var(--space-xl);
+	}
+
+	.section-head h2 {
+		margin-top: var(--space-md);
+	}
+
+	.section-head--center {
+		margin-inline: auto;
+		text-align: center;
+	}
+
+	.section-lead {
+		max-width: 48ch;
+		margin-top: var(--space-md);
+		color: var(--muted);
+	}
+
+	.section-head--center .section-lead {
+		margin-inline: auto;
+	}
+
+	.plan-grid {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: var(--space-md);
+		align-items: stretch;
+	}
+
+	.selected-plan {
+		display: grid;
+		grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+		gap: clamp(32px, 5vw, 64px);
+		padding: var(--space-xl);
+		border: 1px solid var(--line);
+		border-radius: var(--radius-card);
+		background: var(--surface);
+	}
+
+	.selected-plan__copy h2 {
+		margin-top: var(--space-sm);
+	}
+
+	.selected-plan__price {
+		margin-top: var(--space-md);
+		font-family: var(--font-heading, Georgia, serif);
+		font-size: clamp(2.5rem, 4vw, 3rem);
+		font-weight: 600;
+		line-height: 1;
+	}
+
+	.selected-plan__price span {
+		color: var(--muted);
+		font-family: var(--font-body, "Instrument Sans", Arial, sans-serif);
+		font-size: var(--size-small);
+		font-weight: 400;
+	}
+
+	.selected-plan__meta {
+		display: grid;
+		margin-top: var(--space-lg);
+	}
+
+	.selected-plan__meta > div {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--space-md);
+		padding-block: 10px;
+		border-top: 1px solid var(--line);
+	}
+
+	.selected-plan__meta dt {
+		color: var(--muted);
+		font-size: var(--size-small);
+	}
+
+	.selected-plan__meta dd {
+		margin: 0;
+		font-weight: 600;
+	}
+
+	.selected-plan__course {
+		margin-top: var(--space-md);
+		color: var(--muted-ink);
+	}
+
+	.selected-plan__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-sm);
+		margin-top: var(--space-lg);
+	}
+
+	.selected-plan__change {
+		display: inline-block;
+		margin-top: var(--space-md);
+		color: var(--muted-ink);
+		font-size: var(--size-small);
+	}
+
+	.selected-plan__aside {
+		display: grid;
+		align-content: start;
+		gap: var(--space-md);
+		padding-top: var(--space-sm);
+		color: var(--muted-ink);
+		font-size: var(--size-small);
+	}
+
+	.selected-plan__aside a {
+		color: var(--ink);
+	}
+
+	.steps {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: var(--space-xl);
+	}
+
+	.faq-list {
+		border-top: 1px solid var(--line);
+	}
+
+	.faq-list li {
+		border-bottom: 1px solid var(--line);
+	}
+
+	.faq-list summary {
+		padding-block: var(--space-md);
+		font-weight: 600;
+		cursor: pointer;
+	}
+
+	.faq-list summary:hover {
+		color: var(--sage-deep);
+	}
+
+	.faq-list details p {
+		padding-bottom: var(--space-md);
+		color: var(--muted-ink);
+		font-size: var(--size-small);
+	}
+
+	@media (max-width: 1000px) {
+		.plan-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (max-width: 860px) {
+		.selected-plan {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 760px) {
+		.steps {
+			grid-template-columns: 1fr;
+			gap: var(--space-lg);
+		}
+	}
+
+	@media (max-width: 560px) {
+		.plan-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

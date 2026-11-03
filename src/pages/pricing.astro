@@ -1,0 +1,115 @@
+---
+import { getEmDashCollection } from "emdash";
+import Base from "../layouts/Base.astro";
+import Button from "../components/Button.astro";
+import Container from "../components/Container.astro";
+import Eyebrow from "../components/Eyebrow.astro";
+import PlanCard from "../components/PlanCard.astro";
+import Section from "../components/Section.astro";
+
+const { entries: plans, cacheHint } = await getEmDashCollection("plans", {
+	status: "published",
+	orderBy: { order: "asc" },
+});
+
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+
+const toPlanCard = (plan: (typeof plans)[number]) => ({
+	slug: plan.id,
+	name: plan.data.name,
+	price: plan.data.price,
+	classesPerWeek: plan.data.classes_per_week,
+	classesPerMonth: plan.data.classes_per_month,
+	hoursPerMonth: plan.data.hours_per_month,
+	isPopular: plan.data.is_popular ?? false,
+});
+---
+
+<Base
+	title="Pricing"
+	description="Monthly Qur'an lesson plans from $20. Every plan starts with a free trial class."
+>
+	<Section space="tight">
+		<Container>
+			<div class="page-intro page-intro--center">
+				<Eyebrow>Pricing</Eyebrow>
+				<h1>Simple monthly plans.</h1>
+				<p>
+					Choose the number of classes that fits your week. Every plan is billed monthly in US
+					dollars and starts with a free trial class.
+				</p>
+			</div>
+		</Container>
+	</Section>
+
+	<Section space="tight">
+		<Container>
+			<div class="plan-grid">
+				{
+					plans.map((plan) => (
+						<PlanCard
+							plan={toPlanCard(plan)}
+							variant={plan.data.is_popular ? "inverted" : "default"}
+							href={`/free-trial?plan=${encodeURIComponent(plan.id)}`}
+						/>
+					))
+				}
+			</div>
+
+			<div class="pricing-note">
+				<p>
+					Not sure which plan fits? Start with the free trial and your teacher will help you
+					choose.
+				</p>
+				<Button href="/free-trial" variant="primary">Get free trial</Button>
+			</div>
+		</Container>
+	</Section>
+</Base>
+
+<style>
+	.page-intro--center {
+		max-width: 60ch;
+		margin-inline: auto;
+		text-align: center;
+	}
+
+	.page-intro--center p {
+		margin-inline: auto;
+	}
+
+	.plan-grid {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: var(--space-md);
+		align-items: stretch;
+	}
+
+	.pricing-note {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-md);
+		margin-top: var(--space-xl);
+		padding-top: var(--space-lg);
+		border-top: 1px solid var(--line);
+	}
+
+	.pricing-note p {
+		max-width: 52ch;
+		color: var(--muted-ink);
+	}
+
+	@media (max-width: 1000px) {
+		.plan-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (max-width: 560px) {
+		.plan-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

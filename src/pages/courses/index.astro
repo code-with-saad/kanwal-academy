@@ -1,0 +1,69 @@
+---
+import { getEmDashCollection } from "emdash";
+import Base from "../../layouts/Base.astro";
+import Button from "../../components/Button.astro";
+import Container from "../../components/Container.astro";
+import CourseRow from "../../components/CourseRow.astro";
+import Eyebrow from "../../components/Eyebrow.astro";
+import Section from "../../components/Section.astro";
+
+const { entries: courses, cacheHint } = await getEmDashCollection("courses", {
+	status: "published",
+	orderBy: { order: "asc" },
+});
+
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+---
+
+<Base
+	title="Courses"
+	description="Qur'anic recitation, tajweed and memorization courses, taught one to one online."
+>
+	<Section space="tight">
+		<Container>
+			<div class="page-intro">
+				<Eyebrow>Courses</Eyebrow>
+				<h1>Three paths through the Qur'an.</h1>
+				<p>
+					Start where you are. Every course is taught one to one, and your teacher will adjust
+					the pace after your free trial class.
+				</p>
+				<div class="page-intro__actions">
+					<Button href="/free-trial" variant="primary">Get free trial</Button>
+					<Button href="/pricing" variant="secondary">View plans</Button>
+				</div>
+			</div>
+		</Container>
+	</Section>
+
+	<Section space="tight">
+		<Container>
+			<ol class="course-list">
+				{
+					courses.map((course, index) => (
+						<CourseRow
+							index={index + 1}
+							title={course.data.name}
+							summary={course.data.summary}
+							level={course.data.level}
+							href={`/courses/${course.id}`}
+						/>
+					))
+				}
+			</ol>
+		</Container>
+	</Section>
+</Base>
+
+<style>
+	.page-intro__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-sm);
+		margin-top: var(--space-md);
+	}
+
+	.course-list {
+		max-width: 860px;
+	}
+</style>
