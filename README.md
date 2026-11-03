@@ -6,7 +6,7 @@ Built with Astro (SSR) and the EmDash CMS, deployed on Cloudflare Workers with D
 
 ## Requirements
 
-- Node.js 20 or newer
+- Node.js 22.16 or newer
 - pnpm
 
 ## Local development
