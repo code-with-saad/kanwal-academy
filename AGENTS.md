@@ -8,8 +8,9 @@ Language of this brief: English. Site copy language: English (Urdu may come late
 - Astro (SSR on Cloudflare Workers) with the EmDash CMS integration (`emdash/astro`).
 - Database: Cloudflare D1. Media: Cloudflare R2.
 - TypeScript everywhere. React components allowed only where interactivity needs them.
-- Package manager: pnpm. Deploy: `wrangler`.
-- EmDash is in beta. Before using any EmDash API, read its docs and source (github.com/emdash-cms/emdash, docs and packages/core) and verify names. Never guess an API.
+- Package manager: pnpm. Deploy: `pnpm deploy`.
+- Dev server runs on port 4322 on this machine (`http://localhost:4322`).
+- EmDash is stable (v1.4.0). Before using any EmDash API, read its docs and source (github.com/emdash-cms/emdash, docs and packages/core) and verify names. Never guess an API.
 
 ## Business content (real, keep as is)
 Courses: Qur'anic Recitation, Tajweed Proficiency, Memorization Excellence.
@@ -47,6 +48,8 @@ Corners: buttons 6px, cards 10px. Max content width 1200px, side padding 32px (2
 Mobile first, check at 360px, 768px, 1280px.
 
 ## Hard rules (client taste, do not break)
+- Do not use the template's marketing blocks, its glass header, glows, logo marquee, or 3-plan pricing. Build our own Astro components and our own collections (courses, plans, teachers, testimonials, faqs, siteSettings) as planned. The home page reads from those collections.
+- Do not add a "Powered by EmDash" credit to the footer.
 - No emojis, no gradients, no glassmorphism, no purple or neon colors.
 - No orbs, dot grids, sparkles or decorative animated arrows.
 - No 3-card feature rows, no bento grids.
@@ -61,7 +64,7 @@ Mobile first, check at 360px, 768px, 1280px.
 
 ## Security (the old site was hacked)
 - Do not import any WordPress theme, plugin, PHP or database. Only content (text, images) is migrated.
-- No secrets in the repo. Use `wrangler secret` and `.dev.vars` (gitignored).
+- No secrets in the repo. Keep local secrets in `.env` (gitignored) and production secrets in Wrangler secrets.
 - All forms: server-side validation, Cloudflare Turnstile, rate limiting.
 - Admin panel only behind strong auth (use EmDash auth, enable 2FA if available).
 
