@@ -1,0 +1,54 @@
+---
+interface Props {
+	id?: string;
+	tone?: "cream" | "sand" | "dark";
+	space?: "normal" | "tight" | "flush";
+	class?: string;
+}
+
+const { id, tone = "cream", space = "normal", class: className } = Astro.props;
+---
+
+<section
+	id={id}
+	class:list={[
+		"section",
+		`section--${tone}`,
+		`section--space-${space}`,
+		tone === "dark" && "tone-dark",
+		className,
+	]}
+>
+	<slot />
+</section>
+
+<style>
+	.section {
+		background: var(--page);
+		color: var(--text);
+	}
+
+	.section--cream {
+		background: var(--cream);
+	}
+
+	.section--sand {
+		background: var(--sand);
+	}
+
+	.section--dark {
+		background: var(--bg-dark);
+	}
+
+	.section--space-normal {
+		padding-block: var(--section-space);
+	}
+
+	.section--space-tight {
+		padding-block: var(--space-3xl);
+	}
+
+	.section--space-flush {
+		padding-block: 0;
+	}
+</style>

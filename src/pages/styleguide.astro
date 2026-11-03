@@ -1,0 +1,444 @@
+---
+import Base from "../layouts/Base.astro";
+import Button from "../components/Button.astro";
+import Container from "../components/Container.astro";
+import CourseRow from "../components/CourseRow.astro";
+import Eyebrow from "../components/Eyebrow.astro";
+import PlanCard from "../components/PlanCard.astro";
+import Section from "../components/Section.astro";
+import Step from "../components/Step.astro";
+import { site } from "../config/site";
+
+const colours = [
+	{ name: "bg-dark", value: "#101A16" },
+	{ name: "surface-dark", value: "#17231E" },
+	{ name: "line-dark", value: "#2A3A33" },
+	{ name: "sage", value: "#6FAE7B" },
+	{ name: "sage-deep", value: "#3F7A4E" },
+	{ name: "cream", value: "#F6F2E9" },
+	{ name: "sand", value: "#E7DFCB" },
+	{ name: "hairline-light", value: "#CFC6B2" },
+	{ name: "ink", value: "#1B2A24" },
+	{ name: "muted-ink", value: "#4F5A54" },
+	{ name: "muted-on-dark", value: "#A9B8AE" },
+];
+
+const plans = [
+	{
+		slug: "plan-i",
+		name: "Plan I",
+		price: 20,
+		classesPerWeek: 1,
+		classesPerMonth: 4,
+		hoursPerMonth: 2,
+	},
+	{
+		slug: "plan-ii",
+		name: "Plan II",
+		price: 40,
+		classesPerWeek: 2,
+		classesPerMonth: 8,
+		hoursPerMonth: 4,
+		isPopular: true,
+	},
+	{
+		slug: "plan-iii",
+		name: "Plan III",
+		price: 82,
+		classesPerWeek: 4,
+		classesPerMonth: 16,
+		hoursPerMonth: 8,
+	},
+	{
+		slug: "plan-iv",
+		name: "Plan IV",
+		price: 102,
+		classesPerWeek: 5,
+		classesPerMonth: 20,
+		hoursPerMonth: 10,
+	},
+];
+
+const courses = [
+	{
+		title: "Qur'anic Recitation",
+		summary:
+			"Build fluent, accurate recitation with a teacher who listens and corrects in real time.",
+		level: "All levels",
+	},
+	{
+		title: "Tajweed Proficiency",
+		summary:
+			"Learn the rules of tajweed and apply them consistently in your daily recitation.",
+		level: "Intermediate",
+	},
+	{
+		title: "Memorization Excellence",
+		summary:
+			"Follow a structured hifz plan with regular revision and one-to-one accountability.",
+		level: "Advanced",
+	},
+];
+
+const steps = [
+	{
+		title: "Book your free trial",
+		body: "Choose a plan and pick a time that works for you. The trial class is free.",
+	},
+	{
+		title: "Meet your teacher",
+		body: "We match you with a teacher for your course and level, then assess where you are.",
+	},
+	{
+		title: "Start your plan",
+		body: "Your teacher builds a weekly schedule around your goals and keeps you accountable.",
+	},
+];
+---
+
+<Base
+	title="Styleguide"
+	description="Internal component and token reference for the Kanwal Quran Academy site."
+	robots="noindex, nofollow"
+>
+	<Section space="tight">
+		<Container>
+			<div class="intro">
+				<Eyebrow>Internal reference</Eyebrow>
+				<h1>Styleguide</h1>
+				<p>
+					Every token and shared component in one place. This page is not indexed and is not part
+					of the public navigation.
+				</p>
+			</div>
+		</Container>
+	</Section>
+
+	<Section tone="sand" space="tight">
+		<Container>
+			<div class="section-head">
+				<Eyebrow>Section and Container</Eyebrow>
+				<h2>Layout primitives</h2>
+				<p>
+					<code>Section</code> sets the background and vertical rhythm. <code>Container</code> sets
+					the 1200px content width and the 32px page gutter.
+				</p>
+			</div>
+			<div class="demo-panel">
+				<p>This panel sits inside a sand <code>Section</code> and a narrow <code>Container</code>.</p>
+			</div>
+		</Container>
+	</Section>
+
+	<Section space="tight">
+		<Container>
+			<div class="section-head">
+				<Eyebrow>Colour</Eyebrow>
+				<h2>Palette</h2>
+				<p>All colour comes from these tokens. No gradients and no off-palette accents.</p>
+			</div>
+			<ul class="swatches">
+				{
+					colours.map((colour) => (
+						<li class="swatch">
+							<span class="swatch__chip" style={`background: ${colour.value}`} aria-hidden="true" />
+							<span class="swatch__name">{colour.name}</span>
+							<span class="swatch__value">{colour.value}</span>
+						</li>
+					))
+				}
+			</ul>
+		</Container>
+	</Section>
+
+	<Section space="tight">
+		<Container>
+			<div class="section-head">
+				<Eyebrow>Typography</Eyebrow>
+				<h2>Fraunces, Instrument Sans and Amiri</h2>
+				<p>
+					Fraunces sets headings at 600. Instrument Sans sets body copy at 400, 500 and 600. Amiri
+					sets Arabic text with <code>lang="ar"</code>.
+				</p>
+			</div>
+			<div class="type-samples">
+				<div class="type-sample">
+					<p class="type-sample__label">Heading 1 / 40 to 64px</p>
+					<p class="type-sample__h1">Learn the Qur'an, one verse at a time.</p>
+				</div>
+				<div class="type-sample">
+					<p class="type-sample__label">Heading 2 / 32 to 44px</p>
+					<h2>Courses built around your goals.</h2>
+				</div>
+				<div class="type-sample">
+					<p class="type-sample__label">Heading 3</p>
+					<h3>A teacher who knows your name.</h3>
+				</div>
+				<div class="type-sample">
+					<p class="type-sample__label">Body / 17 to 19px</p>
+					<p>
+						Every student starts with a free trial class. Choose a time that works for your family
+						and meet your teacher before you commit to a plan.
+					</p>
+				</div>
+				<div class="type-sample">
+					<p class="type-sample__label">Eyebrow</p>
+					<Eyebrow>Small label</Eyebrow>
+				</div>
+				<div class="type-sample">
+					<p class="type-sample__label">Arabic / Amiri</p>
+					<p class="arabic" lang="ar" dir="rtl">{site.bismillah}</p>
+				</div>
+			</div>
+		</Container>
+	</Section>
+
+	<Section space="tight">
+		<Container>
+			<div class="section-head">
+				<Eyebrow>Buttons</Eyebrow>
+				<h2>Primary and secondary</h2>
+				<p>Six-pixel corners. Hover and focus states are visible and meaningful.</p>
+			</div>
+			<div class="button-row">
+				<Button href="/free-trial" variant="primary">Get free trial</Button>
+				<Button href="/pricing" variant="secondary">View plans</Button>
+				<Button href="/free-trial" variant="primary" size="lg">Large primary</Button>
+			</div>
+		</Container>
+	</Section>
+
+	<Section tone="dark" space="tight">
+		<Container>
+			<div class="section-head">
+				<Eyebrow>Buttons on dark</Eyebrow>
+				<h2>Secondary inherits the surface</h2>
+				<p>The outline uses the current text colour, so it stays legible on every dark panel.</p>
+			</div>
+			<div class="button-row">
+				<Button href="/free-trial" variant="primary">Get free trial</Button>
+				<Button href="/pricing" variant="secondary">View plans</Button>
+			</div>
+		</Container>
+	</Section>
+
+	<Section tone="sand" space="tight">
+		<Container>
+			<div class="section-head">
+				<Eyebrow>Plans</Eyebrow>
+				<h2>PlanCard</h2>
+				<p>
+					Plan II is inverted. The featured hero card can also show the bismillah at the top.
+				</p>
+			</div>
+			<div class="plan-grid">
+				{
+					plans.map((plan) => (
+						<PlanCard
+							plan={plan}
+							variant={plan.slug === "plan-ii" ? "inverted" : "default"}
+						/>
+					))
+				}
+			</div>
+		</Container>
+	</Section>
+
+	<Section space="tight">
+		<Container>
+			<div class="section-head">
+				<Eyebrow>Courses</Eyebrow>
+				<h2>CourseRow</h2>
+				<p>Numbered rows separated by hairlines. The whole row is the link.</p>
+			</div>
+			<ol class="course-list">
+				{
+					courses.map((course, index) => (
+						<CourseRow
+							index={index + 1}
+							title={course.title}
+							summary={course.summary}
+							level={course.level}
+							href="/courses"
+						/>
+					))
+				}
+			</ol>
+		</Container>
+	</Section>
+
+	<Section tone="sand" space="tight">
+		<Container>
+			<div class="section-head">
+				<Eyebrow>Free trial</Eyebrow>
+				<h2>Step</h2>
+				<p>Three steps in a row, each separated by a top rule.</p>
+			</div>
+			<ol class="step-grid">
+				{
+					steps.map((step, index) => (
+						<Step number={index + 1} title={step.title} body={step.body} />
+					))
+				}
+			</ol>
+		</Container>
+	</Section>
+
+	<Section space="tight">
+		<Container>
+			<div class="section-head">
+				<Eyebrow>Featured plan</Eyebrow>
+				<h2>PlanCard with bismillah</h2>
+				<p>Used in the dark hero on the home page.</p>
+			</div>
+			<div class="featured-demo">
+				<PlanCard
+					plan={plans[1]}
+					variant="inverted"
+					showBismillah
+					href="/free-trial?plan=plan-ii"
+				/>
+			</div>
+		</Container>
+	</Section>
+</Base>
+
+<style>
+	.intro {
+		display: grid;
+		gap: var(--space-md);
+		max-width: 52ch;
+	}
+
+	.intro p {
+		color: var(--muted-ink);
+		font-size: clamp(1.0625rem, 0.5vw + 1rem, 1.25rem);
+	}
+
+	.section-head {
+		display: grid;
+		gap: var(--space-sm);
+		max-width: 60ch;
+		margin-bottom: var(--space-xl);
+	}
+
+	.section-head p {
+		color: var(--muted);
+	}
+
+	.section-head code {
+		padding: 0.1em 0.35em;
+		border-radius: 4px;
+		background: color-mix(in srgb, var(--line) 45%, transparent);
+		font-size: 0.9em;
+	}
+
+	.demo-panel {
+		padding: var(--space-xl);
+		border: 1px solid var(--hairline-light);
+		border-radius: var(--radius-card);
+		background: var(--cream);
+	}
+
+	.swatches {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+		gap: var(--space-md);
+	}
+
+	.swatch {
+		display: grid;
+		gap: 2px;
+		padding: var(--space-sm);
+		border: 1px solid var(--line);
+		border-radius: var(--radius-card);
+		background: var(--cream);
+	}
+
+	.swatch__chip {
+		height: 56px;
+		margin-bottom: var(--space-xs);
+		border: 1px solid var(--line);
+		border-radius: var(--radius-button);
+	}
+
+	.swatch__name {
+		font-size: var(--size-small);
+		font-weight: 600;
+	}
+
+	.swatch__value {
+		color: var(--muted);
+		font-size: 0.8125rem;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.type-samples {
+		display: grid;
+		gap: var(--space-xl);
+	}
+
+	.type-sample {
+		display: grid;
+		gap: var(--space-xs);
+		padding-top: var(--space-md);
+		border-top: 1px solid var(--line);
+	}
+
+	.type-sample__label {
+		color: var(--muted);
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.type-sample__h1 {
+		font-family: var(--font-heading, Georgia, serif);
+		font-size: var(--size-h1);
+		font-weight: 600;
+		line-height: var(--leading-heading);
+		letter-spacing: var(--tracking-heading);
+		text-wrap: balance;
+	}
+
+	.arabic {
+		color: var(--sage-deep);
+		font-family: var(--font-arabic, "Amiri", serif);
+		font-size: 1.75rem;
+		line-height: 1.8;
+	}
+
+	.button-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-sm);
+	}
+
+	.plan-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+		gap: var(--space-md);
+	}
+
+	.course-list {
+		max-width: 820px;
+	}
+
+	.step-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: var(--space-xl);
+	}
+
+	.featured-demo {
+		max-width: 360px;
+	}
+
+	@media (max-width: 760px) {
+		.step-grid {
+			grid-template-columns: 1fr;
+			gap: var(--space-lg);
+		}
+	}
+</style>

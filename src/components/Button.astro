@@ -1,0 +1,80 @@
+---
+interface Props {
+	href?: string;
+	variant?: "primary" | "secondary";
+	size?: "md" | "lg";
+	type?: "button" | "submit" | "reset";
+	class?: string;
+}
+
+const {
+	href,
+	variant = "primary",
+	size = "md",
+	type = "button",
+	class: className,
+} = Astro.props;
+
+const classes = ["btn", `btn--${variant}`, size === "lg" && "btn--lg", className];
+---
+
+{
+	href ? (
+		<a {href} class:list={classes}>
+			<slot />
+		</a>
+	) : (
+		<button {type} class:list={classes}>
+			<slot />
+		</button>
+	)
+}
+
+<style>
+	.btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-xs);
+		min-height: 44px;
+		padding: 10px 20px;
+		border: 1px solid transparent;
+		border-radius: var(--radius-button);
+		font-family: var(--font-body, "Instrument Sans", Arial, sans-serif);
+		font-size: 1rem;
+		font-weight: 600;
+		line-height: 1.2;
+		text-align: center;
+		text-decoration: none;
+		transition:
+			background-color var(--transition),
+			border-color var(--transition),
+			color var(--transition);
+	}
+
+	.btn--lg {
+		min-height: 52px;
+		padding: 14px 26px;
+	}
+
+	.btn--primary {
+		border-color: var(--sage);
+		background: var(--sage);
+		color: var(--bg-dark);
+	}
+
+	.btn--primary:hover {
+		background: color-mix(in srgb, var(--sage) 88%, #ffffff);
+		border-color: color-mix(in srgb, var(--sage) 88%, #ffffff);
+	}
+
+	.btn--secondary {
+		border-color: currentColor;
+		background: transparent;
+		color: inherit;
+	}
+
+	.btn--secondary:hover {
+		background: color-mix(in srgb, currentColor 8%, transparent);
+	}
+</style>

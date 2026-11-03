@@ -1,6 +1,7 @@
 import type { SiteSettings } from "emdash";
+import { site } from "../config/site";
 
-const DEFAULT_SITE_TITLE = "My Site";
+const DEFAULT_SITE_TITLE = site.name;
 const DEFAULT_TITLE_SEPARATOR = "|";
 
 /**

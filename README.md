@@ -16,13 +16,13 @@ pnpm install
 pnpm dev
 ```
 
-- Site: http://localhost:4321
-- Admin: http://localhost:4321/_emdash/admin
+- Site: http://localhost:4322
+- Admin: http://localhost:4322/_emdash/admin
 
 The first request runs the database migrations and applies `seed/seed.json`. On localhost, EmDash exposes a development bypass that creates a dev admin user without a passkey:
 
 ```
-http://localhost:4321/_emdash/api/setup/dev-bypass?redirect=/_emdash/admin
+http://localhost:4322/_emdash/api/setup/dev-bypass?redirect=/_emdash/admin
 ```
 
 The bypass only works in development mode. In production the first administrator is created through the passkey setup wizard in a browser.
@@ -47,7 +47,7 @@ The bypass only works in development mode. In production the first administrator
 | `src/pages/` | Server-rendered routes |
 | `src/layouts/Base.astro` | Shared layout, header, footer, SEO wiring |
 | `src/components/` | Page and block components |
-| `src/styles/` | Design tokens and theme overrides |
+| `src/styles/` | Global design tokens and base styles |
 | `seed/seed.json` | Content schema, site settings, menus, seed content |
 | `wrangler.jsonc` | Worker, D1 and R2 configuration |
 | `emdash-env.d.ts` | Generated collection types |

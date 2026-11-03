@@ -819,6 +819,31 @@
 				},
 				{
 					"type": "custom",
+					"label": "About",
+					"url": "/about"
+				},
+				{
+					"type": "custom",
+					"label": "Courses",
+					"url": "/courses"
+				},
+				{
+					"type": "custom",
+					"label": "Pricing",
+					"url": "/pricing"
+				},
+				{
+					"type": "custom",
+					"label": "Teachers",
+					"url": "/teachers"
+				},
+				{
+					"type": "custom",
+					"label": "Contact",
+					"url": "/contact"
+				},
+				{
+					"type": "custom",
 					"label": "Get free trial",
 					"url": "/free-trial",
 					"cssClasses": "button"
