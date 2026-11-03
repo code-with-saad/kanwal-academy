@@ -1,4 +1,5 @@
 ---
+import type { EditProxy } from "emdash";
 import Button from "./Button.astro";
 import { formatUsdPrice } from "../utils/price";
 
@@ -18,6 +19,14 @@ interface Props {
 	showBismillah?: boolean;
 	href?: string;
 	headingLevel?: 2 | 3;
+	planEdit?: EditProxy;
+	homeEdit?: EditProxy;
+	periodLabel?: string;
+	classesWeekLabel?: string;
+	classesMonthLabel?: string;
+	hoursLabel?: string;
+	popularLabel?: string;
+	selectLabel?: string;
 }
 
 const {
@@ -26,6 +35,14 @@ const {
 	showBismillah = false,
 	href,
 	headingLevel = 3,
+	planEdit,
+	homeEdit,
+	periodLabel = "/ month",
+	classesWeekLabel = "Classes each week",
+	classesMonthLabel = "Classes each month",
+	hoursLabel = "Teaching hours each month",
+	popularLabel = "Most popular",
+	selectLabel = "Select plan",
 } = Astro.props;
 const inverted = variant === "inverted" || variant === "hero";
 const Heading = `h${headingLevel}` as "h2" | "h3";
@@ -53,32 +70,32 @@ const planHref =
 	}
 
 	<div class="plan-card__head">
-		<Heading class="plan-card__name">{plan.name}</Heading>
-		{plan.isPopular && <span class="plan-card__badge">Most popular</span>}
+		<Heading class="plan-card__name" {...planEdit?.name}>{plan.name}</Heading>
+		{plan.isPopular && <span class="plan-card__badge" {...homeEdit?.pricing_popular_label}>{popularLabel}</span>}
 	</div>
 
 	<p class="plan-card__price">
-		<span class="plan-card__amount">{priceLabel}</span>
-		<span class="plan-card__period">/ month</span>
+		<span class="plan-card__amount" {...planEdit?.price}>{priceLabel}</span>
+		<span class="plan-card__period" {...homeEdit?.pricing_period_label}>{periodLabel}</span>
 	</p>
 
 	<dl class="plan-card__meta">
 		<div>
-			<dt>Classes each week</dt>
-			<dd>{plan.classesPerWeek}</dd>
+			<dt {...homeEdit?.pricing_classes_week_label}>{classesWeekLabel}</dt>
+			<dd {...planEdit?.classes_per_week}>{plan.classesPerWeek}</dd>
 		</div>
 		<div>
-			<dt>Classes each month</dt>
-			<dd>{plan.classesPerMonth}</dd>
+			<dt {...homeEdit?.pricing_classes_month_label}>{classesMonthLabel}</dt>
+			<dd {...planEdit?.classes_per_month}>{plan.classesPerMonth}</dd>
 		</div>
 		<div>
-			<dt>Teaching hours each month</dt>
-			<dd>{plan.hoursPerMonth}</dd>
+			<dt {...homeEdit?.pricing_hours_label}>{hoursLabel}</dt>
+			<dd {...planEdit?.hours_per_month}>{plan.hoursPerMonth}</dd>
 		</div>
 	</dl>
 
 	<div class="plan-card__cta">
-		<Button href={planHref} variant={inverted ? "primary" : "secondary"}>Select plan</Button>
+		<Button href={planHref} variant={inverted ? "primary" : "secondary"} edit={homeEdit?.pricing_select_cta}>{selectLabel}</Button>
 	</div>
 </article>
 

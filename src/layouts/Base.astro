@@ -104,7 +104,11 @@ const pageCtx = createPublicPageContext({
 		<main id="main">
 			<slot />
 		</main>
-		<Footer contact={contactResult.data} siteName={siteTitle} />
+		<Footer
+			contact={contactResult.data}
+			settingsEdit={contactResult.entry?.edit}
+			siteName={siteTitle}
+		/>
 		<EmDashBodyEnd page={pageCtx} />
 	</body>
 </html>

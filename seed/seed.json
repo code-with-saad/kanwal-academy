@@ -49,9 +49,149 @@
 					"searchable": true
 				},
 				{
+					"slug": "home_highlight",
+					"label": "Home hero: highlighted phrase",
+					"type": "string"
+				},
+				{
 					"slug": "home_lead",
 					"label": "Home hero: introduction",
 					"type": "text"
+				},
+				{
+					"slug": "home_image",
+					"label": "Home hero: image",
+					"type": "image"
+				},
+				{
+					"slug": "home_primary_cta",
+					"label": "Home hero: primary button",
+					"type": "string"
+				},
+				{
+					"slug": "home_secondary_cta",
+					"label": "Home hero: secondary button",
+					"type": "string"
+				},
+				{
+					"slug": "courses_eyebrow",
+					"label": "Home courses: eyebrow",
+					"type": "string"
+				},
+				{
+					"slug": "courses_heading",
+					"label": "Home courses: heading",
+					"type": "string"
+				},
+				{
+					"slug": "courses_intro",
+					"label": "Home courses: introduction",
+					"type": "text"
+				},
+				{
+					"slug": "courses_trial_cta",
+					"label": "Home course cards: trial button",
+					"type": "string"
+				},
+				{
+					"slug": "courses_details_cta",
+					"label": "Home course cards: details button",
+					"type": "string"
+				},
+				{
+					"slug": "courses_format_label",
+					"label": "Home course cards: lesson format",
+					"type": "string"
+				},
+				{
+					"slug": "pricing_eyebrow",
+					"label": "Home pricing: eyebrow",
+					"type": "string"
+				},
+				{
+					"slug": "pricing_heading",
+					"label": "Home pricing: heading",
+					"type": "string"
+				},
+				{
+					"slug": "pricing_intro",
+					"label": "Home pricing: introduction",
+					"type": "text"
+				},
+				{
+					"slug": "pricing_period_label",
+					"label": "Home pricing: billing period",
+					"type": "string"
+				},
+				{
+					"slug": "pricing_classes_week_label",
+					"label": "Home pricing: weekly classes label",
+					"type": "string"
+				},
+				{
+					"slug": "pricing_classes_month_label",
+					"label": "Home pricing: monthly classes label",
+					"type": "string"
+				},
+				{
+					"slug": "pricing_hours_label",
+					"label": "Home pricing: monthly hours label",
+					"type": "string"
+				},
+				{
+					"slug": "pricing_popular_label",
+					"label": "Home pricing: popular badge",
+					"type": "string"
+				},
+				{
+					"slug": "pricing_select_cta",
+					"label": "Home pricing: select plan button",
+					"type": "string"
+				},
+				{
+					"slug": "trial_eyebrow",
+					"label": "Home free trial: eyebrow",
+					"type": "string"
+				},
+				{
+					"slug": "trial_heading",
+					"label": "Home free trial: heading",
+					"type": "string"
+				},
+				{
+					"slug": "trial_step_1_title",
+					"label": "Home free trial: step 1 title",
+					"type": "string"
+				},
+				{
+					"slug": "trial_step_1_body",
+					"label": "Home free trial: step 1 description",
+					"type": "text"
+				},
+				{
+					"slug": "trial_step_2_title",
+					"label": "Home free trial: step 2 title",
+					"type": "string"
+				},
+				{
+					"slug": "trial_step_2_body",
+					"label": "Home free trial: step 2 description",
+					"type": "text"
+				},
+				{
+					"slug": "trial_step_3_title",
+					"label": "Home free trial: step 3 title",
+					"type": "string"
+				},
+				{
+					"slug": "trial_step_3_body",
+					"label": "Home free trial: step 3 description",
+					"type": "text"
+				},
+				{
+					"slug": "testimonials_eyebrow",
+					"label": "Home testimonials: eyebrow",
+					"type": "string"
 				}
 			]
 		},
@@ -136,6 +276,11 @@
 					"validation": {
 						"options": ["All levels", "Beginner", "Intermediate", "Advanced"]
 					}
+				},
+				{
+					"slug": "image",
+					"label": "Course image",
+					"type": "image"
 				},
 				{
 					"slug": "order",
@@ -421,6 +566,81 @@
 					"label": "Sessions delivered",
 					"type": "string",
 					"required": true
+				},
+				{
+					"slug": "years_label",
+					"label": "Home metric: years label",
+					"type": "string"
+				},
+				{
+					"slug": "countries_label",
+					"label": "Home metric: countries label",
+					"type": "string"
+				},
+				{
+					"slug": "students_label",
+					"label": "Home metric: students label",
+					"type": "string"
+				},
+				{
+					"slug": "sessions_label",
+					"label": "Home metric: sessions label",
+					"type": "string"
+				},
+				{
+					"slug": "footer_tagline",
+					"label": "Footer introduction",
+					"type": "text"
+				},
+				{
+					"slug": "footer_explore_label",
+					"label": "Footer explore heading",
+					"type": "string"
+				},
+				{
+					"slug": "footer_contact_label",
+					"label": "Footer contact heading",
+					"type": "string"
+				},
+				{
+					"slug": "footer_courses_label",
+					"label": "Footer courses link",
+					"type": "string"
+				},
+				{
+					"slug": "footer_pricing_label",
+					"label": "Footer pricing link",
+					"type": "string"
+				},
+				{
+					"slug": "footer_teachers_label",
+					"label": "Footer teachers link",
+					"type": "string"
+				},
+				{
+					"slug": "footer_trial_label",
+					"label": "Footer free trial link",
+					"type": "string"
+				},
+				{
+					"slug": "footer_contact_link_label",
+					"label": "Footer contact link",
+					"type": "string"
+				},
+				{
+					"slug": "footer_terms_label",
+					"label": "Footer terms link",
+					"type": "string"
+				},
+				{
+					"slug": "footer_privacy_label",
+					"label": "Footer privacy link",
+					"type": "string"
+				},
+				{
+					"slug": "footer_copyright_label",
+					"label": "Footer copyright text",
+					"type": "string"
 				}
 			]
 		}
@@ -794,7 +1014,22 @@
 					"years": "5+",
 					"countries": "5+",
 					"students": "[000]+",
-					"sessions": "[000]+"
+					"sessions": "[000]+",
+					"years_label": "Years teaching",
+					"countries_label": "Countries served",
+					"students_label": "Students taught",
+					"sessions_label": "Sessions delivered",
+					"footer_tagline": "Online Qur'an education from Karachi, Pakistan. Every student starts with a free trial class.",
+					"footer_explore_label": "Explore",
+					"footer_contact_label": "Contact",
+					"footer_courses_label": "Courses",
+					"footer_pricing_label": "Pricing",
+					"footer_teachers_label": "Teachers",
+					"footer_trial_label": "Free trial",
+					"footer_contact_link_label": "Contact",
+					"footer_terms_label": "Terms of Service",
+					"footer_privacy_label": "Privacy Policy",
+					"footer_copyright_label": "All rights reserved."
 				}
 			}
 		],
@@ -806,8 +1041,35 @@
 				"data": {
 					"title": "Home",
 					"home_eyebrow": "Online Qur'an academy",
-					"home_headline": "Recite the *Qur'an* with a teacher who knows your name.",
-					"home_lead": "One-to-one lessons in recitation, tajweed and memorization. Start with a free trial class from wherever you are."
+					"home_headline": "Recite the Qur'an with a teacher who knows your name.",
+					"home_highlight": "Qur'an",
+					"home_lead": "One-to-one lessons in recitation, tajweed and memorization. Start with a free trial class from wherever you are.",
+					"home_primary_cta": "Get free trial",
+					"home_secondary_cta": "Explore courses",
+					"courses_eyebrow": "Courses",
+					"courses_heading": "Explore our courses",
+					"courses_intro": "Start where you are. Your teacher will meet you there and build the lessons around your level.",
+					"courses_trial_cta": "Book free trial",
+					"courses_details_cta": "See details",
+					"courses_format_label": "Live one on one",
+					"pricing_eyebrow": "Pricing",
+					"pricing_heading": "Choose a plan that fits your week.",
+					"pricing_intro": "Every plan is billed monthly and starts with a free trial class. Prices are in US dollars.",
+					"pricing_period_label": "/ month",
+					"pricing_classes_week_label": "Classes each week",
+					"pricing_classes_month_label": "Classes each month",
+					"pricing_hours_label": "Teaching hours each month",
+					"pricing_popular_label": "Most popular",
+					"pricing_select_cta": "Select plan",
+					"trial_eyebrow": "Free trial",
+					"trial_heading": "How the free trial works",
+					"trial_step_1_title": "Book your free trial",
+					"trial_step_1_body": "Choose a plan and pick a time that works for you. The trial class is free.",
+					"trial_step_2_title": "Meet your teacher",
+					"trial_step_2_body": "We match you with a teacher for your course and level, then assess where you are.",
+					"trial_step_3_title": "Start your plan",
+					"trial_step_3_body": "Your teacher builds a weekly schedule around your goals and keeps you accountable.",
+					"testimonials_eyebrow": "Student voices"
 				}
 			},
 			{

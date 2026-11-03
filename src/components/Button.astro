@@ -1,10 +1,13 @@
 ---
+import type { FieldAnnotation } from "emdash";
+
 interface Props {
 	href?: string;
 	variant?: "primary" | "secondary";
 	size?: "md" | "lg";
 	type?: "button" | "submit" | "reset";
 	class?: string;
+	edit?: Partial<FieldAnnotation>;
 }
 
 const {
@@ -13,6 +16,7 @@ const {
 	size = "md",
 	type = "button",
 	class: className,
+	edit,
 } = Astro.props;
 
 const classes = ["btn", `btn--${variant}`, size === "lg" && "btn--lg", className];
@@ -20,11 +24,11 @@ const classes = ["btn", `btn--${variant}`, size === "lg" && "btn--lg", className
 
 {
 	href ? (
-		<a {href} class:list={classes}>
+		<a {href} class:list={classes} {...edit}>
 			<slot />
 		</a>
 	) : (
-		<button {type} class:list={classes}>
+		<button {type} class:list={classes} {...edit}>
 			<slot />
 		</button>
 	)

@@ -1,12 +1,15 @@
 ---
+import type { FieldAnnotation } from "emdash";
+
 interface Props {
 	class?: string;
+	edit?: Partial<FieldAnnotation>;
 }
 
-const { class: className } = Astro.props;
+const { class: className, edit } = Astro.props;
 ---
 
-<span class:list={["eyebrow", className]}>
+<span class:list={["eyebrow", className]} {...edit}>
 	<span class="eyebrow__rule" aria-hidden="true"></span>
 	<slot />
 </span>

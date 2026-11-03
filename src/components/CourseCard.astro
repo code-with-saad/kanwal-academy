@@ -4,6 +4,8 @@
  * actions. The image follows the static convention /images/courses/<slug>.png;
  * until the file exists a labelled placeholder is shown.
  */
+import type { EditProxy, ImageValue } from "emdash";
+import { Image } from "emdash/ui";
 import Button from "./Button.astro";
 import ImagePlaceholder from "./ImagePlaceholder.astro";
 
@@ -15,36 +17,66 @@ interface Props {
 	href: string;
 	imageSrc?: string;
 	imageAlt?: string;
+	image?: ImageValue | null;
+	edit?: EditProxy;
+	homeEdit?: EditProxy;
+	trialLabel?: string;
+	detailsLabel?: string;
+	formatLabel?: string;
 }
 
-const { slug, title, summary, level, href, imageSrc, imageAlt } = Astro.props;
+const {
+	slug,
+	title,
+	summary,
+	level,
+	href,
+	imageSrc,
+	imageAlt,
+	image,
+	edit,
+	homeEdit,
+	trialLabel = "Book free trial",
+	detailsLabel = "See details",
+	formatLabel = "Live one on one",
+} = Astro.props;
 ---
 
 <article class="course-card">
-	<div class="course-card__media">
-		<ImagePlaceholder
-			src={imageSrc ?? `/images/courses/${slug}.png`}
-			label={title}
-			alt={imageAlt ?? `An open Qur'an on a wooden rehal for the ${title} course`}
-			ratio="16 / 10"
-		/>
+	<div class="course-card__media" {...edit?.image}>
+		{
+			image ? (
+				<Image
+					image={image}
+					alt={image.alt ?? imageAlt ?? `An open Qur'an on a wooden rehal for the ${title} course`}
+					class="course-card__image"
+				/>
+			) : (
+				<ImagePlaceholder
+					src={imageSrc ?? `/images/courses/${slug}.png`}
+					label={title}
+					alt={imageAlt ?? `An open Qur'an on a wooden rehal for the ${title} course`}
+					ratio="16 / 10"
+				/>
+			)
+		}
 	</div>
 
 	<div class="course-card__body">
-		<h3 class="course-card__title">{title}</h3>
+		<h3 class="course-card__title" {...edit?.name}>{title}</h3>
 
 		<ul class="course-card__chips">
-			{level && <li class="course-card__chip">{level}</li>}
-			<li class="course-card__chip course-card__chip--accent">Live one on one</li>
+			{level && <li class="course-card__chip" {...edit?.level}>{level}</li>}
+			<li class="course-card__chip course-card__chip--accent" {...homeEdit?.courses_format_label}>{formatLabel}</li>
 		</ul>
 
-		{summary && <p class="course-card__summary">{summary}</p>}
+		{summary && <p class="course-card__summary" {...edit?.summary}>{summary}</p>}
 
 		<div class="course-card__cta">
-			<Button href={`/free-trial?course=${encodeURIComponent(slug)}`} variant="primary">
-				Book free trial
+			<Button href={`/free-trial?course=${encodeURIComponent(slug)}`} variant="primary" edit={homeEdit?.courses_trial_cta}>
+				{trialLabel}
 			</Button>
-			<Button href={href} variant="secondary">See details</Button>
+			<Button href={href} variant="secondary" edit={homeEdit?.courses_details_cta}>{detailsLabel}</Button>
 		</div>
 	</div>
 </article>
@@ -63,6 +95,12 @@ const { slug, title, summary, level, href, imageSrc, imageAlt } = Astro.props;
 
 	.course-card__media {
 		border-bottom: 1px solid var(--line);
+	}
+
+	.course-card__image {
+		width: 100%;
+		aspect-ratio: 16 / 10;
+		object-fit: cover;
 	}
 
 	.course-card__body {

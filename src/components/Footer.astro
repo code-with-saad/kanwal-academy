@@ -1,4 +1,5 @@
 ---
+import type { EditProxy } from "emdash";
 import Container from "./Container.astro";
 import { site } from "../config/site";
 import { emailHref, phoneHref, type SiteContact } from "../utils/site-config";
@@ -6,9 +7,10 @@ import { emailHref, phoneHref, type SiteContact } from "../utils/site-config";
 interface Props {
 	contact: SiteContact;
 	siteName?: string;
+	settingsEdit?: EditProxy;
 }
 
-const { contact, siteName = site.name } = Astro.props;
+const { contact, siteName = site.name, settingsEdit } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
@@ -17,9 +19,8 @@ const year = new Date().getFullYear();
 		<div class="footer__grid">
 			<div class="footer__brand">
 				<a href="/" class="footer__wordmark">{siteName}</a>
-				<p class="footer__tagline">
-					Online Qur'an education from Karachi, Pakistan. Every student starts with a free trial
-					class.
+				<p class="footer__tagline" {...settingsEdit?.footer_tagline}>
+					{contact.footer.tagline}
 				</p>
 				{
 					contact.socialLinks.length > 0 && (
@@ -37,37 +38,58 @@ const year = new Date().getFullYear();
 			</div>
 
 			<nav class="footer__column" aria-labelledby="footer-explore">
-				<h2 id="footer-explore" class="footer__heading">Explore</h2>
+				<h2 id="footer-explore" class="footer__heading" {...settingsEdit?.footer_explore_label}>
+					{contact.footer.exploreLabel}
+				</h2>
 				<ul class="footer__links">
 					{
-						site.footerLinks.map((item) => (
+						site.footerLinks.map((item, index) => {
+							const labels = [
+								["footer_courses_label", contact.footer.coursesLabel],
+								["footer_pricing_label", contact.footer.pricingLabel],
+								["footer_teachers_label", contact.footer.teachersLabel],
+								["footer_trial_label", contact.footer.trialLabel],
+								["footer_contact_link_label", contact.footer.contactLinkLabel],
+							] as const;
+							const [field, label] = labels[index] ?? ["footer_courses_label", item.label];
+							return (
 							<li>
-								<a href={item.url}>{item.label}</a>
+								<a href={item.url} {...settingsEdit?.[field]}>{label}</a>
 							</li>
-						))
+							);
+						})
 					}
 				</ul>
 			</nav>
 
 			<div class="footer__column">
-				<h2 class="footer__heading">Contact</h2>
+				<h2 class="footer__heading" {...settingsEdit?.footer_contact_label}>
+					{contact.footer.contactLabel}
+				</h2>
 				<address class="footer__address">
-					<span>{contact.address}</span>
-					<a href={phoneHref(contact.phone)}>{contact.phone}</a>
-					<a href={emailHref(contact.email)}>{contact.email}</a>
+					<span {...settingsEdit?.address}>{contact.address}</span>
+					<a href={phoneHref(contact.phone)} {...settingsEdit?.phone}>{contact.phone}</a>
+					<a href={emailHref(contact.email)} {...settingsEdit?.email}>{contact.email}</a>
 				</address>
 			</div>
 		</div>
 
 		<div class="footer__bottom">
-			<p>&copy; {year} {siteName}. All rights reserved.</p>
+			<p>
+				&copy; {year} {siteName}. <span {...settingsEdit?.footer_copyright_label}>{contact.footer.copyrightLabel}</span>
+			</p>
 			<ul class="footer__legal">
 				{
-					site.legal.map((item) => (
-						<li>
-							<a href={item.url}>{item.label}</a>
-						</li>
-					))
+					site.legal.map((item) => {
+						const isTerms = item.url.includes("terms");
+						const field = isTerms ? "footer_terms_label" : "footer_privacy_label";
+						const label = isTerms ? contact.footer.termsLabel : contact.footer.privacyLabel;
+						return (
+							<li>
+								<a href={item.url} {...settingsEdit?.[field]}>{label}</a>
+							</li>
+						);
+					})
 				}
 			</ul>
 		</div>

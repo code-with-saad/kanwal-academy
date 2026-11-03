@@ -1,18 +1,22 @@
 ---
+import type { FieldAnnotation } from "emdash";
+
 interface Props {
 	number: number;
 	title: string;
 	body: string;
+	titleEdit?: Partial<FieldAnnotation>;
+	bodyEdit?: Partial<FieldAnnotation>;
 }
 
-const { number, title, body } = Astro.props;
+const { number, title, body, titleEdit, bodyEdit } = Astro.props;
 const label = String(number).padStart(2, "0");
 ---
 
 <li class="step">
 	<span class="step__number" aria-hidden="true">{label}</span>
-	<h3 class="step__title">{title}</h3>
-	<p class="step__body">{body}</p>
+	<h3 class="step__title" {...titleEdit}>{title}</h3>
+	<p class="step__body" {...bodyEdit}>{body}</p>
 </li>
 
 <style>

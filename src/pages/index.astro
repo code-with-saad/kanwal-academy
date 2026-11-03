@@ -1,17 +1,55 @@
 ---
 import { getEmDashCollection, getEmDashEntry, getSeoMeta } from "emdash";
+import type { ContentEntry, ImageValue } from "emdash";
+import { Image } from "emdash/ui";
 import Base from "../layouts/Base.astro";
 import Button from "../components/Button.astro";
 import Container from "../components/Container.astro";
 import CourseCard from "../components/CourseCard.astro";
 import Eyebrow from "../components/Eyebrow.astro";
-import ImagePlaceholder from "../components/ImagePlaceholder.astro";
 import PlanCard from "../components/PlanCard.astro";
 import Section from "../components/Section.astro";
 import Step from "../components/Step.astro";
 import { site } from "../config/site";
 import { courseImages, heroImage } from "../config/images";
 import { getSiteContact } from "../utils/site-config";
+import type { Page } from "../../emdash-env";
+
+interface HomePageFields {
+	home_eyebrow?: string;
+	home_headline?: string;
+	home_highlight?: string;
+	home_lead?: string;
+	home_image?: ImageValue;
+	home_primary_cta?: string;
+	home_secondary_cta?: string;
+	courses_eyebrow?: string;
+	courses_heading?: string;
+	courses_intro?: string;
+	courses_trial_cta?: string;
+	courses_details_cta?: string;
+	courses_format_label?: string;
+	pricing_eyebrow?: string;
+	pricing_heading?: string;
+	pricing_intro?: string;
+	pricing_period_label?: string;
+	pricing_classes_week_label?: string;
+	pricing_classes_month_label?: string;
+	pricing_hours_label?: string;
+	pricing_popular_label?: string;
+	pricing_select_cta?: string;
+	trial_eyebrow?: string;
+	trial_heading?: string;
+	trial_step_1_title?: string;
+	trial_step_1_body?: string;
+	trial_step_2_title?: string;
+	trial_step_2_body?: string;
+	trial_step_3_title?: string;
+	trial_step_3_body?: string;
+	testimonials_eyebrow?: string;
+}
+
+type HomeTextField = Exclude<keyof HomePageFields, "home_image">;
 
 const [coursesResult, plansResult, testimonialsResult, contactResult, homeResult] =
 	await Promise.all([
@@ -46,7 +84,10 @@ const testimonials = testimonialsResult.entries.filter(
 );
 const contact = contactResult.data;
 
-const homePage = homeResult.entry;
+const homePage = homeResult.entry as ContentEntry<Page & HomePageFields> | null;
+const homeText = (field: HomeTextField, fallback: string) =>
+	homePage?.data[field]?.trim() || fallback;
+const homeEdit = homePage?.edit;
 const seo = homePage
 	? getSeoMeta(homePage, {
 			siteUrl: Astro.url.origin,
@@ -56,20 +97,30 @@ const seo = homePage
 		})
 	: null;
 
-const heroEyebrow = homePage?.data.home_eyebrow?.trim() || "Online Qur'an academy";
-// A word wrapped in *asterisks* in the CMS headline becomes the sage
-// highlight in the h1, for example: Recite the *Qur'an* with a teacher...
-const heroHeadline =
-	homePage?.data.home_headline?.trim() ||
-	"Recite the *Qur'an* with a teacher who knows your name.";
-const heroLead =
-	homePage?.data.home_lead?.trim() ||
-	"One-to-one lessons in recitation, tajweed and memorization. Start with a free trial class from wherever you are.";
+const rawHeadline = homeText(
+	"home_headline",
+	"Recite the *Qur'an* with a teacher who knows your name.",
+);
+const legacyHighlight = rawHeadline.match(/\*([^*]+)\*/)?.[1];
+const heroHeadline = rawHeadline.replace(/\*([^*]+)\*/g, "$1");
+const heroHighlight = homeText("home_highlight", legacyHighlight ?? "Qur'an");
+const heroLead = homeText(
+	"home_lead",
+	"One-to-one lessons in recitation, tajweed and memorization. Start with a free trial class from wherever you are.",
+);
 
-const headlineParts = heroHeadline
-	.split(/\*([^*]+)\*/g)
-	.map((text, index) => ({ text, highlight: index % 2 === 1 }))
-	.filter((part) => part.text !== "");
+const highlightStart = heroHeadline.indexOf(heroHighlight);
+const headlineParts =
+	highlightStart >= 0
+		? [
+				{ text: heroHeadline.slice(0, highlightStart), highlight: false },
+				{ text: heroHighlight, highlight: true },
+				{
+					text: heroHeadline.slice(highlightStart + heroHighlight.length),
+					highlight: false,
+				},
+			].filter((part) => part.text !== "")
+		: [{ text: heroHeadline, highlight: false }];
 
 const toPlanCard = (plan: (typeof plans)[number]) => ({
 	slug: plan.id,
@@ -83,16 +134,31 @@ const toPlanCard = (plan: (typeof plans)[number]) => ({
 
 const steps = [
 	{
-		title: "Book your free trial",
-		body: "Choose a plan and pick a time that works for you. The trial class is free.",
+		title: homeText("trial_step_1_title", "Book your free trial"),
+		body: homeText(
+			"trial_step_1_body",
+			"Choose a plan and pick a time that works for you. The trial class is free.",
+		),
+		titleEdit: homeEdit?.trial_step_1_title,
+		bodyEdit: homeEdit?.trial_step_1_body,
 	},
 	{
-		title: "Meet your teacher",
-		body: "We match you with a teacher for your course and level, then assess where you are.",
+		title: homeText("trial_step_2_title", "Meet your teacher"),
+		body: homeText(
+			"trial_step_2_body",
+			"We match you with a teacher for your course and level, then assess where you are.",
+		),
+		titleEdit: homeEdit?.trial_step_2_title,
+		bodyEdit: homeEdit?.trial_step_2_body,
 	},
 	{
-		title: "Start your plan",
-		body: "Your teacher builds a weekly schedule around your goals and keeps you accountable.",
+		title: homeText("trial_step_3_title", "Start your plan"),
+		body: homeText(
+			"trial_step_3_body",
+			"Your teacher builds a weekly schedule around your goals and keeps you accountable.",
+		),
+		titleEdit: homeEdit?.trial_step_3_title,
+		bodyEdit: homeEdit?.trial_step_3_body,
 	},
 ];
 ---
@@ -111,33 +177,80 @@ const steps = [
 		<Container>
 			<div class="hero__grid">
 				<div class="hero__copy">
-					<Eyebrow>{heroEyebrow}</Eyebrow>
-					<h1>
+					<Eyebrow edit={homeEdit?.home_eyebrow}>
+						{homeText("home_eyebrow", "Online Qur'an academy")}
+					</Eyebrow>
+					<h1 {...homeEdit?.home_headline}>
 						{
 							headlineParts.map((part) =>
 								part.highlight ? (
-									<span class="hero__highlight">{part.text}</span>
+									<span class="hero__highlight" {...homeEdit?.home_highlight}>
+										{part.text}
+									</span>
 								) : (
 									part.text
 								),
 							)
 						}
 					</h1>
-					<p class="hero__lead">{heroLead}</p>
+					<p class="hero__lead" {...homeEdit?.home_lead}>{heroLead}</p>
 					<div class="hero__actions">
-						<Button href="/free-trial" variant="primary" size="lg">Get free trial</Button>
-						<Button href="/courses" variant="secondary" size="lg">Explore courses</Button>
+						<Button
+							href="/free-trial"
+							variant="primary"
+							size="lg"
+							edit={homeEdit?.home_primary_cta}
+						>
+							{homeText("home_primary_cta", "Get free trial")}
+						</Button>
+						<Button
+							href="/courses"
+							variant="secondary"
+							size="lg"
+							edit={homeEdit?.home_secondary_cta}
+						>
+							{homeText("home_secondary_cta", "Explore courses")}
+						</Button>
 					</div>
 				</div>
 
 				<div class="hero__visual">
-					<ImagePlaceholder
-						src={heroImage.src}
-						label="Open Qur'an on a wooden rehal"
-						alt={heroImage.alt}
-						ratio="475 / 330"
-						eager
-					/>
+					<div class="hero__orbit" aria-hidden="true"></div>
+					<div class="hero__orbit-node hero__orbit-node--top" aria-hidden="true">
+						<svg viewBox="0 0 32 32" aria-hidden="true">
+							<path d="M16 8v17M16 10c-3-2-6-2-10-2v14c4 0 7 0 10 3m0-15c3-2 6-2 10-2v14c-4 0-7 0-10 3" />
+						</svg>
+					</div>
+					<div class="hero__orbit-node hero__orbit-node--left" aria-hidden="true">
+						<svg viewBox="0 0 32 32" aria-hidden="true">
+							<path d="M5 10c4-2 8-2 11 1v14c-3-3-7-3-11-1zm22 0c-4-2-8-2-11 1v14c3-3 7-3 11-1z" />
+							<path d="M9 14h3m-3 4h3m8-4h3m-3 4h3" />
+						</svg>
+					</div>
+					<div class="hero__orbit-node hero__orbit-node--right" aria-hidden="true">
+						<svg viewBox="0 0 32 32" aria-hidden="true">
+							<path d="M7 17v-2a9 9 0 0 1 18 0v2m-18 0v5h4v-7H7m18 2v5h-4v-7h4m-4 7c-1 2-3 3-6 3h-2" />
+						</svg>
+					</div>
+					<div class="hero__orbit-node hero__orbit-node--bottom" aria-hidden="true">
+						<svg viewBox="0 0 32 32" aria-hidden="true">
+							<path d="M6 9c4-2 7-1 10 2v14c-3-3-6-4-10-2zm20 0c-4-2-7-1-10 2v14c3-3 6-4 10-2z" />
+						</svg>
+					</div>
+					<figure class="hero__image-wrap" {...homeEdit?.home_image}>
+						{
+							homePage?.data.home_image ? (
+								<Image
+									image={homePage.data.home_image}
+									alt={heroImage.alt}
+									class="hero__image"
+									priority
+								/>
+							) : (
+								<img src={heroImage.src} alt={heroImage.alt} class="hero__image" />
+							)
+						}
+					</figure>
 				</div>
 			</div>
 		</Container>
@@ -146,11 +259,17 @@ const steps = [
 	<Section>
 		<Container>
 			<div class="section-head">
-				<Eyebrow>Courses</Eyebrow>
-				<h2>Explore our courses</h2>
-				<p class="section-lead">
-					Start where you are. Your teacher will meet you there and build the lessons around
-					your level.
+				<Eyebrow edit={homeEdit?.courses_eyebrow}>
+					{homeText("courses_eyebrow", "Courses")}
+				</Eyebrow>
+				<h2 {...homeEdit?.courses_heading}>
+					{homeText("courses_heading", "Explore our courses")}
+				</h2>
+				<p class="section-lead" {...homeEdit?.courses_intro}>
+					{homeText(
+						"courses_intro",
+						"Start where you are. Your teacher will meet you there and build the lessons around your level.",
+					)}
 				</p>
 			</div>
 
@@ -166,6 +285,14 @@ const steps = [
 								href={`/courses/${course.id}`}
 								imageSrc={courseImages[course.id]?.src}
 								imageAlt={courseImages[course.id]?.alt}
+								image={
+									(course.data as typeof course.data & { image?: ImageValue }).image
+								}
+								edit={course.edit}
+								homeEdit={homeEdit}
+								trialLabel={homeText("courses_trial_cta", "Book free trial")}
+								detailsLabel={homeText("courses_details_cta", "See details")}
+								formatLabel={homeText("courses_format_label", "Live one on one")}
 							/>
 						</li>
 					))
@@ -178,20 +305,36 @@ const steps = [
 		<Container>
 			<ul class="numbers">
 				<li class="number">
-					<span class="number__value">{contact.stats.years}</span>
-					<span class="number__label">Years teaching</span>
+					<span class="number__value" {...contactResult.entry?.edit.years}>
+						{contact.stats.years}
+					</span>
+					<span class="number__label" {...contactResult.entry?.edit.years_label}>
+						{contact.stats.labels.years}
+					</span>
 				</li>
 				<li class="number">
-					<span class="number__value">{contact.stats.countries}</span>
-					<span class="number__label">Countries served</span>
+					<span class="number__value" {...contactResult.entry?.edit.countries}>
+						{contact.stats.countries}
+					</span>
+					<span class="number__label" {...contactResult.entry?.edit.countries_label}>
+						{contact.stats.labels.countries}
+					</span>
 				</li>
 				<li class="number">
-					<span class="number__value">{contact.stats.students}</span>
-					<span class="number__label">Students taught</span>
+					<span class="number__value" {...contactResult.entry?.edit.students}>
+						{contact.stats.students}
+					</span>
+					<span class="number__label" {...contactResult.entry?.edit.students_label}>
+						{contact.stats.labels.students}
+					</span>
 				</li>
 				<li class="number">
-					<span class="number__value">{contact.stats.sessions}</span>
-					<span class="number__label">Sessions delivered</span>
+					<span class="number__value" {...contactResult.entry?.edit.sessions}>
+						{contact.stats.sessions}
+					</span>
+					<span class="number__label" {...contactResult.entry?.edit.sessions_label}>
+						{contact.stats.labels.sessions}
+					</span>
 				</li>
 			</ul>
 		</Container>
@@ -200,11 +343,17 @@ const steps = [
 	<Section>
 		<Container>
 			<div class="section-head section-head--center">
-				<Eyebrow>Pricing</Eyebrow>
-				<h2>Choose a plan that fits your week.</h2>
-				<p class="section-lead">
-					Every plan is billed monthly and starts with a free trial class. Prices are in US
-					dollars.
+				<Eyebrow edit={homeEdit?.pricing_eyebrow}>
+					{homeText("pricing_eyebrow", "Pricing")}
+				</Eyebrow>
+				<h2 {...homeEdit?.pricing_heading}>
+					{homeText("pricing_heading", "Choose a plan that fits your week.")}
+				</h2>
+				<p class="section-lead" {...homeEdit?.pricing_intro}>
+					{homeText(
+						"pricing_intro",
+						"Every plan is billed monthly and starts with a free trial class. Prices are in US dollars.",
+					)}
 				</p>
 			</div>
 
@@ -215,6 +364,20 @@ const steps = [
 							plan={toPlanCard(plan)}
 							variant={plan.data.is_popular ? "inverted" : "default"}
 							href={`/free-trial?plan=${encodeURIComponent(plan.id)}`}
+							planEdit={plan.edit}
+							homeEdit={homeEdit}
+							periodLabel={homeText("pricing_period_label", "/ month")}
+							classesWeekLabel={homeText(
+								"pricing_classes_week_label",
+								"Classes each week",
+							)}
+							classesMonthLabel={homeText(
+								"pricing_classes_month_label",
+								"Classes each month",
+							)}
+							hoursLabel={homeText("pricing_hours_label", "Teaching hours each month")}
+							popularLabel={homeText("pricing_popular_label", "Most popular")}
+							selectLabel={homeText("pricing_select_cta", "Select plan")}
 						/>
 					))
 				}
@@ -225,13 +388,23 @@ const steps = [
 	<Section tone="sand">
 		<Container>
 			<div class="section-head">
-				<Eyebrow>Free trial</Eyebrow>
-				<h2>How the free trial works</h2>
+				<Eyebrow edit={homeEdit?.trial_eyebrow}>
+					{homeText("trial_eyebrow", "Free trial")}
+				</Eyebrow>
+				<h2 {...homeEdit?.trial_heading}>
+					{homeText("trial_heading", "How the free trial works")}
+				</h2>
 			</div>
 			<ol class="steps">
 				{
 					steps.map((step, index) => (
-						<Step number={index + 1} title={step.title} body={step.body} />
+						<Step
+							number={index + 1}
+							title={step.title}
+							body={step.body}
+							titleEdit={step.titleEdit}
+							bodyEdit={step.bodyEdit}
+						/>
 					))
 				}
 			</ol>
@@ -242,33 +415,50 @@ const steps = [
 		testimonials.length > 0 ? (
 			<Section tone="dark">
 				<Container size="narrow">
-					<Eyebrow>Student voices</Eyebrow>
+					<Eyebrow edit={homeEdit?.testimonials_eyebrow}>
+						{homeText("testimonials_eyebrow", "Student voices")}
+					</Eyebrow>
 					<blockquote class="testimonial">
-						<p class="testimonial__quote">{testimonials[0].data.quote}</p>
+						<p class="testimonial__quote" {...testimonials[0].edit.quote}>
+							{testimonials[0].data.quote}
+						</p>
 						<footer class="testimonial__author">
-							<cite>{testimonials[0].data.author}</cite>
+							<cite {...testimonials[0].edit.author}>{testimonials[0].data.author}</cite>
 							{testimonials[0].data.country && (
-								<span>{testimonials[0].data.country}</span>
+								<span {...testimonials[0].edit.country}>{testimonials[0].data.country}</span>
 							)}
 						</footer>
 					</blockquote>
 				</Container>
 			</Section>
-		) : (
-			import.meta.env.DEV && (
-				<Section tone="sand" space="tight">
-					<Container>
-						<Eyebrow>Development note</Eyebrow>
-						<p class="dev-note">
-							Testimonials stay hidden until a real review is added in the admin and consent is
-							marked. This note only appears in development.
-						</p>
-					</Container>
-				</Section>
-			)
-		)
+		) : null
 	}
+
+	<button class="go-top" type="button" data-go-top aria-label="Go to top" hidden>
+		<svg viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M12 19V5m-6 6 6-6 6 6" />
+		</svg>
+	</button>
 </Base>
+
+<script>
+	const goTop = document.querySelector<HTMLButtonElement>("[data-go-top]");
+	if (goTop) {
+		const updateVisibility = () => {
+			goTop.hidden = window.scrollY < 320;
+		};
+		window.addEventListener("scroll", updateVisibility, { passive: true });
+		updateVisibility();
+		goTop.addEventListener("click", () => {
+			window.scrollTo({
+				top: 0,
+				behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+					? "auto"
+					: "smooth",
+			});
+		});
+	}
+</script>
 
 <style>
 	/* Section is a child component, so page styles reach it via :global. */
@@ -309,21 +499,131 @@ const steps = [
 	}
 
 	.hero__visual {
+		position: relative;
+		display: grid;
+		place-items: center;
 		justify-self: end;
 		width: 100%;
-		max-width: 420px;
-		animation: hero-image-enter 700ms var(--ease-out) both;
+		max-width: 460px;
+		aspect-ratio: 1;
 	}
 
-	@keyframes hero-image-enter {
-		from {
-			opacity: 0;
-			transform: translateY(12px);
-		}
-		to {
-			opacity: 1;
+	.hero__orbit {
+		position: absolute;
+		width: 80%;
+		aspect-ratio: 1;
+		border: 1px solid var(--line-dark);
+		border-radius: 50%;
+	}
+
+	.hero__orbit-node {
+		position: absolute;
+		z-index: 1;
+		display: grid;
+		place-items: center;
+		width: 54px;
+		aspect-ratio: 1;
+		border: 1px solid var(--line-dark);
+		border-radius: var(--radius-card);
+		background: var(--surface-dark);
+		color: var(--sage);
+	}
+
+	.hero__orbit-node svg {
+		width: 28px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.3;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.hero__orbit-node--top {
+		top: 5%;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	.hero__orbit-node--left {
+		top: 50%;
+		left: 5%;
+		transform: translateY(-50%);
+	}
+
+	.hero__orbit-node--right {
+		top: 50%;
+		right: 5%;
+		transform: translateY(-50%);
+	}
+
+	.hero__orbit-node--bottom {
+		bottom: 5%;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	.hero__image-wrap {
+		position: relative;
+		z-index: 2;
+		display: grid;
+		place-items: center;
+		width: 80%;
+		margin: 0;
+		animation: quran-float 7s ease-in-out infinite;
+	}
+
+	:global(.hero__image) {
+		display: block;
+		width: 100%;
+		height: auto;
+		object-fit: contain;
+	}
+
+	@keyframes quran-float {
+		0%,
+		100% {
 			transform: translateY(0);
 		}
+		50% {
+			transform: translateY(-12px);
+		}
+	}
+
+	.go-top {
+		position: fixed;
+		right: max(var(--gutter), calc((100vw - var(--container)) / 2));
+		bottom: var(--space-lg);
+		z-index: 60;
+		display: grid;
+		place-items: center;
+		width: 48px;
+		height: 48px;
+		border: 1px solid var(--line-dark);
+		border-radius: var(--radius-button);
+		background: var(--bg-dark);
+		color: var(--text-on-dark);
+		box-shadow: 0 3px 14px rgb(16 26 22 / 18%);
+		transition:
+			background-color var(--transition),
+			border-color var(--transition);
+	}
+
+	.go-top:hover {
+		border-color: var(--sage);
+		background: var(--surface-dark);
+	}
+
+	.go-top svg {
+		width: 22px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.8;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.go-top[hidden] {
+		display: none;
 	}
 
 	.section-lead {
@@ -424,12 +724,6 @@ const steps = [
 		font-weight: 600;
 	}
 
-	.dev-note {
-		max-width: 56ch;
-		margin-top: var(--space-md);
-		color: var(--muted-ink);
-	}
-
 	@media (max-width: 1000px) {
 		.hero__grid {
 			grid-template-columns: 1fr;
@@ -475,7 +769,7 @@ const steps = [
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.hero__visual {
+		.hero__image-wrap {
 			animation: none;
 		}
 	}
