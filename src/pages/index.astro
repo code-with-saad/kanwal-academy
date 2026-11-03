@@ -5,12 +5,12 @@ import Button from "../components/Button.astro";
 import Container from "../components/Container.astro";
 import CourseCard from "../components/CourseCard.astro";
 import Eyebrow from "../components/Eyebrow.astro";
+import ImagePlaceholder from "../components/ImagePlaceholder.astro";
 import PlanCard from "../components/PlanCard.astro";
-import PlanCarousel from "../components/PlanCarousel.astro";
 import Section from "../components/Section.astro";
 import Step from "../components/Step.astro";
 import { site } from "../config/site";
-import { courseImages } from "../config/images";
+import { courseImages, heroImage } from "../config/images";
 import { getSiteContact } from "../utils/site-config";
 
 const [coursesResult, plansResult, testimonialsResult, contactResult, homeResult] =
@@ -46,10 +46,6 @@ const testimonials = testimonialsResult.entries.filter(
 );
 const contact = contactResult.data;
 
-const featuredIndex = Math.max(
-	plans.findIndex((plan) => plan.data.is_popular),
-	0,
-);
 const homePage = homeResult.entry;
 const seo = homePage
 	? getSeoMeta(homePage, {
@@ -111,7 +107,7 @@ const steps = [
 		homePage ? { collection: "pages", id: homePage.data.id, slug: homePage.id } : undefined
 	}
 >
-	<Section tone="dark" class="hero">
+	<Section tone="dark" space="flush" class="hero">
 		<Container>
 			<div class="hero__grid">
 				<div class="hero__copy">
@@ -134,13 +130,15 @@ const steps = [
 					</div>
 				</div>
 
-				{
-					plans.length > 0 && (
-						<div class="hero__plan">
-							<PlanCarousel plans={plans.map(toPlanCard)} initialIndex={featuredIndex} />
-						</div>
-					)
-				}
+				<div class="hero__visual">
+					<ImagePlaceholder
+						src={heroImage.src}
+						label="Open Qur'an on a wooden rehal"
+						alt={heroImage.alt}
+						ratio="475 / 330"
+						eager
+					/>
+				</div>
 			</div>
 		</Container>
 	</Section>
@@ -275,7 +273,9 @@ const steps = [
 <style>
 	/* Section is a child component, so page styles reach it via :global. */
 	:global(.hero) {
-		padding-block: clamp(56px, 8vw, 112px) clamp(64px, 9vw, 128px);
+		display: grid;
+		align-items: center;
+		padding-block: clamp(24px, 4vh, 48px);
 	}
 
 	.hero__grid {
@@ -308,10 +308,22 @@ const steps = [
 		margin-top: var(--space-xl);
 	}
 
-	.hero__plan {
+	.hero__visual {
 		justify-self: end;
 		width: 100%;
 		max-width: 420px;
+		animation: hero-image-enter 700ms var(--ease-out) both;
+	}
+
+	@keyframes hero-image-enter {
+		from {
+			opacity: 0;
+			transform: translateY(12px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	}
 
 	.section-lead {
@@ -423,12 +435,18 @@ const steps = [
 			grid-template-columns: 1fr;
 		}
 
-		.hero__plan {
+		.hero__visual {
 			justify-self: start;
 		}
 
 		.plan-grid {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (min-width: 1001px) {
+		:global(.hero) {
+			min-height: calc(100svh - var(--header-height));
 		}
 	}
 
@@ -453,6 +471,12 @@ const steps = [
 	@media (max-width: 560px) {
 		.plan-grid {
 			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero__visual {
+			animation: none;
 		}
 	}
 </style>

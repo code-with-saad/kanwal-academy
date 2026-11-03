@@ -133,6 +133,10 @@ const isCurrent = (url: string) => {
 		align-items: center;
 		justify-content: space-between;
 		gap: var(--space-lg);
+		width: 100%;
+		max-width: calc(var(--container) + var(--gutter) * 2);
+		margin-inline: auto;
+		padding-inline: var(--gutter);
 		min-height: var(--header-height);
 		position: relative;
 	}
