@@ -433,31 +433,10 @@ const steps = [
 			</Section>
 		) : null
 	}
-
-	<button class="go-top" type="button" data-go-top aria-label="Go to top" hidden>
-		<svg viewBox="0 0 24 24" aria-hidden="true">
-			<path d="M12 19V5m-6 6 6-6 6 6" />
-		</svg>
-	</button>
 </Base>
 
 <script>
-	const goTop = document.querySelector<HTMLButtonElement>("[data-go-top]");
-	if (goTop) {
-		const updateVisibility = () => {
-			goTop.hidden = window.scrollY < 320;
-		};
-		window.addEventListener("scroll", updateVisibility, { passive: true });
-		updateVisibility();
-		goTop.addEventListener("click", () => {
-			window.scrollTo({
-				top: 0,
-				behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-					? "auto"
-					: "smooth",
-			});
-		});
-	}
+	/* The go-top button now lives in the site footer. */
 </script>
 
 <style>

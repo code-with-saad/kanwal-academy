@@ -13,58 +13,64 @@ interface Props {
 
 const { contact, siteName = site.name, settingsEdit } = Astro.props;
 const year = new Date().getFullYear();
+
+const academyLinks = [
+	{ label: "About", url: "/about" },
+	{ label: contact.footer.teachersLabel, url: "/teachers", field: "footer_teachers_label" as const },
+	{ label: contact.footer.pricingLabel, url: "/pricing", field: "footer_pricing_label" as const },
+	{ label: contact.footer.trialLabel, url: "/free-trial", field: "footer_trial_label" as const },
+	{ label: contact.footer.contactLinkLabel, url: "/contact", field: "footer_contact_link_label" as const },
+];
 ---
 
-<footer class="site-footer tone-dark">
+<footer class="site-footer">
 	<Container>
-		<div class="footer__grid">
+		<div class="footer__top">
 			<div class="footer__brand">
-				<a href="/" class="footer__wordmark" aria-label={`${siteName}, home`}>
+				<a href="/" class="footer__logo-link" aria-label={`${siteName}, home`}>
 					<img
 						class="footer__logo"
-						src="/images/kanwal-logo-on-dark.png"
+						src="/images/kanwal-logo-on-light.png"
 						alt={siteName}
 						width="1668"
 						height="712"
 					/>
 				</a>
-				<p class="footer__tagline" {...settingsEdit?.footer_tagline}>
+				<p class="footer__description" {...settingsEdit?.footer_tagline}>
 					{contact.footer.tagline}
 				</p>
-				{
-					contact.socialLinks.length > 0 && (
-						<ul class="footer__social">
-							{contact.socialLinks.map((link) => (
-								<li>
-									<a href={link.url} target="_blank" rel="noopener noreferrer">
-										{link.label}
-									</a>
-								</li>
-							))}
-						</ul>
-					)
-				}
 			</div>
 
-			<nav class="footer__column" aria-labelledby="footer-explore">
-				<h2 id="footer-explore" class="footer__heading" {...settingsEdit?.footer_explore_label}>
-					{contact.footer.exploreLabel}
+			<nav class="footer__column" aria-labelledby="footer-courses">
+				<h2 id="footer-courses" class="footer__heading" {...settingsEdit?.footer_courses_label}>
+					{contact.footer.coursesLabel}
 				</h2>
 				<ul class="footer__links">
+					<li>
+						<a href="/courses">{contact.footer.coursesLabel}</a>
+					</li>
+					<li>
+						<a href="/courses/quranic-recitation">Qur'anic Recitation</a>
+					</li>
+					<li>
+						<a href="/courses/tajweed-proficiency">Tajweed Proficiency</a>
+					</li>
+					<li>
+						<a href="/courses/memorization-excellence">Memorization Excellence</a>
+					</li>
+				</ul>
+			</nav>
+
+			<nav class="footer__column" aria-labelledby="footer-academy">
+				<h2 id="footer-academy" class="footer__heading">Academy</h2>
+				<ul class="footer__links">
 					{
-						site.footerLinks.map((item, index) => {
-							const labels = [
-								["footer_courses_label", contact.footer.coursesLabel],
-								["footer_pricing_label", contact.footer.pricingLabel],
-								["footer_teachers_label", contact.footer.teachersLabel],
-								["footer_trial_label", contact.footer.trialLabel],
-								["footer_contact_link_label", contact.footer.contactLinkLabel],
-							] as const;
-							const [field, label] = labels[index] ?? ["footer_courses_label", item.label];
+						academyLinks.map((link) => {
+							const field = "field" in link ? link.field : null;
 							return (
-							<li>
-								<a href={item.url} {...settingsEdit?.[field]}>{label}</a>
-							</li>
+								<li>
+									<a href={link.url} {...(field ? settingsEdit?.[field] : {})}>{link.label}</a>
+								</li>
 							);
 						})
 					}
@@ -84,7 +90,7 @@ const year = new Date().getFullYear();
 		</div>
 
 		<div class="footer__bottom">
-			<p>
+			<p class="footer__copy">
 				&copy; {year} {siteName}. <span {...settingsEdit?.footer_copyright_label}>{contact.footer.copyrightLabel}</span>
 			</p>
 			<ul class="footer__legal">
@@ -101,87 +107,98 @@ const year = new Date().getFullYear();
 					})
 				}
 			</ul>
-
-			<div class="footer__theme">
+			<div class="footer__end">
 				<ThemeToggle />
+				<button
+					class="footer__top-btn"
+					type="button"
+					data-go-top
+					aria-label="Go to top"
+					hidden
+				>
+					<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+						<path
+							d="M12 19V5m-6 6 6-6 6 6"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.8"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						/>
+					</svg>
+				</button>
 			</div>
 		</div>
 	</Container>
 </footer>
 
+<script>
+	const goTop = document.querySelector<HTMLButtonElement>("[data-go-top]");
+	if (goTop) {
+		const update = () => {
+			goTop.hidden = window.scrollY < 320;
+		};
+		window.addEventListener("scroll", update, { passive: true });
+		update();
+		document.addEventListener("astro:after-swap", update);
+		goTop.addEventListener("click", () => {
+			window.scrollTo({
+				top: 0,
+				behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+					? "auto"
+					: "smooth",
+			});
+		});
+	}
+</script>
+
 <style>
 	.site-footer {
 		padding-block: var(--space-3xl) var(--space-lg);
-		background: var(--bg-dark);
-		color: var(--text-on-dark);
+		background: var(--page);
+		color: var(--ink);
+		border-top: 1px solid var(--line);
+		margin-top: auto;
 	}
 
-	.footer__grid {
+	.footer__top {
 		display: grid;
-		grid-template-columns: minmax(0, 1.8fr) minmax(120px, 0.8fr) minmax(0, 1fr);
+		grid-template-columns: minmax(0, 1.8fr) repeat(3, minmax(0, 1fr));
 		gap: var(--space-2xl);
 		padding-bottom: var(--space-2xl);
 	}
 
-	.footer__wordmark {
+	.footer__logo-link {
 		display: inline-flex;
 		align-items: center;
-		color: var(--text-on-dark);
-		font-family: var(--font-heading, Georgia, serif);
-		font-size: clamp(1.375rem, 2vw, 1.75rem);
-		font-weight: 600;
-		line-height: 1.1;
-		letter-spacing: -0.01em;
+		color: var(--ink);
 		text-decoration: none;
 	}
 
 	.footer__logo {
 		display: block;
-		height: 96px;
+		min-height: 96px;
 		width: auto;
-		max-width: 100%;
+		max-width: 260px;
+		height: auto;
 		object-fit: contain;
 	}
 
-	.footer__wordmark:hover {
-		color: var(--sage);
-	}
-
-	.footer__tagline {
+	.footer__description {
 		max-width: 36ch;
 		margin-top: var(--space-md);
-		color: var(--muted-on-dark);
+		color: var(--ink-muted);
 		font-size: var(--size-small);
-	}
-
-	.footer__social {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-md);
-		margin-top: var(--space-md);
-	}
-
-	.footer__social a {
-		color: var(--text-on-dark);
-		font-size: var(--size-small);
-		text-decoration: none;
-	}
-
-	.footer__social a:hover {
-		color: var(--sage);
-		text-decoration: underline;
-		text-underline-offset: 4px;
+		line-height: 1.6;
 	}
 
 	.footer__heading {
 		margin-bottom: var(--space-md);
-		color: var(--muted-on-dark);
-		font-family: var(--font-body, "Instrument Sans", Arial, sans-serif);
-		font-size: var(--size-eyebrow);
+		color: var(--ink);
+		font-family: var(--font-heading);
+		font-size: 0.9375rem;
 		font-weight: 600;
-		letter-spacing: var(--tracking-eyebrow);
 		line-height: 1.2;
-		text-transform: uppercase;
 	}
 
 	.footer__links {
@@ -191,7 +208,7 @@ const year = new Date().getFullYear();
 
 	.footer__links a,
 	.footer__address a {
-		color: var(--text-on-dark);
+		color: var(--ink-muted);
 		font-size: var(--size-small);
 		text-decoration: none;
 		transition: color var(--transition);
@@ -199,17 +216,16 @@ const year = new Date().getFullYear();
 
 	.footer__links a:hover,
 	.footer__address a:hover {
-		color: var(--sage);
-		text-decoration: underline;
-		text-underline-offset: 4px;
+		color: var(--green-deep);
 	}
 
 	.footer__address {
 		display: grid;
 		gap: var(--space-xs);
-		color: var(--muted-on-dark);
+		color: var(--ink-muted);
 		font-size: var(--size-small);
 		font-style: normal;
+		line-height: 1.6;
 	}
 
 	.footer__bottom {
@@ -219,9 +235,13 @@ const year = new Date().getFullYear();
 		justify-content: space-between;
 		gap: var(--space-md);
 		padding-top: var(--space-lg);
-		border-top: 1px solid var(--line-dark);
-		color: var(--muted-on-dark);
+		border-top: 1px solid var(--line);
+		color: var(--ink-muted);
 		font-size: 0.875rem;
+	}
+
+	.footer__copy {
+		margin: 0;
 	}
 
 	.footer__legal {
@@ -231,19 +251,49 @@ const year = new Date().getFullYear();
 	}
 
 	.footer__legal a {
-		color: var(--muted-on-dark);
+		color: var(--ink-muted);
 		text-decoration: none;
 	}
 
 	.footer__legal a:hover {
-		color: var(--text-on-dark);
-		text-decoration: underline;
-		text-underline-offset: 4px;
+		color: var(--green-deep);
 	}
 
-	@media (max-width: 800px) {
-		.footer__grid {
-			grid-template-columns: 1fr 1fr;
+	.footer__end {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+	}
+
+	.footer__top-btn {
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		padding: 0;
+		border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+		border-radius: var(--radius-button);
+		background: transparent;
+		color: var(--ink);
+		transition:
+			border-color var(--transition),
+			color var(--transition),
+			background-color var(--transition);
+	}
+
+	.footer__top-btn:hover {
+		border-color: var(--ink);
+		background: color-mix(in srgb, var(--ink) 5%, transparent);
+	}
+
+	.footer__top-btn[hidden] {
+		display: none;
+	}
+
+	@media (max-width: 900px) {
+		.footer__top {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+			gap: var(--space-xl);
 		}
 
 		.footer__brand {
@@ -252,9 +302,13 @@ const year = new Date().getFullYear();
 	}
 
 	@media (max-width: 520px) {
-		.footer__grid {
+		.footer__top {
 			grid-template-columns: 1fr;
-			gap: var(--space-xl);
+		}
+
+		.footer__bottom {
+			flex-direction: column;
+			align-items: flex-start;
 		}
 	}
 </style>

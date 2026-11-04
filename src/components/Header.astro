@@ -24,11 +24,15 @@ const isCurrent = (url: string) => {
 	const target = url.length > 1 ? url.replace(/\/+$/, "") : url;
 	return target === "/" ? path === "/" : path === target || path.startsWith(`${target}/`);
 };
+
+const isHome = tone === "dark";
 ---
 
-<header class:list={["site-header", tone === "dark" && "site-header--dark tone-dark"]}>
-	<!-- Plain div, not Container: scoped styles must reach this element. -->
-	<div class="container header__inner">
+<header
+	class:list={["site-header", isHome && "site-header--home"]}
+	data-header
+>
+	<div class="header__inner">
 		<a href="/" class="header__brand" aria-label={`${siteName}, home`}>
 			<img
 				class="header__mark header__mark--on-light"
@@ -47,31 +51,19 @@ const isCurrent = (url: string) => {
 			<span class="header__name">{siteName}</span>
 		</a>
 
-		<div class="header__panel" id="site-menu" data-menu-panel>
-			<nav aria-label="Primary">
-				<ul class="header__nav">
-					{
-						items.map((item) => (
-							<li>
-								<a
-									href={item.url}
-									class="header__link"
-									aria-current={isCurrent(item.url) ? "page" : undefined}
-								>
-									{item.label}
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</nav>
-			<div class="header__cta-mobile">
-				<ThemeToggle />
-				<Button href={cta.url} variant="primary">
-					{cta.label}
-				</Button>
-			</div>
-		</div>
+		<nav class="header__nav" aria-label="Primary">
+			{
+				items.map((item) => (
+					<a
+						href={item.url}
+						class="header__link"
+						aria-current={isCurrent(item.url) ? "page" : undefined}
+					>
+						{item.label}
+					</a>
+				))
+			}
+		</nav>
 
 		<div class="header__end">
 			<ThemeToggle />
@@ -87,8 +79,8 @@ const isCurrent = (url: string) => {
 				data-menu-toggle
 				aria-expanded="false"
 				aria-controls="site-menu"
+				aria-label="Open menu"
 			>
-				<span class="header__toggle-label" data-menu-label>Menu</span>
 				<span class="header__toggle-icon" aria-hidden="true">
 					<span></span>
 					<span></span>
@@ -96,18 +88,44 @@ const isCurrent = (url: string) => {
 			</button>
 		</div>
 	</div>
+
+	<div class="header__panel" id="site-menu" data-menu-panel>
+		<nav class="header__panel-nav" aria-label="Primary">
+			{
+				items.map((item) => (
+					<a
+						href={item.url}
+						class="header__mobile-link"
+						aria-current={isCurrent(item.url) ? "page" : undefined}
+					>
+						{item.label}
+					</a>
+				))
+			}
+		</nav>
+		<div class="header__panel-end">
+			<ThemeToggle />
+			<Button href={cta.url} variant="primary">
+				{cta.label}
+			</Button>
+		</div>
+	</div>
+	<div class="header__scrim" data-menu-scrim hidden></div>
 </header>
 
 <script>
 	const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
 	const panel = document.querySelector<HTMLElement>("[data-menu-panel]");
-	const label = document.querySelector<HTMLElement>("[data-menu-label]");
+	const scrim = document.querySelector<HTMLElement>("[data-menu-scrim]");
+	const header = document.querySelector<HTMLElement>("[data-header]");
 
 	if (toggle && panel) {
 		const setOpen = (open: boolean) => {
 			panel.classList.toggle("is-open", open);
+			scrim?.toggleAttribute("hidden", !open);
 			toggle.setAttribute("aria-expanded", String(open));
-			if (label) label.textContent = open ? "Close" : "Menu";
+			toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+			document.body.toggleAttribute("data-menu-open", open);
 		};
 
 		const close = () => setOpen(false);
@@ -115,6 +133,8 @@ const isCurrent = (url: string) => {
 		toggle.addEventListener("click", () => {
 			setOpen(toggle.getAttribute("aria-expanded") !== "true");
 		});
+
+		scrim?.addEventListener("click", close);
 
 		panel.addEventListener("click", (event) => {
 			if (event.target instanceof Element && event.target.closest("a")) close();
@@ -132,6 +152,15 @@ const isCurrent = (url: string) => {
 			if (event.matches) close();
 		});
 	}
+
+	if (header) {
+		const onScroll = () => {
+			header.classList.toggle("is-scrolled", window.scrollY > 8);
+		};
+		window.addEventListener("scroll", onScroll, { passive: true });
+		onScroll();
+		document.addEventListener("astro:after-swap", onScroll);
+	}
 </script>
 
 <style>
@@ -141,58 +170,65 @@ const isCurrent = (url: string) => {
 		z-index: 50;
 		background: var(--page);
 		border-bottom: 1px solid var(--line);
+		transition:
+			top 220ms var(--ease-out),
+			background-color 220ms var(--ease-out),
+			border-color 220ms var(--ease-out),
+			margin 220ms var(--ease-out),
+			border-radius 220ms var(--ease-out),
+			box-shadow 220ms var(--ease-out);
 	}
 
-	.site-header--dark {
-		background: var(--bg-dark);
+	.site-header--home {
+		background: transparent;
+		border-bottom-color: transparent;
+	}
+
+	/* Sticky pill, 12px from the viewport top, narrower than the sheet. */
+	.site-header.is-scrolled {
+		top: 12px;
+		background: var(--page);
+		border: 1px solid var(--line);
+		border-radius: var(--radius-panel);
+		margin-inline: 16px;
+		box-shadow: 0 1px 0 color-mix(in srgb, var(--ink) 4%, transparent);
+	}
+
+	.site-header.is-scrolled.site-header--home {
+		background: var(--page);
+		border-color: var(--line);
 	}
 
 	.header__inner {
-		display: flex;
+		display: grid;
+		grid-template-columns: auto 1fr auto;
 		align-items: center;
-		justify-content: space-between;
 		gap: var(--space-lg);
 		width: 100%;
 		max-width: calc(var(--container) + var(--gutter) * 2);
 		margin-inline: auto;
 		padding-inline: var(--gutter);
 		min-height: var(--header-height);
-		position: relative;
 	}
 
-	.header__end {
-		display: flex;
-		align-items: center;
-		gap: var(--space-sm);
-	}
-
+	/* Brand */
 	.header__brand {
 		display: inline-flex;
 		align-items: center;
 		gap: 10px;
 		color: var(--ink);
 		text-decoration: none;
-		transition: color var(--transition);
 	}
 
 	.header__mark {
 		display: block;
-		height: 44px;
+		height: 36px;
 		width: auto;
 		object-fit: contain;
 	}
 
 	.header__mark--on-dark {
 		display: none;
-	}
-
-	/* Show the mark that matches the surface behind the header. */
-	.site-header--dark .header__mark--on-light {
-		display: none;
-	}
-
-	.site-header--dark .header__mark--on-dark {
-		display: block;
 	}
 
 	:global(html[data-theme="dark"]) .header__mark--on-light {
@@ -203,167 +239,258 @@ const isCurrent = (url: string) => {
 		display: block;
 	}
 
-	.header__name {
-		color: var(--ink);
-		font-family: var(--font-heading, Georgia, serif);
-		font-size: 20px;
-		font-weight: 600;
-		line-height: 1.1;
-		letter-spacing: -0.01em;
+	/* On Home the mint panel sits behind the header; pick the mark that
+	   reads against the mint surface rather than the page surface. */
+	:global(body[data-is-home]) .header__mark--on-light {
+		display: block;
 	}
 
-	.header__brand:hover .header__name {
-		color: var(--accent);
-	}
-
-	.header__panel {
+	:global(body[data-is-home]) .header__mark--on-dark {
 		display: none;
 	}
 
-	.header__panel.is-open {
-		display: block;
-		position: fixed;
-		inset: var(--header-height) 0 0;
-		overflow-y: auto;
-		padding: var(--space-lg) var(--gutter) var(--space-2xl);
-		background: var(--surface);
-		border-bottom: 1px solid var(--line);
-		overscroll-behavior: contain;
+	:global(body[data-is-home][data-theme="dark"]) .header__mark--on-light {
+		display: none;
 	}
 
+	:global(body[data-is-home][data-theme="dark"]) .header__mark--on-dark {
+		display: block;
+	}
+
+	/* Once the pill has formed, the surface is --page again. */
+	.site-header.is-scrolled .header__mark--on-light {
+		display: block;
+	}
+
+	.site-header.is-scrolled .header__mark--on-dark {
+		display: none;
+	}
+
+	:global(html[data-theme="dark"]) .site-header.is-scrolled .header__mark--on-light {
+		display: none;
+	}
+
+	:global(html[data-theme="dark"]) .site-header.is-scrolled .header__mark--on-dark {
+		display: block;
+	}
+
+	.header__name {
+		color: var(--ink);
+		font-family: var(--font-heading);
+		font-size: 1.0625rem;
+		font-weight: 600;
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+	}
+
+	/* Centred desktop nav */
 	.header__nav {
-		display: grid;
+		display: none;
+		align-items: center;
+		justify-content: center;
 		gap: var(--space-2xs);
 	}
 
 	.header__link {
-		display: block;
-		padding: 10px 0;
+		display: inline-flex;
+		align-items: center;
+		height: 36px;
+		padding: 0 14px;
 		color: var(--ink-muted);
 		font-size: 0.9375rem;
 		font-weight: 500;
+		line-height: 1;
 		text-decoration: none;
-		transition: color var(--transition);
+		border-radius: var(--radius-button);
+		transition:
+			color var(--transition),
+			background-color var(--transition);
 	}
 
-	.header__link:hover,
-	.header__link[aria-current="page"] {
+	.header__link:hover {
 		color: var(--ink);
 	}
 
 	.header__link[aria-current="page"] {
-		text-decoration: underline;
-		text-decoration-color: var(--accent);
-		text-underline-offset: 6px;
+		background: var(--mint-100);
+		color: var(--ink);
 	}
 
-	.header__cta-mobile {
+	/* End cluster */
+	.header__end {
 		display: flex;
-		flex-wrap: wrap;
 		align-items: center;
 		gap: var(--space-sm);
-		margin-top: var(--space-md);
+		justify-self: end;
 	}
 
 	.header__cta-wrap {
 		display: none;
 		align-items: center;
-		gap: var(--space-sm);
 	}
 
+	/* Hamburger */
 	.header__toggle {
 		display: inline-flex;
 		align-items: center;
-		gap: 10px;
-		padding: 9px 12px;
-		border: 1px solid var(--line);
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+		padding: 0;
+		border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
 		border-radius: var(--radius-button);
 		background: transparent;
 		color: var(--ink);
-		font-size: 0.875rem;
-		font-weight: 600;
 	}
 
 	.header__toggle-icon {
 		display: grid;
-		gap: 4px;
-		width: 14px;
+		gap: 5px;
+		width: 16px;
 	}
 
 	.header__toggle-icon span {
 		display: block;
-		height: 1px;
+		height: 1.5px;
 		background: currentColor;
+		border-radius: 1px;
 		transition: transform var(--transition);
 	}
 
 	.header__toggle[aria-expanded="true"] .header__toggle-icon span:first-child {
-		transform: translateY(2.5px) rotate(45deg);
+		transform: translateY(3.25px) rotate(45deg);
 	}
 
 	.header__toggle[aria-expanded="true"] .header__toggle-icon span:last-child {
-		transform: translateY(-2.5px) rotate(-45deg);
+		transform: translateY(-3.25px) rotate(-45deg);
 	}
 
+	/* Mobile slide panel */
+	.header__panel {
+		display: none;
+	}
+
+	.header__panel.is-open {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-lg);
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		width: min(380px, 86vw);
+		padding: calc(var(--header-height) + var(--space-lg)) var(--gutter) var(--space-2xl);
+		background: var(--page);
+		border-inline-start: 1px solid var(--line);
+		z-index: 60;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		animation: panel-slide 260ms var(--ease-out);
+	}
+
+	@keyframes panel-slide {
+		from {
+			transform: translateX(100%);
+		}
+		to {
+			transform: translateX(0);
+		}
+	}
+
+	.header__panel-nav {
+		display: grid;
+		gap: var(--space-2xs);
+	}
+
+	.header__mobile-link {
+		display: flex;
+		align-items: center;
+		min-height: 44px;
+		padding: 8px 14px;
+		color: var(--ink);
+		font-size: 1.0625rem;
+		font-weight: 500;
+		text-decoration: none;
+		border-radius: var(--radius-button);
+	}
+
+	.header__mobile-link[aria-current="page"] {
+		background: var(--mint-100);
+	}
+
+	.header__panel-end {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-sm);
+		margin-top: auto;
+		padding-top: var(--space-md);
+		border-top: 1px solid var(--line);
+	}
+
+	.header__scrim {
+		position: fixed;
+		inset: 0;
+		background: color-mix(in srgb, var(--ink) 30%, transparent);
+		z-index: 55;
+	}
+
+	.header__scrim[hidden] {
+		display: none;
+	}
+
+	:global(body[data-menu-open]) {
+		overflow: hidden;
+	}
+
+	/* ---- Breakpoints ------------------------------------------------ */
 	@media (max-width: 560px) {
 		.header__inner {
-			gap: var(--space-md);
+			gap: var(--space-sm);
+			padding-inline: var(--space-md);
+		}
+
+		.header__name {
+			font-size: 0.9375rem;
 		}
 
 		.header__end {
 			gap: var(--space-xs);
 		}
-
-		/* Keep the label for screen readers but free up room for the brand name. */
-		.header__toggle-label {
-			position: absolute;
-			width: 1px;
-			height: 1px;
-			margin: -1px;
-			padding: 0;
-			overflow: hidden;
-			clip: rect(0 0 0 0);
-			white-space: nowrap;
-			border: 0;
-		}
-
-		.header__toggle {
-			padding: 9px 12px;
-		}
 	}
 
 	@media (min-width: 1024px) {
-		.header__panel {
-			display: block;
-			position: static;
-			inset: auto;
-			overflow: visible;
-			margin-inline-start: auto;
-			padding: 0;
-			background: transparent;
-			border: 0;
-		}
-
 		.header__nav {
 			display: flex;
-			align-items: center;
-			gap: clamp(14px, 2vw, 28px);
-		}
-
-		.header__link {
-			padding: 8px 0;
 		}
 
 		.header__cta-wrap {
 			display: flex;
 		}
 
-		.header__cta-mobile {
+		.header__toggle {
 			display: none;
 		}
 
-		.header__toggle {
+		/* The slide panel and scrim are desktop-hidden regardless of state. */
+		.header__panel,
+		.header__panel.is-open {
 			display: none;
+		}
+
+		.header__scrim,
+		.header__scrim[hidden] {
+			display: none;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.site-header {
+			transition: none;
+		}
+
+		.header__panel.is-open {
+			animation: none;
 		}
 	}
 </style>
