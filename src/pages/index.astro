@@ -14,10 +14,12 @@ import Section from "../components/Section.astro";
 import StandingOut from "../components/StandingOut.astro";
 import Step from "../components/Step.astro";
 import StudyBlock from "../components/StudyBlock.astro";
+import TeachersGrid from "../components/TeachersGrid.astro";
 import WisdomPanel from "../components/WisdomPanel.astro";
 import { site } from "../config/site";
 import { heroImage } from "../config/images";
 import { getSiteContact } from "../utils/site-config";
+import { isDemoMode } from "../utils/env";
 import { formatUsdPrice } from "../utils/price";
 import type { Page } from "../../emdash-env";
 
@@ -57,23 +59,38 @@ interface HomePageFields {
 
 type HomeTextField = Exclude<keyof HomePageFields, "home_image">;
 
-const [coursesResult, plansResult, testimonialsResult, contactResult, homeResult] =
-	await Promise.all([
-		getEmDashCollection("courses", {
-			status: "published",
-			orderBy: { order: "asc" },
-		}),
-		getEmDashCollection("plans", {
-			status: "published",
-			orderBy: { order: "asc" },
-		}),
-		getEmDashCollection("testimonials", {
-			status: "published",
-			orderBy: { order: "asc" },
-		}),
-		getSiteContact(),
-		getEmDashEntry("pages", "home"),
-	]);
+const [
+	coursesResult,
+	plansResult,
+	testimonialsResult,
+	contactResult,
+	homeResult,
+	teachersResult,
+	postsResult,
+] = await Promise.all([
+	getEmDashCollection("courses", {
+		status: "published",
+		orderBy: { order: "asc" },
+	}),
+	getEmDashCollection("plans", {
+		status: "published",
+		orderBy: { order: "asc" },
+	}),
+	getEmDashCollection("testimonials", {
+		status: "published",
+		orderBy: { order: "asc" },
+	}),
+	getSiteContact(),
+	getEmDashEntry("pages", "home"),
+	getEmDashCollection("teachers", {
+		status: "published",
+		orderBy: { order: "asc" },
+	}),
+	getEmDashCollection("posts", {
+		status: "published",
+		orderBy: { published_at: "desc" },
+	}),
+]);
 
 if (Astro.cache?.enabled) {
 	Astro.cache.set(coursesResult.cacheHint);
@@ -81,13 +98,19 @@ if (Astro.cache?.enabled) {
 	Astro.cache.set(testimonialsResult.cacheHint);
 	Astro.cache.set(contactResult.cacheHint);
 	Astro.cache.set(homeResult.cacheHint);
+	Astro.cache.set(teachersResult.cacheHint);
+	Astro.cache.set(postsResult.cacheHint);
 }
 
 const courses = coursesResult.entries;
-const plans = plansResult.entries;const testimonials = testimonialsResult.entries.filter(
+const plans = plansResult.entries;
+const testimonials = testimonialsResult.entries.filter(
 	(testimonial) => testimonial.data.consent_given === true,
 );
+const teachers = teachersResult.entries;
+const posts = postsResult.entries;
 const contact = contactResult.data;
+const demo = isDemoMode(Astro.locals);
 
 // Arabic course names supplied by the academy.
 const courseArabic: Record<string, string> = {
@@ -549,6 +572,24 @@ const steps = [
 			</ol>
 		</Container>
 	</Section>
+
+	{
+		teachers.length > 0 || demo ? (
+			<Section>
+				<Container>
+					<div class="section-head">
+						<Eyebrow>Teachers</Eyebrow>
+						<h2>Meet your teachers</h2>
+						<p class="section-lead">
+							Every lesson is one to one. We match students with a teacher who fits their
+							course, level and time zone.
+						</p>
+					</div>
+					<TeachersGrid teachers={teachers} demo={demo} />
+				</Container>
+			</Section>
+		) : null
+	}
 
 	{
 		testimonials.length > 0 ? (

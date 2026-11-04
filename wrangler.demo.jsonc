@@ -21,4 +21,8 @@
 	// No r2_buckets: media uploads and the Media Library are disabled.
 	// No worker_loaders: sandboxed plugins are disabled.
 	// No triggers: scheduled publishing, backups and maintenance do not run.
+	// The demo flag shows clearly labelled placeholder cards for empty collections.
+	"vars": {
+		"EMDASH_DEMO": "1",
+	},
 }

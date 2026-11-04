@@ -1,73 +1,66 @@
 ---
-import Container from "./Container.astro";
-
-interface Props {
-	countries: string;
-	lowestPrice: string;
+interface Fact {
+	label: string;
+	icon: "device" | "trial" | "price" | "globe";
 }
 
-const { countries, lowestPrice } = Astro.props;
+interface Props {
+	facts: Fact[];
+}
 
-const facts = [
-	{ icon: "device" as const, label: "Any device with a camera" },
-	{ icon: "trial" as const, label: "Free trial class" },
-	{ icon: "price" as const, label: `Plans from ${lowestPrice} per month` },
-	{ icon: "globe" as const, label: `Students from ${countries} countries` },
-];
+const { facts } = Astro.props;
 ---
 
 <section class="facts">
-	<Container>
-		<ul class="facts__grid">
-			{
-				facts.map((fact) => (
-					<li class="facts__item">
-						<span class="facts__icon" aria-hidden="true">
-							<svg
-								viewBox="0 0 24 24"
-								width="22"
-								height="22"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.4"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								{fact.icon === "device" && (
-									<>
-										<rect x="4.75" y="3.5" width="14.5" height="17" rx="2.5" />
-										<circle cx="12" cy="7.75" r="1" />
-										<path d="M9.5 17.25h5" />
-									</>
-								)}
-								{fact.icon === "trial" && (
-									<>
-										<rect x="4" y="5.5" width="16" height="14" rx="3" />
-										<path d="M4 10.5h16M9 3v4m6-4v4" />
-										<path d="M9.6 15.2l2 2 3.6-3.6" />
-									</>
-								)}
-								{fact.icon === "price" && (
-									<>
-										<circle cx="12" cy="12" r="8.25" />
-										<path d="M12 6.75v10.5M14.4 9.4c-.5-.65-1.35-1.05-2.4-1.05-1.5 0-2.55.75-2.55 1.75s1.05 1.55 2.55 1.55 2.55.55 2.55 1.55-1.05 1.75-2.55 1.75c-1.05 0-1.9-.4-2.4-1.05" />
-									</>
-								)}
-								{fact.icon === "globe" && (
-									<>
-										<circle cx="12" cy="12" r="8.5" />
-										<ellipse cx="12" cy="12" rx="4" ry="8.5" />
-										<path d="M3.5 12h17" />
-									</>
-								)}
-							</svg>
-						</span>
-						<span class="facts__label">{fact.label}</span>
-					</li>
-				))
-			}
-		</ul>
-	</Container>
+	<ul class="facts__grid">
+		{
+			facts.map((fact) => (
+				<li class="facts__item">
+					<span class="facts__icon" aria-hidden="true">
+						<svg
+							viewBox="0 0 24 24"
+							width="22"
+							height="22"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.4"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							{fact.icon === "device" && (
+								<>
+									<rect x="4.75" y="3.5" width="14.5" height="17" rx="2.5" />
+									<circle cx="12" cy="7.75" r="1" />
+									<path d="M9.5 17.25h5" />
+								</>
+							)}
+							{fact.icon === "trial" && (
+								<>
+									<rect x="4" y="5.5" width="16" height="14" rx="3" />
+									<path d="M4 10.5h16M9 3v4m6-4v4" />
+									<path d="M9.6 15.2l2 2 3.6-3.6" />
+								</>
+							)}
+							{fact.icon === "price" && (
+								<>
+									<circle cx="12" cy="12" r="8.25" />
+									<path d="M12 6.75v10.5M14.4 9.4c-.5-.65-1.35-1.05-2.4-1.05-1.5 0-2.55.75-2.55 1.75s1.05 1.55 2.55 1.55 2.55.55 2.55 1.55-1.05 1.75-2.55 1.75c-1.05 0-1.9-.4-2.4-1.05" />
+								</>
+							)}
+							{fact.icon === "globe" && (
+								<>
+									<circle cx="12" cy="12" r="8.5" />
+									<ellipse cx="12" cy="12" rx="4" ry="8.5" />
+									<path d="M3.5 12h17" />
+								</>
+							)}
+						</svg>
+					</span>
+					<span class="facts__label">{fact.label}</span>
+				</li>
+			))
+		}
+	</ul>
 </section>
 
 <style>
