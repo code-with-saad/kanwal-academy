@@ -18,13 +18,13 @@ const year = new Date().getFullYear();
 	<Container>
 		<div class="footer__grid">
 			<div class="footer__brand">
-				<a href="/" class="footer__wordmark" aria-label={`${siteName} home`}>
+				<a href="/" class="footer__wordmark" aria-label={`${siteName}, home`}>
 					<img
 						class="footer__logo"
 						src="/images/kanwal-logo-on-dark.png"
 						alt={siteName}
-						width="240"
-						height="56"
+						width="1668"
+						height="712"
 					/>
 				</a>
 				<p class="footer__tagline" {...settingsEdit?.footer_tagline}>
@@ -132,8 +132,9 @@ const year = new Date().getFullYear();
 
 	.footer__logo {
 		display: block;
-		height: 56px;
+		height: 96px;
 		width: auto;
+		max-width: 100%;
 		object-fit: contain;
 	}
 

@@ -28,14 +28,22 @@ const isCurrent = (url: string) => {
 <header class:list={["site-header", tone === "dark" && "site-header--dark tone-dark"]}>
 	<!-- Plain div, not Container: scoped styles must reach this element. -->
 	<div class="container header__inner">
-		<a href="/" class="header__wordmark" aria-label={`${siteName} home`}>
+		<a href="/" class="header__brand" aria-label={`${siteName}, home`}>
 			<img
-				class="header__logo"
-				src={tone === "dark" ? "/images/kanwal-logo-on-dark.png" : "/images/kanwal-logo-on-light.png"}
-				alt={siteName}
-				width="200"
-				height="44"
+				class="header__mark header__mark--on-light"
+				src="/images/kanwal-mark-on-light.png"
+				alt=""
+				width="592"
+				height="688"
 			/>
+			<img
+				class="header__mark header__mark--on-dark"
+				src="/images/kanwal-mark-on-dark.png"
+				alt=""
+				width="592"
+				height="688"
+			/>
+			<span class="header__name">{siteName}</span>
 		</a>
 
 		<div class="header__panel" id="site-menu" data-menu-panel>
@@ -147,27 +155,45 @@ const isCurrent = (url: string) => {
 		position: relative;
 	}
 
-	.header__wordmark {
+	.header__brand {
 		display: inline-flex;
 		align-items: center;
+		gap: 10px;
 		color: var(--text);
-		font-family: var(--font-heading, Georgia, serif);
-		font-size: clamp(1.0625rem, 1.2vw, 1.25rem);
-		font-weight: 600;
-		line-height: 1.1;
-		letter-spacing: -0.01em;
 		text-decoration: none;
 		transition: color var(--transition);
 	}
 
-	.header__logo {
+	.header__mark {
 		display: block;
 		height: 44px;
 		width: auto;
 		object-fit: contain;
 	}
 
-	.header__wordmark:hover {
+	.header__mark--on-dark {
+		display: none;
+	}
+
+	/* Show the mark that matches the surface behind the header. */
+	.site-header--dark .header__mark--on-light {
+		display: none;
+	}
+
+	.site-header--dark .header__mark--on-dark {
+		display: block;
+	}
+
+	.header__name {
+		color: var(--text);
+		font-family: var(--font-heading, Georgia, serif);
+		font-size: 20px;
+		font-weight: 600;
+		line-height: 1.1;
+		letter-spacing: -0.01em;
+	}
+
+	.header__brand:hover .header__name {
 		color: var(--accent);
 	}
 
