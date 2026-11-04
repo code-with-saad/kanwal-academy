@@ -87,7 +87,7 @@ const formatDate = (date: Date | null) =>
 		display: block;
 		overflow: hidden;
 		border-radius: var(--radius-card);
-		background: var(--sand);
+		background: var(--band);
 		aspect-ratio: 16 / 10;
 	}
 
@@ -98,7 +98,7 @@ const formatDate = (date: Date | null) =>
 	}
 
 	.post-card__body time {
-		color: var(--muted);
+		color: var(--ink-muted);
 		font-size: 0.8125rem;
 	}
 
@@ -112,14 +112,14 @@ const formatDate = (date: Date | null) =>
 	}
 
 	.post-card__body h2 a:hover {
-		color: var(--sage-deep);
+		color: var(--accent);
 		text-decoration: underline;
 		text-underline-offset: 4px;
 	}
 
 	.post-card__body p {
 		margin-top: var(--space-sm);
-		color: var(--muted-ink);
+		color: var(--ink-muted);
 		font-size: var(--size-small);
 	}
 
@@ -131,6 +131,6 @@ const formatDate = (date: Date | null) =>
 
 	.empty-note p {
 		margin-top: var(--space-sm);
-		color: var(--muted-ink);
+		color: var(--ink-muted);
 	}
 </style>

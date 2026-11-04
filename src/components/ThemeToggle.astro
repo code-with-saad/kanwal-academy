@@ -1,0 +1,128 @@
+---
+/**
+ * Theme switch. A real button with two custom icons. The inline script in the
+ * Base layout sets data-theme before first paint; this component only reflects
+ * and changes it. Multiple instances on one page share one listener.
+ */
+---
+
+<button
+	type="button"
+	class="theme-toggle"
+	data-theme-toggle
+	aria-pressed="false"
+	aria-label="Switch to dark theme"
+>
+	<span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true">
+		<svg viewBox="0 0 24 24" width="20" height="20" focusable="false">
+			<path
+				d="M20 14.2A8 8 0 0 1 9.8 4a7 7 0 1 0 10.2 10.2Z"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.5"
+				stroke-linecap="round"
+				stroke-linejoin="round"></path>
+		</svg>
+	</span>
+	<span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true">
+		<svg viewBox="0 0 24 24" width="20" height="20" focusable="false">
+			<circle
+				cx="12"
+				cy="12"
+				r="4"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.5"></circle>
+			<path
+				d="M12 2.5v2M12 19.5v2M21.5 12h-2M4.5 12h-2M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4M18.7 18.7l-1.4-1.4M6.7 6.7 5.3 5.3"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.5"
+				stroke-linecap="round"></path>
+		</svg>
+	</span>
+</button>
+
+<script>
+	const TOGGLE_SELECTOR = "[data-theme-toggle]";
+
+	function syncThemeToggles() {
+		const dark = document.documentElement.getAttribute("data-theme") === "dark";
+		document.querySelectorAll<HTMLButtonElement>(TOGGLE_SELECTOR).forEach((button) => {
+			button.setAttribute("aria-pressed", String(dark));
+			button.setAttribute("aria-label", dark ? "Switch to light theme" : "Switch to dark theme");
+		});
+	}
+
+	function initThemeToggles() {
+		syncThemeToggles();
+		document.querySelectorAll<HTMLButtonElement>(TOGGLE_SELECTOR).forEach((button) => {
+			if (button.dataset.themeBound === "true") return;
+			button.dataset.themeBound = "true";
+			button.addEventListener("click", () => {
+				const next =
+					document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+				document.documentElement.setAttribute("data-theme", next);
+				try {
+					localStorage.setItem("theme", next);
+				} catch {
+					/* Storage can be blocked; the attribute still updates for this page. */
+				}
+				syncThemeToggles();
+			});
+		});
+	}
+
+	initThemeToggles();
+	document.addEventListener("astro:after-swap", initThemeToggles);
+</script>
+
+<style>
+	.theme-toggle {
+		position: relative;
+		display: grid;
+		place-items: center;
+		flex: none;
+		width: 44px;
+		height: 44px;
+		padding: 0;
+		border: 1px solid var(--line);
+		border-radius: var(--radius-button);
+		background: transparent;
+		color: var(--ink);
+	}
+
+	.theme-toggle:hover {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+
+	.theme-toggle__icon {
+		position: absolute;
+		inset: 0;
+		display: grid;
+		place-items: center;
+		opacity: 0;
+		transform: rotate(-90deg) scale(0.7);
+		transition:
+			opacity 250ms var(--ease-out),
+			transform 250ms var(--ease-out);
+	}
+
+	/* Light theme: show the moon (action: go dark). Dark theme: show the sun. */
+	:global(html:not([data-theme="dark"])) .theme-toggle__icon--moon,
+	:global(html[data-theme="dark"]) .theme-toggle__icon--sun {
+		opacity: 1;
+		transform: rotate(0) scale(1);
+	}
+
+	.theme-toggle svg {
+		color: inherit;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.theme-toggle__icon {
+			transition: none;
+		}
+	}
+</style>

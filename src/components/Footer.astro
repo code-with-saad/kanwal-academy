@@ -1,6 +1,7 @@
 ---
 import type { EditProxy } from "emdash";
 import Container from "./Container.astro";
+import ThemeToggle from "./ThemeToggle.astro";
 import { site } from "../config/site";
 import { emailHref, phoneHref, type SiteContact } from "../utils/site-config";
 
@@ -100,6 +101,10 @@ const year = new Date().getFullYear();
 					})
 				}
 			</ul>
+
+			<div class="footer__theme">
+				<ThemeToggle />
+			</div>
 		</div>
 	</Container>
 </footer>

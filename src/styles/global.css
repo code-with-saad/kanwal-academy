@@ -10,30 +10,39 @@
 :root {
 	color-scheme: light;
 
-	/* Palette */
+	/* Fixed brand palette. These do not change with the theme. */
 	--bg-dark: #101a16;
 	--surface-dark: #17231e;
+	--surface-dark-2: #1c2b25;
 	--line-dark: #2a3a33;
 	--sage: #6fae7b;
 	--sage-deep: #3f7a4e;
 	--cream: #f6f2e9;
 	--sand: #e7dfcb;
 	--hairline-light: #cfc6b2;
-	--ink: #1b2a24;
-	--muted-ink: #4f5a54;
+	--ink-raw: #1b2a24;
+	--muted-ink-raw: #4f5a54;
 	--muted-on-dark: #a9b8ae;
 	--text-on-dark: #f6f2e9;
 
-	/* Semantic aliases */
+	/* Semantic tokens: light theme. */
 	--page: var(--cream);
 	--surface: var(--cream);
-	/* Cards that sit on the cream page lift a little towards white. */
-	--surface-raised: color-mix(in srgb, var(--cream) 45%, #ffffff);
+	/* Cards lift slightly towards white on the cream page. */
+	--surface-2: color-mix(in srgb, var(--cream) 45%, #ffffff);
+	--band: var(--sand);
+	--ink: var(--ink-raw);
+	--ink-muted: var(--muted-ink-raw);
 	--line: var(--hairline-light);
-	--text: var(--ink);
-	--muted: var(--muted-ink);
 	--accent: var(--sage-deep);
-	--button-text: var(--bg-dark);
+	--on-accent: var(--bg-dark);
+	--focus: var(--sage-deep);
+
+	/* Back-compat aliases used by the shared components. */
+	--text: var(--ink);
+	--muted: var(--ink-muted);
+	--surface-raised: var(--surface-2);
+	--button-text: var(--on-accent);
 
 	/* Typography */
 	--font-heading: var(--font-display);
@@ -76,6 +85,26 @@
 	/* Motion */
 	--ease-out: cubic-bezier(0.2, 0, 0, 1);
 	--transition: 180ms var(--ease-out);
+}
+
+[data-theme="dark"] {
+	color-scheme: dark;
+
+	--page: #101a16;
+	--surface: #17231e;
+	--surface-2: #1c2b25;
+	--band: #14211c;
+	--ink: #f6f2e9;
+	--ink-muted: #a9b8ae;
+	--line: #2a3a33;
+	--accent: #6fae7b;
+	--on-accent: #101a16;
+	--focus: #6fae7b;
+
+	--text: var(--ink);
+	--muted: var(--ink-muted);
+	--surface-raised: var(--surface-2);
+	--button-text: var(--on-accent);
 }
 
 *,
@@ -168,12 +197,18 @@ select {
 	color: inherit;
 }
 
+input::placeholder,
+textarea::placeholder {
+	color: var(--ink-muted);
+	opacity: 1;
+}
+
 button {
 	cursor: pointer;
 }
 
 :focus-visible {
-	outline: 2px solid currentColor;
+	outline: 2px solid var(--focus);
 	outline-offset: 3px;
 }
 
@@ -259,7 +294,7 @@ button {
 }
 
 .prose a {
-	color: var(--sage-deep);
+	color: var(--accent);
 	text-decoration: underline;
 }
 
@@ -291,15 +326,21 @@ button {
 	font-size: 0.9em;
 }
 
-/* Dark panels and sections switch the semantic aliases, not the palette. */
+/* Dark panels and sections switch the semantic tokens, not the palette. */
 .tone-dark {
 	--surface: var(--surface-dark);
+	--surface-2: var(--surface-dark-2);
 	--line: var(--line-dark);
-	--text: var(--text-on-dark);
-	--muted: var(--muted-on-dark);
+	--ink: var(--text-on-dark);
+	--ink-muted: var(--muted-on-dark);
 	--accent: var(--sage);
-	--button-text: var(--bg-dark);
-	color: var(--text);
+	--on-accent: var(--bg-dark);
+	--focus: var(--sage);
+	--text: var(--ink);
+	--muted: var(--ink-muted);
+	--surface-raised: var(--surface-2);
+	--button-text: var(--on-accent);
+	color: var(--ink);
 }
 
 /* Dark sections inherit their own text and link colours. */

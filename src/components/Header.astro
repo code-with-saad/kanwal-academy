@@ -1,5 +1,6 @@
 ---
 import Button from "./Button.astro";
+import ThemeToggle from "./ThemeToggle.astro";
 import { site, type NavItem } from "../config/site";
 
 interface Props {
@@ -65,31 +66,35 @@ const isCurrent = (url: string) => {
 				</ul>
 			</nav>
 			<div class="header__cta-mobile">
+				<ThemeToggle />
 				<Button href={cta.url} variant="primary">
 					{cta.label}
 				</Button>
 			</div>
 		</div>
 
-		<div class="header__cta-wrap">
-			<Button href={cta.url} variant="primary">
-				{cta.label}
-			</Button>
-		</div>
+		<div class="header__end">
+			<ThemeToggle />
+			<div class="header__cta-wrap">
+				<Button href={cta.url} variant="primary">
+					{cta.label}
+				</Button>
+			</div>
 
-		<button
-			type="button"
-			class="header__toggle"
-			data-menu-toggle
-			aria-expanded="false"
-			aria-controls="site-menu"
-		>
-			<span class="header__toggle-label" data-menu-label>Menu</span>
-			<span class="header__toggle-icon" aria-hidden="true">
-				<span></span>
-				<span></span>
-			</span>
-		</button>
+			<button
+				type="button"
+				class="header__toggle"
+				data-menu-toggle
+				aria-expanded="false"
+				aria-controls="site-menu"
+			>
+				<span class="header__toggle-label" data-menu-label>Menu</span>
+				<span class="header__toggle-icon" aria-hidden="true">
+					<span></span>
+					<span></span>
+				</span>
+			</button>
+		</div>
 	</div>
 </header>
 
@@ -134,7 +139,7 @@ const isCurrent = (url: string) => {
 		position: sticky;
 		top: 0;
 		z-index: 50;
-		background: var(--cream);
+		background: var(--page);
 		border-bottom: 1px solid var(--line);
 	}
 
@@ -155,11 +160,17 @@ const isCurrent = (url: string) => {
 		position: relative;
 	}
 
+	.header__end {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+	}
+
 	.header__brand {
 		display: inline-flex;
 		align-items: center;
 		gap: 10px;
-		color: var(--text);
+		color: var(--ink);
 		text-decoration: none;
 		transition: color var(--transition);
 	}
@@ -184,8 +195,16 @@ const isCurrent = (url: string) => {
 		display: block;
 	}
 
+	:global(html[data-theme="dark"]) .header__mark--on-light {
+		display: none;
+	}
+
+	:global(html[data-theme="dark"]) .header__mark--on-dark {
+		display: block;
+	}
+
 	.header__name {
-		color: var(--text);
+		color: var(--ink);
 		font-family: var(--font-heading, Georgia, serif);
 		font-size: 20px;
 		font-weight: 600;
@@ -220,7 +239,7 @@ const isCurrent = (url: string) => {
 	.header__link {
 		display: block;
 		padding: 10px 0;
-		color: var(--muted);
+		color: var(--ink-muted);
 		font-size: 0.9375rem;
 		font-weight: 500;
 		text-decoration: none;
@@ -229,7 +248,7 @@ const isCurrent = (url: string) => {
 
 	.header__link:hover,
 	.header__link[aria-current="page"] {
-		color: var(--text);
+		color: var(--ink);
 	}
 
 	.header__link[aria-current="page"] {
@@ -239,11 +258,17 @@ const isCurrent = (url: string) => {
 	}
 
 	.header__cta-mobile {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-sm);
 		margin-top: var(--space-md);
 	}
 
 	.header__cta-wrap {
 		display: none;
+		align-items: center;
+		gap: var(--space-sm);
 	}
 
 	.header__toggle {
@@ -254,7 +279,7 @@ const isCurrent = (url: string) => {
 		border: 1px solid var(--line);
 		border-radius: var(--radius-button);
 		background: transparent;
-		color: var(--text);
+		color: var(--ink);
 		font-size: 0.875rem;
 		font-weight: 600;
 	}
@@ -280,6 +305,33 @@ const isCurrent = (url: string) => {
 		transform: translateY(-2.5px) rotate(-45deg);
 	}
 
+	@media (max-width: 560px) {
+		.header__inner {
+			gap: var(--space-md);
+		}
+
+		.header__end {
+			gap: var(--space-xs);
+		}
+
+		/* Keep the label for screen readers but free up room for the brand name. */
+		.header__toggle-label {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			margin: -1px;
+			padding: 0;
+			overflow: hidden;
+			clip: rect(0 0 0 0);
+			white-space: nowrap;
+			border: 0;
+		}
+
+		.header__toggle {
+			padding: 9px 12px;
+		}
+	}
+
 	@media (min-width: 1024px) {
 		.header__panel {
 			display: block;
@@ -303,7 +355,7 @@ const isCurrent = (url: string) => {
 		}
 
 		.header__cta-wrap {
-			display: block;
+			display: flex;
 		}
 
 		.header__cta-mobile {

@@ -108,13 +108,27 @@ const planHref =
 		border: 1px solid var(--line);
 		border-radius: var(--radius-card);
 		background: var(--surface);
-		color: var(--text);
+		color: var(--ink);
 	}
 
 	.plan-card--inverted {
 		border-color: var(--line-dark);
 		background: var(--bg-dark);
 		color: var(--text-on-dark);
+	}
+
+	/* In dark mode the page is dark, so the featured plan flips to cream. */
+	:global(html[data-theme="dark"]) .plan-card--inverted {
+		--ink: var(--ink-raw);
+		--ink-muted: var(--muted-ink-raw);
+		--line: var(--hairline-light);
+		--accent: var(--sage-deep);
+		--on-accent: var(--bg-dark);
+		--text: var(--ink);
+		--muted: var(--ink-muted);
+		border-color: var(--hairline-light);
+		background: var(--cream);
+		color: var(--ink);
 	}
 
 	.plan-card--hero {
@@ -125,7 +139,7 @@ const planHref =
 
 	.plan-card__bismillah {
 		margin-bottom: var(--space-lg);
-		color: var(--sage);
+		color: var(--accent);
 		font-family: var(--font-arabic, "Amiri", serif);
 		font-size: 1.25rem;
 		line-height: 1.6;
@@ -173,7 +187,7 @@ const planHref =
 	}
 
 	.plan-card__period {
-		color: var(--muted);
+		color: var(--ink-muted);
 		font-size: var(--size-small);
 	}
 
@@ -192,7 +206,7 @@ const planHref =
 	}
 
 	.plan-card__meta dt {
-		color: var(--muted);
+		color: var(--ink-muted);
 		font-size: var(--size-small);
 	}
 

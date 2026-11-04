@@ -7,7 +7,21 @@ import Eyebrow from "../components/Eyebrow.astro";
 import PlanCard from "../components/PlanCard.astro";
 import Section from "../components/Section.astro";
 import Step from "../components/Step.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
 import { site } from "../config/site";
+
+const themeTokens = [
+	{ name: "--page", light: "#F6F2E9", dark: "#101A16" },
+	{ name: "--surface", light: "#F6F2E9", dark: "#17231E" },
+	{ name: "--surface-2", light: "cream lifted", dark: "#1C2B25" },
+	{ name: "--band", light: "#E7DFCB", dark: "#14211C" },
+	{ name: "--ink", light: "#1B2A24", dark: "#F6F2E9" },
+	{ name: "--ink-muted", light: "#4F5A54", dark: "#A9B8AE" },
+	{ name: "--line", light: "#CFC6B2", dark: "#2A3A33" },
+	{ name: "--accent", light: "#3F7A4E", dark: "#6FAE7B" },
+	{ name: "--on-accent", light: "#101A16", dark: "#101A16" },
+	{ name: "--focus", light: "#3F7A4E", dark: "#6FAE7B" },
+];
 
 const colours = [
 	{ name: "bg-dark", value: "#101A16" },
@@ -110,6 +124,10 @@ const steps = [
 					Every token and shared component in one place. This page is not indexed and is not part
 					of the public navigation.
 				</p>
+				<div class="theme-demo">
+					<ThemeToggle />
+					<span>Try the theme switch. It also lives in the header and footer.</span>
+				</div>
 			</div>
 		</Container>
 	</Section>
@@ -144,6 +162,41 @@ const steps = [
 							<span class="swatch__chip" style={`background: ${colour.value}`} aria-hidden="true" />
 							<span class="swatch__name">{colour.name}</span>
 							<span class="swatch__value">{colour.value}</span>
+						</li>
+					))
+				}
+			</ul>
+		</Container>
+	</Section>
+
+	<Section space="tight">
+		<Container>
+			<div class="section-head">
+				<Eyebrow>Theme</Eyebrow>
+				<h2>Semantic tokens, light and dark</h2>
+				<p>
+					Components use these tokens, not raw palette values. The hero and footer stay dark in both
+					themes.
+				</p>
+			</div>
+			<ul class="theme-table">
+				<li class="theme-row theme-row--head">
+					<span>Token</span>
+					<span>Light</span>
+					<span>Dark</span>
+				</li>
+				{
+					themeTokens.map((token) => (
+						<li class="theme-row">
+							<code class="theme-row__name">{token.name}</code>
+							<span class="theme-row__value">
+								<span class="theme-row__chip" style={`background: ${token.light}`} aria-hidden="true" />
+								{token.light}
+							</span>
+							<span class="theme-row__value">
+								<span class="theme-row__chip" style={`background: ${token.dark}`} aria-hidden="true" />
+								{token.dark}
+							</span>
 						</li>
 					))
 				}
@@ -311,7 +364,7 @@ const steps = [
 	}
 
 	.intro p {
-		color: var(--muted-ink);
+		color: var(--ink-muted);
 		font-size: clamp(1.0625rem, 0.5vw + 1rem, 1.25rem);
 	}
 
@@ -323,7 +376,7 @@ const steps = [
 	}
 
 	.section-head p {
-		color: var(--muted);
+		color: var(--ink-muted);
 	}
 
 	.section-head code {
@@ -335,9 +388,9 @@ const steps = [
 
 	.demo-panel {
 		padding: var(--space-xl);
-		border: 1px solid var(--hairline-light);
+		border: 1px solid var(--line);
 		border-radius: var(--radius-card);
-		background: var(--cream);
+		background: var(--surface);
 	}
 
 	.swatches {
@@ -352,7 +405,7 @@ const steps = [
 		padding: var(--space-sm);
 		border: 1px solid var(--line);
 		border-radius: var(--radius-card);
-		background: var(--cream);
+		background: var(--surface);
 	}
 
 	.swatch__chip {
@@ -368,7 +421,7 @@ const steps = [
 	}
 
 	.swatch__value {
-		color: var(--muted);
+		color: var(--ink-muted);
 		font-size: 0.8125rem;
 		font-variant-numeric: tabular-nums;
 	}
@@ -386,7 +439,7 @@ const steps = [
 	}
 
 	.type-sample__label {
-		color: var(--muted);
+		color: var(--ink-muted);
 		font-size: 0.75rem;
 		font-weight: 600;
 		letter-spacing: 0.08em;
@@ -403,7 +456,7 @@ const steps = [
 	}
 
 	.arabic {
-		color: var(--sage-deep);
+		color: var(--accent);
 		font-family: var(--font-arabic, "Amiri", serif);
 		font-size: 1.75rem;
 		line-height: 1.8;
@@ -433,6 +486,72 @@ const steps = [
 
 	.featured-demo {
 		max-width: 360px;
+	}
+
+	.theme-demo {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		margin-top: var(--space-md);
+		color: var(--ink-muted);
+		font-size: var(--size-small);
+	}
+
+	.theme-table {
+		display: grid;
+		border-top: 1px solid var(--line);
+	}
+
+	.theme-row {
+		display: grid;
+		grid-template-columns: 1.1fr 1fr 1fr;
+		gap: var(--space-md);
+		align-items: center;
+		padding-block: 10px;
+		border-bottom: 1px solid var(--line);
+		font-size: var(--size-small);
+	}
+
+	.theme-row--head {
+		color: var(--ink-muted);
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.theme-row__name {
+		color: var(--accent);
+	}
+
+	.theme-row__value {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
+		color: var(--ink-muted);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.theme-row__chip {
+		flex: none;
+		width: 16px;
+		height: 16px;
+		border: 1px solid var(--line);
+		border-radius: 3px;
+	}
+
+	@media (max-width: 560px) {
+		.theme-row {
+			grid-template-columns: 1fr 1fr;
+		}
+
+		.theme-row--head span:first-child {
+			display: none;
+		}
+
+		.theme-row__name {
+			grid-column: 1 / -1;
+		}
 	}
 
 	@media (max-width: 760px) {

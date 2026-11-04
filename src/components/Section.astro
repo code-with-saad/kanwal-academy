@@ -25,17 +25,21 @@ const { id, tone = "cream", space = "normal", class: className } = Astro.props;
 <style>
 	.section {
 		background: var(--page);
-		color: var(--text);
+		color: var(--ink);
 	}
 
 	.section--cream {
-		background: var(--cream);
+		background: var(--page);
 	}
 
 	.section--sand {
-		background: var(--sand);
-		/* Sage-deep is 3.85:1 on sand; darken it for small labels and links. */
+		background: var(--band);
+		/* Sage-deep is 3.85:1 on the light sand band; darken it for small labels. */
 		--accent: color-mix(in srgb, var(--sage-deep) 80%, var(--ink));
+	}
+
+	:global(html[data-theme="dark"]) .section--sand {
+		--accent: var(--sage);
 	}
 
 	.section--dark {

@@ -53,7 +53,7 @@ const number = String(index).padStart(2, "0");
 		align-items: start;
 		gap: var(--space-md);
 		padding-block: var(--space-lg);
-		color: var(--text);
+		color: var(--ink);
 		text-decoration: none;
 		transition: background-color var(--transition);
 	}
@@ -63,7 +63,7 @@ const number = String(index).padStart(2, "0");
 	}
 
 	.course-row__index {
-		color: var(--muted);
+		color: var(--ink-muted);
 		font-size: 0.875rem;
 		font-weight: 600;
 		font-variant-numeric: tabular-nums;
@@ -99,14 +99,14 @@ const number = String(index).padStart(2, "0");
 
 	.course-row__summary {
 		max-width: 56ch;
-		color: var(--muted);
+		color: var(--ink-muted);
 		font-size: var(--size-small);
 		line-height: 1.55;
 	}
 
 	.course-row__arrow {
 		margin-top: 6px;
-		color: var(--muted);
+		color: var(--ink-muted);
 		transition:
 			color var(--transition),
 			transform var(--transition);
