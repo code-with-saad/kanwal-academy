@@ -365,9 +365,6 @@ const reviewsJson = JSON.stringify(items).replace(/</g, "\\u003c");
 
 	.testimonials__panel {
 		position: relative;
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) auto;
-		gap: clamp(24px, 4vw, 56px);
 		overflow: clip;
 		padding: clamp(28px, 4.4vw, 56px);
 		border-radius: var(--radius-panel);
@@ -395,8 +392,9 @@ const reviewsJson = JSON.stringify(items).replace(/</g, "\\u003c");
 
 	.testimonials__main {
 		display: grid;
-		gap: clamp(20px, 3vw, 32px);
-		align-content: start;
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: clamp(20px, 4vw, 56px);
+		align-items: start;
 	}
 
 	.testimonials__quote-area {
@@ -574,7 +572,7 @@ const reviewsJson = JSON.stringify(items).replace(/</g, "\\u003c");
 	}
 
 	@media (max-width: 760px) {
-		.testimonials__panel {
+		.testimonials__main {
 			grid-template-columns: 1fr;
 		}
 
