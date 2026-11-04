@@ -3,8 +3,6 @@ import { getEmDashCollection, getEmDashEntry, getSeoMeta } from "emdash";
 import type { ContentEntry, ImageValue } from "emdash";
 import { Image } from "emdash/ui";
 import Base from "../layouts/Base.astro";
-import Button from "../components/Button.astro";
-import Chip from "../components/Chip.astro";
 import Container from "../components/Container.astro";
 import CourseCard from "../components/CourseCard.astro";
 import Eyebrow from "../components/Eyebrow.astro";
@@ -196,24 +194,6 @@ const steps = [
 						}
 					</h1>
 					<p class="hero__lead" {...homeEdit?.home_lead}>{heroLead}</p>
-					<div class="hero__actions">
-						<Button
-							href="/free-trial"
-							variant="primary"
-							size="lg"
-							edit={homeEdit?.home_primary_cta}
-						>
-							{homeText("home_primary_cta", "Get free trial")}
-						</Button>
-						<Button
-							href="/courses"
-							variant="secondary"
-							size="lg"
-							edit={homeEdit?.home_secondary_cta}
-						>
-							{homeText("home_secondary_cta", "Explore courses")}
-						</Button>
-					</div>
 					<p class="hero__reach">
 						<svg
 							class="hero__reach-icon"
@@ -229,41 +209,6 @@ const steps = [
 						</svg>
 						<span>Students learning from {contact.stats.countries} countries</span>
 					</p>
-					<div class="hero__mini-card">
-						<div class="hero__mini-card-body">
-							<h3 class="hero__mini-title">Your first class is free</h3>
-							<p class="hero__mini-text">
-								Book a trial, meet your teacher, and choose a plan that fits your week.
-							</p>
-							<ol class="hero__mini-steps" aria-label="Three steps to your first class">
-								<li title="Book your free trial">
-									<span class="hero__mini-dot">1</span>
-									<span class="hero__mini-label">Book</span>
-								</li>
-								<li title="Meet your teacher">
-									<span class="hero__mini-dot">2</span>
-									<span class="hero__mini-label">Meet your teacher</span>
-								</li>
-								<li title="Choose a plan">
-									<span class="hero__mini-dot">3</span>
-									<span class="hero__mini-label">Choose a plan</span>
-								</li>
-							</ol>
-							<a class="hero__mini-link" href="/free-trial">
-								Book free trial
-								<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false">
-									<path
-										d="M3 8h9m-4-4 4 4-4 4"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="1.5"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-									/>
-								</svg>
-							</a>
-						</div>
-					</div>
 				</div>
 
 				<div class="hero__visual">
@@ -304,12 +249,6 @@ const steps = [
 						}
 					</figure>
 				</div>
-			</div>
-			<div class="hero__chips" aria-label="Jump to a course or the free trial">
-				<Chip href="/courses/quranic-recitation">Qur'anic Recitation</Chip>
-				<Chip href="/courses/tajweed-proficiency">Tajweed Proficiency</Chip>
-				<Chip href="/courses/memorization-excellence">Memorization Excellence</Chip>
-				<Chip href="/free-trial">Free trial class</Chip>
 			</div>
 		</Container>
 	</Section>
@@ -499,15 +438,18 @@ const steps = [
 
 <style>
 	/* -----------------------------------------------------------------
-	 * Hero: mint panel that extends under the transparent header.
-	 * The pattern is a very faint Islamic 8-point star on the right half.
+	 * Hero: full-bleed mint section at the very top of the page. The
+	 * header sits in normal flow above the hero content; the negative
+	 * margin lets the mint panel run behind the transparent header.
+	 * Only the bottom two corners are rounded.
 	 * ----------------------------------------------------------------- */
 	:global(.hero) {
 		position: relative;
 		margin-top: calc(-1 * var(--header-height));
-		padding-top: calc(var(--header-height) + 32px);
-		padding-bottom: 32px;
-		min-height: 600px;
+		padding-top: calc(var(--header-height) + 56px);
+		padding-bottom: 140px;
+		min-height: 640px;
+		border-radius: 0 0 48px 48px;
 		overflow: clip;
 	}
 
@@ -570,13 +512,6 @@ const steps = [
 		font-size: clamp(1.0625rem, 0.4vw + 1rem, 1.25rem);
 	}
 
-	.hero__actions {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-sm);
-		margin-top: var(--space-xl);
-	}
-
 	/* Reach line: globe + stat */
 	.hero__reach {
 		display: inline-flex;
@@ -591,96 +526,6 @@ const steps = [
 	.hero__reach-icon {
 		flex: none;
 		color: var(--green-deep);
-	}
-
-	/* Mini card: white (light) or page-coloured (dark) panel */
-	.hero__mini-card {
-		margin-top: var(--space-xl);
-		border-radius: 20px;
-		background: var(--page);
-		border: 1px solid var(--line);
-		max-width: 520px;
-	}
-
-	.hero__mini-card-body {
-		display: grid;
-		gap: var(--space-sm);
-		padding: var(--space-lg);
-	}
-
-	.hero__mini-title {
-		font-family: var(--font-heading);
-		font-size: 1.125rem;
-		font-weight: 500;
-		line-height: 1.25;
-		color: var(--ink);
-		margin: 0;
-	}
-
-	.hero__mini-text {
-		color: var(--ink-muted);
-		font-size: var(--size-small);
-		line-height: 1.55;
-		margin: 0;
-	}
-
-	.hero__mini-steps {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-sm) var(--space-md);
-		margin: var(--space-xs) 0 0;
-		padding: 0;
-		list-style: none;
-	}
-
-	.hero__mini-steps li {
-		display: inline-flex;
-		align-items: center;
-		gap: 6px;
-		font-size: 0.8125rem;
-		color: var(--ink-muted);
-	}
-
-	.hero__mini-dot {
-		display: grid;
-		place-items: center;
-		width: 22px;
-		height: 22px;
-		border-radius: 50%;
-		background: var(--mint-100);
-		color: var(--green-deep);
-		font-size: 0.75rem;
-		font-weight: 600;
-	}
-
-	.hero__mini-label {
-		font-weight: 500;
-		color: var(--ink);
-	}
-
-	.hero__mini-link {
-		display: inline-flex;
-		align-items: center;
-		gap: 6px;
-		color: var(--green-deep);
-		font-size: var(--size-small);
-		font-weight: 600;
-		text-decoration: none;
-		margin-top: var(--space-xs);
-	}
-
-	.hero__mini-link:hover {
-		color: var(--green);
-	}
-
-	.hero__mini-link svg {
-		fill: none;
-		stroke: currentColor;
-		transition: transform var(--transition);
-	}
-
-	.hero__mini-link:hover svg {
-		transform: translateX(2px);
 	}
 
 	/* Visual: orbit ring with 4 icons and the Quran image */
@@ -764,27 +609,6 @@ const steps = [
 		width: 100%;
 		height: auto;
 		object-fit: contain;
-	}
-
-	/* Bottom chips row */
-	.hero__chips {
-		display: flex;
-		flex-wrap: nowrap;
-		gap: var(--space-xs);
-		margin-top: var(--space-xl);
-		overflow-x: auto;
-		padding-bottom: var(--space-2xs);
-		scrollbar-width: thin;
-		-webkit-overflow-scrolling: touch;
-	}
-
-	.hero__chips::-webkit-scrollbar {
-		height: 4px;
-	}
-
-	.hero__chips::-webkit-scrollbar-thumb {
-		background: color-mix(in srgb, var(--ink) 20%, transparent);
-		border-radius: 2px;
 	}
 
 	/* -----------------------------------------------------------------
@@ -911,7 +735,7 @@ const steps = [
 
 	@media (min-width: 1001px) {
 		:global(.hero) {
-			min-height: max(600px, calc(100svh));
+			min-height: 640px;
 		}
 	}
 
@@ -923,9 +747,9 @@ const steps = [
 
 	@media (max-width: 760px) {
 		:global(.hero) {
-			padding-top: calc(var(--header-height) + 20px);
-			padding-bottom: 20px;
+			padding-bottom: 80px;
 			min-height: 0;
+			border-radius: 0 0 32px 32px;
 		}
 
 		.hero__visual {
@@ -950,7 +774,7 @@ const steps = [
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.hero__mini-link svg {
+		:global(.hero) {
 			transition: none;
 		}
 	}
