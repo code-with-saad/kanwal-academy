@@ -1,0 +1,161 @@
+---
+import Button from "./Button.astro";
+import Eyebrow from "./Eyebrow.astro";
+import ImagePlaceholder from "./ImagePlaceholder.astro";
+
+interface Props {
+	eyebrow?: string;
+	headingBefore: string;
+	headingHighlight: string;
+	headingAfter?: string;
+	paragraphs: string[];
+	list?: string[];
+	imageSrc: string;
+	imageAlt: string;
+	imageLabel: string;
+	imageRatio?: string;
+	imageFirst?: boolean;
+	buttonLabel: string;
+	buttonHref: string;
+}
+
+const {
+	eyebrow,
+	headingBefore,
+	headingHighlight,
+	headingAfter,
+	paragraphs,
+	list,
+	imageSrc,
+	imageAlt,
+	imageLabel,
+	imageRatio = "4 / 5",
+	imageFirst = false,
+	buttonLabel,
+	buttonHref,
+} = Astro.props;
+---
+
+<div class:list={["feature-split", imageFirst && "feature-split--image-first"]}>
+	<div class="feature-split__copy">
+		{eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
+		<h2 class="feature-split__title">
+			{headingBefore} <span class="heading-highlight">{headingHighlight}</span>{headingAfter
+				? ` ${headingAfter}`
+				: ""}
+		</h2>
+		{
+			paragraphs.map((paragraph) => (
+				<p class="feature-split__text">{paragraph}</p>
+			))
+		}
+		{
+			list && list.length > 0 && (
+				<ol class="feature-split__list">
+					{list.map((item) => (
+						<li>{item}</li>
+					))}
+				</ol>
+			)
+		}
+		<Button href={buttonHref} variant="secondary">{buttonLabel}</Button>
+	</div>
+
+	<div class="feature-split__media">
+		<div class="feature-split__frame">
+			<ImagePlaceholder
+				src={imageSrc}
+				alt={imageAlt}
+				label={imageLabel}
+				ratio={imageRatio}
+				class="feature-split__image"
+			/>
+		</div>
+	</div>
+</div>
+
+<style>
+	.feature-split {
+		display: grid;
+		grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+		align-items: center;
+		gap: clamp(32px, 6vw, 88px);
+	}
+
+	.feature-split__copy {
+		display: grid;
+		justify-items: start;
+		gap: var(--space-md);
+	}
+
+	.feature-split__title {
+		max-width: 17ch;
+	}
+
+	.feature-split__text {
+		max-width: 52ch;
+		color: var(--ink-muted);
+	}
+
+	.feature-split__list {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: var(--space-sm) var(--space-lg);
+		margin: var(--space-xs) 0 var(--space-sm);
+		counter-reset: tip;
+	}
+
+	.feature-split__list li {
+		position: relative;
+		padding-inline-start: 26px;
+		color: var(--ink-muted);
+		font-size: var(--size-small);
+		line-height: 1.5;
+		counter-increment: tip;
+	}
+
+	.feature-split__list li::before {
+		content: counter(tip, decimal-leading-zero);
+		position: absolute;
+		inset-inline-start: 0;
+		top: 1px;
+		color: var(--green-deep);
+		font-size: 0.75rem;
+		font-weight: 600;
+		line-height: 1.5;
+	}
+
+	.feature-split__frame {
+		overflow: clip;
+		border-radius: var(--radius-panel);
+		background: var(--mint-50);
+	}
+
+	.feature-split__frame :global(.img-ph) {
+		border-radius: var(--radius-panel);
+	}
+
+	/* Image sits on the right by default, left with --image-first. */
+	.feature-split--image-first .feature-split__media {
+		order: -1;
+	}
+
+	@media (max-width: 900px) {
+		.feature-split {
+			grid-template-columns: 1fr;
+			gap: var(--space-xl);
+		}
+
+		.feature-split__media,
+		.feature-split--image-first .feature-split__media {
+			order: 0;
+			width: min(100%, 480px);
+		}
+	}
+
+	@media (max-width: 420px) {
+		.feature-split__list {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

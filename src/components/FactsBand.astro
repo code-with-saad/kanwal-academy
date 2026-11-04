@@ -1,147 +1,123 @@
 ---
-interface Fact {
-	label: string;
-	icon: "device" | "trial" | "price" | "globe";
-}
+import Container from "./Container.astro";
 
 interface Props {
-	facts: Fact[];
+	countries: string;
+	lowestPrice: string;
 }
 
-const { facts } = Astro.props;
+const { countries, lowestPrice } = Astro.props;
+
+const facts = [
+	{ icon: "device" as const, label: "Any device with a camera" },
+	{ icon: "trial" as const, label: "Free trial class" },
+	{ icon: "price" as const, label: `Plans from ${lowestPrice} per month` },
+	{ icon: "globe" as const, label: `Students from ${countries} countries` },
+];
 ---
 
-<ul class="facts">
-	{
-		facts.map((fact) => (
-			<li class="fact">
-				<span class="fact__icon" aria-hidden="true">
-					<svg
-						viewBox="0 0 32 32"
-						width="32"
-						height="32"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="1.5"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						{fact.icon === "device" && (
-							<>
-								<rect x="7" y="4.5" width="18" height="23" rx="3.5" />
-								<circle cx="16" cy="9.5" r="2" />
-								<path d="M11.5 23.5h9" />
-							</>
-						)}
-						{fact.icon === "trial" && (
-							<>
-								<rect x="5" y="7" width="22" height="20" rx="4" />
-								<path d="M5 13h22M11 4v5m10-5v5" />
-								<path d="M12.5 20.5l2.5 2.5 4.5-4.5" />
-							</>
-						)}
-						{fact.icon === "price" && (
-							<>
-								<circle cx="16" cy="16" r="11.5" />
-								<path d="M16 8.5v15M19.4 12c-.7-.9-1.9-1.4-3.4-1.4-2.1 0-3.6 1-3.6 2.4s1.5 2.1 3.6 2.1 3.6.7 3.6 2.1-1.5 2.4-3.6 2.4c-1.5 0-2.7-.5-3.4-1.4" />
-							</>
-						)}
-						{fact.icon === "globe" && (
-							<>
-								<circle cx="16" cy="16" r="11.5" />
-								<ellipse cx="16" cy="16" rx="5" ry="11.5" />
-								<path d="M4.5 16h23" />
-							</>
-						)}
-					</svg>
-				</span>
-				<span class="fact__label">{fact.label}</span>
-			</li>
-		))
-	}
-</ul>
+<section class="facts">
+	<Container>
+		<ul class="facts__grid">
+			{
+				facts.map((fact) => (
+					<li class="facts__item">
+						<span class="facts__icon" aria-hidden="true">
+							<svg
+								viewBox="0 0 24 24"
+								width="22"
+								height="22"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.4"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								{fact.icon === "device" && (
+									<>
+										<rect x="4.75" y="3.5" width="14.5" height="17" rx="2.5" />
+										<circle cx="12" cy="7.75" r="1" />
+										<path d="M9.5 17.25h5" />
+									</>
+								)}
+								{fact.icon === "trial" && (
+									<>
+										<rect x="4" y="5.5" width="16" height="14" rx="3" />
+										<path d="M4 10.5h16M9 3v4m6-4v4" />
+										<path d="M9.6 15.2l2 2 3.6-3.6" />
+									</>
+								)}
+								{fact.icon === "price" && (
+									<>
+										<circle cx="12" cy="12" r="8.25" />
+										<path d="M12 6.75v10.5M14.4 9.4c-.5-.65-1.35-1.05-2.4-1.05-1.5 0-2.55.75-2.55 1.75s1.05 1.55 2.55 1.55 2.55.55 2.55 1.55-1.05 1.75-2.55 1.75c-1.05 0-1.9-.4-2.4-1.05" />
+									</>
+								)}
+								{fact.icon === "globe" && (
+									<>
+										<circle cx="12" cy="12" r="8.5" />
+										<ellipse cx="12" cy="12" rx="4" ry="8.5" />
+										<path d="M3.5 12h17" />
+									</>
+								)}
+							</svg>
+						</span>
+						<span class="facts__label">{fact.label}</span>
+					</li>
+				))
+			}
+		</ul>
+	</Container>
+</section>
 
 <style>
 	.facts {
-		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-		gap: var(--space-lg);
-		padding: clamp(24px, 3.4vw, 40px);
+		position: relative;
 		border-radius: var(--radius-panel);
 		background: var(--green);
 		color: var(--on-accent);
+		padding-block: clamp(28px, 4vw, 44px);
 	}
 
-	.fact {
+	.facts__grid {
 		display: grid;
-		align-content: start;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: var(--space-lg);
+	}
+
+	.facts__item {
+		display: flex;
+		align-items: center;
 		gap: var(--space-sm);
-		padding-inline: clamp(0px, 1.6vw, 20px);
 	}
 
-	.fact + .fact {
-		border-inline-start: 1px solid color-mix(in srgb, var(--on-accent) 26%, transparent);
-	}
-
-	.fact:first-child {
-		padding-inline-start: 0;
-	}
-
-	.fact:last-child {
-		padding-inline-end: 0;
-	}
-
-	.fact__icon {
+	.facts__icon {
 		display: grid;
 		place-items: center;
+		flex: none;
 		width: 44px;
 		height: 44px;
-		color: var(--on-accent);
+		border: 1px solid color-mix(in srgb, currentColor 40%, transparent);
+		border-radius: 50%;
 	}
 
-	.fact__label {
-		font-size: var(--size-body);
+	.facts__label {
+		font-size: var(--size-small);
 		font-weight: 500;
-		line-height: 1.35;
+		line-height: 1.4;
 	}
 
-	@media (max-width: 860px) {
-		.facts {
+	@media (max-width: 900px) {
+		.facts__grid {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 			gap: var(--space-lg) var(--space-md);
 		}
-
-		.fact + .fact {
-			border-inline-start: 0;
-		}
-
-		.fact {
-			padding-inline: 0;
-		}
-
-		.fact:nth-child(even) {
-			padding-inline-start: var(--space-md);
-			border-inline-start: 1px solid color-mix(in srgb, var(--on-accent) 26%, transparent);
-		}
 	}
 
-	@media (max-width: 460px) {
-		.facts {
+	@media (max-width: 480px) {
+		.facts__grid {
+			grid-template-columns: 1fr;
 			gap: var(--space-md);
-		}
-
-		.fact__label {
-			font-size: var(--size-small);
-		}
-
-		.fact__icon {
-			width: 32px;
-			height: 32px;
-		}
-
-		.fact__icon svg {
-			width: 26px;
-			height: 26px;
 		}
 	}
 </style>

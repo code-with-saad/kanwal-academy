@@ -13,6 +13,7 @@ import PlanCard from "../components/PlanCard.astro";
 import Section from "../components/Section.astro";
 import StandingOut from "../components/StandingOut.astro";
 import Step from "../components/Step.astro";
+import StudyBlock from "../components/StudyBlock.astro";
 import WisdomPanel from "../components/WisdomPanel.astro";
 import { site } from "../config/site";
 import { heroImage } from "../config/images";
@@ -435,6 +436,46 @@ const steps = [
 	<Section space="tight">
 		<Container>
 			<FactsBand facts={facts} />
+		</Container>
+	</Section>
+
+	<Section>
+		<Container>
+			<div class="study-stack">
+				<StudyBlock
+					titleBefore="Easy Qur'an learning"
+					titleHighlight="online"
+					paragraphs={[
+						"Lessons run live in a video call, so you only need a phone, tablet or laptop with a camera. Your teacher shares the page you are reading and listens while you recite.",
+						"The same teacher stays with you each week, so corrections and progress carry over from class to class.",
+					]}
+					imageSrc="/images/section-phone.png"
+					imageAlt="A student joining a Qur'an lesson on a phone"
+					imageLabel="Lesson on a phone (4:3)"
+					ctaHref="/about"
+				/>
+
+				<StudyBlock
+					titleBefore="How to memorize the Qur'an"
+					titleHighlight="with confidence"
+					paragraphs={[
+						"Memorization grows in small, steady steps. Your teacher sets a monthly target, listens to what you have learned, and revises with you before adding new lines.",
+					]}
+					imageSrc="/images/section-memorize.jpg"
+					imageAlt="An open Qur'an with a page marker, ready for memorization practice"
+					imageLabel="Memorization practice (4:3)"
+					tips={[
+						"Set your intention",
+						"Create a quiet space",
+						"Listen and repeat",
+						"Revise daily",
+						"Break it into small parts",
+						"Choose one surah at a time",
+					]}
+					ctaHref="/courses/memorization-excellence"
+					reverse
+				/>
+			</div>
 		</Container>
 	</Section>
 
@@ -1037,6 +1078,11 @@ const steps = [
 
 	.journey-list {
 		display: grid;
+	}
+
+	.study-stack {
+		display: grid;
+		gap: clamp(56px, 8vw, 104px);
 	}
 
 	.plan-grid {
