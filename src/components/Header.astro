@@ -90,6 +90,22 @@ const isHome = tone === "dark";
 	</div>
 
 	<div class="header__panel" id="site-menu" data-menu-panel>
+		<button
+			type="button"
+			class="header__close"
+			data-menu-close
+			aria-label="Close menu"
+		>
+			<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+				<path
+					d="m6 6 12 12M18 6 6 18"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.7"
+					stroke-linecap="round"
+				/>
+			</svg>
+		</button>
 		<nav class="header__panel-nav" aria-label="Primary">
 			{
 				items.map((item) => (
@@ -115,6 +131,7 @@ const isHome = tone === "dark";
 
 <script>
 	const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+	const closeButton = document.querySelector<HTMLButtonElement>("[data-menu-close]");
 	const panel = document.querySelector<HTMLElement>("[data-menu-panel]");
 	const scrim = document.querySelector<HTMLElement>("[data-menu-scrim]");
 	const header = document.querySelector<HTMLElement>("[data-header]");
@@ -134,6 +151,7 @@ const isHome = tone === "dark";
 			setOpen(toggle.getAttribute("aria-expanded") !== "true");
 		});
 
+		closeButton?.addEventListener("click", close);
 		scrim?.addEventListener("click", close);
 
 		panel.addEventListener("click", (event) => {
@@ -386,6 +404,21 @@ const isHome = tone === "dark";
 		overflow-y: auto;
 		overscroll-behavior: contain;
 		animation: panel-slide 260ms var(--ease-out);
+	}
+
+	.header__close {
+		position: absolute;
+		top: 12px;
+		right: 16px;
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		padding: 0;
+		border: 1px solid var(--line);
+		border-radius: 50%;
+		background: var(--page);
+		color: var(--ink);
 	}
 
 	@keyframes panel-slide {
