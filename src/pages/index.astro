@@ -6,12 +6,14 @@ import Base from "../layouts/Base.astro";
 import Container from "../components/Container.astro";
 import CourseCard from "../components/CourseCard.astro";
 import Eyebrow from "../components/Eyebrow.astro";
+import FeatureCards from "../components/FeatureCards.astro";
 import PlanCard from "../components/PlanCard.astro";
 import Section from "../components/Section.astro";
 import Step from "../components/Step.astro";
 import { site } from "../config/site";
 import { courseImages, heroImage } from "../config/images";
 import { getSiteContact } from "../utils/site-config";
+import { formatUsdPrice } from "../utils/price";
 import type { Page } from "../../emdash-env";
 
 interface HomePageFields {
@@ -130,6 +132,33 @@ const toPlanCard = (plan: (typeof plans)[number]) => ({
 	hoursPerMonth: plan.data.hours_per_month,
 	isPopular: plan.data.is_popular ?? false,
 });
+
+const lowestPlanPrice = Math.min(...plans.map((plan) => Number(plan.data.price)));
+
+const featureCards = [
+	{
+		title: "Free trial class",
+		text: "Meet your teacher before you pay.",
+		href: "/free-trial",
+		icon: "trial" as const,
+	},
+	{
+		title: `Plans from ${formatUsdPrice(lowestPlanPrice)} per month`,
+		text: "Choose the weekly load that fits.",
+		href: "#pricing",
+		icon: "price" as const,
+	},
+	{
+		title: `Students from ${contact.stats.countries} countries`,
+		text: "Live classes for families worldwide.",
+		icon: "globe" as const,
+	},
+	{
+		title: "Any device with a camera",
+		text: "Phone, tablet or laptop is enough.",
+		icon: "device" as const,
+	},
+];
 
 const steps = [
 	{
@@ -253,7 +282,13 @@ const steps = [
 		</Container>
 	</Section>
 
-	<Section>
+	<div class="hero-cards">
+		<Container>
+			<FeatureCards cards={featureCards} />
+		</Container>
+	</div>
+
+	<Section class="section--after-hero">
 		<Container>
 			<div class="section-head">
 				<Eyebrow edit={homeEdit?.courses_eyebrow}>
@@ -337,7 +372,7 @@ const steps = [
 		</Container>
 	</Section>
 
-	<Section>
+	<Section id="pricing">
 		<Container>
 			<div class="section-head section-head--center">
 				<Eyebrow edit={homeEdit?.pricing_eyebrow}>
@@ -612,6 +647,20 @@ const steps = [
 	}
 
 	/* -----------------------------------------------------------------
+	 * Floating feature cards: overlap the hero's bottom edge by 72px
+	 * (40px mobile) and sit above the surrounding sections.
+	 * ----------------------------------------------------------------- */
+	.hero-cards {
+		position: relative;
+		z-index: 5;
+		margin-top: -72px;
+	}
+
+	:global(.section--after-hero) {
+		padding-top: calc(var(--section-space) + var(--space-lg));
+	}
+
+	/* -----------------------------------------------------------------
 	 * Generic page-level styles
 	 * ----------------------------------------------------------------- */
 	.section-lead {
@@ -738,6 +787,11 @@ const steps = [
 			min-height: 640px;
 		}
 	}
+
+	@media (max-width: 760px) {
+		.hero-cards {
+			margin-top: -40px;
+		}
 
 	@media (min-width: 760px) {
 		.course-grid {
