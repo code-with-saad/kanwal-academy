@@ -598,7 +598,7 @@ const steps = [
 	:global(section.section--space-flush.hero) {
 		position: relative;
 		margin-top: calc(-1 * var(--header-height));
-		padding-top: calc(var(--header-height) + 24px);
+		padding-top: calc(var(--header-height));
 		padding-bottom: 80px;
 		min-height: 640px;
 		border-radius: 0 0 48px 48px;
@@ -684,9 +684,12 @@ const steps = [
 	}
 
 	/* Visual: square stage with floating Quran image over an orbit of
-	 * four course link buttons. Transform and opacity only. */
+	 * four course link buttons. The stage also shrinks with the viewport
+	 * height so the header, the full hero and the first floating card's
+	 * peek all fit the initial screen without scrolling, and the top
+	 * orbit icon never rides up into the navbar. Transform and opacity only. */
 	.hero__visual {
-		--stage-size: min(46vw, 520px);
+		--stage-size: min(46vw, 520px, calc(100svh - 290px));
 		--ring-size: calc(var(--stage-size) * 0.76);
 		--orbit-radius: calc(var(--ring-size) / 2);
 		--stage-half: calc(var(--stage-size) / 2);
@@ -1127,10 +1130,15 @@ const steps = [
 		}
 	}
 
-	/* Narrow desktop: shrink the stage a little to protect the layout. */
+	/* Narrow desktop: shrink the stage to the viewport height and work
+	 * with a slightly smaller h1 so the hero still fits one screen. */
 	@media (min-width: 1001px) and (max-width: 1359px) {
 		.hero__visual {
-			--stage-size: min(40vw, 520px);
+			--stage-size: min(40vw, 520px, calc(100svh - 290px));
+		}
+
+		.hero__copy h1 {
+			font-size: clamp(2.5rem, 5vw, 3.5rem);
 		}
 	}
 
