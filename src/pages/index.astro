@@ -10,6 +10,7 @@ import FeatureCards from "../components/FeatureCards.astro";
 import PlanCard from "../components/PlanCard.astro";
 import Section from "../components/Section.astro";
 import Step from "../components/Step.astro";
+import WisdomPanel from "../components/WisdomPanel.astro";
 import { site } from "../config/site";
 import { courseImages, heroImage } from "../config/images";
 import { getSiteContact } from "../utils/site-config";
@@ -368,6 +369,12 @@ const steps = [
 	</div>
 
 	<Section class="section--after-hero">
+		<Container>
+			<WisdomPanel years={contact.stats.years} />
+		</Container>
+	</Section>
+
+	<Section>
 		<Container>
 			<div class="section-head">
 				<Eyebrow edit={homeEdit?.courses_eyebrow}>
@@ -997,7 +1004,7 @@ const steps = [
 		margin-top: -72px;
 	}
 
-	:global(.section--after-hero) {
+	:global(section.section--space-normal.section--after-hero) {
 		padding-top: calc(var(--section-space) + var(--space-lg));
 	}
 
@@ -1214,6 +1221,10 @@ const steps = [
 
 		:global(body[data-is-home] .section--space-normal:not(.hero)) {
 			padding-block: 48px;
+		}
+
+		:global(body[data-is-home] section.section--space-normal.section--after-hero) {
+			padding-top: calc(48px + 40px);
 		}
 
 		:global(body[data-is-home] .section--space-tight) {

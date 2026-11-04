@@ -1,0 +1,175 @@
+---
+import Button from "./Button.astro";
+import Eyebrow from "./Eyebrow.astro";
+import ImagePlaceholder from "./ImagePlaceholder.astro";
+
+interface Props {
+	eyebrow?: string;
+	imageSrc?: string;
+	imageAlt?: string;
+	years?: string;
+}
+
+const {
+	eyebrow = "Why Kanwal",
+	imageSrc = "/images/wisdom.jpg",
+	imageAlt = "A student reciting the Qur'an during a live online lesson",
+	years = "5+",
+} = Astro.props;
+---
+
+<div class="wisdom">
+	<div class="wisdom__media">
+		<span class="wisdom__block" aria-hidden="true"></span>
+		<div class="wisdom__frame">
+			<ImagePlaceholder
+				src={imageSrc}
+				alt={imageAlt}
+				label="Wisdom image (4:5)"
+				ratio="4 / 5"
+				class="wisdom__image"
+			/>
+		</div>
+		<p class="wisdom__badge">
+			<span class="wisdom__badge-value">{years} years</span>
+			<span class="wisdom__badge-label">teaching</span>
+		</p>
+	</div>
+
+	<div class="wisdom__copy">
+		<Eyebrow>{eyebrow}</Eyebrow>
+		<h2 class="wisdom__title">
+			Experience Qur'anic <span class="heading-highlight">wisdom</span> with us
+		</h2>
+		<p>
+			Kanwal Quran Academy teaches the Qur'an online in live one to one classes. Your teacher
+			listens to your recitation, corrects it as you read, and sets a weekly plan around your
+			level.
+		</p>
+		<p>
+			Students join from more than five countries, on a phone, tablet or laptop. Every student
+			starts with a free trial class before choosing a plan.
+		</p>
+		<div class="wisdom__actions">
+			<Button href="/free-trial" variant="primary">Book free trial</Button>
+		</div>
+	</div>
+</div>
+
+<style>
+	.wisdom {
+		display: grid;
+		grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+		align-items: center;
+		gap: clamp(32px, 6vw, 96px);
+	}
+
+	.wisdom__media {
+		position: relative;
+		padding: 0 20px 20px 0;
+	}
+
+	/* Flat mint block, offset behind the frame. */
+	.wisdom__block {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		width: calc(100% - 20px);
+		height: calc(100% - 20px);
+		border-radius: var(--radius-panel);
+		background: var(--mint-300);
+	}
+
+	.wisdom__frame {
+		position: relative;
+		overflow: clip;
+		border-radius: var(--radius-panel);
+		background: var(--mint-50);
+	}
+
+	.wisdom__frame :global(.wisdom__image),
+	.wisdom__frame :global(.wisdom__image .img-ph__img),
+	.wisdom__frame :global(.wisdom__image .img-ph__box) {
+		border-radius: var(--radius-panel);
+	}
+
+	.wisdom__badge {
+		position: absolute;
+		left: 20px;
+		bottom: 44px;
+		display: grid;
+		gap: 2px;
+		padding: 12px 18px;
+		border: 1px solid var(--line);
+		border-radius: var(--radius-card);
+		background: var(--surface);
+		box-shadow: 0 12px 32px -18px rgba(11, 26, 20, 0.32);
+	}
+
+	.wisdom__badge-value {
+		color: var(--ink);
+		font-family: var(--font-heading);
+		font-size: 1.25rem;
+		font-weight: 500;
+		line-height: 1.1;
+		letter-spacing: -0.01em;
+	}
+
+	.wisdom__badge-label {
+		color: var(--ink-muted);
+		font-size: var(--size-small);
+		line-height: 1.2;
+	}
+
+	.wisdom__copy {
+		display: grid;
+		justify-items: start;
+		gap: var(--space-md);
+	}
+
+	.wisdom__title {
+		max-width: 18ch;
+	}
+
+	.wisdom__copy p {
+		max-width: 50ch;
+		color: var(--ink-muted);
+	}
+
+	.wisdom__actions {
+		margin-top: var(--space-sm);
+	}
+
+	@media (max-width: 900px) {
+		.wisdom {
+			grid-template-columns: 1fr;
+			gap: var(--space-xl);
+		}
+
+		.wisdom__media {
+			width: min(100%, 440px);
+		}
+	}
+
+	@media (max-width: 560px) {
+		.wisdom__media {
+			width: 100%;
+			padding: 0 14px 14px 0;
+		}
+
+		.wisdom__block {
+			width: calc(100% - 14px);
+			height: calc(100% - 14px);
+		}
+
+		.wisdom__badge {
+			left: 14px;
+			bottom: 30px;
+			padding: 10px 14px;
+		}
+
+		.wisdom__badge-value {
+			font-size: 1.125rem;
+		}
+	}
+</style>
