@@ -3,61 +3,55 @@
  *
  * One stylesheet for the whole site. Component-specific rules live in the
  * Astro component that owns them. Font families are set by Astro's font
- * pipeline in astro.config.mjs (Fraunces, Instrument Sans, Amiri) and exposed
- * as --font-display, --font-body and --font-arabic.
+ * pipeline in astro.config.mjs (Instrument Sans, Amiri) and exposed as
+ * --font-body and --font-arabic. Headings use --font-body; there is no
+ * separate display face in the mint theme.
  */
 
 :root {
 	color-scheme: light;
 
-	/* Fixed brand palette. These do not change with the theme. */
-	--bg-dark: #101a16;
-	--surface-dark: #17231e;
-	--surface-dark-2: #1c2b25;
-	--line-dark: #2a3a33;
-	--sage: #6fae7b;
-	--sage-deep: #3f7a4e;
-	--cream: #f6f2e9;
-	--sand: #e7dfcb;
-	--hairline-light: #cfc6b2;
-	--ink-raw: #1b2a24;
-	--muted-ink-raw: #4f5a54;
-	--muted-on-dark: #a9b8ae;
-	--text-on-dark: #f6f2e9;
+	/* --- Mint palette: light theme ---------------------------------- */
+	--frame: #9fcdbb; /* Desktop only: page margin color. */
+	--page: #fcfefd;
+	--mint-300: #a9d4c4; /* Hero panel. */
+	--mint-100: #d6ece2; /* Tinted panels. */
+	--mint-50: #eaf5f0;
+	--ink: #0b1a14;
+	--ink-muted: #5a6c63;
+	--line: #e1ebe6;
+	--green: #0e8660; /* Primary. White text on it passes 4.5:1. */
+	--green-deep: #0a6b4b; /* Hover, links. */
+	--deep: #0f3d2e; /* Testimonial / dark panel on the light page. */
+	--surface: var(--page); /* Cards share the page colour; borders do the work. */
 
-	/* Semantic tokens: light theme. */
-	--page: var(--cream);
-	--surface: var(--cream);
-	/* Cards lift slightly towards white on the cream page. */
-	--surface-2: color-mix(in srgb, var(--cream) 45%, #ffffff);
-	--band: var(--sand);
-	--ink: var(--ink-raw);
-	--ink-muted: var(--muted-ink-raw);
-	--line: var(--hairline-light);
-	--accent: var(--sage-deep);
-	--on-accent: var(--bg-dark);
-	--focus: var(--sage-deep);
-
-	/* Back-compat aliases used by the shared components. */
+	/* Semantic aliases used by components. */
 	--text: var(--ink);
 	--muted: var(--ink-muted);
-	--surface-raised: var(--surface-2);
-	--button-text: var(--on-accent);
+	--accent: var(--green-deep);
+	--on-accent: #ffffff;
+	--focus: var(--green-deep);
+	--band: var(--mint-100);
+	--surface-2: var(--mint-50);
 
 	/* Typography */
-	--font-heading: var(--font-display);
-	--weight-heading: 600;
-	--size-h1: clamp(2.5rem, 6vw, 4rem);
-	--size-h2: clamp(2rem, 4vw, 2.75rem);
+	--font-heading: var(--font-body, "Instrument Sans", Arial, sans-serif);
+	--weight-heading: 400;
+	--weight-heading-highlight: 500;
+	--size-h1: clamp(2.5rem, 6vw, 4rem); /* 40 to 64 */
+	--size-h2: clamp(2rem, 4.5vw, 3rem); /* 32 to 48 */
 	--size-h3: clamp(1.375rem, 2vw, 1.625rem);
 	--size-h4: clamp(1.125rem, 1.2vw, 1.25rem);
-	--size-body: clamp(1.0625rem, 0.35vw + 0.98rem, 1.1875rem);
-	--size-small: 0.9375rem;
+	--size-body: 1.0625rem; /* 17 */
+	--size-small: 0.875rem; /* 14 */
 	--size-eyebrow: 0.75rem;
 	--size-display: clamp(1.75rem, 2.3vw, 2rem);
+	--leading-h1: 1.04;
+	--leading-h2: 1.08;
 	--leading-heading: 1.08;
 	--leading-body: 1.6;
-	--tracking-heading: -0.015em;
+	--tracking-heading: -0.01em;
+	--tracking-h1: -0.03em;
 	--tracking-eyebrow: 0.14em;
 
 	/* Spacing */
@@ -79,8 +73,12 @@
 	--header-height: 76px;
 
 	/* Corners */
-	--radius-button: 6px;
-	--radius-card: 10px;
+	--radius-sheet: 28px;
+	--radius-panel: 28px;
+	--radius-card: 20px;
+	--radius-input: 12px;
+	--radius-button: 999px;
+	--radius-chip: 999px;
 
 	/* Motion */
 	--ease-out: cubic-bezier(0.2, 0, 0, 1);
@@ -90,23 +88,68 @@
 [data-theme="dark"] {
 	color-scheme: dark;
 
-	--page: #101a16;
-	--surface: #17231e;
-	--surface-2: #1c2b25;
-	--band: #14211c;
-	--ink: #f6f2e9;
-	--ink-muted: #a9b8ae;
-	--line: #2a3a33;
-	--accent: #6fae7b;
-	--on-accent: #101a16;
-	--focus: #6fae7b;
+	--frame: #08100d;
+	--page: #0d1612;
+	--surface: #131f1a;
+	--mint-300: #1b3a2e;
+	--mint-100: #162a22;
+	--mint-50: #1a2f26;
+	--ink: #eaf4ef;
+	--ink-muted: #9db3a8;
+	--line: #24362e;
+	--green: #3fc391; /* Text on it: #062017. */
+	--green-deep: #6fd9ae;
+	--deep: #0a1f18;
 
 	--text: var(--ink);
 	--muted: var(--ink-muted);
-	--surface-raised: var(--surface-2);
-	--button-text: var(--on-accent);
+	--accent: var(--green-deep);
+	--on-accent: #062017;
+	--focus: var(--green);
+	--band: var(--mint-100);
+	--surface-2: var(--mint-50);
 }
 
+/* ---- Back-compat aliases --------------------------------------------
+ * The Header, Footer, Home (non-hero sections), PlanCarousel, CourseCard,
+ * Step and a few page styles still reference the old palette names. These
+ * aliases bridge to the new mint tokens so those components keep rendering
+ * while they are migrated in later steps. They will be removed once every
+ * consumer is restyled.
+ */
+:root {
+	--bg-dark: var(--deep);
+	--surface-dark: var(--deep);
+	--surface-dark-2: var(--deep);
+	--line-dark: color-mix(in srgb, #eaf4ef 16%, transparent);
+	--sage: var(--green);
+	--sage-deep: var(--green-deep);
+	--cream: #fcfefd;
+	--sand: var(--mint-100);
+	--hairline-light: var(--line);
+	--ink-raw: var(--ink);
+	--muted-ink-raw: var(--ink-muted);
+	--muted-on-dark: #9db3a8;
+	--text-on-dark: #eaf4ef;
+}
+
+[data-theme="dark"] {
+	--bg-dark: var(--deep);
+	--surface-dark: var(--deep);
+	--surface-dark-2: var(--deep);
+	--line-dark: color-mix(in srgb, #eaf4ef 16%, transparent);
+	--sage: var(--green);
+	--sage-deep: var(--green-deep);
+	--cream: #fcfefd; /* Kept light so the inverted PlanCard flip still works. */
+	--sand: var(--mint-100);
+	--hairline-light: var(--line);
+	--ink-raw: var(--ink);
+	--muted-ink-raw: var(--ink-muted);
+	--muted-on-dark: var(--ink-muted);
+	--text-on-dark: var(--ink);
+}
+
+/* ---- Reset & base --------------------------------------------------- */
 *,
 *::before,
 *::after {
@@ -119,16 +162,48 @@ html {
 	scroll-padding-top: calc(var(--header-height) + var(--space-lg));
 }
 
+/* Framed sheet layout: body is the frame color on desktop, the .sheet
+ * wrapper inside is the page surface with rounded corners and a 16px
+ * inset. Below 1024px the sheet is full bleed. */
 body {
 	margin: 0;
 	min-height: 100vh;
-	background: var(--page);
+	background: var(--frame);
 	color: var(--text);
 	font-family: var(--font-body, "Instrument Sans", Arial, sans-serif);
 	font-size: var(--size-body);
+	font-weight: 400;
 	line-height: var(--leading-body);
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
+}
+
+@media (min-width: 1024px) {
+	body {
+		padding: 16px;
+	}
+}
+
+.sheet {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	background: var(--page);
+	color: var(--ink);
+}
+
+@media (min-width: 1024px) {
+	.sheet {
+		border-radius: var(--radius-sheet);
+		min-height: calc(100vh - 32px);
+		/* clip (not hidden) keeps sticky working and rounds the corners. */
+		overflow: clip;
+	}
+}
+
+.sheet > main {
+	flex: 1 0 auto;
 }
 
 h1,
@@ -138,7 +213,7 @@ h4,
 h5,
 h6 {
 	margin: 0;
-	font-family: var(--font-heading, Georgia, serif);
+	font-family: var(--font-heading);
 	font-weight: var(--weight-heading);
 	line-height: var(--leading-heading);
 	letter-spacing: var(--tracking-heading);
@@ -147,10 +222,13 @@ h6 {
 
 h1 {
 	font-size: var(--size-h1);
+	line-height: var(--leading-h1);
+	letter-spacing: var(--tracking-h1);
 }
 
 h2 {
 	font-size: var(--size-h2);
+	line-height: var(--leading-h2);
 }
 
 h3 {
@@ -166,7 +244,7 @@ p {
 }
 
 a {
-	color: inherit;
+	color: var(--green-deep);
 	text-decoration-thickness: 1px;
 	text-underline-offset: 0.18em;
 }
@@ -213,14 +291,20 @@ button {
 }
 
 ::selection {
-	background: var(--sage);
-	color: var(--bg-dark);
+	background: var(--mint-300);
+	color: var(--ink);
 }
 
 [lang="ar"] {
 	font-family: var(--font-arabic, "Amiri", serif);
 	direction: rtl;
 	unicode-bidi: plaintext;
+}
+
+/* Highlighted word inside a heading: weight 500 in --green-deep. */
+.heading-highlight {
+	font-weight: var(--weight-heading-highlight);
+	color: var(--green-deep);
 }
 
 .visually-hidden {
@@ -242,8 +326,8 @@ button {
 	z-index: 100;
 	padding: var(--space-sm) var(--space-md);
 	border-radius: var(--radius-button);
-	background: var(--sage);
-	color: var(--bg-dark);
+	background: var(--green);
+	color: var(--on-accent);
 	font-weight: 600;
 	text-decoration: none;
 	transition: top var(--transition);
@@ -305,8 +389,8 @@ button {
 .prose blockquote {
 	margin: 1.5em 0;
 	padding-inline-start: 1em;
-	border-inline-start: 2px solid var(--sage);
-	color: var(--muted-ink);
+	border-inline-start: 2px solid var(--green);
+	color: var(--ink-muted);
 }
 
 .prose img {
@@ -326,34 +410,38 @@ button {
 	font-size: 0.9em;
 }
 
-/* Dark panels and sections switch the semantic tokens, not the palette. */
+/* Dark panels and sections swap the semantic tokens, not the palette. */
 .tone-dark {
-	--surface: var(--surface-dark);
-	--surface-2: var(--surface-dark-2);
-	--line: var(--line-dark);
-	--ink: var(--text-on-dark);
-	--ink-muted: var(--muted-on-dark);
-	--accent: var(--sage);
-	--on-accent: var(--bg-dark);
-	--focus: var(--sage);
-	--text: var(--ink);
-	--muted: var(--ink-muted);
-	--surface-raised: var(--surface-2);
-	--button-text: var(--on-accent);
-	color: var(--ink);
+	--ink: #eaf4ef;
+	--ink-muted: #9db3a8;
+	--text: #eaf4ef;
+	--muted: #9db3a8;
+	--line: color-mix(in srgb, #eaf4ef 16%, transparent);
+	--accent: #3fc391;
+	--green: #3fc391;
+	--green-deep: #6fd9ae;
+	--on-accent: #062017;
+	--focus: #3fc391;
+	--surface: var(--deep);
+	--surface-2: color-mix(in srgb, var(--deep) 70%, #000);
+	--band: color-mix(in srgb, var(--deep) 70%, #000);
+	color: #eaf4ef;
 }
 
-/* Dark sections inherit their own text and link colours. */
+.tone-dark a {
+	color: #6fd9ae;
+}
+
 .tone-dark .prose a {
-	color: var(--sage);
+	color: #3fc391;
 }
 
 .tone-dark .prose blockquote {
-	color: var(--muted-on-dark);
+	color: #9db3a8;
 }
 
 .tone-dark .prose hr {
-	border-color: var(--line-dark);
+	border-color: color-mix(in srgb, #eaf4ef 16%, transparent);
 }
 
 /* Shared page heading block */
@@ -365,12 +453,12 @@ button {
 
 .page-intro p {
 	max-width: 54ch;
-	color: var(--muted-ink);
+	color: var(--ink-muted);
 	font-size: clamp(1.0625rem, 0.5vw + 1rem, 1.25rem);
 }
 
 .tone-dark .page-intro p {
-	color: var(--muted-on-dark);
+	color: #9db3a8;
 }
 
 @media (max-width: 640px) {

@@ -58,7 +58,6 @@ const planHref =
 		"plan-card",
 		variant === "inverted" && "plan-card--inverted",
 		variant === "hero" && "plan-card--hero",
-		inverted && "tone-dark",
 	]}
 >
 	{
@@ -104,42 +103,43 @@ const planHref =
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		padding: var(--space-xl);
+		padding: var(--space-lg);
 		border: 1px solid var(--line);
 		border-radius: var(--radius-card);
-		background: var(--surface);
+		background: var(--page);
 		color: var(--ink);
 	}
 
-	.plan-card--inverted {
-		border-color: var(--line-dark);
-		background: var(--bg-dark);
-		color: var(--text-on-dark);
-	}
-
-	/* In dark mode the page is dark, so the featured plan flips to cream. */
-	:global(html[data-theme="dark"]) .plan-card--inverted {
-		--ink: var(--ink-raw);
-		--ink-muted: var(--muted-ink-raw);
-		--line: var(--hairline-light);
-		--accent: var(--sage-deep);
-		--on-accent: var(--bg-dark);
-		--text: var(--ink);
-		--muted: var(--ink-muted);
-		border-color: var(--hairline-light);
-		background: var(--cream);
-		color: var(--ink);
-	}
-
+	.plan-card--inverted,
 	.plan-card--hero {
-		border-color: var(--line-dark);
-		background: var(--surface-dark);
-		color: var(--text-on-dark);
+		border-color: transparent;
+		background: var(--deep);
+		color: #eaf4ef;
+		--ink: #eaf4ef;
+		--ink-muted: #9db3a8;
+		--line: color-mix(in srgb, #eaf4ef 18%, transparent);
+		--accent: #3fc391;
+		--green: #3fc391;
+		--green-deep: #6fd9ae;
+		--on-accent: #062017;
+	}
+
+	/* In dark mode the page is dark, so the featured plan flips to mint-100. */
+	:global(html[data-theme="dark"]) .plan-card--inverted,
+	:global(html[data-theme="dark"]) .plan-card--hero {
+		background: var(--mint-100);
+		color: var(--ink);
+		--ink: var(--ink);
+		--ink-muted: var(--ink-muted);
+		--line: color-mix(in srgb, var(--ink) 18%, transparent);
+		--accent: var(--green-deep);
+		--green: var(--green-deep);
+		--green-deep: var(--green-deep);
 	}
 
 	.plan-card__bismillah {
 		margin-bottom: var(--space-lg);
-		color: var(--accent);
+		color: var(--green-deep);
 		font-family: var(--font-arabic, "Amiri", serif);
 		font-size: 1.25rem;
 		line-height: 1.6;
@@ -155,14 +155,15 @@ const planHref =
 
 	.plan-card__name {
 		font-size: 1.375rem;
+		font-weight: 500;
 	}
 
 	.plan-card__badge {
 		flex: none;
-		padding: 4px 8px;
-		border-radius: var(--radius-button);
-		background: var(--sage);
-		color: var(--bg-dark);
+		padding: 6px 10px;
+		border-radius: var(--radius-chip);
+		background: var(--green);
+		color: var(--on-accent);
 		font-size: 0.6875rem;
 		font-weight: 600;
 		letter-spacing: 0.08em;
@@ -179,9 +180,9 @@ const planHref =
 	}
 
 	.plan-card__amount {
-		font-family: var(--font-heading, Georgia, serif);
+		font-family: var(--font-heading);
 		font-size: clamp(2.5rem, 4vw, 3rem);
-		font-weight: 600;
+		font-weight: 400;
 		line-height: 1;
 		letter-spacing: -0.02em;
 	}

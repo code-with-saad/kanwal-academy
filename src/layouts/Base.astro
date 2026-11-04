@@ -84,7 +84,8 @@ const pageCtx = createPublicPageContext({
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta name="theme-color" content="#101a16" />
+		<meta name="theme-color" content="#9FCDBB" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#0D1612" media="(prefers-color-scheme: dark)" />
 		<script is:inline>
 			(function () {
 				try {
@@ -112,27 +113,28 @@ const pageCtx = createPublicPageContext({
 		<title>{fullTitle}</title>
 		<EmDashHead page={pageCtx} />
 		<Font cssVariable="--font-body" preload />
-		<Font cssVariable="--font-display" preload={[{ style: "normal" }]} />
 		<Font cssVariable="--font-arabic" />
 	</head>
 	<body>
 		<EmDashBodyStart page={pageCtx} />
 		<a href="#main" class="skip-link">Skip to content</a>
-		<Header
-			items={headerItems}
-			cta={headerCta}
-			tone={headerTone}
-			currentPath={Astro.url.pathname}
-			siteName={siteTitle}
-		/>
-		<main id="main">
-			<slot />
-		</main>
-		<Footer
-			contact={contactResult.data}
-			settingsEdit={contactResult.entry?.edit}
-			siteName={siteTitle}
-		/>
+		<div class="sheet">
+			<Header
+				items={headerItems}
+				cta={headerCta}
+				tone={headerTone}
+				currentPath={Astro.url.pathname}
+				siteName={siteTitle}
+			/>
+			<main id="main">
+				<slot />
+			</main>
+			<Footer
+				contact={contactResult.data}
+				settingsEdit={contactResult.entry?.edit}
+				siteName={siteTitle}
+			/>
+		</div>
 		<EmDashBodyEnd page={pageCtx} />
 	</body>
 </html>

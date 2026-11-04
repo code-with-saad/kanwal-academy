@@ -1,6 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import Button from "../components/Button.astro";
+import Chip from "../components/Chip.astro";
 import Container from "../components/Container.astro";
 import CourseRow from "../components/CourseRow.astro";
 import Eyebrow from "../components/Eyebrow.astro";
@@ -11,30 +12,31 @@ import ThemeToggle from "../components/ThemeToggle.astro";
 import { site } from "../config/site";
 
 const themeTokens = [
-	{ name: "--page", light: "#F6F2E9", dark: "#101A16" },
-	{ name: "--surface", light: "#F6F2E9", dark: "#17231E" },
-	{ name: "--surface-2", light: "cream lifted", dark: "#1C2B25" },
-	{ name: "--band", light: "#E7DFCB", dark: "#14211C" },
-	{ name: "--ink", light: "#1B2A24", dark: "#F6F2E9" },
-	{ name: "--ink-muted", light: "#4F5A54", dark: "#A9B8AE" },
-	{ name: "--line", light: "#CFC6B2", dark: "#2A3A33" },
-	{ name: "--accent", light: "#3F7A4E", dark: "#6FAE7B" },
-	{ name: "--on-accent", light: "#101A16", dark: "#101A16" },
-	{ name: "--focus", light: "#3F7A4E", dark: "#6FAE7B" },
+	{ name: "--frame", light: "#9FCDBB", dark: "#08100D" },
+	{ name: "--page", light: "#FCFEFD", dark: "#0D1612" },
+	{ name: "--mint-300", light: "#A9D4C4", dark: "#1B3A2E" },
+	{ name: "--mint-100", light: "#D6ECE2", dark: "#162A22" },
+	{ name: "--mint-50", light: "#EAF5F0", dark: "#1A2F26" },
+	{ name: "--ink", light: "#0B1A14", dark: "#EAF4EF" },
+	{ name: "--ink-muted", light: "#5A6C63", dark: "#9DB3A8" },
+	{ name: "--line", light: "#E1EBE6", dark: "#24362E" },
+	{ name: "--green", light: "#0E8660", dark: "#3FC391" },
+	{ name: "--green-deep", light: "#0A6B4B", dark: "#6FD9AE" },
+	{ name: "--deep", light: "#0F3D2E", dark: "#0A1F18" },
 ];
 
-const colours = [
-	{ name: "bg-dark", value: "#101A16" },
-	{ name: "surface-dark", value: "#17231E" },
-	{ name: "line-dark", value: "#2A3A33" },
-	{ name: "sage", value: "#6FAE7B" },
-	{ name: "sage-deep", value: "#3F7A4E" },
-	{ name: "cream", value: "#F6F2E9" },
-	{ name: "sand", value: "#E7DFCB" },
-	{ name: "hairline-light", value: "#CFC6B2" },
-	{ name: "ink", value: "#1B2A24" },
-	{ name: "muted-ink", value: "#4F5A54" },
-	{ name: "muted-on-dark", value: "#A9B8AE" },
+const palette = [
+	{ name: "frame", value: "#9FCDBB" },
+	{ name: "page", value: "#FCFEFD" },
+	{ name: "mint-300", value: "#A9D4C4" },
+	{ name: "mint-100", value: "#D6ECE2" },
+	{ name: "mint-50", value: "#EAF5F0" },
+	{ name: "ink", value: "#0B1A14" },
+	{ name: "ink-muted", value: "#5A6C63" },
+	{ name: "line", value: "#E1EBE6" },
+	{ name: "green", value: "#0E8660" },
+	{ name: "green-deep", value: "#0A6B4B" },
+	{ name: "deep", value: "#0F3D2E" },
 ];
 
 const plans = [
@@ -143,7 +145,7 @@ const steps = [
 				</p>
 			</div>
 			<div class="demo-panel">
-				<p>This panel sits inside a sand <code>Section</code> and a narrow <code>Container</code>.</p>
+				<p>This panel sits inside a mint <code>Section</code> and a narrow <code>Container</code>.</p>
 			</div>
 		</Container>
 	</Section>
@@ -152,12 +154,12 @@ const steps = [
 		<Container>
 			<div class="section-head">
 				<Eyebrow>Colour</Eyebrow>
-				<h2>Palette</h2>
+				<h2>Mint palette</h2>
 				<p>All colour comes from these tokens. No gradients and no off-palette accents.</p>
 			</div>
 			<ul class="swatches">
 				{
-					colours.map((colour) => (
+					palette.map((colour) => (
 						<li class="swatch">
 							<span class="swatch__chip" style={`background: ${colour.value}`} aria-hidden="true" />
 							<span class="swatch__name">{colour.name}</span>
@@ -175,8 +177,8 @@ const steps = [
 				<Eyebrow>Theme</Eyebrow>
 				<h2>Semantic tokens, light and dark</h2>
 				<p>
-					Components use these tokens, not raw palette values. The hero and footer stay dark in both
-					themes.
+					Components use these tokens, not raw palette values. From 1024px up, the page sits on
+					a <code>--page</code> sheet with a <code>--frame</code> margin.
 				</p>
 			</div>
 			<ul class="theme-table">
@@ -208,27 +210,30 @@ const steps = [
 		<Container>
 			<div class="section-head">
 				<Eyebrow>Typography</Eyebrow>
-				<h2>Fraunces, Instrument Sans and Amiri</h2>
+				<h2>Instrument Sans and Amiri</h2>
 				<p>
-					Fraunces sets headings at 600. Instrument Sans sets body copy at 400, 500 and 600. Amiri
-					sets Arabic text with <code>lang="ar"</code>.
+					Instrument Sans sets headings at 400 and body copy at 400, 500 and 600. Amiri sets
+					Arabic text with <code>lang="ar"</code>. The highlighted word in a heading is weight
+					500 in <code>--green-deep</code>.
 				</p>
 			</div>
 			<div class="type-samples">
 				<div class="type-sample">
-					<p class="type-sample__label">Heading 1 / 40 to 64px</p>
-					<p class="type-sample__h1">Learn the Qur'an, one verse at a time.</p>
+					<p class="type-sample__label">Heading 1 / 40 to 64px, weight 400, tracking -0.03em</p>
+					<p class="type-sample__h1">
+						Learn the <span class="heading-highlight">Qur'an</span>, one verse at a time.
+					</p>
 				</div>
 				<div class="type-sample">
-					<p class="type-sample__label">Heading 2 / 32 to 44px</p>
+					<p class="type-sample__label">Heading 2 / 32 to 48px, weight 400</p>
 					<h2>Courses built around your goals.</h2>
 				</div>
 				<div class="type-sample">
-					<p class="type-sample__label">Heading 3</p>
+					<p class="type-sample__label">Heading 3 / weight 400</p>
 					<h3>A teacher who knows your name.</h3>
 				</div>
 				<div class="type-sample">
-					<p class="type-sample__label">Body / 17 to 19px</p>
+					<p class="type-sample__label">Body / 17px</p>
 					<p>
 						Every student starts with a free trial class. Choose a time that works for your family
 						and meet your teacher before you commit to a plan.
@@ -250,8 +255,8 @@ const steps = [
 		<Container>
 			<div class="section-head">
 				<Eyebrow>Buttons</Eyebrow>
-				<h2>Primary and secondary</h2>
-				<p>Six-pixel corners. Hover and focus states are visible and meaningful.</p>
+				<h2>Primary and secondary, fully round</h2>
+				<p>Primary fills <code>--green</code> with white text. Secondary is an outline. Height 48px (52px large).</p>
 			</div>
 			<div class="button-row">
 				<Button href="/free-trial" variant="primary">Get free trial</Button>
@@ -265,12 +270,29 @@ const steps = [
 		<Container>
 			<div class="section-head">
 				<Eyebrow>Buttons on dark</Eyebrow>
-				<h2>Secondary inherits the surface</h2>
+				<h2>Secondary inherits the current text colour</h2>
 				<p>The outline uses the current text colour, so it stays legible on every dark panel.</p>
 			</div>
 			<div class="button-row">
 				<Button href="/free-trial" variant="primary">Get free trial</Button>
 				<Button href="/pricing" variant="secondary">View plans</Button>
+			</div>
+		</Container>
+	</Section>
+
+	<Section space="tight">
+		<Container>
+			<div class="section-head">
+				<Eyebrow>Chips</Eyebrow>
+				<h2>Outlined pills, 36px tall</h2>
+				<p>1px outline of <code>--ink</code> at 20%. Hover or selected fills <code>--green</code> with white text.</p>
+			</div>
+			<div class="chip-row">
+				<Chip href="/courses/quranic-recitation">Qur'anic Recitation</Chip>
+				<Chip href="/courses/tajweed-proficiency">Tajweed Proficiency</Chip>
+				<Chip href="/courses/memorization-excellence">Memorization Excellence</Chip>
+				<Chip href="/free-trial" selected>Free trial</Chip>
+				<Chip>Plain chip</Chip>
 			</div>
 		</Container>
 	</Section>
@@ -281,7 +303,8 @@ const steps = [
 				<Eyebrow>Plans</Eyebrow>
 				<h2>PlanCard</h2>
 				<p>
-					Plan II is inverted. The featured hero card can also show the bismillah at the top.
+					Plan II is inverted. Cards have a 20px radius and sit on the page colour with a
+					1px <code>--line</code> border.
 				</p>
 			</div>
 			<div class="plan-grid">
@@ -302,7 +325,7 @@ const steps = [
 			<div class="section-head">
 				<Eyebrow>Courses</Eyebrow>
 				<h2>CourseRow</h2>
-				<p>Numbered rows separated by hairlines. The whole row is the link.</p>
+				<p>Numbered rows. Hovering a row fills it with <code>--green</code> and white text.</p>
 			</div>
 			<ol class="course-list">
 				{
@@ -342,7 +365,7 @@ const steps = [
 			<div class="section-head">
 				<Eyebrow>Featured plan</Eyebrow>
 				<h2>PlanCard with bismillah</h2>
-				<p>Used in the dark hero on the home page.</p>
+				<p>Used as the featured plan in darker panels.</p>
 			</div>
 			<div class="featured-demo">
 				<PlanCard
@@ -387,10 +410,10 @@ const steps = [
 	}
 
 	.demo-panel {
-		padding: var(--space-xl);
+		padding: var(--space-lg) var(--space-xl);
 		border: 1px solid var(--line);
 		border-radius: var(--radius-card);
-		background: var(--surface);
+		background: var(--page);
 	}
 
 	.swatches {
@@ -405,14 +428,14 @@ const steps = [
 		padding: var(--space-sm);
 		border: 1px solid var(--line);
 		border-radius: var(--radius-card);
-		background: var(--surface);
+		background: var(--page);
 	}
 
 	.swatch__chip {
 		height: 56px;
 		margin-bottom: var(--space-xs);
 		border: 1px solid var(--line);
-		border-radius: var(--radius-button);
+		border-radius: var(--radius-input);
 	}
 
 	.swatch__name {
@@ -447,24 +470,26 @@ const steps = [
 	}
 
 	.type-sample__h1 {
-		font-family: var(--font-heading, Georgia, serif);
+		font-family: var(--font-heading);
 		font-size: var(--size-h1);
-		font-weight: 600;
-		line-height: var(--leading-heading);
-		letter-spacing: var(--tracking-heading);
+		font-weight: 400;
+		line-height: var(--leading-h1);
+		letter-spacing: var(--tracking-h1);
 		text-wrap: balance;
 	}
 
 	.arabic {
-		color: var(--accent);
+		color: var(--green-deep);
 		font-family: var(--font-arabic, "Amiri", serif);
 		font-size: 1.75rem;
 		line-height: 1.8;
 	}
 
-	.button-row {
+	.button-row,
+	.chip-row {
 		display: flex;
 		flex-wrap: wrap;
+		align-items: center;
 		gap: var(--space-sm);
 	}
 
@@ -521,7 +546,7 @@ const steps = [
 	}
 
 	.theme-row__name {
-		color: var(--accent);
+		color: var(--green-deep);
 	}
 
 	.theme-row__value {

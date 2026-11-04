@@ -22,16 +22,6 @@ export default defineConfig({
 	fonts: [
 		{
 			provider: fontProviders.google(),
-			name: "Fraunces",
-			cssVariable: "--font-display",
-			weights: [600],
-			styles: ["normal"],
-			subsets: ["latin"],
-			display: "swap",
-			fallbacks: ["Georgia", "serif"],
-		},
-		{
-			provider: fontProviders.google(),
 			name: "Instrument Sans",
 			cssVariable: "--font-body",
 			weights: [400, 500, 600],

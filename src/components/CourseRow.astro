@@ -52,14 +52,30 @@ const number = String(index).padStart(2, "0");
 		grid-template-columns: 44px minmax(0, 1fr) 20px;
 		align-items: start;
 		gap: var(--space-md);
-		padding-block: var(--space-lg);
+		padding: var(--space-sm) var(--space-md);
 		color: var(--ink);
 		text-decoration: none;
-		transition: background-color var(--transition);
+		border-radius: var(--radius-card);
+		transition:
+			background-color var(--transition),
+			color var(--transition);
 	}
 
-	.course-row__link:hover {
-		background: color-mix(in srgb, var(--line) 28%, transparent);
+	.course-row__link:hover,
+	.course-row__link:focus-visible {
+		background: var(--green);
+		color: var(--on-accent);
+	}
+
+	.course-row__link:hover .course-row__index,
+	.course-row__link:hover .course-row__level,
+	.course-row__link:hover .course-row__summary,
+	.course-row__link:hover .course-row__arrow,
+	.course-row__link:focus-visible .course-row__index,
+	.course-row__link:focus-visible .course-row__level,
+	.course-row__link:focus-visible .course-row__summary,
+	.course-row__link:focus-visible .course-row__arrow {
+		color: var(--on-accent);
 	}
 
 	.course-row__index {
@@ -68,6 +84,7 @@ const number = String(index).padStart(2, "0");
 		font-weight: 600;
 		font-variant-numeric: tabular-nums;
 		line-height: 1.6;
+		transition: color var(--transition);
 	}
 
 	.course-row__body {
@@ -76,25 +93,21 @@ const number = String(index).padStart(2, "0");
 	}
 
 	.course-row__title {
-		font-family: var(--font-heading, Georgia, serif);
+		font-family: var(--font-heading);
 		font-size: clamp(1.25rem, 2vw, 1.5rem);
-		font-weight: 600;
-		line-height: 1.15;
+		font-weight: 500;
+		line-height: 1.2;
 		letter-spacing: -0.01em;
-		transition: color var(--transition);
-	}
-
-	.course-row__link:hover .course-row__title {
-		color: var(--accent);
 	}
 
 	.course-row__level {
-		color: var(--accent);
+		color: var(--green-deep);
 		font-size: 0.6875rem;
 		font-weight: 600;
 		letter-spacing: 0.12em;
 		line-height: 1.2;
 		text-transform: uppercase;
+		transition: color var(--transition);
 	}
 
 	.course-row__summary {
@@ -102,6 +115,7 @@ const number = String(index).padStart(2, "0");
 		color: var(--ink-muted);
 		font-size: var(--size-small);
 		line-height: 1.55;
+		transition: color var(--transition);
 	}
 
 	.course-row__arrow {
@@ -112,8 +126,8 @@ const number = String(index).padStart(2, "0");
 			transform var(--transition);
 	}
 
-	.course-row__link:hover .course-row__arrow {
-		color: var(--accent);
+	.course-row__link:hover .course-row__arrow,
+	.course-row__link:focus-visible .course-row__arrow {
 		transform: translateX(3px);
 	}
 
