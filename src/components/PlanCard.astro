@@ -125,10 +125,12 @@ const planHref =
 	}
 
 	/* In dark mode the featured plan is a green card with dark text, a dark
-	 * badge and a dark select button, all above 4.5:1. */
+	 * badge and a dark select button, all above 4.5:1. The background is the
+	 * dark-theme --green value; --green is then repointed to the dark ink for
+	 * the badge and button fills. */
 	:global(html[data-theme="dark"]) .plan-card--inverted,
 	:global(html[data-theme="dark"]) .plan-card--hero {
-		background: var(--green);
+		background: #3fc391;
 		color: #062017;
 		--ink: #062017;
 		--ink-muted: #0b3a26;

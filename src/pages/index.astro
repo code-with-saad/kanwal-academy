@@ -330,7 +330,9 @@ const steps = [
 													</svg>
 												</span>
 											</a>
-											<span class="orbit-node__label">{item.label}</span>
+											<span class="orbit-node__label-wrap">
+												<span class="orbit-node__label">{item.label}</span>
+											</span>
 										</span>
 									</span>
 								))
@@ -597,6 +599,9 @@ const steps = [
 		padding-bottom: 140px;
 		min-height: 640px;
 		border-radius: 0 0 48px 48px;
+		/* Clips the orbit box sweep so the turning stage can never add
+		 * page overflow; content inside the hero is unaffected. */
+		overflow: clip;
 	}
 
 	.hero__pattern {
@@ -841,7 +846,21 @@ const steps = [
 		transform: scale(1.12);
 	}
 
-	/* Label pill, outer side, shown on hover, focus and first tap. */
+	/* Label pill, outer side, shown on hover, focus and first tap. The
+	 * wrap counter-spins with the orbit so the pill never tilts. */
+	.orbit-node__label-wrap {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		opacity: 0;
+		visibility: hidden;
+		animation: stage-spin-rev 48s linear infinite;
+		transition:
+			opacity var(--transition),
+			visibility var(--transition);
+		z-index: 4;
+	}
+
 	.orbit-node__label {
 		position: absolute;
 		display: inline-flex;
@@ -855,12 +874,7 @@ const steps = [
 		font-size: 14px;
 		line-height: 1;
 		white-space: nowrap;
-		opacity: 0;
-		visibility: hidden;
-		pointer-events: none;
 		box-shadow: 0 8px 24px -14px rgba(11, 26, 20, 0.3);
-		transition: opacity var(--transition);
-		z-index: 4;
 	}
 
 	.orbit-node:first-child .orbit-node__label {
@@ -869,8 +883,11 @@ const steps = [
 		transform: translateX(-50%);
 	}
 
+	/* Right node: the pill leans to the inner side. There is not enough
+	 * room beyond the stage on the right at common desktop widths, and
+	 * the never-clipped rule wins over the outer-side preference. */
 	.orbit-node:nth-child(2) .orbit-node__label {
-		left: calc(100% + 10px);
+		right: calc(100% + 10px);
 		top: 50%;
 		transform: translateY(-50%);
 	}
@@ -887,21 +904,23 @@ const steps = [
 		transform: translateY(-50%);
 	}
 
-	.orbit-node__btn:hover ~ .orbit-node__label,
-	.orbit-node__btn:focus-visible ~ .orbit-node__label,
-	.orbit-node__btn.is-armed ~ .orbit-node__label {
+	.orbit-node__btn:hover ~ .orbit-node__label-wrap,
+	.orbit-node__btn:focus-visible ~ .orbit-node__label-wrap,
+	.orbit-node__btn.is-armed ~ .orbit-node__label-wrap {
 		opacity: 1;
 		visibility: visible;
 	}
 
 	/* Pause every loop while an icon is hovered, focused, or off screen. */
 	.stage:has(.orbit-node__btn:is(:hover, :focus-visible)) .stage__orbit,
-	.stage:has(.orbit-node__btn:is(:hover, :focus-visible)) .orbit-node__btn {
+	.stage:has(.orbit-node__btn:is(:hover, :focus-visible)) .orbit-node__btn,
+	.stage:has(.orbit-node__btn:is(:hover, :focus-visible)) .orbit-node__label-wrap {
 		animation-play-state: paused;
 	}
 
 	.stage.is-offscreen .stage__orbit,
 	.stage.is-offscreen .orbit-node__btn,
+	.stage.is-offscreen .orbit-node__label-wrap,
 	.stage.is-offscreen .stage__dashed,
 	.stage.is-offscreen .stage__float,
 	.stage.is-offscreen .stage__ground {
@@ -1121,18 +1140,10 @@ const steps = [
 		}
 	}
 
-	/* Narrow desktop: shrink the stage and flip the right node's label to
-	 * its inner side so the pill never leaves the viewport. */
+	/* Narrow desktop: shrink the stage a little to protect the layout. */
 	@media (min-width: 1001px) and (max-width: 1359px) {
 		.hero__visual {
 			--stage-size: min(40vw, 520px);
-		}
-	}
-
-	@media (min-width: 1001px) and (max-width: 1439px) {
-		.orbit-node:nth-child(2) .orbit-node__label {
-			left: auto;
-			right: calc(100% + 10px);
 		}
 	}
 
