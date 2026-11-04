@@ -27,25 +27,16 @@ Stats: "5+ years", "5+ countries". Student and session counts are UNKNOWN: keep 
 Pages: Home, About, Courses (+ one page per course), Pricing, Teachers, Contact, Free Trial, Blog (optional), Terms of Service, Privacy Policy.
 Payments are NOT in scope yet. "Select plan" opens the trial/enrolment form with the plan preselected.
 
-## Design: "Dark hero with featured plan" (approved by the client)
-Reference mockup: the canvas board "A. FINAL". Layout order on Home:
-1. Dark hero: wordmark + nav + "Get free trial" button; left headline and two CTAs; right a featured plan card (Plan II) with the bismillah in Arabic at its top.
-2. Courses: two columns, heading on the left, numbered rows on the right separated by hairlines.
-3. Numbers band (sand background).
-4. Pricing: 4 plan cards, Plan II inverted (dark).
-5. How the free trial works: 3 steps in a row separated by a top rule.
-6. Testimonial: real reviews only. Until we have them, show nothing or a clearly marked placeholder in dev only.
-7. Footer: dark, with Terms of Service and Privacy Policy links.
-
-Tokens (put them in one CSS file as custom properties):
-- bg-dark #101A16, surface-dark #17231E, line-dark #2A3A33
-- sage (accent on dark, buttons) #6FAE7B, sage-deep (accent on light) #3F7A4E
-- cream (page) #F6F2E9, sand (bands) #E7DFCB, hairline-light #CFC6B2
-- ink #1B2A24, muted-ink #4F5A54, muted-on-dark #A9B8AE, text-on-dark #F6F2E9
-Fonts (Google Fonts, self-host in production): Fraunces (headings, 600), Instrument Sans (body 400/500/600), Amiri (Arabic).
-Sizes: h1 64px desktop (40px mobile), h2 44px, body 17 to 19px, line-height 1.6.
-Corners: buttons 6px, cards 10px. Max content width 1200px, side padding 32px (20px mobile).
-Mobile first, check at 360px, 768px, 1280px.
+## Design (v2, mint)
+- Mood: calm, airy, rounded, light grotesque type, soft mint panels on a white page.
+- Light tokens: --frame #9FCDBB (page margin color, desktop only), --page #FCFEFD, --mint-300 #A9D4C4 (hero panel), --mint-100 #D6ECE2 (tinted panels), --mint-50 #EAF5F0, --ink #0B1A14, --ink-muted #5A6C63, --line #E1EBE6, --green #0E8660 (primary, white text, must pass 4.5:1: darken if not), --green-deep #0A6B4B (hover, links), --deep #0F3D2E (testimonial panel).
+- Dark tokens: --frame #08100D, --page #0D1612, --surface #131F1A, --mint-300 #1B3A2E, --mint-100 #162A22, --mint-50 #1A2F26, --ink #EAF4EF, --ink-muted #9DB3A8, --line #24362E, --green #3FC391 (text on it #062017), --green-deep #6FD9AE, --deep #0A1F18.
+- Type: Instrument Sans only (400, 500, 600) plus Amiri for Arabic. H1 64px/1.04 weight 400 letter-spacing -0.03em (40px mobile). H2 48px/1.08 weight 400 (32px mobile). Body 17px/1.6, small 14px. The highlighted word in a heading is weight 500 in --green-deep. No serif anywhere.
+- Shape: sheet and big panels radius 28px, cards 20px, inputs 12px, buttons and chips fully round. Panel inner padding 24 to 40px. Max content width 1200px.
+- Frame: from 1024px up, the page background is --frame and the whole site sits on a --page sheet with 16px outer inset and 28px radius (header inside the sheet). Below 1024px the sheet is full bleed.
+- Chips: 1px outline of --ink at 20%, 36px tall, 14px text. Primary button: --green fill, white text, 48px tall. Secondary: outline. Selected or hovered list row: --green fill, white text.
+- Texture: a very faint (6% opacity) Islamic geometric line pattern, flat SVG, only inside the hero panel. No gradients, no glass, no orbs, no dot grids, no emojis, no default icon set.
+- Mobile first, check at 360px, 768px, 1280px.
 
 ## Hard rules (client taste, do not break)
 - Do not use the template's marketing blocks, its glass header, glows, logo marquee, or 3-plan pricing. Build our own Astro components and our own collections (courses, plans, teachers, testimonials, faqs, site_settings; EmDash requires snake_case slugs) as planned. The home page reads from those collections.
@@ -61,6 +52,7 @@ Mobile first, check at 360px, 768px, 1280px.
 - Terms of Service and Privacy Policy pages must exist and be linked in the footer.
 - Accessibility: semantic HTML, one h1 per page, text contrast 4.5:1, visible focus states, alt text, Arabic text with `lang="ar" dir="rtl"`.
 - Performance: Lighthouse 90+ on mobile for Performance, SEO, Accessibility, Best Practices.
+- Never type Qur'anic text from memory: use only verified text (Tanzil.net, Uthmani) and flag it for a teacher to verify before launch.
 
 ## Security (the old site was hacked)
 - Do not import any WordPress theme, plugin, PHP or database. Only content (text, images) is migrated.
