@@ -12,7 +12,6 @@ import ThemeToggle from "../components/ThemeToggle.astro";
 import { site } from "../config/site";
 
 const themeTokens = [
-	{ name: "--frame", light: "#9FCDBB", dark: "#08100D" },
 	{ name: "--page", light: "#FCFEFD", dark: "#0D1612" },
 	{ name: "--mint-300", light: "#A9D4C4", dark: "#1B3A2E" },
 	{ name: "--mint-100", light: "#D6ECE2", dark: "#162A22" },
@@ -26,7 +25,6 @@ const themeTokens = [
 ];
 
 const palette = [
-	{ name: "frame", value: "#9FCDBB" },
 	{ name: "page", value: "#FCFEFD" },
 	{ name: "mint-300", value: "#A9D4C4" },
 	{ name: "mint-100", value: "#D6ECE2" },
@@ -177,8 +175,8 @@ const steps = [
 				<Eyebrow>Theme</Eyebrow>
 				<h2>Semantic tokens, light and dark</h2>
 				<p>
-					Components use these tokens, not raw palette values. From 1024px up, the page sits on
-					a <code>--page</code> sheet with a <code>--frame</code> margin.
+					Components use these tokens, not raw palette values. The page is full bleed on
+					<code>--page</code> at every width.
 				</p>
 			</div>
 			<ul class="theme-table">

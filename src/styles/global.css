@@ -12,7 +12,6 @@
 	color-scheme: light;
 
 	/* --- Mint palette: light theme ---------------------------------- */
-	--frame: #9fcdbb; /* Desktop only: page margin color. */
 	--page: #fcfefd;
 	--mint-300: #a9d4c4; /* Hero panel. */
 	--mint-100: #d6ece2; /* Tinted panels. */
@@ -73,7 +72,6 @@
 	--header-height: 76px;
 
 	/* Corners */
-	--radius-sheet: 28px;
 	--radius-panel: 28px;
 	--radius-card: 20px;
 	--radius-input: 12px;
@@ -88,7 +86,6 @@
 [data-theme="dark"] {
 	color-scheme: dark;
 
-	--frame: #08100d;
 	--page: #0d1612;
 	--surface: #131f1a;
 	--mint-300: #1b3a2e;
@@ -162,13 +159,12 @@ html {
 	scroll-padding-top: calc(var(--header-height) + var(--space-lg));
 }
 
-/* Framed sheet layout: body is the frame color on desktop, the .sheet
- * wrapper inside is the page surface with rounded corners and a 16px
- * inset. Below 1024px the sheet is full bleed. */
+/* Full-bleed layout: the page surface is --page at every width. The
+ * .sheet wrapper is just a flex column; no inset, no rounded corners. */
 body {
 	margin: 0;
 	min-height: 100vh;
-	background: var(--frame);
+	background: var(--page);
 	color: var(--text);
 	font-family: var(--font-body, "Instrument Sans", Arial, sans-serif);
 	font-size: var(--size-body);
@@ -178,12 +174,6 @@ body {
 	text-rendering: optimizeLegibility;
 }
 
-@media (min-width: 1024px) {
-	body {
-		padding: 16px;
-	}
-}
-
 .sheet {
 	position: relative;
 	display: flex;
@@ -191,15 +181,6 @@ body {
 	min-height: 100vh;
 	background: var(--page);
 	color: var(--ink);
-}
-
-@media (min-width: 1024px) {
-	.sheet {
-		border-radius: var(--radius-sheet);
-		min-height: calc(100vh - 32px);
-		/* clip (not hidden) keeps sticky working and rounds the corners. */
-		overflow: clip;
-	}
 }
 
 .sheet > main {

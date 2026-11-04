@@ -29,11 +29,11 @@ Payments are NOT in scope yet. "Select plan" opens the trial/enrolment form with
 
 ## Design (v2, mint)
 - Mood: calm, airy, rounded, light grotesque type, soft mint panels on a white page.
-- Light tokens: --frame #9FCDBB (page margin color, desktop only), --page #FCFEFD, --mint-300 #A9D4C4 (hero panel), --mint-100 #D6ECE2 (tinted panels), --mint-50 #EAF5F0, --ink #0B1A14, --ink-muted #5A6C63, --line #E1EBE6, --green #0E8660 (primary, white text, must pass 4.5:1: darken if not), --green-deep #0A6B4B (hover, links), --deep #0F3D2E (testimonial panel).
-- Dark tokens: --frame #08100D, --page #0D1612, --surface #131F1A, --mint-300 #1B3A2E, --mint-100 #162A22, --mint-50 #1A2F26, --ink #EAF4EF, --ink-muted #9DB3A8, --line #24362E, --green #3FC391 (text on it #062017), --green-deep #6FD9AE, --deep #0A1F18.
+- Light tokens: --page #FCFEFD, --mint-300 #A9D4C4 (hero panel), --mint-100 #D6ECE2 (tinted panels), --mint-50 #EAF5F0, --ink #0B1A14, --ink-muted #5A6C63, --line #E1EBE6, --green #0E8660 (primary, white text, must pass 4.5:1: darken if not), --green-deep #0A6B4B (hover, links), --deep #0F3D2E (testimonial panel).
+- Dark tokens: --page #0D1612, --surface #131F1A, --mint-300 #1B3A2E, --mint-100 #162A22, --mint-50 #1A2F26, --ink #EAF4EF, --ink-muted #9DB3A8, --line #24362E, --green #3FC391 (text on it #062017), --green-deep #6FD9AE, --deep #0A1F18.
 - Type: Instrument Sans only (400, 500, 600) plus Amiri for Arabic. H1 64px/1.04 weight 400 letter-spacing -0.03em (40px mobile). H2 48px/1.08 weight 400 (32px mobile). Body 17px/1.6, small 14px. The highlighted word in a heading is weight 500 in --green-deep. No serif anywhere.
-- Shape: sheet and big panels radius 28px, cards 20px, inputs 12px, buttons and chips fully round. Panel inner padding 24 to 40px. Max content width 1200px.
-- Frame: from 1024px up, the page background is --frame and the whole site sits on a --page sheet with 16px outer inset and 28px radius (header inside the sheet). Below 1024px the sheet is full bleed.
+- Shape: big panels radius 28px, cards 20px, inputs 12px, buttons and chips fully round. Panel inner padding 24 to 40px. Max content width 1200px.
+- Layout: the site is full bleed on --page at every width. No outer inset, no rounded sheet anywhere.
 - Chips: 1px outline of --ink at 20%, 36px tall, 14px text. Primary button: --green fill, white text, 48px tall. Secondary: outline. Selected or hovered list row: --green fill, white text.
 - Texture: a very faint (6% opacity) Islamic geometric line pattern, flat SVG, only inside the hero panel. No gradients, no glass, no orbs, no dot grids, no emojis, no default icon set.
 - Mobile first, check at 360px, 768px, 1280px.
