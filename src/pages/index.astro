@@ -592,7 +592,10 @@ const steps = [
 	 * margin lets the mint panel run behind the transparent header.
 	 * Only the bottom two corners are rounded.
 	 * ----------------------------------------------------------------- */
-	:global(.hero) {
+	/* section.section--space-flush.hero: out-specifies the Section space
+	 * modifier (which Astro scopes as a 2-class selector) so these hero
+	 * paddings always apply. */
+	:global(section.section--space-flush.hero) {
 		position: relative;
 		margin-top: calc(-1 * var(--header-height));
 		padding-top: calc(var(--header-height) + 72px);
@@ -1119,7 +1122,7 @@ const steps = [
 	}
 
 	@media (min-width: 1001px) {
-		:global(.hero) {
+		:global(section.section--space-flush.hero) {
 			min-height: 640px;
 		}
 	}
@@ -1142,8 +1145,11 @@ const steps = [
 			margin-top: -40px;
 		}
 
-		:global(.hero) {
-			padding-bottom: 56px;
+		:global(section.section--space-flush.hero) {
+			/* Mobile keeps a 48px gap under the header and a 40px bottom
+			 * pad (card overlap) so the whole hero fits the first screen. */
+			padding-top: calc(var(--header-height) + 48px);
+			padding-bottom: 40px;
 			min-height: 0;
 			border-radius: 0 0 32px 32px;
 		}
