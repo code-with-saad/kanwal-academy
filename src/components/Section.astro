@@ -1,7 +1,7 @@
 ---
 interface Props {
 	id?: string;
-	tone?: "cream" | "sand" | "dark";
+	tone?: "cream" | "sand" | "mint" | "dark";
 	space?: "normal" | "tight" | "flush";
 	class?: string;
 }
@@ -34,6 +34,10 @@ const { id, tone = "cream", space = "normal", class: className } = Astro.props;
 
 	.section--sand {
 		background: var(--mint-100);
+	}
+
+	.section--mint {
+		background: var(--mint-300);
 	}
 
 	.section--dark {

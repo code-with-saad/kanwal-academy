@@ -4,6 +4,7 @@ import type { ContentEntry, ImageValue } from "emdash";
 import { Image } from "emdash/ui";
 import Base from "../layouts/Base.astro";
 import Button from "../components/Button.astro";
+import Chip from "../components/Chip.astro";
 import Container from "../components/Container.astro";
 import CourseCard from "../components/CourseCard.astro";
 import Eyebrow from "../components/Eyebrow.astro";
@@ -173,7 +174,8 @@ const steps = [
 		homePage ? { collection: "pages", id: homePage.data.id, slug: homePage.id } : undefined
 	}
 >
-	<Section tone="dark" space="flush" class="hero">
+	<Section tone="mint" space="flush" class="hero">
+		<div class="hero__pattern" aria-hidden="true"></div>
 		<Container>
 			<div class="hero__grid">
 				<div class="hero__copy">
@@ -184,7 +186,7 @@ const steps = [
 						{
 							headlineParts.map((part) =>
 								part.highlight ? (
-									<span class="hero__highlight" {...homeEdit?.home_highlight}>
+									<span class="heading-highlight" {...homeEdit?.home_highlight}>
 										{part.text}
 									</span>
 								) : (
@@ -211,6 +213,56 @@ const steps = [
 						>
 							{homeText("home_secondary_cta", "Explore courses")}
 						</Button>
+					</div>
+					<p class="hero__reach">
+						<svg
+							class="hero__reach-icon"
+							viewBox="0 0 20 20"
+							width="18"
+							height="18"
+							aria-hidden="true"
+							focusable="false"
+						>
+							<circle cx="10" cy="10" r="8.5" fill="none" stroke="currentColor" stroke-width="1.3" />
+							<ellipse cx="10" cy="10" rx="3.5" ry="8.5" fill="none" stroke="currentColor" stroke-width="1.3" />
+							<path d="M1.5 10h17" stroke="currentColor" stroke-width="1.3" />
+						</svg>
+						<span>Students learning from {contact.stats.countries} countries</span>
+					</p>
+					<div class="hero__mini-card">
+						<div class="hero__mini-card-body">
+							<h3 class="hero__mini-title">Your first class is free</h3>
+							<p class="hero__mini-text">
+								Book a trial, meet your teacher, and choose a plan that fits your week.
+							</p>
+							<ol class="hero__mini-steps" aria-label="Three steps to your first class">
+								<li title="Book your free trial">
+									<span class="hero__mini-dot">1</span>
+									<span class="hero__mini-label">Book</span>
+								</li>
+								<li title="Meet your teacher">
+									<span class="hero__mini-dot">2</span>
+									<span class="hero__mini-label">Meet your teacher</span>
+								</li>
+								<li title="Choose a plan">
+									<span class="hero__mini-dot">3</span>
+									<span class="hero__mini-label">Choose a plan</span>
+								</li>
+							</ol>
+							<a class="hero__mini-link" href="/free-trial">
+								Book free trial
+								<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false">
+									<path
+										d="M3 8h9m-4-4 4 4-4 4"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="1.5"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									/>
+								</svg>
+							</a>
+						</div>
 					</div>
 				</div>
 
@@ -252,6 +304,12 @@ const steps = [
 						}
 					</figure>
 				</div>
+			</div>
+			<div class="hero__chips" aria-label="Jump to a course or the free trial">
+				<Chip href="/courses/quranic-recitation">Qur'anic Recitation</Chip>
+				<Chip href="/courses/tajweed-proficiency">Tajweed Proficiency</Chip>
+				<Chip href="/courses/memorization-excellence">Memorization Excellence</Chip>
+				<Chip href="/free-trial">Free trial class</Chip>
 			</div>
 		</Container>
 	</Section>
@@ -440,34 +498,76 @@ const steps = [
 </script>
 
 <style>
-	/* Section is a child component, so page styles reach it via :global. */
+	/* -----------------------------------------------------------------
+	 * Hero: mint panel that extends under the transparent header.
+	 * The pattern is a very faint Islamic 8-point star on the right half.
+	 * ----------------------------------------------------------------- */
 	:global(.hero) {
-		display: grid;
-		align-items: center;
-		padding-block: clamp(24px, 4vh, 48px);
+		position: relative;
+		margin-top: calc(-1 * var(--header-height));
+		padding-top: calc(var(--header-height) + 32px);
+		padding-bottom: 32px;
+		min-height: 600px;
+		overflow: clip;
+	}
+
+	.hero__pattern {
+		position: absolute;
+		inset: 0;
+		background: var(--ink);
+		opacity: 0.06;
+		pointer-events: none;
+		/* Islamic 8-point star tile. */
+		-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='black' stroke-width='0.9'%3E%3Crect x='20' y='20' width='40' height='40'/%3E%3Crect x='20' y='20' width='40' height='40' transform='rotate(45 40 40)'/%3E%3Ccircle cx='40' cy='40' r='16'/%3E%3C/g%3E%3C/svg%3E");
+		mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='black' stroke-width='0.9'%3E%3Crect x='20' y='20' width='40' height='40'/%3E%3Crect x='20' y='20' width='40' height='40' transform='rotate(45 40 40)'/%3E%3Ccircle cx='40' cy='40' r='16'/%3E%3C/g%3E%3C/svg%3E");
+		-webkit-mask-repeat: repeat;
+		mask-repeat: repeat;
+		-webkit-mask-size: 80px 80px;
+		mask-size: 80px 80px;
+		/* Pattern only on the right half. */
+		-webkit-mask-position: 100% 0;
+		mask-position: 100% 0;
+	}
+
+	@supports (mask-composite: intersect) or (-webkit-mask-composite: source-in) {
+		.hero__pattern {
+			-webkit-mask-image:
+				url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='black' stroke-width='0.9'%3E%3Crect x='20' y='20' width='40' height='40'/%3E%3Crect x='20' y='20' width='40' height='40' transform='rotate(45 40 40)'/%3E%3Ccircle cx='40' cy='40' r='16'/%3E%3C/g%3E%3C/svg%3E"),
+				linear-gradient(to left, black 55%, transparent 75%);
+			mask-image:
+				url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='black' stroke-width='0.9'%3E%3Crect x='20' y='20' width='40' height='40'/%3E%3Crect x='20' y='20' width='40' height='40' transform='rotate(45 40 40)'/%3E%3Ccircle cx='40' cy='40' r='16'/%3E%3C/g%3E%3C/svg%3E"),
+				linear-gradient(to left, black 55%, transparent 75%);
+			-webkit-mask-composite: source-in;
+			mask-composite: intersect;
+			-webkit-mask-size: 80px 80px, 100% 100%;
+			mask-size: 80px 80px, 100% 100%;
+			-webkit-mask-position: 0 0, 0 0;
+			mask-position: 0 0, 0 0;
+		}
 	}
 
 	.hero__grid {
 		display: grid;
-		grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+		grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
 		gap: clamp(32px, 6vw, 80px);
 		align-items: center;
 	}
 
-	.hero__copy h1 {
-		max-width: 17ch;
-		margin-top: var(--space-lg);
+	.hero__copy {
+		max-width: 640px;
 	}
 
-	.hero__highlight {
-		color: var(--sage);
+	.hero__copy h1 {
+		max-width: 18ch;
+		margin-top: var(--space-lg);
+		color: var(--ink);
 	}
 
 	.hero__lead {
 		max-width: 46ch;
 		margin-top: var(--space-lg);
-		color: var(--muted-on-dark);
-		font-size: clamp(1.125rem, 0.5vw + 1rem, 1.3125rem);
+		color: var(--ink);
+		font-size: clamp(1.0625rem, 0.4vw + 1rem, 1.25rem);
 	}
 
 	.hero__actions {
@@ -477,13 +577,120 @@ const steps = [
 		margin-top: var(--space-xl);
 	}
 
+	/* Reach line: globe + stat */
+	.hero__reach {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xs);
+		margin-top: var(--space-lg);
+		color: var(--ink-muted);
+		font-size: var(--size-small);
+		font-weight: 500;
+	}
+
+	.hero__reach-icon {
+		flex: none;
+		color: var(--green-deep);
+	}
+
+	/* Mini card: white (light) or page-coloured (dark) panel */
+	.hero__mini-card {
+		margin-top: var(--space-xl);
+		border-radius: 20px;
+		background: var(--page);
+		border: 1px solid var(--line);
+		max-width: 520px;
+	}
+
+	.hero__mini-card-body {
+		display: grid;
+		gap: var(--space-sm);
+		padding: var(--space-lg);
+	}
+
+	.hero__mini-title {
+		font-family: var(--font-heading);
+		font-size: 1.125rem;
+		font-weight: 500;
+		line-height: 1.25;
+		color: var(--ink);
+		margin: 0;
+	}
+
+	.hero__mini-text {
+		color: var(--ink-muted);
+		font-size: var(--size-small);
+		line-height: 1.55;
+		margin: 0;
+	}
+
+	.hero__mini-steps {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-sm) var(--space-md);
+		margin: var(--space-xs) 0 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.hero__mini-steps li {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		font-size: 0.8125rem;
+		color: var(--ink-muted);
+	}
+
+	.hero__mini-dot {
+		display: grid;
+		place-items: center;
+		width: 22px;
+		height: 22px;
+		border-radius: 50%;
+		background: var(--mint-100);
+		color: var(--green-deep);
+		font-size: 0.75rem;
+		font-weight: 600;
+	}
+
+	.hero__mini-label {
+		font-weight: 500;
+		color: var(--ink);
+	}
+
+	.hero__mini-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		color: var(--green-deep);
+		font-size: var(--size-small);
+		font-weight: 600;
+		text-decoration: none;
+		margin-top: var(--space-xs);
+	}
+
+	.hero__mini-link:hover {
+		color: var(--green);
+	}
+
+	.hero__mini-link svg {
+		fill: none;
+		stroke: currentColor;
+		transition: transform var(--transition);
+	}
+
+	.hero__mini-link:hover svg {
+		transform: translateX(2px);
+	}
+
+	/* Visual: orbit ring with 4 icons and the Quran image */
 	.hero__visual {
 		position: relative;
 		display: grid;
 		place-items: center;
 		justify-self: end;
 		width: 100%;
-		max-width: 460px;
+		max-width: 420px;
 		aspect-ratio: 1;
 	}
 
@@ -491,7 +698,7 @@ const steps = [
 		position: absolute;
 		width: 80%;
 		aspect-ratio: 1;
-		border: 1px solid var(--line-dark);
+		border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
 		border-radius: 50%;
 	}
 
@@ -500,16 +707,17 @@ const steps = [
 		z-index: 1;
 		display: grid;
 		place-items: center;
-		width: 54px;
+		width: 48px;
 		aspect-ratio: 1;
-		border: 1px solid var(--line-dark);
+		border: 1px solid var(--line);
 		border-radius: var(--radius-card);
-		background: var(--surface-dark);
-		color: var(--sage);
+		background: var(--page);
+		color: var(--green-deep);
 	}
 
 	.hero__orbit-node svg {
-		width: 28px;
+		width: 24px;
+		height: 24px;
 		fill: none;
 		stroke: currentColor;
 		stroke-width: 1.3;
@@ -518,25 +726,25 @@ const steps = [
 	}
 
 	.hero__orbit-node--top {
-		top: 5%;
+		top: 6%;
 		left: 50%;
 		transform: translateX(-50%);
 	}
 
 	.hero__orbit-node--left {
 		top: 50%;
-		left: 5%;
+		left: 6%;
 		transform: translateY(-50%);
 	}
 
 	.hero__orbit-node--right {
 		top: 50%;
-		right: 5%;
+		right: 6%;
 		transform: translateY(-50%);
 	}
 
 	.hero__orbit-node--bottom {
-		bottom: 5%;
+		bottom: 6%;
 		left: 50%;
 		transform: translateX(-50%);
 	}
@@ -546,9 +754,9 @@ const steps = [
 		z-index: 2;
 		display: grid;
 		place-items: center;
-		width: 80%;
+		width: 60%;
+		max-width: 380px;
 		margin: 0;
-		animation: quran-float 7s ease-in-out infinite;
 	}
 
 	:global(.hero__image) {
@@ -558,53 +766,30 @@ const steps = [
 		object-fit: contain;
 	}
 
-	@keyframes quran-float {
-		0%,
-		100% {
-			transform: translateY(0);
-		}
-		50% {
-			transform: translateY(-12px);
-		}
+	/* Bottom chips row */
+	.hero__chips {
+		display: flex;
+		flex-wrap: nowrap;
+		gap: var(--space-xs);
+		margin-top: var(--space-xl);
+		overflow-x: auto;
+		padding-bottom: var(--space-2xs);
+		scrollbar-width: thin;
+		-webkit-overflow-scrolling: touch;
 	}
 
-	.go-top {
-		position: fixed;
-		right: 16px;
-		bottom: var(--space-lg);
-		z-index: 60;
-		display: grid;
-		place-items: center;
-		width: 44px;
-		height: 44px;
-		border: 1px solid var(--line-dark);
-		border-radius: var(--radius-button);
-		background: var(--bg-dark);
-		color: var(--text-on-dark);
-		box-shadow: 0 3px 14px rgb(16 26 22 / 18%);
-		transition:
-			background-color var(--transition),
-			border-color var(--transition);
+	.hero__chips::-webkit-scrollbar {
+		height: 4px;
 	}
 
-	.go-top:hover {
-		border-color: var(--sage);
-		background: var(--surface-dark);
+	.hero__chips::-webkit-scrollbar-thumb {
+		background: color-mix(in srgb, var(--ink) 20%, transparent);
+		border-radius: 2px;
 	}
 
-	.go-top svg {
-		width: 22px;
-		fill: none;
-		stroke: currentColor;
-		stroke-width: 1.8;
-		stroke-linecap: round;
-		stroke-linejoin: round;
-	}
-
-	.go-top[hidden] {
-		display: none;
-	}
-
+	/* -----------------------------------------------------------------
+	 * Generic page-level styles
+	 * ----------------------------------------------------------------- */
 	.section-lead {
 		max-width: 48ch;
 		margin-top: var(--space-md);
@@ -648,9 +833,9 @@ const steps = [
 
 	.number__value {
 		display: block;
-		font-family: var(--font-heading, Georgia, serif);
+		font-family: var(--font-heading);
 		font-size: clamp(2rem, 4vw, 3rem);
-		font-weight: 600;
+		font-weight: 500;
 		line-height: 1;
 		letter-spacing: -0.02em;
 	}
@@ -680,9 +865,9 @@ const steps = [
 	}
 
 	.testimonial__quote {
-		font-family: var(--font-heading, Georgia, serif);
+		font-family: var(--font-heading);
 		font-size: clamp(1.75rem, 3.4vw, 2.75rem);
-		font-weight: 600;
+		font-weight: 400;
 		line-height: 1.16;
 		letter-spacing: -0.015em;
 	}
@@ -692,24 +877,31 @@ const steps = [
 		flex-wrap: wrap;
 		gap: var(--space-xs);
 		margin-top: var(--space-lg);
-		color: var(--muted-on-dark);
 		font-size: var(--size-small);
 		font-style: normal;
 	}
 
 	.testimonial__author cite {
-		color: var(--text-on-dark);
 		font-style: normal;
 		font-weight: 600;
 	}
 
+	/* -----------------------------------------------------------------
+	 * Breakpoints
+	 * ----------------------------------------------------------------- */
 	@media (max-width: 1000px) {
 		.hero__grid {
 			grid-template-columns: 1fr;
 		}
 
 		.hero__visual {
-			justify-self: start;
+			justify-self: center;
+			max-width: 320px;
+		}
+
+		.hero__pattern {
+			/* On mobile the pattern sits behind the whole hero, faded more. */
+			opacity: 0.04;
 		}
 
 		.plan-grid {
@@ -719,7 +911,7 @@ const steps = [
 
 	@media (min-width: 1001px) {
 		:global(.hero) {
-			min-height: calc(100svh - var(--header-height));
+			min-height: max(600px, calc(100svh));
 		}
 	}
 
@@ -730,6 +922,16 @@ const steps = [
 	}
 
 	@media (max-width: 760px) {
+		:global(.hero) {
+			padding-top: calc(var(--header-height) + 20px);
+			padding-bottom: 20px;
+			min-height: 0;
+		}
+
+		.hero__visual {
+			max-width: 240px;
+		}
+
 		.numbers {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 			gap: var(--space-md);
@@ -748,8 +950,8 @@ const steps = [
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.hero__image-wrap {
-			animation: none;
+		.hero__mini-link svg {
+			transition: none;
 		}
 	}
 </style>
