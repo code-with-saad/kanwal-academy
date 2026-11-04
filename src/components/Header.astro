@@ -29,7 +29,13 @@ const isCurrent = (url: string) => {
 	<!-- Plain div, not Container: scoped styles must reach this element. -->
 	<div class="container header__inner">
 		<a href="/" class="header__wordmark" aria-label={`${siteName} home`}>
-			{siteName}
+			<img
+				class="header__logo"
+				src={tone === "dark" ? "/images/kanwal-logo-on-dark.png" : "/images/kanwal-logo-on-light.png"}
+				alt={siteName}
+				width="200"
+				height="44"
+			/>
 		</a>
 
 		<div class="header__panel" id="site-menu" data-menu-panel>
@@ -142,6 +148,8 @@ const isCurrent = (url: string) => {
 	}
 
 	.header__wordmark {
+		display: inline-flex;
+		align-items: center;
 		color: var(--text);
 		font-family: var(--font-heading, Georgia, serif);
 		font-size: clamp(1.0625rem, 1.2vw, 1.25rem);
@@ -150,6 +158,13 @@ const isCurrent = (url: string) => {
 		letter-spacing: -0.01em;
 		text-decoration: none;
 		transition: color var(--transition);
+	}
+
+	.header__logo {
+		display: block;
+		height: 44px;
+		width: auto;
+		object-fit: contain;
 	}
 
 	.header__wordmark:hover {

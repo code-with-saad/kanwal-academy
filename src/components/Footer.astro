@@ -18,7 +18,15 @@ const year = new Date().getFullYear();
 	<Container>
 		<div class="footer__grid">
 			<div class="footer__brand">
-				<a href="/" class="footer__wordmark">{siteName}</a>
+				<a href="/" class="footer__wordmark" aria-label={`${siteName} home`}>
+					<img
+						class="footer__logo"
+						src="/images/kanwal-logo-on-dark.png"
+						alt={siteName}
+						width="240"
+						height="56"
+					/>
+				</a>
 				<p class="footer__tagline" {...settingsEdit?.footer_tagline}>
 					{contact.footer.tagline}
 				</p>
@@ -111,7 +119,8 @@ const year = new Date().getFullYear();
 	}
 
 	.footer__wordmark {
-		display: inline-block;
+		display: inline-flex;
+		align-items: center;
 		color: var(--text-on-dark);
 		font-family: var(--font-heading, Georgia, serif);
 		font-size: clamp(1.375rem, 2vw, 1.75rem);
@@ -119,6 +128,13 @@ const year = new Date().getFullYear();
 		line-height: 1.1;
 		letter-spacing: -0.01em;
 		text-decoration: none;
+	}
+
+	.footer__logo {
+		display: block;
+		height: 56px;
+		width: auto;
+		object-fit: contain;
 	}
 
 	.footer__wordmark:hover {
