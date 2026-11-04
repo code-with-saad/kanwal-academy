@@ -124,17 +124,19 @@ const planHref =
 		--on-accent: #062017;
 	}
 
-	/* In dark mode the page is dark, so the featured plan flips to mint-100. */
+	/* In dark mode the featured plan is a green card with dark text, a dark
+	 * badge and a dark select button, all above 4.5:1. */
 	:global(html[data-theme="dark"]) .plan-card--inverted,
 	:global(html[data-theme="dark"]) .plan-card--hero {
-		background: var(--mint-100);
-		color: var(--ink);
-		--ink: var(--ink);
-		--ink-muted: var(--ink-muted);
-		--line: color-mix(in srgb, var(--ink) 18%, transparent);
-		--accent: var(--green-deep);
-		--green: var(--green-deep);
-		--green-deep: var(--green-deep);
+		background: var(--green);
+		color: #062017;
+		--ink: #062017;
+		--ink-muted: #0b3a26;
+		--line: color-mix(in srgb, #062017 25%, transparent);
+		--accent: #062017;
+		--green: #062017;
+		--green-deep: #062017;
+		--on-accent: #3fc391;
 	}
 
 	.plan-card__bismillah {

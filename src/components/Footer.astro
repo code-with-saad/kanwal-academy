@@ -29,8 +29,15 @@ const academyLinks = [
 			<div class="footer__brand">
 				<a href="/" class="footer__logo-link" aria-label={`${siteName}, home`}>
 					<img
-						class="footer__logo"
+						class="footer__logo footer__logo--on-light"
 						src="/images/kanwal-logo-on-light.png"
+						alt={siteName}
+						width="1668"
+						height="712"
+					/>
+					<img
+						class="footer__logo footer__logo--on-dark"
+						src="/images/kanwal-logo-on-dark.png"
 						alt={siteName}
 						width="1668"
 						height="712"
@@ -182,6 +189,18 @@ const academyLinks = [
 		max-width: 260px;
 		height: auto;
 		object-fit: contain;
+	}
+
+	.footer__logo--on-dark {
+		display: none;
+	}
+
+	:global(html[data-theme="dark"]) .footer__logo--on-light {
+		display: none;
+	}
+
+	:global(html[data-theme="dark"]) .footer__logo--on-dark {
+		display: block;
 	}
 
 	.footer__description {
