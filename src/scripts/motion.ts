@@ -89,6 +89,8 @@ function startCounter(element: HTMLElement) {
 function init() {
 	if (!document.documentElement.classList.contains("js-motion")) return;
 
+	document.documentElement.setAttribute("data-motion-ready", "1");
+
 	const revealTargets = Array.from(
 		document.querySelectorAll<HTMLElement>("[data-reveal], [data-reveal-words], [data-count-to]"),
 	);

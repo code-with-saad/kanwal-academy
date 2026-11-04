@@ -116,6 +116,11 @@ const pageCtx = createPublicPageContext({
 				try {
 					if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
 						document.documentElement.classList.add("js-motion");
+						window.setTimeout(function () {
+							if (document.documentElement.getAttribute("data-motion-ready") !== "1") {
+								document.documentElement.classList.remove("js-motion");
+							}
+						}, 4000);
 					}
 				} catch (e) {
 					/* Without matchMedia, leave the page static. */
