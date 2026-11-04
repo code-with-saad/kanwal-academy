@@ -9,6 +9,7 @@ import Eyebrow from "../components/Eyebrow.astro";
 import FeatureCards from "../components/FeatureCards.astro";
 import PlanCard from "../components/PlanCard.astro";
 import Section from "../components/Section.astro";
+import StandingOut from "../components/StandingOut.astro";
 import Step from "../components/Step.astro";
 import WisdomPanel from "../components/WisdomPanel.astro";
 import { site } from "../config/site";
@@ -371,6 +372,12 @@ const steps = [
 	<Section class="section--after-hero">
 		<Container>
 			<WisdomPanel years={contact.stats.years} />
+		</Container>
+	</Section>
+
+	<Section space="tight">
+		<Container>
+			<StandingOut />
 		</Container>
 	</Section>
 
