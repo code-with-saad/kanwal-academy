@@ -3,8 +3,9 @@ import { getEmDashCollection, getEmDashEntry, getSeoMeta } from "emdash";
 import type { ContentEntry, ImageValue } from "emdash";
 import { Image } from "emdash/ui";
 import Base from "../layouts/Base.astro";
+import Button from "../components/Button.astro";
 import Container from "../components/Container.astro";
-import CourseCard from "../components/CourseCard.astro";
+import CourseRow from "../components/CourseRow.astro";
 import Eyebrow from "../components/Eyebrow.astro";
 import FeatureCards from "../components/FeatureCards.astro";
 import PlanCard from "../components/PlanCard.astro";
@@ -13,7 +14,7 @@ import StandingOut from "../components/StandingOut.astro";
 import Step from "../components/Step.astro";
 import WisdomPanel from "../components/WisdomPanel.astro";
 import { site } from "../config/site";
-import { courseImages, heroImage } from "../config/images";
+import { heroImage } from "../config/images";
 import { getSiteContact } from "../utils/site-config";
 import { formatUsdPrice } from "../utils/price";
 import type { Page } from "../../emdash-env";
@@ -81,11 +82,17 @@ if (Astro.cache?.enabled) {
 }
 
 const courses = coursesResult.entries;
-const plans = plansResult.entries;
-const testimonials = testimonialsResult.entries.filter(
+const plans = plansResult.entries;const testimonials = testimonialsResult.entries.filter(
 	(testimonial) => testimonial.data.consent_given === true,
 );
 const contact = contactResult.data;
+
+// Arabic course names supplied by the academy.
+const courseArabic: Record<string, string> = {
+	"quranic-recitation": "القراءة",
+	"tajweed-proficiency": "التجويد",
+	"memorization-excellence": "الحفظ",
+};
 
 const homePage = homeResult.entry as ContentEntry<Page & HomePageFields> | null;
 const homeText = (field: HomeTextField, fallback: string) =>
@@ -383,46 +390,31 @@ const steps = [
 
 	<Section>
 		<Container>
-			<div class="section-head">
-				<Eyebrow edit={homeEdit?.courses_eyebrow}>
-					{homeText("courses_eyebrow", "Courses")}
-				</Eyebrow>
-				<h2 {...homeEdit?.courses_heading}>
-					{homeText("courses_heading", "Explore our courses")}
-				</h2>
-				<p class="section-lead" {...homeEdit?.courses_intro}>
-					{homeText(
-						"courses_intro",
-						"Start where you are. Your teacher will meet you there and build the lessons around your level.",
-					)}
-				</p>
+			<div class="journey-head">
+				<div class="journey-head__copy">
+					<h2>Start your journey</h2>
+					<p>
+						Three courses, each taught one to one. Pick the path that matches where you are and
+						your teacher will set the pace from there.
+					</p>
+				</div>
+				<Button href="/courses" variant="secondary">See all courses</Button>
 			</div>
 
-			<ul class="course-grid" tabindex="0" aria-label="Explore courses">
+			<ol class="journey-list">
 				{
-					courses.map((course) => (
-						<li>
-							<CourseCard
-								slug={course.id}
-								title={course.data.name}
-								summary={course.data.summary}
-								level={course.data.level}
-								href={`/courses/${course.id}`}
-								imageSrc={courseImages[course.id]?.src}
-								imageAlt={courseImages[course.id]?.alt}
-								image={
-									(course.data as typeof course.data & { image?: ImageValue }).image
-								}
-								edit={course.edit}
-								homeEdit={homeEdit}
-								trialLabel={homeText("courses_trial_cta", "Book free trial")}
-								detailsLabel={homeText("courses_details_cta", "See details")}
-								formatLabel={homeText("courses_format_label", "Live one on one")}
-							/>
-						</li>
+					courses.map((course, index) => (
+						<CourseRow
+							index={index + 1}
+							title={course.data.name}
+							summary={course.data.summary}
+							level={course.data.level}
+							arabic={courseArabic[course.id]}
+							href={`/courses/${course.id}`}
+						/>
 					))
 				}
-			</ul>
+			</ol>
 		</Container>
 	</Section>
 
@@ -1042,10 +1034,28 @@ const steps = [
 		margin-inline: auto;
 	}
 
-	.course-grid {
-		display: grid;
-		grid-template-columns: 1fr;
+	.journey-head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
 		gap: var(--space-lg);
+		margin-bottom: var(--space-xl);
+	}
+
+	.journey-head__copy {
+		display: grid;
+		gap: var(--space-md);
+		max-width: 54ch;
+	}
+
+	.journey-head__copy p {
+		max-width: 48ch;
+		color: var(--ink-muted);
+	}
+
+	.journey-list {
+		display: grid;
 	}
 
 	.numbers {
@@ -1152,12 +1162,6 @@ const steps = [
 		}
 	}
 
-	@media (min-width: 760px) {
-		.course-grid {
-			grid-template-columns: repeat(3, minmax(0, 1fr));
-		}
-	}
-
 	@media (max-width: 760px) {
 		.hero-cards {
 			margin-top: -40px;
@@ -1238,47 +1242,6 @@ const steps = [
 			padding-block: 36px;
 		}
 
-		.course-grid {
-			display: flex;
-			gap: var(--space-md);
-			margin-inline: calc(-1 * var(--gutter));
-			padding: 0 var(--gutter) var(--space-sm);
-			overflow-x: auto;
-			overscroll-behavior-x: contain;
-			scroll-snap-type: x mandatory;
-			scrollbar-width: thin;
-		}
-
-		.course-grid > li {
-			flex: 0 0 min(84vw, 340px);
-			scroll-snap-align: start;
-		}
-
-		.course-grid :global(.course-card__body) {
-			gap: var(--space-xs);
-			padding: var(--space-md);
-		}
-
-		.course-grid :global(.course-card__title) {
-			font-size: 1.125rem;
-		}
-
-		.course-grid :global(.course-card__media img) {
-			max-height: 170px;
-			object-fit: cover;
-		}
-
-		.course-grid :global(.course-card__cta) {
-			gap: 6px;
-			padding-top: var(--space-xs);
-		}
-
-		.course-grid :global(.course-card__cta .btn) {
-			flex-basis: 0;
-			min-width: 0;
-			padding-inline: 12px;
-			font-size: 0.875rem;
-		}
 	}
 
 	@media (max-width: 560px) {
