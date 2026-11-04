@@ -595,8 +595,8 @@ const steps = [
 	:global(.hero) {
 		position: relative;
 		margin-top: calc(-1 * var(--header-height));
-		padding-top: calc(var(--header-height) + 56px);
-		padding-bottom: 140px;
+		padding-top: calc(var(--header-height) + 72px);
+		padding-bottom: 80px;
 		min-height: 640px;
 		border-radius: 0 0 48px 48px;
 		/* Clips the orbit box sweep so the turning stage can never add
@@ -740,7 +740,8 @@ const steps = [
 		}
 	}
 
-	/* Inner dashed ring, counter-rotating once per 90s. */
+	/* Inner dashed ring, counter-rotating once per 90s. Ambient only:
+	 * nothing clickable ever moves on the stage. */
 	.stage__dashed {
 		--dashed-size: calc(var(--stage-size) * 0.55);
 		position: absolute;
@@ -758,17 +759,11 @@ const steps = [
 		stroke-dasharray: 1 1.2;
 	}
 
-	/* Orbit disk: carries the turning icons. */
+	/* Orbit layer: static. The four nodes sit at 0/90/180/270 forever so
+	 * hover and focus are instant and the label never moves while read. */
 	.stage__orbit {
 		position: absolute;
 		inset: 0;
-		animation: stage-spin 48s linear infinite;
-	}
-
-	@keyframes stage-spin {
-		to {
-			transform: rotate(360deg);
-		}
 	}
 
 	@keyframes stage-spin-rev {
@@ -777,9 +772,8 @@ const steps = [
 		}
 	}
 
-	/* Node: placed on the ring at its angle; the frame un-rotates it so
-	 * the button stays upright, the button counter-spins to stay upright
-	 * while the disk turns. */
+	/* Node: fixed on the ring at its angle; the frame un-rotates it so
+	 * the button sits upright. Nothing turns. */
 	.orbit-node {
 		position: absolute;
 		top: 50%;
@@ -821,7 +815,6 @@ const steps = [
 		background: var(--surface);
 		color: var(--green-deep);
 		text-decoration: none;
-		animation: stage-spin-rev 48s linear infinite;
 		transition:
 			background-color var(--transition),
 			border-color var(--transition),
@@ -846,17 +839,16 @@ const steps = [
 		transform: scale(1.12);
 	}
 
-	/* Label pill, outer side, shown on hover, focus and first tap. The
-	 * wrap counter-spins with the orbit so the pill never tilts. */
+	/* Label pill, shown on hover, focus and first tap. The pill itself is
+	 * still: a short show delay avoids flicker, hide is instant. */
 	.orbit-node__label-wrap {
 		position: absolute;
 		inset: 0;
 		pointer-events: none;
 		opacity: 0;
 		visibility: hidden;
-		animation: stage-spin-rev 48s linear infinite;
 		transition:
-			opacity var(--transition),
+			opacity 180ms var(--ease-out),
 			visibility var(--transition);
 		z-index: 4;
 	}
@@ -909,18 +901,10 @@ const steps = [
 	.orbit-node__btn.is-armed ~ .orbit-node__label-wrap {
 		opacity: 1;
 		visibility: visible;
+		transition-delay: 120ms;
 	}
 
-	/* Pause every loop while an icon is hovered, focused, or off screen. */
-	.stage:has(.orbit-node__btn:is(:hover, :focus-visible)) .stage__orbit,
-	.stage:has(.orbit-node__btn:is(:hover, :focus-visible)) .orbit-node__btn,
-	.stage:has(.orbit-node__btn:is(:hover, :focus-visible)) .orbit-node__label-wrap {
-		animation-play-state: paused;
-	}
-
-	.stage.is-offscreen .stage__orbit,
-	.stage.is-offscreen .orbit-node__btn,
-	.stage.is-offscreen .orbit-node__label-wrap,
+	/* Only the decorative loops pause when the stage is off screen. */
 	.stage.is-offscreen .stage__dashed,
 	.stage.is-offscreen .stage__float,
 	.stage.is-offscreen .stage__ground {
@@ -1159,7 +1143,7 @@ const steps = [
 		}
 
 		:global(.hero) {
-			padding-bottom: 80px;
+			padding-bottom: 56px;
 			min-height: 0;
 			border-radius: 0 0 32px 32px;
 		}
