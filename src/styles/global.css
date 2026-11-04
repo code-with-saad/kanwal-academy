@@ -79,8 +79,12 @@
 	--radius-chip: 999px;
 
 	/* Motion */
+	--dur-fast: 150ms;
+	--dur-base: 250ms;
+	--dur-slow: 600ms;
+	--ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 	--ease-out: cubic-bezier(0.2, 0, 0, 1);
-	--transition: 180ms var(--ease-out);
+	--transition: var(--dur-base) var(--ease);
 }
 
 [data-theme="dark"] {
@@ -288,6 +292,85 @@ button {
 	color: var(--green-deep);
 }
 
+/* ---- Motion system --------------------------------------------------
+ * The `js-motion` class is set by an inline script in <head> only when
+ * JavaScript is available and the visitor has not asked for reduced
+ * motion. Without it, everything below is inert and all content is
+ * visible. The observer in src/scripts/motion.ts reveals each target
+ * once with transform and opacity only.
+ */
+.js-motion [data-reveal] {
+	opacity: 0;
+	transition:
+		opacity var(--dur-slow) var(--ease),
+		transform var(--dur-slow) var(--ease),
+		clip-path 800ms var(--ease);
+	transition-delay: var(--reveal-delay, 0ms);
+}
+
+.js-motion [data-reveal="up"] {
+	transform: translateY(24px);
+}
+
+.js-motion [data-reveal="left"] {
+	transform: translateX(-24px);
+}
+
+.js-motion [data-reveal="right"] {
+	transform: translateX(24px);
+}
+
+.js-motion [data-reveal="fade"] {
+	transform: none;
+}
+
+.js-motion [data-reveal="image"] {
+	opacity: 1;
+	clip-path: inset(12%);
+}
+
+.js-motion [data-reveal].is-revealed {
+	opacity: 1;
+	transform: none;
+	clip-path: inset(0);
+}
+
+/* Heading word stagger: words are wrapped by the motion script. */
+.js-motion [data-reveal-words] .reveal-word {
+	display: inline-block;
+	opacity: 0;
+	transform: translateY(14px);
+	transition:
+		opacity var(--dur-base) var(--ease),
+		transform var(--dur-slow) var(--ease);
+	transition-delay: calc(var(--reveal-delay, 0ms) + var(--word-index, 0) * 50ms);
+}
+
+.js-motion [data-reveal-words].is-revealed .reveal-word {
+	opacity: 1;
+	transform: none;
+}
+
+/* Cards and rows lift only on hover and focus-within. */
+.lift {
+	transition:
+		transform var(--dur-base) var(--ease),
+		box-shadow var(--dur-base) var(--ease),
+		background-color var(--dur-base) var(--ease),
+		border-color var(--dur-base) var(--ease);
+}
+
+.lift:hover,
+.lift:focus-within {
+	transform: translateY(-4px);
+}
+
+/* Revealed elements still lift: the reveal rule above is more specific. */
+.js-motion [data-reveal].is-revealed.lift:hover,
+.js-motion [data-reveal].is-revealed.lift:focus-within {
+	transform: translateY(-4px);
+}
+
 .visually-hidden {
 	position: absolute;
 	width: 1px;
@@ -460,5 +543,17 @@ button {
 		animation-duration: 0.01ms !important;
 		animation-iteration-count: 1 !important;
 		transition-duration: 0.01ms !important;
+	}
+
+	.js-motion [data-reveal],
+	.js-motion [data-reveal-words] .reveal-word {
+		opacity: 1;
+		transform: none;
+		clip-path: none;
+	}
+
+	.lift:hover,
+	.lift:focus-within {
+		transform: none;
 	}
 }

@@ -16,12 +16,16 @@ const {
 	imageAlt = "A student reciting the Qur'an during a live online lesson",
 	years = "5+",
 } = Astro.props;
+
+// Split "5+" into a number and a suffix so the counter can animate it.
+const yearCount = years.replace(/[^\d.]/g, "") || "5";
+const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 ---
 
 <div class="wisdom">
 	<div class="wisdom__media">
 		<span class="wisdom__block" aria-hidden="true"></span>
-		<div class="wisdom__frame">
+		<div class="wisdom__frame" data-reveal="image">
 			<ImagePlaceholder
 				src={imageSrc}
 				alt={imageAlt}
@@ -30,27 +34,31 @@ const {
 				class="wisdom__image"
 			/>
 		</div>
-		<p class="wisdom__badge">
-			<span class="wisdom__badge-value">{years} years</span>
+		<p class="wisdom__badge" data-reveal="up" data-reveal-delay="200">
+			<span class="wisdom__badge-value">
+				<span data-count-to={yearCount} data-count-suffix={yearSuffix}>{years}</span> years
+			</span>
 			<span class="wisdom__badge-label">teaching</span>
 		</p>
 	</div>
 
 	<div class="wisdom__copy">
-		<Eyebrow>{eyebrow}</Eyebrow>
-		<h2 class="wisdom__title">
+		<span data-reveal="up">
+			<Eyebrow>{eyebrow}</Eyebrow>
+		</span>
+		<h2 class="wisdom__title" data-reveal-words>
 			Experience Qur'anic <span class="heading-highlight">wisdom</span> with us
 		</h2>
-		<p>
+		<p data-reveal="up" data-reveal-delay="80">
 			Kanwal Quran Academy teaches the Qur'an online in live one to one classes. Your teacher
 			listens to your recitation, corrects it as you read, and sets a weekly plan around your
 			level.
 		</p>
-		<p>
+		<p data-reveal="up" data-reveal-delay="160">
 			Students join from more than five countries, on a phone, tablet or laptop. Every student
 			starts with a free trial class before choosing a plan.
 		</p>
-		<div class="wisdom__actions">
+		<div class="wisdom__actions" data-reveal="up" data-reveal-delay="240">
 			<Button href="/free-trial" variant="primary">Book free trial</Button>
 		</div>
 	</div>

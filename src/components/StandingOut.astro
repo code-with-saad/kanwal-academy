@@ -28,13 +28,18 @@ const items: Item[] = [
 ];
 ---
 
-<div class="standing">
-	<h2 class="standing__title">Standing out</h2>
+<div class="standing" data-reveal="fade">
+	<h2 class="standing__title" data-reveal-words>Standing out</h2>
 
 	<ul class="standing__grid">
 		{
 			items.map((item, index) => (
-				<li class="standing__item" style={`--item-index: ${index}`}>
+				<li
+					class="standing__item"
+					style={`--item-index: ${index}`}
+					data-reveal="up"
+					data-reveal-delay={80 + index * 80}
+				>
 					<span class="standing__number" aria-hidden="true">
 						{item.number}
 					</span>
@@ -84,20 +89,7 @@ const items: Item[] = [
 	</ul>
 </div>
 
-<script>
-	const panels = document.querySelectorAll<HTMLElement>(".standing");
-	const observer = new IntersectionObserver(
-		(entries) => {
-			for (const entry of entries) {
-				if (!entry.isIntersecting) continue;
-				entry.target.classList.add("is-visible");
-				observer.unobserve(entry.target);
-			}
-		},
-		{ threshold: 0.2 },
-	);
-	for (const panel of panels) observer.observe(panel);
-</script>
+
 
 <style>
 	.standing {
@@ -182,11 +174,11 @@ const items: Item[] = [
 		transform-origin: 24px 24px;
 	}
 
-	.standing.is-visible .standing__hand--minute {
+	.standing.is-revealed .standing__hand--minute {
 		animation: standing-sweep 6s linear infinite;
 	}
 
-	.standing.is-visible .standing__hand--hour {
+	.standing.is-revealed .standing__hand--hour {
 		animation: standing-sweep 24s linear infinite;
 	}
 
@@ -194,7 +186,7 @@ const items: Item[] = [
 		transform-origin: 24px 16.5px;
 	}
 
-	.standing.is-visible .standing__ribbon {
+	.standing.is-revealed .standing__ribbon {
 		animation: standing-wave 1500ms var(--ease-out) 200ms 1;
 	}
 
@@ -202,7 +194,7 @@ const items: Item[] = [
 		opacity: 0;
 	}
 
-	.standing.is-visible .standing__pulse {
+	.standing.is-revealed .standing__pulse {
 		animation: standing-travel 2.8s var(--ease-out) 300ms infinite;
 	}
 

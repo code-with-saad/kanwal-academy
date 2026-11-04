@@ -1,0 +1,331 @@
+---
+import Container from "./Container.astro";
+import { env as hostEnv } from "virtual:emdash/env";
+
+const runtimeEnv = hostEnv as Record<string, unknown> | undefined;
+const buildEnv = import.meta.env as unknown as Record<string, string | undefined>;
+const turnstileSiteKey = String(
+	runtimeEnv?.PUBLIC_TURNSTILE_SITE_KEY ?? buildEnv.PUBLIC_TURNSTILE_SITE_KEY ?? "",
+).trim();
+---
+
+<section class="newsletter" aria-labelledby="newsletter-title">
+	<Container>
+		<div class="newsletter__panel">
+			<div class="newsletter__copy">
+				<h2 class="newsletter__title" id="newsletter-title">Qur'an learning, in your inbox</h2>
+				<p class="newsletter__lead">
+					Monthly recitation and tajweed notes from our teachers, plus new course dates. Read
+					our <a href="/privacy-policy">Privacy Policy</a>.
+				</p>
+			</div>
+
+			<form class="newsletter__form" data-newsletter novalidate>
+				<label class="visually-hidden" for="newsletter-email">Email address</label>
+				<div class="newsletter__row">
+					<input
+						class="newsletter__input"
+						id="newsletter-email"
+						name="email"
+						type="email"
+						inputmode="email"
+						autocomplete="email"
+						placeholder="you@example.com"
+						maxlength="254"
+						required
+					/>
+					<button class="newsletter__submit" type="submit" data-submit>
+						<span class="newsletter__spinner" aria-hidden="true"></span>
+						<span class="newsletter__label" data-label>Subscribe</span>
+					</button>
+				</div>
+
+				<div class="newsletter__honeypot" aria-hidden="true">
+					<label for="newsletter-website">Website</label>
+					<input
+						id="newsletter-website"
+						name="website"
+						type="text"
+						tabindex="-1"
+						autocomplete="off"
+					/>
+				</div>
+
+				{
+					turnstileSiteKey && (
+						<div
+							class="cf-turnstile newsletter__turnstile"
+							data-sitekey={turnstileSiteKey}
+							data-theme="auto"
+						/>
+					)
+				}
+
+				<p class="newsletter__status" role="status" aria-live="polite" data-status></p>
+			</form>
+		</div>
+	</Container>
+</section>
+
+<script>
+	type Status = { message: string; tone: "success" | "error" };
+
+	const form = document.querySelector<HTMLFormElement>("[data-newsletter]");
+	if (form) {
+		const input = form.querySelector<HTMLInputElement>("#newsletter-email");
+		const honeypot = form.querySelector<HTMLInputElement>("#newsletter-website");
+		const submit = form.querySelector<HTMLButtonElement>("[data-submit]");
+		const label = form.querySelector<HTMLElement>("[data-label]");
+		const status = form.querySelector<HTMLElement>("[data-status]");
+		const turnstile = form.querySelector<HTMLElement>(".cf-turnstile");
+
+		// Load the Turnstile widget only when a site key is configured.
+		if (turnstile) {
+			const script = document.createElement("script");
+			script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+			script.async = true;
+			script.defer = true;
+			document.head.appendChild(script);
+		}
+
+		const setStatus = ({ message, tone }: Status) => {
+			if (!status) return;
+			status.textContent = message;
+			status.classList.toggle("is-success", tone === "success");
+			status.classList.toggle("is-error", tone === "error");
+		};
+
+		const setBusy = (busy: boolean) => {
+			if (!submit || !label) return;
+			submit.disabled = busy;
+			submit.classList.toggle("is-loading", busy);
+			submit.setAttribute("aria-busy", String(busy));
+			label.textContent = busy ? "Subscribing" : "Subscribe";
+		};
+
+		const turnstileToken = () => {
+			const api = (window as unknown as {
+				turnstile?: { getResponse?: (element?: HTMLElement) => string | undefined };
+			}).turnstile;
+			return api?.getResponse?.(turnstile ?? undefined) ?? "";
+		};
+
+		form.addEventListener("submit", async (event) => {
+			event.preventDefault();
+			if (!input || submit?.disabled) return;
+
+			const email = input.value.trim();
+			if (!email || !input.checkValidity()) {
+				setStatus({ message: "Enter a valid email address.", tone: "error" });
+				input.focus();
+				return;
+			}
+
+			setBusy(true);
+			setStatus({ message: "Checking your email address.", tone: "success" });
+			if (status) status.classList.remove("is-success", "is-error");
+
+			try {
+				const response = await fetch("/api/newsletter", {
+					method: "POST",
+					headers: { "Content-Type": "application/json", Accept: "application/json" },
+					body: JSON.stringify({
+						email,
+						website: honeypot?.value ?? "",
+						turnstileToken: turnstileToken(),
+					}),
+				});
+				const data = (await response.json().catch(() => ({}))) as {
+					ok?: boolean;
+					message?: string;
+				};
+
+				if (response.ok && data.ok) {
+					setStatus({
+						message: data.message ?? "You are on the list. JazakAllah khair.",
+						tone: "success",
+					});
+					form.reset();
+					(
+						window as unknown as {
+							turnstile?: { reset?: (element?: HTMLElement) => void };
+						}
+					).turnstile?.reset?.(turnstile ?? undefined);
+				} else {
+					setStatus({
+						message: data.message ?? "Something went wrong. Please try again.",
+						tone: "error",
+					});
+				}
+			} catch {
+				setStatus({
+					message: "We could not reach the server. Check your connection and try again.",
+					tone: "error",
+				});
+			} finally {
+				setBusy(false);
+			}
+		});
+	}
+</script>
+
+<style>
+	.newsletter {
+		padding-block: clamp(40px, 6vw, 64px) 0;
+	}
+
+	.newsletter__panel {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		align-items: center;
+		gap: clamp(24px, 4vw, 56px);
+		padding: clamp(24px, 3.4vw, 40px);
+		border-radius: var(--radius-panel);
+		background: var(--mint-100);
+	}
+
+	.newsletter__copy {
+		display: grid;
+		gap: var(--space-sm);
+	}
+
+	.newsletter__title {
+		font-size: var(--size-h3);
+		font-weight: 500;
+	}
+
+	.newsletter__lead {
+		max-width: 44ch;
+		color: var(--ink-muted);
+		font-size: var(--size-small);
+	}
+
+	.newsletter__form {
+		display: grid;
+		gap: var(--space-sm);
+	}
+
+	.newsletter__row {
+		display: flex;
+		gap: var(--space-xs);
+	}
+
+	.newsletter__input {
+		flex: 1 1 auto;
+		min-width: 0;
+		height: 48px;
+		padding: 0 16px;
+		border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+		border-radius: var(--radius-input);
+		background: var(--surface);
+		color: var(--ink);
+	}
+
+	.newsletter__input:focus-visible {
+		outline: 2px solid var(--focus);
+		outline-offset: 2px;
+	}
+
+	.newsletter__submit {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-xs);
+		flex: none;
+		height: 48px;
+		padding: 0 24px;
+		border: 1px solid var(--green);
+		border-radius: var(--radius-button);
+		background: var(--green);
+		color: var(--on-accent);
+		font-weight: 500;
+		transition:
+			background-color var(--dur-fast) var(--ease),
+			border-color var(--dur-fast) var(--ease);
+	}
+
+	.newsletter__submit:hover,
+	.newsletter__submit:focus-visible {
+		background: var(--green-deep);
+		border-color: var(--green-deep);
+	}
+
+	.newsletter__submit:disabled {
+		cursor: progress;
+		opacity: 0.85;
+	}
+
+	/* Spinner, never a skeleton loader. */
+	.newsletter__spinner {
+		display: none;
+		width: 16px;
+		height: 16px;
+		border: 2px solid color-mix(in srgb, var(--on-accent) 40%, transparent);
+		border-top-color: var(--on-accent);
+		border-radius: 50%;
+		animation: newsletter-spin 700ms linear infinite;
+	}
+
+	.newsletter__submit.is-loading .newsletter__spinner {
+		display: inline-block;
+	}
+
+	@keyframes newsletter-spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	.newsletter__honeypot {
+		position: absolute;
+		left: -9999px;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+	}
+
+	.newsletter__status {
+		min-height: 1.25em;
+		color: var(--ink-muted);
+		font-size: var(--size-small);
+		line-height: 1.4;
+	}
+
+	.newsletter__status.is-success {
+		color: var(--green-deep);
+		font-weight: 500;
+	}
+
+	.newsletter__status.is-error {
+		color: #a3341f;
+		font-weight: 500;
+	}
+
+	:global(html[data-theme="dark"]) .newsletter__status.is-error {
+		color: #ff9b8a;
+	}
+
+	@media (max-width: 760px) {
+		.newsletter__panel {
+			grid-template-columns: 1fr;
+			gap: var(--space-lg);
+		}
+	}
+
+	@media (max-width: 420px) {
+		.newsletter__row {
+			flex-direction: column;
+		}
+
+		.newsletter__submit {
+			width: 100%;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.newsletter__spinner {
+			animation: none;
+			border-top-color: transparent;
+		}
+	}
+</style>

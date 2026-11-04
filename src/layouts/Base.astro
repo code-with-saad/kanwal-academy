@@ -5,6 +5,7 @@ import { createPublicPageContext } from "emdash/page";
 import { EmDashBodyEnd, EmDashBodyStart, EmDashHead } from "emdash/ui";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
+import Newsletter from "../components/Newsletter.astro";
 import { site, type NavItem } from "../config/site";
 import { getSiteContact } from "../utils/site-config";
 import { resolveSiteIdentity } from "../utils/site";
@@ -110,6 +111,17 @@ const pageCtx = createPublicPageContext({
 		</script>
 		<link rel="icon" href="/images/kanwal-mark-on-light.png" />
 		<link rel="apple-touch-icon" href="/images/kanwal-mark-on-light.png" />
+		<script is:inline>
+			(function () {
+				try {
+					if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+						document.documentElement.classList.add("js-motion");
+					}
+				} catch (e) {
+					/* Without matchMedia, leave the page static. */
+				}
+			})();
+		</script>
 		<title>{fullTitle}</title>
 		<EmDashHead page={pageCtx} />
 		<Font cssVariable="--font-body" preload />
@@ -129,6 +141,7 @@ const pageCtx = createPublicPageContext({
 			<main id="main">
 				<slot />
 			</main>
+			<Newsletter />
 			<Footer
 				contact={contactResult.data}
 				settingsEdit={contactResult.entry?.edit}
@@ -136,5 +149,8 @@ const pageCtx = createPublicPageContext({
 			/>
 		</div>
 		<EmDashBodyEnd page={pageCtx} />
+		<script>
+			import "../scripts/motion";
+		</script>
 	</body>
 </html>

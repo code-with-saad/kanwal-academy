@@ -15,9 +15,9 @@ const latest = posts.slice(0, 3);
 
 <ul class="posts-grid">
 	{
-		latest.map((post) => (
-			<li class="post-card">
-				<a class="post-card__image" href={`/blog/${post.id}`} tabindex="-1" aria-hidden="true">
+		latest.map((post, index) => (
+			<li class="post-card lift" data-reveal="up" data-reveal-delay={index * 80}>
+				<a class="post-card__image" href={`/blog/${post.id}`} tabindex="-1" aria-hidden="true" data-reveal="image">
 					{post.data.featured_image ? (
 						<Image
 							image={post.data.featured_image}

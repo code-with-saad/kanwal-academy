@@ -15,8 +15,8 @@ const { index, title, summary, level, href, arabic } = Astro.props;
 const number = String(index).padStart(2, "0");
 ---
 
-<li class="course-row">
-	<a class:list={["course-row__link", arabic && "course-row__link--arabic"]} {href}>
+<li class="course-row" data-reveal="up" data-reveal-delay={index * 80}>
+	<a class:list={["course-row__link", "lift", arabic && "course-row__link--arabic"]} {href}>
 		<span class="course-row__index" aria-hidden="true">{number}</span>
 		<span class="course-row__body">
 			<span class="course-row__head">
@@ -71,7 +71,8 @@ const number = String(index).padStart(2, "0");
 		text-decoration: none;
 		transition:
 			background-color var(--transition),
-			color var(--transition);
+			color var(--transition),
+			transform var(--dur-base) var(--ease);
 	}
 
 	.course-row__link--arabic {

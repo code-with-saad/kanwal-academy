@@ -122,19 +122,13 @@ const { cards } = Astro.props;
 		color: inherit;
 		text-decoration: none;
 		box-shadow: 0 12px 32px -16px rgba(11, 26, 20, 0.25);
-		opacity: 0;
-		animation: feature-card-in 520ms var(--ease-out) forwards;
+		transition: transform var(--dur-base) var(--ease);
+		animation: feature-card-in 520ms var(--ease-out) backwards;
 		animation-delay: calc(600ms + var(--card-index, 0) * 120ms);
 	}
 
-	.feature-grid a.feature-card {
-		transition:
-			transform var(--transition),
-			box-shadow var(--transition);
-	}
-
-	.feature-grid a.feature-card:hover,
-	.feature-grid a.feature-card:focus-within {
+	.feature-card:hover,
+	.feature-card:focus-within {
 		transform: translateY(-4px);
 	}
 

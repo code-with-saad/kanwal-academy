@@ -7,7 +7,7 @@ import Button from "../components/Button.astro";
 import Container from "../components/Container.astro";
 import CourseRow from "../components/CourseRow.astro";
 import Eyebrow from "../components/Eyebrow.astro";
-import FactsBand from "../components/FactsBand.astro";
+// import FactsBand from "../components/FactsBand.astro";
 import FeatureCards from "../components/FeatureCards.astro";
 import FeatureSplit from "../components/FeatureSplit.astro";
 import PlanCard from "../components/PlanCard.astro";
@@ -16,6 +16,7 @@ import Section from "../components/Section.astro";
 import StandingOut from "../components/StandingOut.astro";
 import Step from "../components/Step.astro";
 import TeachersGrid from "../components/TeachersGrid.astro";
+import Testimonials from "../components/Testimonials.astro";
 import WisdomPanel from "../components/WisdomPanel.astro";
 import { site } from "../config/site";
 import { heroImage } from "../config/images";
@@ -163,14 +164,18 @@ const lowestPlanPrice = plans.length
 	: 20;
 
 const facts = [
-	{ label: "Any device with a camera", icon: "device" as const },
-	{ label: "Free trial class", icon: "trial" as const },
+	{ textBefore: "Any device with a camera", icon: "device" as const },
+	{ textBefore: "Free trial class", icon: "trial" as const },
 	{
-		label: `Plans from ${formatUsdPrice(lowestPlanPrice)} per month`,
+		textBefore: "Plans from",
+		value: `${formatUsdPrice(lowestPlanPrice)}`,
+		textAfter: "per month",
 		icon: "price" as const,
 	},
 	{
-		label: `Students from ${contact.stats.countries} countries`,
+		textBefore: "Students from",
+		value: `${contact.stats.countries}`,
+		textAfter: "countries",
 		icon: "globe" as const,
 	},
 ];
@@ -270,10 +275,12 @@ const steps = [
 		<Container>
 			<div class="hero__grid">
 				<div class="hero__copy">
-					<Eyebrow edit={homeEdit?.home_eyebrow}>
-						{homeText("home_eyebrow", "Online Qur'an academy")}
-					</Eyebrow>
-					<h1 {...homeEdit?.home_headline}>
+					<span class="hero__eyebrow" data-reveal="up">
+						<Eyebrow edit={homeEdit?.home_eyebrow}>
+							{homeText("home_eyebrow", "Online Qur'an academy")}
+						</Eyebrow>
+					</span>
+					<h1 {...homeEdit?.home_headline} data-reveal-words data-reveal-delay="60">
 						{
 							headlineParts.map((part) =>
 								part.highlight ? (
@@ -286,8 +293,10 @@ const steps = [
 							)
 						}
 					</h1>
-					<p class="hero__lead" {...homeEdit?.home_lead}>{heroLead}</p>
-					<p class="hero__reach">
+					<p class="hero__lead" {...homeEdit?.home_lead} data-reveal="up" data-reveal-delay="220">
+						{heroLead}
+					</p>
+					<p class="hero__reach" data-reveal="up" data-reveal-delay="320">
 						<svg
 							class="hero__reach-icon"
 							viewBox="0 0 20 20"
@@ -423,8 +432,8 @@ const steps = [
 		<Container>
 			<div class="journey-head">
 				<div class="journey-head__copy">
-					<h2>Start your journey</h2>
-					<p>
+					<h2 data-reveal-words>Start your journey</h2>
+					<p data-reveal="up" data-reveal-delay="80">
 						Three courses, each taught one to one. Pick the path that matches where you are and
 						your teacher will set the pace from there.
 					</p>
@@ -449,11 +458,11 @@ const steps = [
 		</Container>
 	</Section>
 
-	<Section space="tight">
+	<!-- <Section space="tight">
 		<Container>
 			<FactsBand facts={facts} />
 		</Container>
-	</Section>
+	</Section> -->	
 
 	<Section>
 		<Container>
@@ -505,10 +514,10 @@ const steps = [
 				<Eyebrow edit={homeEdit?.pricing_eyebrow}>
 					{homeText("pricing_eyebrow", "Pricing")}
 				</Eyebrow>
-				<h2 {...homeEdit?.pricing_heading}>
+				<h2 {...homeEdit?.pricing_heading} data-reveal-words>
 					{homeText("pricing_heading", "Choose a plan that fits your week.")}
 				</h2>
-				<p class="section-lead" {...homeEdit?.pricing_intro}>
+				<p class="section-lead" {...homeEdit?.pricing_intro} data-reveal="up" data-reveal-delay="80">
 					{homeText(
 						"pricing_intro",
 						"Every plan is billed monthly and starts with a free trial class. Prices are in US dollars.",
@@ -518,11 +527,12 @@ const steps = [
 
 			<div class="plan-grid" role="region" aria-label="Monthly plans">
 				{
-					plans.map((plan) => (
+					plans.map((plan, index) => (
 						<PlanCard
 							plan={toPlanCard(plan)}
 							variant={plan.data.is_popular ? "inverted" : "default"}
 							href={`/free-trial?plan=${encodeURIComponent(plan.id)}`}
+							revealDelay={index * 80}
 							planEdit={plan.edit}
 							homeEdit={homeEdit}
 							periodLabel={homeText("pricing_period_label", "/ month")}
@@ -550,7 +560,7 @@ const steps = [
 				<Eyebrow edit={homeEdit?.trial_eyebrow}>
 					{homeText("trial_eyebrow", "Free trial")}
 				</Eyebrow>
-				<h2 {...homeEdit?.trial_heading}>
+				<h2 {...homeEdit?.trial_heading} data-reveal-words>
 					{homeText("trial_heading", "How the free trial works")}
 				</h2>
 			</div>
@@ -576,8 +586,8 @@ const steps = [
 				<Container>
 					<div class="section-head">
 						<Eyebrow>Teachers</Eyebrow>
-						<h2>Meet your teachers</h2>
-						<p class="section-lead">
+						<h2 data-reveal-words>Meet your teachers</h2>
+						<p class="section-lead" data-reveal="up" data-reveal-delay="80">
 							Every lesson is one to one. We match students with a teacher who fits their
 							course, level and time zone.
 						</p>
@@ -594,14 +604,27 @@ const steps = [
 				<Container>
 					<div class="section-head">
 						<Eyebrow>Blog</Eyebrow>
-						<h2>Learn the basics, every day</h2>
-						<p class="section-lead">
+						<h2 data-reveal-words>Learn the basics, every day</h2>
+						<p class="section-lead" data-reveal="up" data-reveal-delay="80">
 							Short guides on recitation, tajweed and memorization for students and families.
 						</p>
 					</div>
 					<PostsGrid posts={posts} />
 				</Container>
 			</Section>
+		) : null
+	}
+
+	{
+		testimonials.length > 0 || demo ? (
+			<Testimonials
+				reviews={testimonials.map((testimonial) => ({
+					quote: testimonial.data.quote,
+					author: testimonial.data.author,
+					country: testimonial.data.country,
+				}))}
+				demo={demo}
+			/>
 		) : null
 	}
 </Base>

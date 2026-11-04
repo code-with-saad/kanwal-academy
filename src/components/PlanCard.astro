@@ -27,6 +27,8 @@ interface Props {
 	hoursLabel?: string;
 	popularLabel?: string;
 	selectLabel?: string;
+	/** Stagger delay in milliseconds for the shared reveal utility. */
+	revealDelay?: number;
 }
 
 const {
@@ -43,6 +45,7 @@ const {
 	hoursLabel = "Teaching hours each month",
 	popularLabel = "Most popular",
 	selectLabel = "Select plan",
+	revealDelay,
 } = Astro.props;
 const inverted = variant === "inverted" || variant === "hero";
 const Heading = `h${headingLevel}` as "h2" | "h3";
@@ -56,9 +59,12 @@ const planHref =
 <article
 	class:list={[
 		"plan-card",
+		"lift",
 		variant === "inverted" && "plan-card--inverted",
 		variant === "hero" && "plan-card--hero",
 	]}
+	data-reveal="up"
+	style={revealDelay ? `--reveal-delay: ${revealDelay}ms` : undefined}
 >
 	{
 		showBismillah && (

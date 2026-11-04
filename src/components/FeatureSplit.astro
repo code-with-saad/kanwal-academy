@@ -39,29 +39,33 @@ const {
 <div class:list={["feature-split", imageFirst && "feature-split--image-first"]}>
 	<div class="feature-split__copy">
 		{eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
-		<h2 class="feature-split__title">
+		<h2 class="feature-split__title" data-reveal-words>
 			{headingBefore} <span class="heading-highlight">{headingHighlight}</span>{headingAfter
 				? ` ${headingAfter}`
 				: ""}
 		</h2>
 		{
-			paragraphs.map((paragraph) => (
-				<p class="feature-split__text">{paragraph}</p>
+			paragraphs.map((paragraph, index) => (
+				<p class="feature-split__text" data-reveal="up" data-reveal-delay={80 + index * 80}>
+					{paragraph}
+				</p>
 			))
 		}
 		{
 			list && list.length > 0 && (
-				<ol class="feature-split__list">
+				<ol class="feature-split__list" data-reveal="up" data-reveal-delay="240">
 					{list.map((item) => (
 						<li>{item}</li>
 					))}
 				</ol>
 			)
 		}
-		<Button href={buttonHref} variant="secondary">{buttonLabel}</Button>
+		<div data-reveal="up" data-reveal-delay="320">
+			<Button href={buttonHref} variant="secondary">{buttonLabel}</Button>
+		</div>
 	</div>
 
-	<div class="feature-split__media">
+	<div class="feature-split__media" data-reveal="image">
 		<div class="feature-split__frame">
 			<ImagePlaceholder
 				src={imageSrc}

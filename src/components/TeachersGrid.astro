@@ -33,9 +33,13 @@ const cards = shown.length > 0 ? shown : demoCards;
 
 <ul class="teacher-grid">
 	{
-		cards.map((card) => (
-			<li class="teacher-card">
-				<div class="teacher-card__photo">
+		cards.map((card, index) => (
+			<li
+				class="teacher-card lift"
+				data-reveal="up"
+				data-reveal-delay={index * 80}
+			>
+				<div class="teacher-card__photo" data-reveal="image">
 					{card.photo ? (
 						<Image image={card.photo} alt={card.photo.alt || card.name} />
 					) : (

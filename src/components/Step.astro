@@ -13,7 +13,7 @@ const { number, title, body, titleEdit, bodyEdit } = Astro.props;
 const label = String(number).padStart(2, "0");
 ---
 
-<li class="step">
+<li class="step" data-reveal="up">
 	<span class="step__number" aria-hidden="true">{label}</span>
 	<h3 class="step__title" {...titleEdit}>{title}</h3>
 	<p class="step__body" {...bodyEdit}>{body}</p>
@@ -21,8 +21,28 @@ const label = String(number).padStart(2, "0");
 
 <style>
 	.step {
+		position: relative;
 		padding-top: var(--space-lg);
-		border-top: 1px solid var(--line);
+	}
+
+	/* Top rule draws from left to right when the step is revealed. */
+	.step::before {
+		content: "";
+		position: absolute;
+		inset-inline: 0;
+		top: 0;
+		height: 1px;
+		background: var(--line);
+		transform-origin: left center;
+	}
+
+	:global(.js-motion) .step::before {
+		transform: scaleX(0);
+		transition: transform var(--dur-slow) var(--ease) 120ms;
+	}
+
+	:global(.js-motion) .step.is-revealed::before {
+		transform: scaleX(1);
 	}
 
 	.step__number {
