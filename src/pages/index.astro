@@ -135,6 +135,30 @@ const toPlanCard = (plan: (typeof plans)[number]) => ({
 
 const lowestPlanPrice = Math.min(...plans.map((plan) => Number(plan.data.price)));
 
+const [recitationCourse, tajweedCourse, memorizationCourse] = courses;
+const orbitLinks = [
+	{
+		href: recitationCourse ? `/courses/${recitationCourse.id}` : "/courses",
+		label: recitationCourse?.data.name ?? "Qur'anic Recitation",
+		icon: "book" as const,
+	},
+	{
+		href: tajweedCourse ? `/courses/${tajweedCourse.id}` : "/courses",
+		label: tajweedCourse?.data.name ?? "Tajweed Proficiency",
+		icon: "waves" as const,
+	},
+	{
+		href: memorizationCourse ? `/courses/${memorizationCourse.id}` : "/courses",
+		label: memorizationCourse?.data.name ?? "Memorization Excellence",
+		icon: "bookmark" as const,
+	},
+	{
+		href: "/free-trial",
+		label: "Live one-to-one",
+		icon: "headset" as const,
+	},
+];
+
 const featureCards = [
 	{
 		title: "Free trial class",
@@ -241,42 +265,95 @@ const steps = [
 				</div>
 
 				<div class="hero__visual">
-					<div class="hero__orbit" aria-hidden="true"></div>
-					<div class="hero__orbit-node hero__orbit-node--top" aria-hidden="true">
-						<svg viewBox="0 0 32 32" aria-hidden="true">
-							<path d="M16 8v17M16 10c-3-2-6-2-10-2v14c4 0 7 0 10 3m0-15c3-2 6-2 10-2v14c-4 0-7 0-10 3" />
+					<div class="stage" data-orbit-stage>
+						<span class="stage__backdrop" aria-hidden="true"></span>
+						<svg class="stage__ring" viewBox="0 0 100 100" aria-hidden="true">
+							<circle
+								class="stage__ring-path"
+								cx="50"
+								cy="50"
+								r="49.25"
+								pathLength="100"
+								vector-effect="non-scaling-stroke"
+							/>
 						</svg>
-					</div>
-					<div class="hero__orbit-node hero__orbit-node--left" aria-hidden="true">
-						<svg viewBox="0 0 32 32" aria-hidden="true">
-							<path d="M5 10c4-2 8-2 11 1v14c-3-3-7-3-11-1zm22 0c-4-2-8-2-11 1v14c3-3 7-3 11-1z" />
-							<path d="M9 14h3m-3 4h3m8-4h3m-3 4h3" />
+						<svg class="stage__dashed" viewBox="0 0 100 100" aria-hidden="true">
+							<circle
+								cx="50"
+								cy="50"
+								r="49.25"
+								pathLength="100"
+								vector-effect="non-scaling-stroke"
+							/>
 						</svg>
+						<div class="stage__orbit">
+							{
+								orbitLinks.map((item, index) => (
+									<span
+										class="orbit-node"
+										style={`--orbit-pos: ${index * 90}deg; --orbit-index: ${index}`}
+									>
+										<span class="orbit-node__frame">
+											<a
+												class="orbit-node__btn"
+												href={item.href}
+												aria-label={item.label}
+												data-orbit-btn
+											>
+												<span class="orbit-node__glyph" aria-hidden="true">
+													<svg
+														viewBox="0 0 24 24"
+														width="24"
+														height="24"
+														fill="none"
+														stroke="currentColor"
+														stroke-width="1.5"
+														stroke-linecap="round"
+														stroke-linejoin="round"
+													>
+														{item.icon === "book" && (
+															<path d="M12 6.1c-1.9-1.55-4.25-2-7-1.9v13.6c2.75-.1 5.1.35 7 1.9 1.9-1.55 4.25-2 7-1.9V4.2c-2.75-.1-5.1.35-7 1.9zm0 0v13.6" />
+														)}
+														{item.icon === "waves" && (
+															<path d="M5.25 10.5v3M8.5 8.25v7.5M12 6.25v11.5M15.5 8.25v7.5M18.75 10.5v3" />
+														)}
+														{item.icon === "bookmark" && (
+															<path d="M7.25 4.5h9.5v15l-4.75-3.5-4.75 3.5z" />
+														)}
+														{item.icon === "headset" && (
+															<>
+																<path d="M6.25 15.75v-2.25a5.75 5.75 0 0 1 11.5 0v2.25" />
+																<rect x="4.75" y="15" width="3.75" height="5.25" rx="1.7" />
+																<rect x="15.5" y="15" width="3.75" height="5.25" rx="1.7" />
+															</>
+														)}
+													</svg>
+												</span>
+											</a>
+											<span class="orbit-node__label">{item.label}</span>
+										</span>
+									</span>
+								))
+							}
+						</div>
+						<span class="stage__ground" aria-hidden="true"></span>
+						<figure class="stage__figure" {...homeEdit?.home_image}>
+							<span class="stage__float">
+								{
+									homePage?.data.home_image ? (
+										<Image
+											image={homePage.data.home_image}
+											alt={heroImage.alt}
+											class="stage__image"
+											priority
+										/>
+									) : (
+										<img src={heroImage.src} alt={heroImage.alt} class="stage__image" />
+									)
+								}
+							</span>
+						</figure>
 					</div>
-					<div class="hero__orbit-node hero__orbit-node--right" aria-hidden="true">
-						<svg viewBox="0 0 32 32" aria-hidden="true">
-							<path d="M7 17v-2a9 9 0 0 1 18 0v2m-18 0v5h4v-7H7m18 2v5h-4v-7h4m-4 7c-1 2-3 3-6 3h-2" />
-						</svg>
-					</div>
-					<div class="hero__orbit-node hero__orbit-node--bottom" aria-hidden="true">
-						<svg viewBox="0 0 32 32" aria-hidden="true">
-							<path d="M6 9c4-2 7-1 10 2v14c-3-3-6-4-10-2zm20 0c-4-2-7-1-10 2v14c3-3 6-4 10-2z" />
-						</svg>
-					</div>
-					<figure class="hero__image-wrap" {...homeEdit?.home_image}>
-						{
-							homePage?.data.home_image ? (
-								<Image
-									image={homePage.data.home_image}
-									alt={heroImage.alt}
-									class="hero__image"
-									priority
-								/>
-							) : (
-								<img src={heroImage.src} alt={heroImage.alt} class="hero__image" />
-							)
-						}
-					</figure>
 				</div>
 			</div>
 		</Container>
@@ -468,7 +545,42 @@ const steps = [
 </Base>
 
 <script>
-	/* The go-top button now lives in the site footer. */
+	// Pause every orbit loop while the hero is off screen.
+	const stage = document.querySelector<HTMLElement>("[data-orbit-stage]");
+	if (stage) {
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				stage.classList.toggle("is-offscreen", !entry?.isIntersecting);
+			},
+			{ threshold: 0.15 },
+		);
+		observer.observe(stage);
+	}
+
+	// Touch devices: first tap shows the label, second tap follows the link.
+	if (stage && window.matchMedia("(hover: none), (pointer: coarse)").matches) {
+		const buttons = stage.querySelectorAll<HTMLAnchorElement>("[data-orbit-btn]");
+		for (const button of buttons) {
+			let armed = false;
+			let timer: number | undefined;
+			button.addEventListener("click", (event) => {
+				if (armed) {
+					window.clearTimeout(timer);
+					return;
+				}
+				event.preventDefault();
+				armed = true;
+				button.classList.add("is-armed");
+				timer = window.setTimeout(() => {
+					armed = false;
+					button.classList.remove("is-armed");
+				}, 2500);
+			});
+			button.addEventListener("keydown", (event) => {
+				if (event.key === "Escape") button.classList.remove("is-armed");
+			});
+		}
+	}
 </script>
 
 <style>
@@ -485,10 +597,10 @@ const steps = [
 		padding-bottom: 140px;
 		min-height: 640px;
 		border-radius: 0 0 48px 48px;
-		overflow: clip;
 	}
 
 	.hero__pattern {
+		border-radius: inherit;
 		position: absolute;
 		inset: 0;
 		background: var(--ink);
@@ -525,7 +637,7 @@ const steps = [
 
 	.hero__grid {
 		display: grid;
-		grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+		grid-template-columns: minmax(0, 1fr) min(46vw, 520px);
 		gap: clamp(32px, 6vw, 80px);
 		align-items: center;
 	}
@@ -563,87 +675,307 @@ const steps = [
 		color: var(--green-deep);
 	}
 
-	/* Visual: orbit ring with 4 icons and the Quran image */
+	/* Visual: square stage with floating Quran image over an orbit of
+	 * four course link buttons. Transform and opacity only. */
 	.hero__visual {
+		--stage-size: min(46vw, 520px);
+		--ring-size: calc(var(--stage-size) * 0.76);
+		--orbit-radius: calc(var(--ring-size) / 2);
+		--stage-half: calc(var(--stage-size) / 2);
+		--ground-shift: calc(var(--stage-size) * 0.325);
 		position: relative;
-		display: grid;
-		place-items: center;
 		justify-self: end;
-		width: 100%;
-		max-width: 420px;
+		width: var(--stage-size);
 		aspect-ratio: 1;
 	}
 
-	.hero__orbit {
-		position: absolute;
-		width: 80%;
-		aspect-ratio: 1;
-		border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
-		border-radius: 50%;
-	}
-
-	.hero__orbit-node {
-		position: absolute;
-		z-index: 1;
-		display: grid;
-		place-items: center;
-		width: 48px;
-		aspect-ratio: 1;
-		border: 1px solid var(--line);
-		border-radius: var(--radius-card);
-		background: var(--page);
-		color: var(--green-deep);
-	}
-
-	.hero__orbit-node svg {
-		width: 24px;
-		height: 24px;
-		fill: none;
-		stroke: currentColor;
-		stroke-width: 1.3;
-		stroke-linecap: round;
-		stroke-linejoin: round;
-	}
-
-	.hero__orbit-node--top {
-		top: 6%;
-		left: 50%;
-		transform: translateX(-50%);
-	}
-
-	.hero__orbit-node--left {
-		top: 50%;
-		left: 6%;
-		transform: translateY(-50%);
-	}
-
-	.hero__orbit-node--right {
-		top: 50%;
-		right: 6%;
-		transform: translateY(-50%);
-	}
-
-	.hero__orbit-node--bottom {
-		bottom: 6%;
-		left: 50%;
-		transform: translateX(-50%);
-	}
-
-	.hero__image-wrap {
+	.stage {
 		position: relative;
-		z-index: 2;
-		display: grid;
-		place-items: center;
-		width: 60%;
-		max-width: 380px;
-		margin: 0;
+		width: 100%;
+		height: 100%;
 	}
 
-	:global(.hero__image) {
+	/* Flat backdrop circle behind the image. */
+	.stage__backdrop {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 70%;
+		aspect-ratio: 1;
+		border-radius: 50%;
+		background: color-mix(in srgb, var(--mint-100) 40%, transparent);
+		transform: translate(-50%, -50%);
+	}
+
+	:global(html[data-theme="dark"]) .stage__backdrop {
+		background: color-mix(in srgb, #ffffff 6%, transparent);
+	}
+
+	/* Main orbit ring: 1px, draws itself in. */
+	.stage__ring {
+		position: absolute;
+		left: calc(50% - var(--ring-size) / 2);
+		top: calc(50% - var(--ring-size) / 2);
+		width: var(--ring-size);
+		height: var(--ring-size);
+		fill: none;
+	}
+
+	.stage__ring-path {
+		stroke: color-mix(in srgb, var(--ink) 18%, transparent);
+		stroke-width: 1;
+		stroke-dasharray: 100;
+		stroke-dashoffset: 100;
+		animation: stage-ring-draw 1.2s var(--ease-out) 150ms forwards;
+	}
+
+	@keyframes stage-ring-draw {
+		to {
+			stroke-dashoffset: 0;
+		}
+	}
+
+	/* Inner dashed ring, counter-rotating once per 90s. */
+	.stage__dashed {
+		--dashed-size: calc(var(--stage-size) * 0.55);
+		position: absolute;
+		left: calc(50% - var(--dashed-size) / 2);
+		top: calc(50% - var(--dashed-size) / 2);
+		width: var(--dashed-size);
+		height: var(--dashed-size);
+		fill: none;
+		animation: stage-spin-rev 90s linear infinite;
+	}
+
+	.stage__dashed circle {
+		stroke: color-mix(in srgb, var(--ink) 25%, transparent);
+		stroke-width: 1;
+		stroke-dasharray: 1 1.2;
+	}
+
+	/* Orbit disk: carries the turning icons. */
+	.stage__orbit {
+		position: absolute;
+		inset: 0;
+		animation: stage-spin 48s linear infinite;
+	}
+
+	@keyframes stage-spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	@keyframes stage-spin-rev {
+		to {
+			transform: rotate(-360deg);
+		}
+	}
+
+	/* Node: placed on the ring at its angle; the frame un-rotates it so
+	 * the button stays upright, the button counter-spins to stay upright
+	 * while the disk turns. */
+	.orbit-node {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 56px;
+		height: 56px;
+		margin: -28px;
+		z-index: 3;
+		transform: rotate(var(--orbit-pos)) translateY(calc(-1 * var(--orbit-radius)));
+	}
+
+	.orbit-node__frame {
+		position: relative;
+		display: block;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		animation: stage-pop 360ms var(--ease-out) calc(280ms + var(--orbit-index) * 120ms) both;
+	}
+
+	@keyframes stage-pop {
+		from {
+			opacity: 0;
+			transform: rotate(calc(-1 * var(--orbit-pos))) scale(0.5);
+		}
+		to {
+			opacity: 1;
+			transform: rotate(calc(-1 * var(--orbit-pos))) scale(1);
+		}
+	}
+
+	.orbit-node__btn {
+		display: grid;
+		place-items: center;
+		width: 100%;
+		height: 100%;
+		border: 1px solid var(--line);
+		border-radius: 50%;
+		background: var(--surface);
+		color: var(--green-deep);
+		text-decoration: none;
+		animation: stage-spin-rev 48s linear infinite;
+		transition:
+			background-color var(--transition),
+			border-color var(--transition),
+			color var(--transition);
+	}
+
+	.orbit-node__glyph {
+		display: grid;
+		place-items: center;
+		transition: transform var(--transition);
+	}
+
+	.orbit-node__btn:hover,
+	.orbit-node__btn:focus-visible {
+		background: var(--green);
+		border-color: var(--green);
+		color: var(--on-accent);
+	}
+
+	.orbit-node__btn:hover .orbit-node__glyph,
+	.orbit-node__btn:focus-visible .orbit-node__glyph {
+		transform: scale(1.12);
+	}
+
+	/* Label pill, outer side, shown on hover, focus and first tap. */
+	.orbit-node__label {
+		position: absolute;
+		display: inline-flex;
+		align-items: center;
+		height: 36px;
+		padding: 0 14px;
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		background: var(--surface);
+		color: var(--ink);
+		font-size: 14px;
+		line-height: 1;
+		white-space: nowrap;
+		opacity: 0;
+		visibility: hidden;
+		pointer-events: none;
+		box-shadow: 0 8px 24px -14px rgba(11, 26, 20, 0.3);
+		transition: opacity var(--transition);
+		z-index: 4;
+	}
+
+	.orbit-node:first-child .orbit-node__label {
+		bottom: calc(100% + 10px);
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	.orbit-node:nth-child(2) .orbit-node__label {
+		left: calc(100% + 10px);
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	.orbit-node:nth-child(3) .orbit-node__label {
+		top: calc(100% + 10px);
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	.orbit-node:nth-child(4) .orbit-node__label {
+		right: calc(100% + 10px);
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	.orbit-node__btn:hover ~ .orbit-node__label,
+	.orbit-node__btn:focus-visible ~ .orbit-node__label,
+	.orbit-node__btn.is-armed ~ .orbit-node__label {
+		opacity: 1;
+		visibility: visible;
+	}
+
+	/* Pause every loop while an icon is hovered, focused, or off screen. */
+	.stage:has(.orbit-node__btn:is(:hover, :focus-visible)) .stage__orbit,
+	.stage:has(.orbit-node__btn:is(:hover, :focus-visible)) .orbit-node__btn {
+		animation-play-state: paused;
+	}
+
+	.stage.is-offscreen .stage__orbit,
+	.stage.is-offscreen .orbit-node__btn,
+	.stage.is-offscreen .stage__dashed,
+	.stage.is-offscreen .stage__float,
+	.stage.is-offscreen .stage__ground {
+		animation-play-state: paused;
+	}
+
+	/* Ground shadow, opposite phase to the float. */
+	.stage__ground {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 45%;
+		height: 22px;
+		border-radius: 50%;
+		background: color-mix(in srgb, var(--ink) 16%, transparent);
+		transform: translate(-50%, var(--ground-shift)) scale(1);
+		animation: stage-ground 5s ease-in-out infinite;
+	}
+
+	@keyframes stage-ground {
+		0%,
+		100% {
+			transform: translate(-50%, var(--ground-shift)) scale(1);
+			opacity: 1;
+		}
+		50% {
+			transform: translate(-50%, var(--ground-shift)) scale(0.78);
+			opacity: 0.55;
+		}
+	}
+
+	/* Quran image, floating over the stage. */
+	.stage__figure {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		z-index: 2;
+		margin: 0;
+		width: min(340px, calc(100% - 120px));
+		transform: translate(-50%, -50%);
+	}
+
+	.stage__float {
+		display: block;
+		animation: stage-float 5s ease-in-out infinite;
+	}
+
+	@keyframes stage-float {
+		0%,
+		100% {
+			transform: translateY(0) rotate(-1.2deg);
+		}
+		50% {
+			transform: translateY(-14px) rotate(1.2deg);
+		}
+	}
+
+	:global(.stage__image) {
 		display: block;
 		width: 100%;
 		height: auto;
 		object-fit: contain;
+		animation: stage-image-in 700ms var(--ease-out) both;
+	}
+
+	@keyframes stage-image-in {
+		from {
+			opacity: 0;
+			transform: scale(0.92);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
 	}
 
 	/* -----------------------------------------------------------------
@@ -769,7 +1101,8 @@ const steps = [
 
 		.hero__visual {
 			justify-self: center;
-			max-width: 320px;
+			width: 320px;
+			margin-top: var(--space-md);
 		}
 
 		.hero__pattern {
@@ -788,10 +1121,20 @@ const steps = [
 		}
 	}
 
-	@media (max-width: 760px) {
-		.hero-cards {
-			margin-top: -40px;
+	/* Narrow desktop: shrink the stage and flip the right node's label to
+	 * its inner side so the pill never leaves the viewport. */
+	@media (min-width: 1001px) and (max-width: 1359px) {
+		.hero__visual {
+			--stage-size: min(40vw, 520px);
 		}
+	}
+
+	@media (min-width: 1001px) and (max-width: 1439px) {
+		.orbit-node:nth-child(2) .orbit-node__label {
+			left: auto;
+			right: calc(100% + 10px);
+		}
+	}
 
 	@media (min-width: 760px) {
 		.course-grid {
@@ -800,6 +1143,10 @@ const steps = [
 	}
 
 	@media (max-width: 760px) {
+		.hero-cards {
+			margin-top: -40px;
+		}
+
 		:global(.hero) {
 			padding-bottom: 80px;
 			min-height: 0;
@@ -807,7 +1154,25 @@ const steps = [
 		}
 
 		.hero__visual {
-			max-width: 240px;
+			justify-self: center;
+			width: 300px;
+			--ring-size: calc(var(--stage-size) * 0.95);
+		}
+
+		/* The Quran image is 240px on mobile. */
+		.stage__figure {
+			width: 240px;
+		}
+
+		/* On touch widths every label leans above its icon, inside the screen. */
+		.orbit-node:nth-child(2) .orbit-node__label,
+		.orbit-node:nth-child(3) .orbit-node__label,
+		.orbit-node:nth-child(4) .orbit-node__label {
+			left: 50%;
+			right: auto;
+			top: auto;
+			bottom: calc(100% + 10px);
+			transform: translateX(-50%);
 		}
 
 		.numbers {
