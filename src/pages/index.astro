@@ -8,6 +8,7 @@ import Container from "../components/Container.astro";
 import CourseRow from "../components/CourseRow.astro";
 import Eyebrow from "../components/Eyebrow.astro";
 import FeatureCards from "../components/FeatureCards.astro";
+import FactsBand from "../components/FactsBand.astro";
 import PlanCard from "../components/PlanCard.astro";
 import Section from "../components/Section.astro";
 import StandingOut from "../components/StandingOut.astro";
@@ -143,6 +144,19 @@ const toPlanCard = (plan: (typeof plans)[number]) => ({
 });
 
 const lowestPlanPrice = Math.min(...plans.map((plan) => Number(plan.data.price)));
+
+const facts = [
+	{ label: "Any device with a camera", icon: "device" as const },
+	{ label: "Free trial class", icon: "trial" as const },
+	{
+		label: `Plans from ${formatUsdPrice(lowestPlanPrice)} per month`,
+		icon: "price" as const,
+	},
+	{
+		label: `Students from ${contact.stats.countries} countries`,
+		icon: "globe" as const,
+	},
+];
 
 const [recitationCourse, tajweedCourse, memorizationCourse] = courses;
 const orbitLinks = [
@@ -418,42 +432,9 @@ const steps = [
 		</Container>
 	</Section>
 
-	<Section tone="sand" space="tight">
+	<Section space="tight">
 		<Container>
-			<ul class="numbers">
-				<li class="number">
-					<span class="number__value" {...contactResult.entry?.edit.years}>
-						{contact.stats.years}
-					</span>
-					<span class="number__label" {...contactResult.entry?.edit.years_label}>
-						{contact.stats.labels.years}
-					</span>
-				</li>
-				<li class="number">
-					<span class="number__value" {...contactResult.entry?.edit.countries}>
-						{contact.stats.countries}
-					</span>
-					<span class="number__label" {...contactResult.entry?.edit.countries_label}>
-						{contact.stats.labels.countries}
-					</span>
-				</li>
-				<li class="number">
-					<span class="number__value" {...contactResult.entry?.edit.students}>
-						{contact.stats.students}
-					</span>
-					<span class="number__label" {...contactResult.entry?.edit.students_label}>
-						{contact.stats.labels.students}
-					</span>
-				</li>
-				<li class="number">
-					<span class="number__value" {...contactResult.entry?.edit.sessions}>
-						{contact.stats.sessions}
-					</span>
-					<span class="number__label" {...contactResult.entry?.edit.sessions_label}>
-						{contact.stats.labels.sessions}
-					</span>
-				</li>
-			</ul>
+			<FactsBand facts={facts} />
 		</Container>
 	</Section>
 
@@ -1058,33 +1039,6 @@ const steps = [
 		display: grid;
 	}
 
-	.numbers {
-		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-		gap: var(--space-lg);
-	}
-
-	.number {
-		padding-top: var(--space-md);
-		border-top: 1px solid var(--line);
-	}
-
-	.number__value {
-		display: block;
-		font-family: var(--font-heading);
-		font-size: clamp(2rem, 4vw, 3rem);
-		font-weight: 500;
-		line-height: 1;
-		letter-spacing: -0.02em;
-	}
-
-	.number__label {
-		display: block;
-		margin-top: var(--space-xs);
-		color: var(--ink-muted);
-		font-size: 0.875rem;
-	}
-
 	.plan-grid {
 		display: grid;
 		grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1218,11 +1172,6 @@ const steps = [
 			top: auto;
 			bottom: calc(100% + 10px);
 			transform: translateX(-50%);
-		}
-
-		.numbers {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-			gap: var(--space-md);
 		}
 
 		.steps {
