@@ -524,7 +524,7 @@ const steps = [
 		</Container>
 	</Section>
 
-	<Section tone="sand">
+	<Section space="tight">
 		<Container>
 			<div class="section-head">
 				<Eyebrow edit={homeEdit?.trial_eyebrow}>
@@ -1241,19 +1241,8 @@ const steps = [
 
 	@media (max-width: 560px) {
 		.plan-grid {
-			display: flex;
-			gap: var(--space-sm);
-			margin-inline: calc(-1 * var(--gutter));
-			padding: 0 var(--gutter) var(--space-sm);
-			overflow-x: auto;
-			overscroll-behavior-x: contain;
-			scroll-snap-type: x mandatory;
-			scrollbar-width: thin;
-		}
-
-		.plan-grid :global(.plan-card) {
-			flex: 0 0 min(82vw, 320px);
-			scroll-snap-align: start;
+			grid-template-columns: 1fr;
+			gap: var(--space-md);
 		}
 
 		:global(body[data-is-home] .section-head) {

@@ -94,7 +94,7 @@ const planHref =
 	</dl>
 
 	<div class="plan-card__cta">
-		<Button href={planHref} variant={inverted ? "primary" : "secondary"} edit={homeEdit?.pricing_select_cta}>{selectLabel}</Button>
+		<Button href={planHref} variant={inverted ? "secondary" : "primary"} edit={homeEdit?.pricing_select_cta}>{selectLabel}</Button>
 	</div>
 </article>
 
@@ -113,32 +113,25 @@ const planHref =
 	.plan-card--inverted,
 	.plan-card--hero {
 		border-color: transparent;
-		background: var(--deep);
-		color: #eaf4ef;
-		--ink: #eaf4ef;
-		--ink-muted: #9db3a8;
-		--line: color-mix(in srgb, #eaf4ef 18%, transparent);
-		--accent: #3fc391;
-		--green: #3fc391;
-		--green-deep: #6fd9ae;
-		--on-accent: #062017;
+		background: var(--green);
+		color: var(--on-accent);
+		--ink: var(--on-accent);
+		--ink-muted: var(--on-accent);
+		--line: color-mix(in srgb, var(--on-accent) 26%, transparent);
+		--accent: var(--on-accent);
+		--green-deep: var(--on-accent);
+		--focus: var(--on-accent);
 	}
 
-	/* In dark mode the featured plan is a green card with dark text, a dark
-	 * badge and a dark select button, all above 4.5:1. The background is the
-	 * dark-theme --green value; --green is then repointed to the dark ink for
-	 * the badge and button fills. */
-	:global(html[data-theme="dark"]) .plan-card--inverted,
-	:global(html[data-theme="dark"]) .plan-card--hero {
-		background: #3fc391;
-		color: #062017;
-		--ink: #062017;
-		--ink-muted: #0b3a26;
-		--line: color-mix(in srgb, #062017 25%, transparent);
-		--accent: #062017;
-		--green: #062017;
-		--green-deep: #062017;
-		--on-accent: #3fc391;
+	.plan-card--inverted .plan-card__cta :global(.btn--secondary) {
+		border-color: color-mix(in srgb, var(--ink) 55%, transparent);
+		background: transparent;
+		color: var(--ink);
+	}
+
+	.plan-card--inverted .plan-card__cta :global(.btn--secondary:hover) {
+		border-color: var(--ink);
+		background: color-mix(in srgb, var(--ink) 12%, transparent);
 	}
 
 	.plan-card__bismillah {
@@ -164,15 +157,19 @@ const planHref =
 
 	.plan-card__badge {
 		flex: none;
-		padding: 6px 10px;
+		display: inline-flex;
+		align-items: center;
+		height: 30px;
+		padding: 0 12px;
+		border: 1px solid color-mix(in srgb, var(--ink) 45%, transparent);
 		border-radius: var(--radius-chip);
-		background: var(--green);
-		color: var(--on-accent);
-		font-size: 0.6875rem;
-		font-weight: 600;
-		letter-spacing: 0.08em;
-		line-height: 1.2;
-		text-transform: uppercase;
+		background: transparent;
+		color: var(--ink);
+		font-size: 0.75rem;
+		font-weight: 500;
+		letter-spacing: 0;
+		line-height: 1;
+		text-transform: none;
 	}
 
 	.plan-card__price {
