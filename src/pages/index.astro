@@ -10,6 +10,7 @@ import Eyebrow from "../components/Eyebrow.astro";
 import FeatureCards from "../components/FeatureCards.astro";
 import FactsBand from "../components/FactsBand.astro";
 import PlanCard from "../components/PlanCard.astro";
+import PostsGrid from "../components/PostsGrid.astro";
 import Section from "../components/Section.astro";
 import StandingOut from "../components/StandingOut.astro";
 import Step from "../components/Step.astro";
@@ -586,6 +587,23 @@ const steps = [
 						</p>
 					</div>
 					<TeachersGrid teachers={teachers} demo={demo} />
+				</Container>
+			</Section>
+		) : null
+	}
+
+	{
+		posts.length > 0 ? (
+			<Section space="tight">
+				<Container>
+					<div class="section-head">
+						<Eyebrow>Blog</Eyebrow>
+						<h2>Learn the basics, every day</h2>
+						<p class="section-lead">
+							Short guides on recitation, tajweed and memorization for students and families.
+						</p>
+					</div>
+					<PostsGrid posts={posts} />
 				</Container>
 			</Section>
 		) : null
