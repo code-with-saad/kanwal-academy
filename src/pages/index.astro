@@ -7,7 +7,6 @@ import Button from "../components/Button.astro";
 import Container from "../components/Container.astro";
 import CourseRow from "../components/CourseRow.astro";
 import Eyebrow from "../components/Eyebrow.astro";
-// import FactsBand from "../components/FactsBand.astro";
 import FeatureCards from "../components/FeatureCards.astro";
 import FeatureSplit from "../components/FeatureSplit.astro";
 import PlanCard from "../components/PlanCard.astro";
@@ -63,6 +62,7 @@ type HomeTextField = Exclude<keyof HomePageFields, "home_image">;
 const [
 	coursesResult,
 	plansResult,
+	testimonialsResult,
 	contactResult,
 	homeResult,
 	teachersResult,
@@ -73,6 +73,10 @@ const [
 		orderBy: { order: "asc" },
 	}),
 	getEmDashCollection("plans", {
+		status: "published",
+		orderBy: { order: "asc" },
+	}),
+	getEmDashCollection("testimonials", {
 		status: "published",
 		orderBy: { order: "asc" },
 	}),
@@ -91,6 +95,7 @@ const [
 if (Astro.cache?.enabled) {
 	Astro.cache.set(coursesResult.cacheHint);
 	Astro.cache.set(plansResult.cacheHint);
+	Astro.cache.set(testimonialsResult.cacheHint);
 	Astro.cache.set(contactResult.cacheHint);
 	Astro.cache.set(homeResult.cacheHint);
 	Astro.cache.set(teachersResult.cacheHint);
@@ -99,6 +104,9 @@ if (Astro.cache?.enabled) {
 
 const courses = coursesResult.entries;
 const plans = plansResult.entries;
+const testimonials = testimonialsResult.entries.filter(
+	(testimonial) => testimonial.data.consent_given === true,
+);
 const teachers = teachersResult.entries;
 const posts = postsResult.entries;
 const contact = contactResult.data;
@@ -162,23 +170,6 @@ const toPlanCard = (plan: (typeof plans)[number]) => ({
 const lowestPlanPrice = plans.length
 	? Math.min(...plans.map((plan) => Number(plan.data.price)))
 	: 20;
-
-const facts = [
-	{ textBefore: "Any device with a camera", icon: "device" as const },
-	{ textBefore: "Free trial class", icon: "trial" as const },
-	{
-		textBefore: "Plans from",
-		value: `${formatUsdPrice(lowestPlanPrice)}`,
-		textAfter: "per month",
-		icon: "price" as const,
-	},
-	{
-		textBefore: "Students from",
-		value: `${contact.stats.countries}`,
-		textAfter: "countries",
-		icon: "globe" as const,
-	},
-];
 
 const [recitationCourse, tajweedCourse, memorizationCourse] = courses;
 const orbitLinks = [
@@ -457,12 +448,6 @@ const steps = [
 			</ol>
 		</Container>
 	</Section>
-
-	<!-- <Section space="tight">
-		<Container>
-			<FactsBand facts={facts} />
-		</Container>
-	</Section> -->	
 
 	<Section>
 		<Container>
