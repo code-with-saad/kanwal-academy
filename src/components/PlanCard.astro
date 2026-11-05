@@ -53,7 +53,7 @@ const Heading = `h${headingLevel}` as "h2" | "h3";
 const priceLabel = formatUsdPrice(plan.price);
 
 const planHref =
-	href ?? (plan.slug ? `/free-trial?plan=${encodeURIComponent(plan.slug)}` : "/free-trial");
+	href ?? (plan.slug ? `/?plan=${encodeURIComponent(plan.slug)}#book` : "/#book");
 ---
 
 <article

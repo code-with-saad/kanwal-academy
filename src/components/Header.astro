@@ -20,10 +20,8 @@ const {
 } = Astro.props;
 
 const path = currentPath.length > 1 ? currentPath.replace(/\/+$/, "") : "/";
-const isCurrent = (url: string) => {
-	const target = url.length > 1 ? url.replace(/\/+$/, "") : url;
-	return target === "/" ? path === "/" : path === target || path.startsWith(`${target}/`);
-};
+const isLinkCurrent = (item: NavItem) =>
+	item.href.startsWith("#") ? false : item.href === "/" ? path === "/" : path === item.href;
 
 const isHome = tone === "dark";
 ---
@@ -55,9 +53,11 @@ const isHome = tone === "dark";
 			{
 				items.map((item) => (
 					<a
-						href={item.url}
+						href={item.href}
 						class="header__link"
-						aria-current={isCurrent(item.url) ? "page" : undefined}
+						data-nav-link
+						data-nav-anchor={item.anchor}
+						aria-current={isLinkCurrent(item) ? "page" : undefined}
 					>
 						{item.label}
 					</a>
@@ -68,7 +68,7 @@ const isHome = tone === "dark";
 		<div class="header__end">
 			<ThemeToggle />
 			<div class="header__cta-wrap">
-				<Button href={cta.url} variant="primary">
+				<Button href={cta.href} variant="primary">
 					{cta.label}
 				</Button>
 			</div>
@@ -110,9 +110,11 @@ const isHome = tone === "dark";
 			{
 				items.map((item) => (
 					<a
-						href={item.url}
+						href={item.href}
 						class="header__mobile-link"
-						aria-current={isCurrent(item.url) ? "page" : undefined}
+						data-nav-link
+						data-nav-anchor={item.anchor}
+						aria-current={isLinkCurrent(item) ? "page" : undefined}
 					>
 						{item.label}
 					</a>
@@ -121,7 +123,7 @@ const isHome = tone === "dark";
 		</nav>
 		<div class="header__panel-end">
 			<ThemeToggle />
-			<Button href={cta.url} variant="primary">
+			<Button href={cta.href} variant="primary">
 				{cta.label}
 			</Button>
 		</div>
@@ -178,6 +180,76 @@ const isHome = tone === "dark";
 		window.addEventListener("scroll", onScroll, { passive: true });
 		onScroll();
 		document.addEventListener("astro:after-swap", onScroll);
+	}
+</script>
+
+<script>
+	// In-page navigation: smooth scroll, hash without a jump, and an active
+	// link that follows the section in view. Reduced motion means instant.
+	const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+	const navLinks = Array.from(
+		document.querySelectorAll<HTMLAnchorElement>("[data-nav-link][data-nav-anchor]"),
+	);
+	const header = document.querySelector<HTMLElement>("[data-header]");
+	const headerHeight = () => header?.offsetHeight ?? 0;
+
+	const targetFrom = (href: string) => {
+		const url = new URL(href, window.location.href);
+		if (url.pathname !== window.location.pathname || !url.hash) return null;
+		return document.getElementById(decodeURIComponent(url.hash.slice(1)));
+	};
+
+	for (const link of document.querySelectorAll<HTMLAnchorElement>("a[href*='#']")) {
+		const target = targetFrom(link.href);
+		if (!target) continue;
+		link.addEventListener("click", (event) => {
+			if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+			event.preventDefault();
+			target.scrollIntoView({
+				behavior: reduceMotion.matches ? "auto" : "smooth",
+				block: "start",
+			});
+			const url = new URL(link.href);
+			history.pushState(null, "", `${url.pathname}${url.search}${url.hash}`);
+			// Keep keyboard focus with the visitor, without a second jump.
+			if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
+			target.focus({ preventScroll: true });
+		});
+	}
+
+	if (navLinks.length > 0) {
+		const sections = navLinks
+			.map((link) => document.getElementById(link.dataset.navAnchor ?? ""))
+			.filter((section): section is HTMLElement => section !== null);
+
+		const setActive = (id: string) => {
+			for (const link of navLinks) {
+				const active = link.dataset.navAnchor === id;
+				if (active) link.setAttribute("aria-current", "location");
+				else if (link.getAttribute("aria-current") === "location") {
+					link.removeAttribute("aria-current");
+				}
+			}
+		};
+
+		if (sections.length > 0 && "IntersectionObserver" in window) {
+			const visible = new Set<string>();
+			const observer = new IntersectionObserver(
+				(entries) => {
+					for (const entry of entries) {
+						if (entry.isIntersecting) visible.add(entry.target.id);
+						else visible.delete(entry.target.id);
+					}
+					const first = sections.find((section) => visible.has(section.id));
+					if (first) setActive(first.id);
+				},
+				{
+					rootMargin: `-${headerHeight() + 1}px 0px -55% 0px`,
+					threshold: 0,
+				},
+			);
+			for (const section of sections) observer.observe(section);
+		}
 	}
 </script>
 
@@ -329,7 +401,7 @@ const isHome = tone === "dark";
 		color: var(--ink);
 	}
 
-	.header__link[aria-current="page"] {
+	.header__link[aria-current] {
 		background: var(--mint-100);
 		color: var(--ink);
 	}
@@ -447,7 +519,7 @@ const isHome = tone === "dark";
 		border-radius: var(--radius-button);
 	}
 
-	.header__mobile-link[aria-current="page"] {
+	.header__mobile-link[aria-current] {
 		background: var(--mint-100);
 	}
 

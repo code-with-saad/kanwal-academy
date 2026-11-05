@@ -1,0 +1,481 @@
+---
+import { env as hostEnv } from "virtual:emdash/env";
+import Eyebrow from "./Eyebrow.astro";
+import { emailHref, phoneHref, type SiteContact } from "../utils/site-config";
+
+interface PlanOption {
+	id: string;
+	name: string;
+	price: number | string;
+}
+
+interface CourseOption {
+	id: string;
+	name: string;
+}
+
+interface Props {
+	contact: SiteContact;
+	plans: PlanOption[];
+	courses: CourseOption[];
+}
+
+const { contact, plans, courses } = Astro.props;
+
+const runtimeEnv = hostEnv as Record<string, unknown> | undefined;
+const buildEnv = import.meta.env as unknown as Record<string, string | undefined>;
+const turnstileSiteKey = String(
+	runtimeEnv?.PUBLIC_TURNSTILE_SITE_KEY ?? buildEnv.PUBLIC_TURNSTILE_SITE_KEY ?? "",
+).trim();
+
+const preselectedPlan = Astro.url.searchParams.get("plan") ?? "";
+const preselectedCourse = Astro.url.searchParams.get("course") ?? "";
+---
+
+<div class="book">
+	<div class="book__copy">
+		<Eyebrow>Free trial</Eyebrow>
+		<h2 class="book__title">Book a free trial class</h2>
+		<p class="book__lead">
+			Tell us a little about the student and the times that suit you. We will reply with the
+			next available trial slot. The trial class is free and no payment details are needed.
+		</p>
+
+		<address class="book__contact">
+			<span class="book__contact-label">Reach us directly</span>
+			<a href={phoneHref(contact.phone)}>{contact.phone}</a>
+			<a href={emailHref(contact.email)}>{contact.email}</a>
+			<span>{contact.address}</span>
+		</address>
+
+		<p class="book__note">
+			Lessons run live in a video call. You only need a phone, tablet or laptop with a camera.
+		</p>
+	</div>
+
+	<form class="book__form" data-trial-form novalidate>
+		<div class="book__field">
+			<label for="trial-name">Student name</label>
+			<input
+				id="trial-name"
+				name="name"
+				type="text"
+				autocomplete="name"
+				maxlength="120"
+				required
+			/>
+		</div>
+
+		<div class="book__row">
+			<div class="book__field">
+				<label for="trial-email">Email</label>
+				<input
+					id="trial-email"
+					name="email"
+					type="email"
+					inputmode="email"
+					autocomplete="email"
+					maxlength="254"
+					required
+				/>
+			</div>
+			<div class="book__field">
+				<label for="trial-phone">Phone <span>(optional)</span></label>
+				<input
+					id="trial-phone"
+					name="phone"
+					type="tel"
+					inputmode="tel"
+					autocomplete="tel"
+					maxlength="40"
+				/>
+			</div>
+		</div>
+
+		<div class="book__row">
+			<div class="book__field">
+				<label for="trial-course">Course</label>
+				<select id="trial-course" name="course">
+					<option value="">Not sure yet</option>
+					{
+						courses.map((course) => (
+							<option value={course.name} selected={course.id === preselectedCourse}>
+								{course.name}
+							</option>
+						))
+					}
+				</select>
+			</div>
+			<div class="book__field">
+				<label for="trial-plan">Plan</label>
+				<select id="trial-plan" name="plan">
+					<option value="">Help me choose</option>
+					{
+						plans.map((plan) => (
+							<option value={plan.name} selected={plan.id === preselectedPlan}>
+								{plan.name}
+							</option>
+						))
+					}
+				</select>
+			</div>
+		</div>
+
+		<div class="book__field">
+			<label for="trial-timezone">Time zone or preferred times</label>
+			<input
+				id="trial-timezone"
+				name="timezone"
+				type="text"
+				maxlength="120"
+				placeholder="For example, London, evenings after 6pm"
+				required
+			/>
+		</div>
+
+		<div class="book__field">
+			<label for="trial-message">Anything else? <span>(optional)</span></label>
+			<textarea
+				id="trial-message"
+				name="message"
+				rows="3"
+				maxlength="2000"
+				placeholder="Student age, current level, questions"
+			></textarea>
+		</div>
+
+		<div class="book__honeypot" aria-hidden="true">
+			<label for="trial-website">Website</label>
+			<input id="trial-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+		</div>
+
+		{
+			turnstileSiteKey && (
+				<div
+					class="cf-turnstile book__turnstile"
+					data-sitekey={turnstileSiteKey}
+					data-theme="auto"
+				/>
+			)
+		}
+
+		<div class="book__actions">
+			<button class="book__submit" type="submit" data-submit>
+				<span class="book__spinner" aria-hidden="true"></span>
+				<span data-label>Request free trial</span>
+			</button>
+			<p class="book__status" role="status" aria-live="polite" data-status></p>
+		</div>
+	</form>
+</div>
+
+<script>
+	type Status = { message: string; tone: "success" | "error" };
+
+	const form = document.querySelector<HTMLFormElement>("[data-trial-form]");
+	if (form) {
+		const submit = form.querySelector<HTMLButtonElement>("[data-submit]");
+		const label = form.querySelector<HTMLElement>("[data-label]");
+		const status = form.querySelector<HTMLElement>("[data-status]");
+		const turnstile = form.querySelector<HTMLElement>(".cf-turnstile");
+
+		if (turnstile) {
+			const script = document.createElement("script");
+			script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+			script.async = true;
+			script.defer = true;
+			document.head.appendChild(script);
+		}
+
+		const setStatus = ({ message, tone }: Status) => {
+			if (!status) return;
+			status.textContent = message;
+			status.classList.toggle("is-success", tone === "success");
+			status.classList.toggle("is-error", tone === "error");
+		};
+
+		const setBusy = (busy: boolean) => {
+			if (!submit || !label) return;
+			submit.disabled = busy;
+			submit.classList.toggle("is-loading", busy);
+			submit.setAttribute("aria-busy", String(busy));
+			label.textContent = busy ? "Sending request" : "Request free trial";
+		};
+
+		const turnstileToken = () => {
+			const api = (
+				window as unknown as {
+					turnstile?: { getResponse?: (element?: HTMLElement) => string | undefined };
+				}
+			).turnstile;
+			return api?.getResponse?.(turnstile ?? undefined) ?? "";
+		};
+
+		form.addEventListener("submit", async (event) => {
+			event.preventDefault();
+			if (submit?.disabled) return;
+
+			if (!form.checkValidity()) {
+				form.reportValidity();
+				return;
+			}
+
+			const data = new FormData(form);
+			setBusy(true);
+			setStatus({ message: "Sending your request.", tone: "success" });
+
+			try {
+				const response = await fetch("/api/trial", {
+					method: "POST",
+					headers: { "Content-Type": "application/json", Accept: "application/json" },
+					body: JSON.stringify({
+						name: data.get("name"),
+						email: data.get("email"),
+						phone: data.get("phone"),
+						course: data.get("course"),
+						plan: data.get("plan"),
+						timezone: data.get("timezone"),
+						message: data.get("message"),
+						website: data.get("website"),
+						turnstileToken: turnstileToken(),
+					}),
+				});
+				const result = (await response.json().catch(() => ({}))) as {
+					ok?: boolean;
+					message?: string;
+				};
+
+				if (response.ok && result.ok) {
+					setStatus({
+						message:
+							result.message ??
+							"Your trial request is with us. We will reply with the next available slot.",
+						tone: "success",
+					});
+					form.reset();
+					(
+						window as unknown as {
+							turnstile?: { reset?: (element?: HTMLElement) => void };
+						}
+					).turnstile?.reset?.(turnstile ?? undefined);
+				} else {
+					setStatus({
+						message: result.message ?? "Something went wrong. Please try again.",
+						tone: "error",
+					});
+				}
+			} catch {
+				setStatus({
+					message: "We could not reach the server. Check your connection and try again.",
+					tone: "error",
+				});
+			} finally {
+				setBusy(false);
+			}
+		});
+	}
+</script>
+
+<style>
+	.book {
+		display: grid;
+		grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+		gap: clamp(32px, 6vw, 80px);
+		align-items: start;
+	}
+
+	.book__copy {
+		display: grid;
+		justify-items: start;
+		gap: var(--space-md);
+	}
+
+	.book__title {
+		max-width: 16ch;
+	}
+
+	.book__lead {
+		max-width: 46ch;
+		color: var(--ink-muted);
+	}
+
+	.book__contact {
+		display: grid;
+		gap: var(--space-xs);
+		margin-top: var(--space-sm);
+		padding-top: var(--space-lg);
+		border-top: 1px solid var(--line);
+		color: var(--ink-muted);
+		font-style: normal;
+	}
+
+	.book__contact-label {
+		color: var(--ink);
+		font-weight: 600;
+	}
+
+	.book__contact a {
+		color: var(--ink);
+		text-decoration: none;
+		transition: color var(--transition);
+	}
+
+	.book__contact a:hover,
+	.book__contact a:focus-visible {
+		color: var(--green-deep);
+		text-decoration: underline;
+	}
+
+	.book__note {
+		max-width: 44ch;
+		color: var(--ink-muted);
+		font-size: var(--size-small);
+	}
+
+	.book__form {
+		display: grid;
+		gap: var(--space-md);
+		padding: clamp(20px, 3vw, 32px);
+		border: 1px solid var(--line);
+		border-radius: var(--radius-card);
+		background: var(--surface);
+	}
+
+	.book__row {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: var(--space-md);
+	}
+
+	.book__field {
+		display: grid;
+		gap: var(--space-2xs);
+	}
+
+	.book__field label {
+		color: var(--ink);
+		font-size: var(--size-small);
+		font-weight: 600;
+	}
+
+	.book__field label span {
+		color: var(--ink-muted);
+		font-weight: 400;
+	}
+
+	.book__field input,
+	.book__field select,
+	.book__field textarea {
+		width: 100%;
+		min-height: 48px;
+		padding: 10px 14px;
+		border: 1px solid var(--line);
+		border-radius: var(--radius-input);
+		background: var(--page);
+		color: var(--ink);
+	}
+
+	.book__field textarea {
+		min-height: 96px;
+		resize: vertical;
+	}
+
+	.book__field input:focus-visible,
+	.book__field select:focus-visible,
+	.book__field textarea:focus-visible {
+		outline: 2px solid var(--focus);
+		outline-offset: 2px;
+	}
+
+	.book__honeypot {
+		position: absolute;
+		left: -9999px;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+	}
+
+	.book__actions {
+		display: grid;
+		gap: var(--space-sm);
+		margin-top: var(--space-xs);
+	}
+
+	.book__submit {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-xs);
+		height: 48px;
+		padding: 0 24px;
+		border: 1px solid var(--green);
+		border-radius: var(--radius-button);
+		background: var(--green);
+		color: var(--on-accent);
+		font-weight: 500;
+		line-height: 1;
+	}
+
+	.book__submit:hover {
+		background: var(--green-deep);
+		border-color: var(--green-deep);
+	}
+
+	.book__submit:disabled {
+		opacity: 0.75;
+		cursor: progress;
+	}
+
+	.book__spinner {
+		display: none;
+		width: 16px;
+		height: 16px;
+		border: 2px solid color-mix(in srgb, var(--on-accent) 35%, transparent);
+		border-top-color: var(--on-accent);
+		border-radius: 50%;
+		animation: book-spin 700ms linear infinite;
+	}
+
+	.book__submit.is-loading .book__spinner {
+		display: block;
+	}
+
+	@keyframes book-spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	.book__status {
+		min-height: 1.5em;
+		color: var(--ink-muted);
+		font-size: var(--size-small);
+	}
+
+	.book__status.is-success {
+		color: var(--green-deep);
+	}
+
+	.book__status.is-error {
+		color: #b3261e;
+	}
+
+	@media (max-width: 860px) {
+		.book {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.book__row {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.book__spinner {
+			animation-duration: 1.4s;
+		}
+	}
+</style>

@@ -1,12 +1,12 @@
 ---
 import { Font } from "astro:assets";
-import { getMenuWithCacheHint, getSiteSettingsWithCacheHint } from "emdash";
+import { getSiteSettingsWithCacheHint } from "emdash";
 import { createPublicPageContext } from "emdash/page";
 import { EmDashBodyEnd, EmDashBodyStart, EmDashHead } from "emdash/ui";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import Newsletter from "../components/Newsletter.astro";
-import { site, type NavItem } from "../config/site";
+import { site } from "../config/site";
 import { getSiteContact } from "../utils/site-config";
 import { resolveSiteIdentity } from "../utils/site";
 import "../styles/global.css";
@@ -33,15 +33,13 @@ const {
 	headerTone = Astro.url.pathname === "/" ? "dark" : "light",
 } = Astro.props;
 
-const [settingsResult, menuResult, contactResult] = await Promise.all([
+const [settingsResult, contactResult] = await Promise.all([
 	getSiteSettingsWithCacheHint(),
-	getMenuWithCacheHint("primary"),
 	getSiteContact(),
 ]);
 
 if (Astro.cache?.enabled) {
 	Astro.cache.set(settingsResult.cacheHint);
-	Astro.cache.set(menuResult.cacheHint);
 	Astro.cache.set(contactResult.cacheHint);
 }
 
@@ -52,18 +50,8 @@ const fullTitle = title
 		: `${title} ${titleSeparator} ${siteTitle}`
 	: siteTitle;
 
-const isButtonItem = (item: { cssClasses?: string | null }) =>
-	item.cssClasses?.split(/\s+/).includes("button") ?? false;
-const menuItems = menuResult.data?.items ?? [];
-const menuLinks = menuItems
-	.filter((item) => !isButtonItem(item))
-	.map((item): NavItem => ({ label: item.label, url: item.url }));
-const menuButton = menuItems.find(isButtonItem);
-
-const headerItems = menuLinks.length > 0 ? menuLinks : [...site.nav];
-const headerCta: NavItem = menuButton
-	? { label: menuButton.label, url: menuButton.url }
-	: site.cta;
+const headerItems = [...site.nav];
+const headerCta = site.cta;
 
 const pageCtx = createPublicPageContext({
 	Astro,

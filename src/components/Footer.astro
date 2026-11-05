@@ -14,12 +14,18 @@ interface Props {
 const { contact, siteName = site.name, settingsEdit } = Astro.props;
 const year = new Date().getFullYear();
 
+const courseLinks = [
+	{ label: "Qur'anic Recitation", href: "/#courses" },
+	{ label: "Tajweed Proficiency", href: "/#courses" },
+	{ label: "Memorization Excellence", href: "/#courses" },
+];
+
 const academyLinks = [
-	{ label: "About", url: "/about" },
-	{ label: contact.footer.teachersLabel, url: "/teachers", field: "footer_teachers_label" as const },
-	{ label: contact.footer.pricingLabel, url: "/pricing", field: "footer_pricing_label" as const },
-	{ label: contact.footer.trialLabel, url: "/free-trial", field: "footer_trial_label" as const },
-	{ label: contact.footer.contactLinkLabel, url: "/contact", field: "footer_contact_link_label" as const },
+	{ label: "About", href: "/#about" },
+	{ label: contact.footer.teachersLabel, href: "/#teachers", field: "footer_teachers_label" as const },
+	{ label: contact.footer.pricingLabel, href: "/#pricing", field: "footer_pricing_label" as const },
+	{ label: contact.footer.trialLabel, href: "/#book", field: "footer_trial_label" as const },
+	{ label: contact.footer.contactLinkLabel, href: "/#book", field: "footer_contact_link_label" as const },
 ];
 ---
 
@@ -54,17 +60,15 @@ const academyLinks = [
 				</h2>
 				<ul class="footer__links">
 					<li>
-						<a href="/courses">{contact.footer.coursesLabel}</a>
+						<a href="/#courses">{contact.footer.coursesLabel}</a>
 					</li>
-					<li>
-						<a href="/courses/quranic-recitation">Qur'anic Recitation</a>
-					</li>
-					<li>
-						<a href="/courses/tajweed-proficiency">Tajweed Proficiency</a>
-					</li>
-					<li>
-						<a href="/courses/memorization-excellence">Memorization Excellence</a>
-					</li>
+					{
+						courseLinks.map((link) => (
+							<li>
+								<a href={link.href}>{link.label}</a>
+							</li>
+						))
+					}
 				</ul>
 			</nav>
 
@@ -76,7 +80,7 @@ const academyLinks = [
 							const field = "field" in link ? link.field : null;
 							return (
 								<li>
-									<a href={link.url} {...(field ? settingsEdit?.[field] : {})}>{link.label}</a>
+									<a href={link.href} {...(field ? settingsEdit?.[field] : {})}>{link.label}</a>
 								</li>
 							);
 						})
@@ -103,12 +107,12 @@ const academyLinks = [
 			<ul class="footer__legal">
 				{
 					site.legal.map((item) => {
-						const isTerms = item.url.includes("terms");
+						const isTerms = item.href.includes("terms");
 						const field = isTerms ? "footer_terms_label" : "footer_privacy_label";
 						const label = isTerms ? contact.footer.termsLabel : contact.footer.privacyLabel;
 						return (
 							<li>
-								<a href={item.url} {...settingsEdit?.[field]}>{label}</a>
+								<a href={item.href} {...settingsEdit?.[field]}>{label}</a>
 							</li>
 						);
 					})

@@ -3,6 +3,7 @@ import { getEmDashCollection, getEmDashEntry, getSeoMeta } from "emdash";
 import type { ContentEntry, ImageValue } from "emdash";
 import { Image } from "emdash/ui";
 import Base from "../layouts/Base.astro";
+import BookTrial from "../components/BookTrial.astro";
 import Button from "../components/Button.astro";
 import Container from "../components/Container.astro";
 import CourseRow from "../components/CourseRow.astro";
@@ -10,7 +11,6 @@ import Eyebrow from "../components/Eyebrow.astro";
 import FeatureCards from "../components/FeatureCards.astro";
 import FeatureSplit from "../components/FeatureSplit.astro";
 import PlanCard from "../components/PlanCard.astro";
-import PostsGrid from "../components/PostsGrid.astro";
 import Section from "../components/Section.astro";
 import StandingOut from "../components/StandingOut.astro";
 import Step from "../components/Step.astro";
@@ -66,7 +66,6 @@ const [
 	contactResult,
 	homeResult,
 	teachersResult,
-	postsResult,
 ] = await Promise.all([
 	getEmDashCollection("courses", {
 		status: "published",
@@ -86,10 +85,6 @@ const [
 		status: "published",
 		orderBy: { order: "asc" },
 	}),
-	getEmDashCollection("posts", {
-		status: "published",
-		orderBy: { published_at: "desc" },
-	}),
 ]);
 
 if (Astro.cache?.enabled) {
@@ -99,7 +94,6 @@ if (Astro.cache?.enabled) {
 	Astro.cache.set(contactResult.cacheHint);
 	Astro.cache.set(homeResult.cacheHint);
 	Astro.cache.set(teachersResult.cacheHint);
-	Astro.cache.set(postsResult.cacheHint);
 }
 
 const courses = coursesResult.entries;
@@ -108,7 +102,6 @@ const testimonials = testimonialsResult.entries.filter(
 	(testimonial) => testimonial.data.consent_given === true,
 );
 const teachers = teachersResult.entries;
-const posts = postsResult.entries;
 const contact = contactResult.data;
 const demo = isDemoMode();
 
@@ -174,22 +167,22 @@ const lowestPlanPrice = plans.length
 const [recitationCourse, tajweedCourse, memorizationCourse] = courses;
 const orbitLinks = [
 	{
-		href: recitationCourse ? `/courses/${recitationCourse.id}` : "/courses",
+		href: "/#courses",
 		label: recitationCourse?.data.name ?? "Qur'anic Recitation",
 		icon: "book" as const,
 	},
 	{
-		href: tajweedCourse ? `/courses/${tajweedCourse.id}` : "/courses",
+		href: "/#courses",
 		label: tajweedCourse?.data.name ?? "Tajweed Proficiency",
 		icon: "waves" as const,
 	},
 	{
-		href: memorizationCourse ? `/courses/${memorizationCourse.id}` : "/courses",
+		href: "/#courses",
 		label: memorizationCourse?.data.name ?? "Memorization Excellence",
 		icon: "bookmark" as const,
 	},
 	{
-		href: "/free-trial",
+		href: "/#book",
 		label: "Live one-to-one",
 		icon: "headset" as const,
 	},
@@ -199,13 +192,13 @@ const featureCards = [
 	{
 		title: "Free trial class",
 		text: "Meet your teacher first.",
-		href: "/free-trial",
+		href: "/#book",
 		icon: "trial" as const,
 	},
 	{
 		title: `Plans from ${formatUsdPrice(lowestPlanPrice)}/month`,
 		text: "Choose a weekly pace.",
-		href: "#pricing",
+		href: "/#pricing",
 		icon: "price" as const,
 	},
 	{
@@ -261,7 +254,7 @@ const steps = [
 		homePage ? { collection: "pages", id: homePage.data.id, slug: homePage.id } : undefined
 	}
 >
-	<Section tone="mint" space="flush" class="hero">
+	<Section id="home" tone="mint" space="flush" class="hero">
 		<div class="hero__pattern" aria-hidden="true"></div>
 		<Container>
 			<div class="hero__grid">
@@ -407,19 +400,19 @@ const steps = [
 		</Container>
 	</div>
 
-	<Section class="section--after-hero">
+	<Section id="about" class="section--after-hero">
 		<Container>
 			<WisdomPanel years={contact.stats.years} />
 		</Container>
 	</Section>
 
-	<Section space="tight">
+	<Section id="standing-out" space="tight">
 		<Container>
 			<StandingOut />
 		</Container>
 	</Section>
 
-	<Section>
+	<Section id="courses">
 		<Container>
 			<div class="journey-head">
 				<div class="journey-head__copy">
@@ -429,7 +422,7 @@ const steps = [
 						your teacher will set the pace from there.
 					</p>
 				</div>
-				<Button href="/courses" variant="secondary">See all courses</Button>
+				<Button href="/#book" variant="secondary">Book free trial</Button>
 			</div>
 
 			<ol class="journey-list">
@@ -441,16 +434,12 @@ const steps = [
 							summary={course.data.summary}
 							level={course.data.level}
 							arabic={courseArabic[course.id]}
-							href={`/courses/${course.id}`}
+							href={`/?course=${encodeURIComponent(course.id)}#book`}
 						/>
 					))
 				}
 			</ol>
-		</Container>
-	</Section>
 
-	<Section>
-		<Container>
 			<div class="study-stack">
 				<FeatureSplit
 					headingBefore="Easy Qur'an learning"
@@ -463,8 +452,8 @@ const steps = [
 					imageAlt="A student joining a Qur'an lesson on a phone"
 					imageLabel="Lesson on a phone (4:3)"
 					imageRatio="4 / 3"
-					buttonLabel="Learn more"
-					buttonHref="/about"
+					buttonLabel="Book free trial"
+					buttonHref="/#book"
 				/>
 
 				<FeatureSplit
@@ -485,11 +474,37 @@ const steps = [
 						"Break it into small parts",
 						"Choose one surah at a time",
 					]}
-					buttonLabel="Learn more"
-					buttonHref="/courses/memorization-excellence"
+					buttonLabel="Book free trial"
+					buttonHref="/#book"
 					imageFirst
 				/>
 			</div>
+		</Container>
+	</Section>
+
+	<Section id="how-it-works" space="tight">
+		<Container>
+			<div class="section-head">
+				<Eyebrow edit={homeEdit?.trial_eyebrow}>
+					{homeText("trial_eyebrow", "Free trial")}
+				</Eyebrow>
+				<h2 {...homeEdit?.trial_heading} data-reveal-words>
+					{homeText("trial_heading", "How the free trial works")}
+				</h2>
+			</div>
+			<ol class="steps">
+				{
+					steps.map((step, index) => (
+						<Step
+							number={index + 1}
+							title={step.title}
+							body={step.body}
+							titleEdit={step.titleEdit}
+							bodyEdit={step.bodyEdit}
+						/>
+					))
+				}
+			</ol>
 		</Container>
 	</Section>
 
@@ -516,7 +531,7 @@ const steps = [
 						<PlanCard
 							plan={toPlanCard(plan)}
 							variant={plan.data.is_popular ? "inverted" : "default"}
-							href={`/free-trial?plan=${encodeURIComponent(plan.id)}`}
+							href={`/?plan=${encodeURIComponent(plan.id)}#book`}
 							revealDelay={index * 80}
 							planEdit={plan.edit}
 							homeEdit={homeEdit}
@@ -539,35 +554,9 @@ const steps = [
 		</Container>
 	</Section>
 
-	<Section space="tight">
-		<Container>
-			<div class="section-head">
-				<Eyebrow edit={homeEdit?.trial_eyebrow}>
-					{homeText("trial_eyebrow", "Free trial")}
-				</Eyebrow>
-				<h2 {...homeEdit?.trial_heading} data-reveal-words>
-					{homeText("trial_heading", "How the free trial works")}
-				</h2>
-			</div>
-			<ol class="steps">
-				{
-					steps.map((step, index) => (
-						<Step
-							number={index + 1}
-							title={step.title}
-							body={step.body}
-							titleEdit={step.titleEdit}
-							bodyEdit={step.bodyEdit}
-						/>
-					))
-				}
-			</ol>
-		</Container>
-	</Section>
-
 	{
 		teachers.length > 0 || demo ? (
-			<Section>
+			<Section id="teachers">
 				<Container>
 					<div class="section-head">
 						<Eyebrow>Teachers</Eyebrow>
@@ -584,34 +573,32 @@ const steps = [
 	}
 
 	{
-		posts.length > 0 ? (
-			<Section space="tight">
-				<Container>
-					<div class="section-head">
-						<Eyebrow>Blog</Eyebrow>
-						<h2 data-reveal-words>Learn the basics, every day</h2>
-						<p class="section-lead" data-reveal="up" data-reveal-delay="80">
-							Short guides on recitation, tajweed and memorization for students and families.
-						</p>
-					</div>
-					<PostsGrid posts={posts} />
-				</Container>
-			</Section>
+		testimonials.length > 0 ? (
+			<div id="testimonials">
+				<Testimonials
+					reviews={testimonials.map((testimonial) => ({
+						quote: testimonial.data.quote,
+						author: testimonial.data.author,
+						country: testimonial.data.country,
+					}))}
+				/>
+			</div>
 		) : null
 	}
 
-	{
-		testimonials.length > 0 || demo ? (
-			<Testimonials
-				reviews={testimonials.map((testimonial) => ({
-					quote: testimonial.data.quote,
-					author: testimonial.data.author,
-					country: testimonial.data.country,
+	<Section id="book">
+		<Container>
+			<BookTrial
+				contact={contact}
+				plans={plans.map((plan) => ({
+					id: plan.id,
+					name: plan.data.name,
+					price: plan.data.price,
 				}))}
-				demo={demo}
+				courses={courses.map((course) => ({ id: course.id, name: course.data.name }))}
 			/>
-		) : null
-	}
+		</Container>
+	</Section>
 </Base>
 
 <script>
@@ -1123,6 +1110,7 @@ const steps = [
 	.study-stack {
 		display: grid;
 		gap: clamp(56px, 8vw, 104px);
+		margin-top: clamp(56px, 8vw, 104px);
 	}
 
 	.plan-grid {

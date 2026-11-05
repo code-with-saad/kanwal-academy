@@ -1,0 +1,74 @@
+---
+import Base from "../layouts/Base.astro";
+import Container from "../components/Container.astro";
+import Section from "../components/Section.astro";
+import { site } from "../config/site";
+
+const updated = "5 November 2026";
+---
+
+<Base
+	title="Terms of Service"
+	description={`The terms that apply when you use the ${site.name} website and lessons.`}
+>
+	<Section space="tight">
+		<Container size="narrow">
+			<div class="page-intro">
+				<h1>Terms of Service</h1>
+				<p>Last updated {updated}. Please read these terms before booking a class.</p>
+			</div>
+
+			<div class="prose legal">
+				<h2>About these terms</h2>
+				<p>
+					These terms apply to the {site.name} website and to lessons booked through it. By
+					using the site or booking a class, you agree to them. If you do not agree, please do
+					not use the site.
+				</p>
+
+				<h2>Lessons and plans</h2>
+				<p>
+					Lessons are taught online, one to one. Plans are billed monthly in US dollars and
+					each plan sets out the number of classes and teaching hours it includes. Every new
+					student may book one free trial class before choosing a plan.
+				</p>
+				<p>
+					Class times are agreed with your teacher. Please give as much notice as you can if
+					you need to move a class so that the time can be offered to another student.
+				</p>
+
+				<h2>Payments</h2>
+				<p>
+					Online payment is not available on this site yet. When it is added, the payment
+					terms will be shown before you pay. Monthly plan prices are listed on the home page.
+				</p>
+
+				<h2>Use of the site</h2>
+				<p>
+					Please use the site lawfully and do not attempt to disrupt it, access accounts that
+					are not yours, or copy content for commercial use without permission. Course
+					materials and site text remain the property of {site.name}.
+				</p>
+
+				<h2>Changes</h2>
+				<p>
+					We may update these terms as the service grows. The date at the top of this page
+					shows when they last changed. Continued use of the site after a change means you
+					accept the updated terms.
+				</p>
+
+				<h2>Contact</h2>
+				<p>
+					Questions about these terms can be sent to <a href={site.emailHref}>{site.email}</a>
+					{" "}or by phone on <a href={site.phoneHref}>{site.phone}</a>.
+				</p>
+			</div>
+		</Container>
+	</Section>
+</Base>
+
+<style>
+	.legal {
+		margin-top: var(--space-xl);
+	}
+</style>

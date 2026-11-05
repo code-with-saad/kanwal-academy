@@ -73,7 +73,7 @@ const {
 		{summary && <p class="course-card__summary" {...edit?.summary}>{summary}</p>}
 
 		<div class="course-card__cta">
-			<Button href={`/free-trial?course=${encodeURIComponent(slug)}`} variant="primary" edit={homeEdit?.courses_trial_cta}>
+			<Button href={`/?course=${encodeURIComponent(slug)}#book`} variant="primary" edit={homeEdit?.courses_trial_cta}>
 				{trialLabel}
 			</Button>
 			<Button href={href} variant="secondary" edit={homeEdit?.courses_details_cta}>{detailsLabel}</Button>

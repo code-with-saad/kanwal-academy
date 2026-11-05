@@ -68,13 +68,13 @@ const start = Math.min(Math.max(initialIndex, 0), last);
 					<div class="plan-carousel__cta">
 						<Button
 							href={plan.slug
-								? `/free-trial?plan=${encodeURIComponent(plan.slug)}`
-								: "/free-trial"}
+								? `/?plan=${encodeURIComponent(plan.slug)}#book`
+								: "/#book"}
 							variant="primary"
 						>
 							Select plan
 						</Button>
-						<Button href="/pricing" variant="secondary">See details</Button>
+						<Button href="/#pricing" variant="secondary">See details</Button>
 					</div>
 				</div>
 			))
