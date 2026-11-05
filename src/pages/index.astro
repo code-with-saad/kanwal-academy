@@ -180,28 +180,34 @@ const coursePills = [
 	},
 ];
 
+// The testimonials section is only rendered when it has content, so the
+// globe card falls back to #about when it is hidden.
+const hasTestimonials = testimonials.length > 0 || demo;
+
 const featureCards = [
 	{
 		title: "Free trial class",
 		text: "Meet your teacher first.",
-		href: "/#book",
+		href: "#book",
 		icon: "trial" as const,
 		isFirst: true,
 	},
 	{
 		title: `Plans from ${formatUsdPrice(lowestPlanPrice)}/month`,
 		text: "Choose a weekly pace.",
-		href: "/#pricing",
+		href: "#pricing",
 		icon: "price" as const,
 	},
 	{
 		title: `Students in ${contact.stats.countries} countries`,
 		text: "Join families worldwide.",
+		href: hasTestimonials ? "#testimonials" : "#about",
 		icon: "globe" as const,
 	},
 	{
 		title: "Learn on any device",
 		text: "Phone, tablet or laptop.",
+		href: "#how-it-works",
 		icon: "device" as const,
 	},
 ];
