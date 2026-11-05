@@ -6,7 +6,7 @@ import { EmDashBodyEnd, EmDashBodyStart, EmDashHead } from "emdash/ui";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import Newsletter from "../components/Newsletter.astro";
-import { site } from "../config/site";
+import { site, type NavItem } from "../config/site";
 import { getSiteContact } from "../utils/site-config";
 import { resolveSiteIdentity } from "../utils/site";
 import "../styles/global.css";
@@ -20,6 +20,7 @@ interface Props {
 	robots?: string | null;
 	content?: { collection: string; id: string; slug?: string | null };
 	headerTone?: "dark" | "light";
+	nav?: NavItem[];
 }
 
 const {
@@ -31,6 +32,7 @@ const {
 	robots,
 	content,
 	headerTone = Astro.url.pathname === "/" ? "dark" : "light",
+	nav,
 } = Astro.props;
 
 const [settingsResult, contactResult] = await Promise.all([
@@ -50,7 +52,7 @@ const fullTitle = title
 		: `${title} ${titleSeparator} ${siteTitle}`
 	: siteTitle;
 
-const headerItems = [...site.nav];
+const headerItems = nav ?? [...site.nav];
 const headerCta = site.cta;
 
 const pageCtx = createPublicPageContext({

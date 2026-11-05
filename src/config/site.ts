@@ -20,6 +20,14 @@ export interface NavItem {
 	page?: string;
 }
 
+/** Added to the navigation only when the teachers collection has data. */
+export const teacherNavItem: NavItem = {
+	label: "Teachers",
+	href: "/#teachers",
+	anchor: "teachers",
+	page: "/teachers",
+};
+
 export const site = {
 	name: "Kanwal Quran Academy",
 	tagline: "Online Qur'an education from Karachi, Pakistan.",
@@ -42,8 +50,6 @@ export const site = {
 		{ label: "About", href: "/#about", anchor: "about", page: "/about" },
 		{ label: "Courses", href: "/#courses", anchor: "courses", page: "/courses" },
 		{ label: "Pricing", href: "/#pricing", anchor: "pricing", page: "/pricing" },
-		// Teachers joins the navigation once the teachers collection has data:
-		// { label: "Teachers", href: "/#teachers", anchor: "teachers", page: "/teachers" },
 		{ label: "Contact", href: "/#book", anchor: "book", page: "/contact" },
 	] satisfies NavItem[],
 	cta: { label: "Book free trial", href: "/#book", anchor: "book" } satisfies NavItem,

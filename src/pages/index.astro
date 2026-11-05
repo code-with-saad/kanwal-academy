@@ -17,7 +17,7 @@ import Step from "../components/Step.astro";
 import TeachersGrid from "../components/TeachersGrid.astro";
 import Testimonials from "../components/Testimonials.astro";
 import WisdomPanel from "../components/WisdomPanel.astro";
-import { site } from "../config/site";
+import { site, teacherNavItem } from "../config/site";
 import { heroImage } from "../config/images";
 import { getSiteContact } from "../utils/site-config";
 import { isDemoMode } from "../utils/env";
@@ -104,6 +104,10 @@ const testimonials = testimonialsResult.entries.filter(
 const teachers = teachersResult.entries;
 const contact = contactResult.data;
 const demo = isDemoMode();
+const hasTeachers = teachers.length > 0 || demo;
+const navItems = hasTeachers
+	? [...site.nav.slice(0, 4), teacherNavItem, ...site.nav.slice(4)]
+	: [...site.nav];
 
 // Arabic course names supplied by the academy.
 const courseArabic: Record<string, string> = {
@@ -253,6 +257,7 @@ const steps = [
 	content={
 		homePage ? { collection: "pages", id: homePage.data.id, slug: homePage.id } : undefined
 	}
+	nav={navItems}
 >
 	<Section id="home" tone="mint" space="flush" class="hero">
 		<div class="hero__pattern" aria-hidden="true"></div>
