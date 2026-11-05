@@ -2,10 +2,10 @@
  * Kanwal Quran Academy: global design tokens and base styles.
  *
  * One stylesheet for the whole site. Component-specific rules live in the
- * Astro component that owns them. Font families are set by Astro's font
- * pipeline in astro.config.mjs (Instrument Sans, Amiri) and exposed as
- * --font-body and --font-arabic. Headings use --font-body; there is no
- * separate display face in the mint theme.
+ * Astro component that owns them. The font pipeline in astro.config.mjs
+ * (Figtree, Amiri) exposes --font-body and --font-arabic. Every element
+ * inherits --font; Amiri is used only on [lang="ar"] text. This file is the
+ * only place that may declare a font-family (enforced by pnpm check:fonts).
  */
 
 :root {
@@ -33,25 +33,30 @@
 	--band: var(--mint-100);
 	--surface-2: var(--mint-50);
 
-	/* Typography */
-	--font-heading: var(--font-body, "Instrument Sans", Arial, sans-serif);
-	--weight-heading: 400;
+	/* Typography: one family, one scale. Figtree is served from this site
+	 * (Astro downloads it at build time), Amiri is only for Arabic. */
+	--font: var(--font-body, "Figtree", Arial, sans-serif);
+	--font-arabic-fallback: "Amiri", "Traditional Arabic", serif;
+	--type-display-size: clamp(2.25rem, 5.2vw, 3.5rem); /* 36 to 56 */
+	--type-display-line: 1.05;
+	--type-display-weight: 600;
+	--type-h2-size: clamp(1.75rem, 3.6vw, 2.5rem); /* 28 to 40 */
+	--type-h2-line: 1.1;
+	--type-h2-weight: 600;
+	--type-h3-size: clamp(1.25rem, 1.9vw, 1.5rem); /* 20 to 24 */
+	--type-h3-line: 1.25;
+	--type-h3-weight: 600;
+	--type-lead-size: 1.1875rem; /* 19 */
+	--type-lead-line: 1.6;
+	--type-body-size: 1.0625rem; /* 17 */
+	--type-body-line: 1.6;
+	--type-small-size: 0.875rem; /* 14 */
+	--type-small-line: 1.5;
+	--type-small-weight: 500;
+	--type-eyebrow-size: 0.8125rem; /* 13 */
+	--type-eyebrow-weight: 600;
+	--type-eyebrow-tracking: 0.12em;
 	--weight-heading-highlight: 500;
-	--size-h1: clamp(2.5rem, 6vw, 4rem); /* 40 to 64 */
-	--size-h2: clamp(2rem, 4.5vw, 3rem); /* 32 to 48 */
-	--size-h3: clamp(1.375rem, 2vw, 1.625rem);
-	--size-h4: clamp(1.125rem, 1.2vw, 1.25rem);
-	--size-body: 1.0625rem; /* 17 */
-	--size-small: 0.875rem; /* 14 */
-	--size-eyebrow: 0.75rem;
-	--size-display: clamp(1.75rem, 2.3vw, 2rem);
-	--leading-h1: 1.04;
-	--leading-h2: 1.08;
-	--leading-heading: 1.08;
-	--leading-body: 1.6;
-	--tracking-heading: -0.01em;
-	--tracking-h1: -0.03em;
-	--tracking-eyebrow: 0.14em;
 
 	/* Spacing */
 	--space-2xs: 4px;
@@ -170,10 +175,10 @@ body {
 	min-height: 100vh;
 	background: var(--page);
 	color: var(--text);
-	font-family: var(--font-body, "Instrument Sans", Arial, sans-serif);
-	font-size: var(--size-body);
+	font-family: var(--font);
+	font-size: var(--type-body-size);
 	font-weight: 400;
-	line-height: var(--leading-body);
+	line-height: var(--type-body-line);
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
 }
@@ -198,30 +203,36 @@ h4,
 h5,
 h6 {
 	margin: 0;
-	font-family: var(--font-heading);
-	font-weight: var(--weight-heading);
-	line-height: var(--leading-heading);
-	letter-spacing: var(--tracking-heading);
+	font-family: inherit;
+	font-weight: var(--type-h3-weight);
+	line-height: var(--type-h3-line);
+	letter-spacing: -0.01em;
 	text-wrap: balance;
 }
 
 h1 {
-	font-size: var(--size-h1);
-	line-height: var(--leading-h1);
-	letter-spacing: var(--tracking-h1);
+	font-size: var(--type-display-size);
+	line-height: var(--type-display-line);
+	font-weight: var(--type-display-weight);
+	letter-spacing: -0.02em;
 }
 
 h2 {
-	font-size: var(--size-h2);
-	line-height: var(--leading-h2);
+	font-size: var(--type-h2-size);
+	line-height: var(--type-h2-line);
+	font-weight: var(--type-h2-weight);
 }
 
 h3 {
-	font-size: var(--size-h3);
+	font-size: var(--type-h3-size);
+	line-height: var(--type-h3-line);
+	font-weight: var(--type-h3-weight);
 }
 
 h4 {
-	font-size: var(--size-h4);
+	font-size: var(--type-h3-size);
+	line-height: var(--type-h3-line);
+	font-weight: var(--type-h3-weight);
 }
 
 p {
@@ -281,7 +292,7 @@ button {
 }
 
 [lang="ar"] {
-	font-family: var(--font-arabic, "Amiri", serif);
+	font-family: var(--font-arabic, var(--font-arabic-fallback));
 	direction: rtl;
 	unicode-bidi: plaintext;
 }
@@ -417,11 +428,11 @@ button {
 }
 
 .prose h2 {
-	font-size: var(--size-h3);
+	font-size: var(--type-h3-size);
 }
 
 .prose h3 {
-	font-size: var(--size-h4);
+	font-size: var(--type-body-size);
 }
 
 .prose ul,
@@ -471,7 +482,7 @@ button {
 	padding: 0.1em 0.35em;
 	border-radius: 4px;
 	background: color-mix(in srgb, var(--line) 45%, transparent);
-	font-size: 0.9em;
+	font-size: var(--type-small-size);
 }
 
 /* Dark panels and sections swap the semantic tokens, not the palette. */
@@ -518,7 +529,8 @@ button {
 .page-intro p {
 	max-width: 54ch;
 	color: var(--ink-muted);
-	font-size: clamp(1.0625rem, 0.5vw + 1rem, 1.25rem);
+	font-size: var(--type-lead-size);
+	line-height: var(--type-lead-line);
 }
 
 .tone-dark .page-intro p {

@@ -208,44 +208,55 @@ const steps = [
 		<Container>
 			<div class="section-head">
 				<Eyebrow>Typography</Eyebrow>
-				<h2>Instrument Sans and Amiri</h2>
+				<h2>One family, one scale</h2>
 				<p>
-					Instrument Sans sets headings at 400 and body copy at 400, 500 and 600. Amiri sets
-					Arabic text with <code>lang="ar"</code>. The highlighted word in a heading is weight
-					500 in <code>--green-deep</code>.
+					Figtree (400, 500, 600, 700) is loaded from this site and used for every piece of
+					Latin text. Amiri is used only for Arabic with <code>lang="ar"</code>. Every
+					component inherits <code>--font</code>. No other font-family is allowed.
 				</p>
 			</div>
-			<div class="type-samples">
-				<div class="type-sample">
-					<p class="type-sample__label">Heading 1 / 40 to 64px, weight 400, tracking -0.03em</p>
-					<p class="type-sample__h1">
+			<ul class="type-scale">
+				<li class="type-scale__row">
+					<p class="type-scale__meta">display / 56 1.05 600, 36 on mobile</p>
+					<p class="type-scale__display">
 						Learn the <span class="heading-highlight">Qur'an</span>, one verse at a time.
 					</p>
-				</div>
-				<div class="type-sample">
-					<p class="type-sample__label">Heading 2 / 32 to 48px, weight 400</p>
-					<h2>Courses built around your goals.</h2>
-				</div>
-				<div class="type-sample">
-					<p class="type-sample__label">Heading 3 / weight 400</p>
-					<h3>A teacher who knows your name.</h3>
-				</div>
-				<div class="type-sample">
-					<p class="type-sample__label">Body / 17px</p>
-					<p>
-						Every student starts with a free trial class. Choose a time that works for your family
-						and meet your teacher before you commit to a plan.
+				</li>
+				<li class="type-scale__row">
+					<p class="type-scale__meta">h2 / 40 1.1 600, 28 on mobile</p>
+					<p class="type-scale__h2">Courses built around your goals.</p>
+				</li>
+				<li class="type-scale__row">
+					<p class="type-scale__meta">h3 / 24 1.25 600, 20 on mobile</p>
+					<p class="type-scale__h3">A teacher who knows your name.</p>
+				</li>
+				<li class="type-scale__row">
+					<p class="type-scale__meta">lead / 19 1.6 400</p>
+					<p class="type-scale__lead">
+						Every student starts with a free trial class. Meet your teacher before you choose a
+						plan.
 					</p>
-				</div>
-				<div class="type-sample">
-					<p class="type-sample__label">Eyebrow</p>
+				</li>
+				<li class="type-scale__row">
+					<p class="type-scale__meta">body / 17 1.6 400</p>
+					<p class="type-scale__body">
+						Lessons run live in a video call, so you only need a phone, tablet or laptop with a
+						camera. Your teacher listens while you recite.
+					</p>
+				</li>
+				<li class="type-scale__row">
+					<p class="type-scale__meta">small / 14 1.5 500</p>
+					<p class="type-scale__small">Classes each month, billing and schedule details.</p>
+				</li>
+				<li class="type-scale__row">
+					<p class="type-scale__meta">eyebrow / 13 uppercase 600, tracking .12em</p>
 					<Eyebrow>Small label</Eyebrow>
-				</div>
-				<div class="type-sample">
-					<p class="type-sample__label">Arabic / Amiri</p>
+				</li>
+				<li class="type-scale__row">
+					<p class="type-scale__meta">Arabic / Amiri only</p>
 					<p class="arabic" lang="ar" dir="rtl">{site.bismillah}</p>
-				</div>
-			</div>
+				</li>
+			</ul>
 		</Container>
 	</Section>
 
@@ -386,7 +397,7 @@ const steps = [
 
 	.intro p {
 		color: var(--ink-muted);
-		font-size: clamp(1.0625rem, 0.5vw + 1rem, 1.25rem);
+		font-size: var(--type-lead-size);
 	}
 
 	.section-head {
@@ -404,7 +415,7 @@ const steps = [
 		padding: 0.1em 0.35em;
 		border-radius: 4px;
 		background: color-mix(in srgb, var(--line) 45%, transparent);
-		font-size: 0.9em;
+		font-size: var(--type-small-size);
 	}
 
 	.demo-panel {
@@ -437,49 +448,75 @@ const steps = [
 	}
 
 	.swatch__name {
-		font-size: var(--size-small);
+		font-size: var(--type-small-size);
 		font-weight: 600;
 	}
 
 	.swatch__value {
 		color: var(--ink-muted);
-		font-size: 0.8125rem;
+		font-size: var(--type-eyebrow-size);
 		font-variant-numeric: tabular-nums;
 	}
 
-	.type-samples {
+	.type-scale {
 		display: grid;
-		gap: var(--space-xl);
-	}
-
-	.type-sample {
-		display: grid;
-		gap: var(--space-xs);
-		padding-top: var(--space-md);
 		border-top: 1px solid var(--line);
 	}
 
-	.type-sample__label {
+	.type-scale__row {
+		display: grid;
+		gap: var(--space-xs);
+		padding-block: var(--space-lg);
+		border-bottom: 1px solid var(--line);
+	}
+
+	.type-scale__meta {
 		color: var(--ink-muted);
-		font-size: 0.75rem;
+		font-size: var(--type-eyebrow-size);
 		font-weight: 600;
-		letter-spacing: 0.08em;
+		letter-spacing: var(--type-eyebrow-tracking);
 		text-transform: uppercase;
 	}
 
-	.type-sample__h1 {
-		font-family: var(--font-heading);
-		font-size: var(--size-h1);
-		font-weight: 400;
-		line-height: var(--leading-h1);
-		letter-spacing: var(--tracking-h1);
+	.type-scale__display {
+		font-size: var(--type-display-size);
+		font-weight: var(--type-display-weight);
+		line-height: var(--type-display-line);
+		letter-spacing: -0.02em;
 		text-wrap: balance;
+	}
+
+	.type-scale__h2 {
+		font-size: var(--type-h2-size);
+		font-weight: var(--type-h2-weight);
+		line-height: var(--type-h2-line);
+	}
+
+	.type-scale__h3 {
+		font-size: var(--type-h3-size);
+		font-weight: var(--type-h3-weight);
+		line-height: var(--type-h3-line);
+	}
+
+	.type-scale__lead {
+		font-size: var(--type-lead-size);
+		line-height: var(--type-lead-line);
+	}
+
+	.type-scale__body {
+		font-size: var(--type-body-size);
+		line-height: var(--type-body-line);
+	}
+
+	.type-scale__small {
+		font-size: var(--type-small-size);
+		font-weight: var(--type-small-weight);
+		line-height: var(--type-small-line);
 	}
 
 	.arabic {
 		color: var(--green-deep);
-		font-family: var(--font-arabic, "Amiri", serif);
-		font-size: 1.75rem;
+		font-size: var(--type-h3-size);
 		line-height: 1.8;
 	}
 
@@ -517,7 +554,7 @@ const steps = [
 		gap: var(--space-sm);
 		margin-top: var(--space-md);
 		color: var(--ink-muted);
-		font-size: var(--size-small);
+		font-size: var(--type-small-size);
 	}
 
 	.theme-table {
@@ -532,12 +569,12 @@ const steps = [
 		align-items: center;
 		padding-block: 10px;
 		border-bottom: 1px solid var(--line);
-		font-size: var(--size-small);
+		font-size: var(--type-small-size);
 	}
 
 	.theme-row--head {
 		color: var(--ink-muted);
-		font-size: 0.6875rem;
+		font-size: var(--type-eyebrow-size);
 		font-weight: 600;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;

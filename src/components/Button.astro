@@ -44,8 +44,7 @@ const classes = ["btn", `btn--${variant}`, size === "lg" && "btn--lg", className
 		padding: 0 24px;
 		border: 1px solid transparent;
 		border-radius: var(--radius-button);
-		font-family: inherit;
-		font-size: 1rem;
+		font-size: var(--type-body-size);
 		font-weight: 500;
 		line-height: 1;
 		text-align: center;
@@ -60,7 +59,7 @@ const classes = ["btn", `btn--${variant}`, size === "lg" && "btn--lg", className
 	.btn--lg {
 		height: 52px;
 		padding: 0 28px;
-		font-size: 1.0625rem;
+		font-size: var(--type-body-size);
 	}
 
 	.btn--primary {

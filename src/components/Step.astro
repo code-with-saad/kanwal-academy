@@ -48,21 +48,21 @@ const label = String(number).padStart(2, "0");
 	.step__number {
 		display: block;
 		color: var(--accent);
-		font-size: 0.875rem;
+		font-size: var(--type-small-size);
 		font-weight: 600;
 		font-variant-numeric: tabular-nums;
 	}
 
 	.step__title {
 		margin-top: var(--space-md);
-		font-size: clamp(1.25rem, 2vw, 1.5rem);
+		font-size: var(--type-h3-size);
 	}
 
 	.step__body {
 		max-width: 40ch;
 		margin-top: var(--space-sm);
 		color: var(--ink-muted);
-		font-size: var(--size-small);
+		font-size: var(--type-small-size);
 		line-height: 1.6;
 	}
 </style>

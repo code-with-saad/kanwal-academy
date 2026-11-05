@@ -34,8 +34,7 @@ import Section from "../components/Section.astro";
 
 	.not-found__code {
 		color: var(--ink-muted);
-		font-family: var(--font-heading, Georgia, serif);
-		font-size: clamp(4rem, 14vw, 8rem);
+		font-size: calc(var(--type-display-size) * 2);
 		font-weight: 600;
 		line-height: 0.9;
 		letter-spacing: -0.03em;
@@ -43,7 +42,7 @@ import Section from "../components/Section.astro";
 
 	.not-found__lead {
 		color: var(--ink-muted);
-		font-size: clamp(1.0625rem, 0.5vw + 1rem, 1.25rem);
+		font-size: var(--type-lead-size);
 	}
 
 	.not-found__actions {

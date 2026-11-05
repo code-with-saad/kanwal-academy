@@ -21,10 +21,11 @@ export default defineConfig({
 	],
 	fonts: [
 		{
+			// Downloaded at build time and served from this site (self-hosted).
 			provider: fontProviders.google(),
-			name: "Instrument Sans",
+			name: "Figtree",
 			cssVariable: "--font-body",
-			weights: [400, 500, 600],
+			weights: [400, 500, 600, 700],
 			styles: ["normal"],
 			subsets: ["latin"],
 			display: "swap",
