@@ -146,10 +146,109 @@ const pageCtx = createPublicPageContext({
 				settingsEdit={contactResult.entry?.edit}
 				siteName={siteTitle}
 			/>
+			<button
+				type="button"
+				class="page-go-top"
+				data-page-top
+				aria-label="Back to top"
+				hidden
+			>
+				<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+					<path
+						d="M12 19V5m-6 6 6-6 6 6"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="1.8"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					/>
+				</svg>
+			</button>
 		</div>
 		<EmDashBodyEnd page={pageCtx} />
 		<script>
 			import "../scripts/motion";
 		</script>
+		<script>
+			const goTop = document.querySelector<HTMLButtonElement>("[data-page-top]");
+			if (goTop) {
+				let hidden = true;
+				const update = () => {
+					const want = window.scrollY > 400;
+					if (want !== !hidden) {
+						goTop.toggleAttribute("hidden", !want);
+						hidden = !want;
+					}
+				};
+				window.addEventListener("scroll", update, { passive: true });
+				update();
+				document.addEventListener("astro:after-swap", update);
+				goTop.addEventListener("click", () => {
+					window.scrollTo({
+						top: 0,
+						behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+							? "auto"
+							: "smooth",
+					});
+					goTop.focus();
+				});
+			}
+		</script>
+		<style>
+			.page-go-top {
+				position: fixed;
+				right: max(16px, calc((100vw - var(--container)) / 2 + 8px));
+				bottom: 24px;
+				z-index: 40;
+				display: grid;
+				place-items: center;
+				width: 48px;
+				height: 48px;
+				padding: 0;
+				border: 1px solid var(--line);
+				border-radius: 50%;
+				background: var(--surface);
+				color: var(--ink);
+				box-shadow: 0 8px 24px -14px rgba(11, 26, 20, 0.4);
+				transition:
+					opacity 200ms var(--ease-out),
+					transform 200ms var(--ease-out),
+					background-color var(--transition),
+					border-color var(--transition),
+					color var(--transition);
+			}
+
+			.page-go-top:hover {
+				background: var(--green);
+				border-color: var(--green);
+				color: var(--on-accent);
+				transform: translateY(-2px);
+			}
+
+			.page-go-top:focus-visible {
+				outline: 2px solid var(--focus);
+				outline-offset: 3px;
+			}
+
+			.page-go-top[hidden] {
+				opacity: 0;
+				pointer-events: none;
+				transform: translateY(8px);
+			}
+
+			@media (max-width: 560px) {
+				.page-go-top {
+					right: 16px;
+					bottom: 16px;
+					width: 44px;
+					height: 44px;
+				}
+
+				.page-go-top svg {
+					width: 18px;
+					height: 18px;
+				}
+			}
+		</style>
 	</body>
 </html>
