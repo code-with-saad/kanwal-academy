@@ -576,20 +576,20 @@ const steps = [
 		</Container>
 	</Section>
 
-	{
-		hasTestimonials ? (
-			<div id="testimonials">
-				<Testimonials
-					reviews={testimonials.map((testimonial) => ({
-						quote: testimonial.data.quote,
-						author: testimonial.data.author,
-						country: testimonial.data.country,
-					}))}
-					demo={demo}
-				/>
-			</div>
-		) : null
-	}
+	<div id="testimonials">
+		<Testimonials
+			reviews={
+				testimonials.length > 0
+					? testimonials.map((testimonial) => ({
+							name: testimonial.data.author,
+							country: testimonial.data.country,
+							rating: "5.0",
+							text: testimonial.data.quote,
+						}))
+					: undefined
+			}
+		/>
+	</div>
 
 	<Section id="book">
 		<Container>
