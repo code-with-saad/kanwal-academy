@@ -42,9 +42,10 @@ const reviewsJson = JSON.stringify(items).replace(/</g, "\\u003c");
 	items.length > 0 && (
 		<section id="testimonials" class="reviews">
 			<Container>
+				<!-- Decorative green circle behind the panel -->
+				<span class="reviews__circle" aria-hidden="true"></span>
+
 				<div class="reviews__panel" data-reviews>
-					<!-- Decorative green circle behind the panel -->
-					<span class="reviews__circle" aria-hidden="true"></span>
 
 					<div class="reviews__inner">
 						<!-- Left: heading + reviewer list -->
@@ -285,14 +286,16 @@ const reviewsJson = JSON.stringify(items).replace(/</g, "\\u003c");
 	/* Big green circle partially behind the panel (mirrors the mock). */
 	.reviews__circle {
 		position: absolute;
-		left: -18vw;
+		left: -12vw;
 		top: 50%;
-		width: 44vw;
+		width: 34vw;
+		max-width: 480px;
 		aspect-ratio: 1;
 		border-radius: 50%;
-		background: var(--deep);
+		background: var(--green);
 		transform: translateY(-50%);
 		pointer-events: none;
+		z-index: 0;
 	}
 
 	.reviews__panel {
