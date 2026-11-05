@@ -15,8 +15,8 @@ interface Props {
 const { reviews, demo = false } = Astro.props;
 
 /**
- * Demo mode only: three identical clearly marked sample cards. Never shown
- * in production. We do not invent names or quotes: every field says Sample.
+ * Demo mode: three clearly labelled sample cards. Never shown in production.
+ * We do not invent names or quotes — every field says "Sample".
  */
 const sampleReview: Review = {
 	quote: "Sample review text. Replace with a real review from a parent or student.",
@@ -40,161 +40,115 @@ const reviewsJson = JSON.stringify(items).replace(/</g, "\\u003c");
 
 {
 	items.length > 0 && (
-		<section class="testimonials" aria-labelledby="testimonials-title">
+		<section id="testimonials" class="reviews">
 			<Container>
-				<div class="testimonials__panel" data-testimonials data-reveal="fade">
-					<h2 class="visually-hidden" id="testimonials-title">
-						Student reviews
-					</h2>
-					<span class="testimonials__glyph" aria-hidden="true">
-						&ldquo;
-					</span>
+				<div class="reviews__panel" data-reviews>
+					<!-- Decorative green circle behind the panel -->
+					<span class="reviews__circle" aria-hidden="true"></span>
 
-					<div class="testimonials__main">
-						<div class="testimonials__quote-area" data-quote-area>
-							<div
-								id="testimonial-panel"
-								role="tabpanel"
-								aria-labelledby="review-tab-0"
+					<div class="reviews__inner">
+						<!-- Left: heading + reviewer list -->
+						<div class="reviews__list-col">
+							<span class="reviews__accent" aria-hidden="true"></span>
+							<h2 class="reviews__heading">Customer Reviews</h2>
+
+							<ul class="reviews__reviewers" role="tablist" aria-label="Choose a review">
+								{
+									items.map((item, index) => (
+										<li class:list={["reviews__reviewer", index === 0 && "is-active"]}>
+											<button
+												type="button"
+												role="tab"
+												class="reviews__reviewer-btn"
+												data-tab
+												data-index={index}
+												aria-selected={index === 0 ? "true" : "false"}
+												aria-label={`Review by ${item.author}`}
+												tabindex={index === 0 ? 0 : -1}
+											>
+												<span class="reviews__avatar" aria-hidden="true">
+													{initials(item.author)}
+												</span>
+												<span class="reviews__meta">
+													<span class="reviews__name">{item.author}</span>
+													<span class="reviews__rating">
+														<span class="reviews__stars" aria-hidden="true">★★★★★</span>
+														{item.country && <span class="reviews__country">· {item.country}</span>}
+													</span>
+												</span>
+											</button>
+										</li>
+									))
+								}
+							</ul>
+
+							<!-- Curve connecting the avatars (desktop only) -->
+							<svg
+								class="reviews__curve"
+								viewBox="0 0 12 144"
+								preserveAspectRatio="none"
+								aria-hidden="true"
 							>
-								<blockquote class="testimonials__blockquote">
-									<p class="testimonials__quote" data-quote>
-										{items[0]?.quote}
-									</p>
-									<footer class="testimonials__author">
-										<cite class="testimonials__name" data-author>
-											{items[0]?.author}
-										</cite>
-										<span class="testimonials__country" data-country>
-											{items[0]?.country}
-										</span>
-										{isDemoCard && <span class="testimonials__flag">Sample</span>}
-									</footer>
-								</blockquote>
-							</div>
-
-							{
-								items.length > 1 && (
-									<div class="testimonials__progress" aria-hidden="true">
-										<span class="testimonials__progress-bar" data-progress />
-									</div>
-								)
-							}
+								<path
+									d="M6 2 C 10 28, 2 58, 6 84 C 10 110, 2 140, 6 142"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="0.8"
+								/>
+							</svg>
 						</div>
 
-						<div class="testimonials__side">
-							<div
-								class="testimonials__avatars"
-								role="tablist"
-								aria-label="Choose a review"
-								aria-orientation="vertical"
-								data-tablist
-							>
-								{items.length > 1 && (
-									<span class="testimonials__indicator" aria-hidden="true" data-indicator />
-								)}
-								{items.map((item, index) => (
-									<button
-										type="button"
-										role="tab"
-										class="testimonials__avatar"
-										id={`review-tab-${index}`}
-										aria-controls="testimonial-panel"
-										aria-selected={index === 0 ? "true" : "false"}
-										aria-label={`Review by ${item.author}`}
-										tabindex={index === 0 ? 0 : -1}
-										data-tab
-										data-index={index}
-									>
-										<span aria-hidden="true">{initials(item.author)}</span>
-									</button>
-								))}
+						<!-- Right: quote -->
+						<div class="reviews__quote-col">
+							<blockquote class="reviews__quote">
+								<span class="reviews__glyph" aria-hidden="true">&ldquo;</span>
+								<p data-quote>{items[0]?.quote}</p>
+								<footer class="reviews__quote-foot">
+									<cite class="reviews__quote-author" data-author>{items[0]?.author}</cite>
+									{isDemoCard && <span class="reviews__flag">Sample</span>}
+								</footer>
+							</blockquote>
+
+							<div class="reviews__controls">
+								<button
+									type="button"
+									class="reviews__ctrl reviews__ctrl--prev"
+									data-prev
+									aria-label="Previous review"
+								>
+									<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+										<path
+											d="M15 18l-6-6 6-6"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="1.8"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+										/>
+									</svg>
+								</button>
+								<button
+									type="button"
+									class="reviews__ctrl reviews__ctrl--next"
+									data-next
+									aria-label="Next review"
+								>
+									<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+										<path
+											d="M9 6l6 6-6 6"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="1.8"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+										/>
+									</svg>
+								</button>
 							</div>
 
-							{
-								items.length > 1 && (
-									<div class="testimonials__controls">
-										<button
-											type="button"
-											class="testimonials__control"
-											data-pause
-											aria-label="Pause automatic reviews"
-											aria-pressed="false"
-										>
-											<svg
-												viewBox="0 0 16 16"
-												width="14"
-												height="14"
-												aria-hidden="true"
-												focusable="false"
-											>
-												<path
-													class="testimonials__icon-pause"
-													d="M5 3v10M11 3v10"
-													fill="none"
-													stroke="currentColor"
-													stroke-width="1.8"
-													stroke-linecap="round"
-												/>
-												<path
-													class="testimonials__icon-play"
-													d="M5.5 3.5 12 8l-6.5 4.5z"
-													fill="currentColor"
-													stroke="currentColor"
-													stroke-width="1"
-													stroke-linejoin="round"
-												/>
-											</svg>
-										</button>
-										<button
-											type="button"
-											class="testimonials__control"
-											data-prev
-											aria-label="Previous review"
-										>
-											<svg
-												viewBox="0 0 16 16"
-												width="14"
-												height="14"
-												aria-hidden="true"
-												focusable="false"
-											>
-												<path
-													d="M10 3.5 5.5 8l4.5 4.5"
-													fill="none"
-													stroke="currentColor"
-													stroke-width="1.6"
-													stroke-linecap="round"
-													stroke-linejoin="round"
-												/>
-											</svg>
-										</button>
-										<button
-											type="button"
-											class="testimonials__control"
-											data-next
-											aria-label="Next review"
-										>
-											<svg
-												viewBox="0 0 16 16"
-												width="14"
-												height="14"
-												aria-hidden="true"
-												focusable="false"
-											>
-												<path
-													d="M6 3.5 10.5 8 6 12.5"
-													fill="none"
-													stroke="currentColor"
-													stroke-width="1.6"
-													stroke-linecap="round"
-													stroke-linejoin="round"
-												/>
-											</svg>
-										</button>
-									</div>
-								)
-							}
+							<div class="reviews__progress" aria-hidden="true">
+								<span class="reviews__progress-bar" data-progress></span>
+							</div>
 						</div>
 					</div>
 
@@ -206,248 +160,335 @@ const reviewsJson = JSON.stringify(items).replace(/</g, "\\u003c");
 }
 
 <script>
-	type Review = { quote: string; author: string; country?: string | null };
+	const INTERVAL = 3000;
 
-	const INITIALS_SELECTOR = "[data-tab]";
+	const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-	for (const root of document.querySelectorAll<HTMLElement>("[data-testimonials]")) {
-		const dataElement = root.querySelector<HTMLScriptElement>("[data-reviews]");
-		const quote = root.querySelector<HTMLElement>("[data-quote]");
-		const author = root.querySelector<HTMLElement>("[data-author]");
-		const country = root.querySelector<HTMLElement>("[data-country]");
-		const quoteArea = root.querySelector<HTMLElement>("[data-quote-area]");
-		const progress = root.querySelector<HTMLElement>("[data-progress]");
-		const indicator = root.querySelector<HTMLElement>("[data-indicator]");
-		const pause = root.querySelector<HTMLButtonElement>("[data-pause]");
-		const tablist = root.querySelector<HTMLElement>("[data-tablist]");
-		const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>(INITIALS_SELECTOR));
+	for (const root of document.querySelectorAll<HTMLElement>("[data-reviews]")) {
+		const dataEl = root.querySelector<HTMLScriptElement>("[data-reviews]");
+		const quoteEl = root.querySelector<HTMLElement>("[data-quote]");
+		const authorEl = root.querySelector<HTMLElement>("[data-author]");
+		const progressEl = root.querySelector<HTMLElement>("[data-progress]");
+		const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-tab]"));
 
-		if (!dataElement || !quote || !author || !country || tabs.length === 0) continue;
+		if (!dataEl || !quoteEl || !authorEl || tabs.length === 0) continue;
 
-		let reviews: Review[] = [];
+		let reviews: { quote: string; author: string; country?: string | null }[] = [];
 		try {
-			reviews = JSON.parse(dataElement.textContent ?? "[]") as Review[];
+			reviews = JSON.parse(dataEl.textContent ?? "[]");
 		} catch {
 			continue;
 		}
 		if (reviews.length === 0) continue;
 
-		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-		const advanceMs = 8000;
 		let active = 0;
 		let timer: number | undefined;
-		let hovered = false;
-		let focused = false;
-		let manuallyPaused = false;
-		let fadeTimer: number | undefined;
+		let paused = false;
 
-		const restartProgress = () => {
-			if (!progress || reduceMotion) return;
-			progress.style.animation = "none";
-			void progress.offsetWidth;
-			progress.style.animation = "";
-			progress.classList.toggle("is-paused", manuallyPaused);
+		const paint = (index: number) => {
+			active = (index + reviews.length) % reviews.length;
+			const r = reviews[active];
+			quoteEl.textContent = r.quote;
+			authorEl.textContent = r.author;
+			for (const [i, tab] of tabs.entries()) {
+				const sel = i === active;
+				tab.setAttribute("aria-selected", String(sel));
+				tab.tabIndex = sel ? 0 : -1;
+				tab.parentElement?.classList.toggle("is-active", sel);
+			}
+			restartProgress();
+		};
+
+		const tick = () => {
+			if (paused) return;
+			paint(active + 1);
+			schedule();
 		};
 
 		const schedule = () => {
 			window.clearTimeout(timer);
-			if (reduceMotion || reviews.length < 2 || manuallyPaused || hovered || focused) return;
-			timer = window.setTimeout(() => show(active + 1), advanceMs);
+			if (reduce || paused) return;
+			timer = window.setTimeout(tick, INTERVAL);
 		};
 
-		const paint = () => {
-			const review = reviews[active];
-			if (!review) return;
-			quote.textContent = review.quote;
-			author.textContent = review.author;
-			country.textContent = review.country ?? "";
-
-			for (const [index, tab] of tabs.entries()) {
-				const selected = index === active;
-				tab.setAttribute("aria-selected", selected ? "true" : "false");
-				tab.tabIndex = selected ? 0 : -1;
-			}
-
-			const panel = root.querySelector<HTMLElement>("#testimonial-panel");
-			if (panel) panel.setAttribute("aria-labelledby", `review-tab-${active}`);
-			if (indicator) indicator.style.setProperty("--active-index", String(active));
-			restartProgress();
+		const restartProgress = () => {
+			if (!progressEl || reduce) return;
+			progressEl.style.animation = "none";
+			void progressEl.offsetWidth;
+			progressEl.style.animation = "";
 		};
 
-		const show = (index: number, focusTab = false) => {
-			if (!reviews.length) return;
-			active = (index + reviews.length) % reviews.length;
+		paint(0);
+		schedule();
+
+		const pause = () => {
+			paused = true;
 			window.clearTimeout(timer);
-			window.clearTimeout(fadeTimer);
-			if (quoteArea && !reduceMotion) {
-				quoteArea.classList.add("is-fading");
-				fadeTimer = window.setTimeout(() => {
-					paint();
-					quoteArea.classList.remove("is-fading");
-					schedule();
-				}, 175);
-			} else {
-				paint();
-				schedule();
-			}
-			if (focusTab) tabs[active]?.focus();
-			else if (document.activeElement && tabs.includes(document.activeElement as HTMLButtonElement)) {
-				tabs[active]?.focus();
-			}
+			progressEl?.classList.add("is-paused");
 		};
+		const resume = () => {
+			if (!paused) return;
+			paused = false;
+			progressEl?.classList.remove("is-paused");
+			schedule();
+		};
+
+		root.addEventListener("pointerenter", pause);
+		root.addEventListener("pointerleave", resume);
+		root.addEventListener("focusin", pause);
+		root.addEventListener("focusout", (event) => {
+			if (root.contains(event.relatedTarget as Node | null)) return;
+			resume();
+		});
+
+		root.querySelector("[data-prev]")?.addEventListener("click", () => {
+			paint(active - 1);
+			schedule();
+		});
+		root.querySelector("[data-next]")?.addEventListener("click", () => {
+			tick();
+		});
 
 		for (const tab of tabs) {
 			tab.addEventListener("click", () => {
-				const index = Number(tab.dataset.index ?? "0");
-				if (index === active) return;
-				show(index);
+				const i = Number(tab.dataset.index ?? 0);
+				if (i === active) return;
+				paint(i);
+				schedule();
 			});
 		}
 
-		tablist?.addEventListener("keydown", (event) => {
-			if (event.key === "ArrowDown" || event.key === "ArrowRight") {
-				event.preventDefault();
-				show(active + 1, true);
-			} else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
-				event.preventDefault();
-				show(active - 1, true);
-			} else if (event.key === "Home") {
-				event.preventDefault();
-				show(0, true);
-			} else if (event.key === "End") {
-				event.preventDefault();
-				show(reviews.length - 1, true);
+		// Arrow keys on focused tab
+		root.querySelector("[role=tablist]")?.addEventListener("keydown", (event) => {
+			const e = event as KeyboardEvent;
+			if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+				e.preventDefault();
+				paint(active + 1);
+				tabs[active]?.focus();
+			} else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+				e.preventDefault();
+				paint(active - 1);
+				tabs[active]?.focus();
 			}
 		});
-
-		root.querySelector("[data-prev]")?.addEventListener("click", () => show(active - 1));
-		root.querySelector("[data-next]")?.addEventListener("click", () => show(active + 1));
-
-		pause?.addEventListener("click", () => {
-			manuallyPaused = !manuallyPaused;
-			pause.setAttribute("aria-pressed", manuallyPaused ? "true" : "false");
-			pause.setAttribute(
-				"aria-label",
-				manuallyPaused ? "Play automatic reviews" : "Pause automatic reviews",
-			);
-			pause.classList.toggle("is-paused", manuallyPaused);
-			progress?.classList.toggle("is-paused", manuallyPaused);
-			schedule();
-		});
-
-		root.addEventListener("pointerenter", () => {
-			hovered = true;
-			progress?.classList.add("is-paused");
-			schedule();
-		});
-		root.addEventListener("pointerleave", () => {
-			hovered = false;
-			if (!manuallyPaused) progress?.classList.remove("is-paused");
-			schedule();
-		});
-		root.addEventListener("focusin", () => {
-			focused = true;
-			progress?.classList.add("is-paused");
-			schedule();
-		});
-		root.addEventListener("focusout", (event) => {
-			if (root.contains(event.relatedTarget as Node | null)) return;
-			focused = false;
-			if (!manuallyPaused) progress?.classList.remove("is-paused");
-			schedule();
-		});
-
-		paint();
-		schedule();
 	}
 </script>
 
 <style>
-	.testimonials {
-		padding-block: var(--section-space);
-	}
-
-	.testimonials__panel {
+	.reviews {
 		position: relative;
 		overflow: clip;
-		padding: clamp(28px, 4.4vw, 56px);
-		border-radius: var(--radius-panel);
-		background: var(--deep);
-		color: #eaf4ef;
-		--ink: #eaf4ef;
-		--ink-muted: #9db3a8;
-		--line: color-mix(in srgb, #eaf4ef 22%, transparent);
-		--focus: #3fc391;
+		padding-block: var(--section-space);
+		background: var(--page);
 	}
 
-	.testimonials__glyph {
+	/* Big green circle partially behind the panel (mirrors the mock). */
+	.reviews__circle {
 		position: absolute;
-		left: clamp(16px, 3vw, 40px);
-		top: clamp(-72px, -6vw, -48px);
-		color: #3fc391;
-		font-size: calc(var(--type-display-size) * 3.5);
-		font-weight: 500;
-		line-height: 1;
-		opacity: 0.15;
+		left: -18vw;
+		top: 50%;
+		width: 44vw;
+		aspect-ratio: 1;
+		border-radius: 50%;
+		background: var(--deep);
+		transform: translateY(-50%);
 		pointer-events: none;
-		user-select: none;
 	}
 
-	.testimonials__main {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) auto;
-		gap: clamp(20px, 4vw, 56px);
-		align-items: start;
-	}
-
-	.testimonials__quote-area {
+	.reviews__panel {
 		position: relative;
 		z-index: 1;
+	}
+
+	.reviews__inner {
 		display: grid;
+		grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+		gap: clamp(28px, 4vw, 56px);
+		padding: clamp(28px, 4vw, 56px);
+		border-radius: var(--radius-panel);
+		background: var(--surface);
+		color: var(--ink);
+		box-shadow: 0 20px 50px -24px rgba(11, 26, 20, 0.25);
+	}
+
+	/* Left column */
+	.reviews__list-col {
+		position: relative;
+	}
+
+	.reviews__accent {
+		display: inline-block;
+		width: 36px;
+		height: 3px;
+		background: var(--green);
+		border-radius: 2px;
+		margin-bottom: 14px;
+	}
+
+	.reviews__heading {
+		font-size: var(--type-h2-size);
+		line-height: var(--type-h2-line);
+		font-weight: 600;
+		letter-spacing: -0.02em;
+		margin-bottom: var(--space-lg);
+		color: var(--ink);
+	}
+
+	.reviews__reviewers {
+		display: grid;
+		gap: 10px;
+	}
+
+	.reviews__reviewer-btn {
+		display: flex;
+		align-items: center;
+		gap: 14px;
+		width: 100%;
+		padding: 10px 14px;
+		border: 1px solid transparent;
+		border-radius: 14px;
+		background: transparent;
+		color: inherit;
+		text-align: left;
+		transition:
+			background-color var(--transition),
+			border-color var(--transition),
+			transform var(--transition);
+	}
+
+	.reviews__reviewer:hover .reviews__reviewer-btn,
+	.reviews__reviewer.is-active .reviews__reviewer-btn {
+		background: var(--mint-50);
+		border-color: var(--line);
+	}
+
+	.reviews__reviewer.is-active .reviews__reviewer-btn {
+		background: var(--mint-100);
+	}
+
+	:global(html[data-theme="dark"]) .reviews__reviewer:hover .reviews__reviewer-btn,
+	:global(html[data-theme="dark"]) .reviews__reviewer.is-active .reviews__reviewer-btn {
+		background: var(--mint-100);
+		border-color: var(--line);
+	}
+
+	:global(html[data-theme="dark"]) .reviews__reviewer.is-active .reviews__reviewer-btn {
+		background: var(--mint-50);
+	}
+
+	.reviews__avatar {
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		flex: none;
+		border-radius: 50%;
+		background: var(--mint-100);
+		color: var(--green-deep);
+		font-size: var(--type-small-size);
+		font-weight: 600;
+		transition:
+			transform var(--transition),
+			background-color var(--transition),
+			color var(--transition);
+	}
+
+	.reviews__reviewer.is-active .reviews__avatar {
+		width: 52px;
+		height: 52px;
+		background: var(--green);
+		color: var(--on-accent);
+	}
+
+	.reviews__meta {
+		display: grid;
+		gap: 3px;
+		min-width: 0;
+	}
+
+	.reviews__name {
+		font-weight: 600;
+		font-size: var(--type-body-size);
+		line-height: 1.2;
+	}
+
+	.reviews__reviewer.is-active .reviews__name {
+		font-size: clamp(0.95rem, 1.1vw, 1.0625rem);
+	}
+
+	.reviews__rating {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		font-size: var(--type-eyebrow-size);
+		color: var(--ink-muted);
+	}
+
+	.reviews__stars {
+		color: var(--green);
+		letter-spacing: 1px;
+	}
+
+	/* Curve connecting the avatars (desktop only) */
+	.reviews__curve {
+		position: absolute;
+		left: 28px;
+		top: 24px;
+		bottom: 24px;
+		width: 12px;
+		height: auto;
+		color: var(--line);
+		pointer-events: none;
+	}
+
+	/* Right column */
+	.reviews__quote-col {
+		display: grid;
+		grid-template-rows: 1fr auto auto;
 		gap: var(--space-lg);
-		transition: opacity 175ms var(--ease);
+		align-content: center;
 	}
 
-	.testimonials__quote-area.is-fading {
-		opacity: 0;
-	}
-
-	.testimonials__blockquote {
+	.reviews__quote {
 		margin: 0;
 	}
 
-	.testimonials__quote {
-		max-width: 34ch;
-		font-size: var(--type-h3-size);
-		font-weight: 400;
-		line-height: 1.3;
-		letter-spacing: -0.01em;
-		text-wrap: pretty;
+	.reviews__glyph {
+		display: block;
+		font-size: 72px;
+		line-height: 1;
+		color: var(--green);
+		font-family: Georgia, serif;
+		opacity: 0.7;
 	}
 
-	.testimonials__author {
+	.reviews__quote p {
+		margin-top: var(--space-md);
+		max-width: 48ch;
+		font-size: var(--type-lead-size);
+		line-height: 1.55;
+		color: var(--ink);
+		font-style: italic;
+	}
+
+	.reviews__quote-foot {
+		margin-top: var(--space-lg);
 		display: flex;
-		flex-wrap: wrap;
 		align-items: center;
 		gap: var(--space-xs);
-		margin-top: var(--space-lg);
 		color: var(--ink-muted);
 		font-size: var(--type-small-size);
 	}
 
-	.testimonials__name {
-		color: #eaf4ef;
+	.reviews__quote-author {
 		font-style: normal;
 		font-weight: 600;
+		color: var(--ink);
 	}
 
-	.testimonials__country:not(:empty)::before {
-		content: ", ";
-	}
-
-	.testimonials__flag {
+	.reviews__flag {
 		padding: 3px 10px;
-		border: 1px dashed color-mix(in srgb, #eaf4ef 35%, transparent);
+		border: 1px dashed color-mix(in srgb, var(--ink) 30%, transparent);
 		border-radius: var(--radius-chip);
 		color: var(--ink-muted);
 		font-size: var(--type-eyebrow-size);
@@ -456,28 +497,58 @@ const reviewsJson = JSON.stringify(items).replace(/</g, "\\u003c");
 		text-transform: uppercase;
 	}
 
-	.testimonials__progress {
-		height: 2px;
+	/* Controls + progress */
+	.reviews__controls {
+		display: flex;
+		gap: var(--space-xs);
+	}
+
+	.reviews__ctrl {
+		display: grid;
+		place-items: center;
+		width: 40px;
+		height: 40px;
+		padding: 0;
+		border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+		border-radius: 50%;
+		background: transparent;
+		color: var(--ink);
+		transition:
+			border-color var(--transition),
+			background-color var(--transition),
+			color var(--transition);
+	}
+
+	.reviews__ctrl:hover,
+	.reviews__ctrl:focus-visible {
+		border-color: var(--green);
+		background: var(--green);
+		color: var(--on-accent);
+	}
+
+	.reviews__progress {
+		height: 3px;
+		width: 100%;
 		max-width: 320px;
 		overflow: hidden;
 		border-radius: 999px;
-		background: color-mix(in srgb, #eaf4ef 18%, transparent);
+		background: color-mix(in srgb, var(--ink) 12%, transparent);
 	}
 
-	.testimonials__progress-bar {
+	.reviews__progress-bar {
 		display: block;
 		width: 100%;
 		height: 100%;
-		background: #3fc391;
+		background: var(--green);
 		transform-origin: left center;
-		animation: testimonial-progress 8s linear forwards;
+		animation: reviews-progress 3s linear infinite;
 	}
 
-	.testimonials__progress-bar.is-paused {
+	.reviews__progress-bar.is-paused {
 		animation-play-state: paused;
 	}
 
-	@keyframes testimonial-progress {
+	@keyframes reviews-progress {
 		from {
 			transform: scaleX(0);
 		}
@@ -486,127 +557,42 @@ const reviewsJson = JSON.stringify(items).replace(/</g, "\\u003c");
 		}
 	}
 
-	.testimonials__side {
-		display: grid;
-		align-content: start;
-		justify-items: end;
-		gap: var(--space-lg);
-	}
-
-	.testimonials__avatars {
-		position: relative;
-		display: grid;
-		gap: var(--space-sm);
-	}
-
-	.testimonials__indicator {
-		position: absolute;
-		left: -16px;
-		top: 0;
-		width: 2px;
-		height: 56px;
-		border-radius: 999px;
-		background: #3fc391;
-		transform: translateY(calc(var(--active-index, 0) * 68px));
-		transition: transform var(--dur-base) var(--ease);
-	}
-
-	.testimonials__avatar {
-		display: grid;
-		place-items: center;
-		width: 56px;
-		height: 56px;
-		padding: 0;
-		border: 1px solid #3fc391;
-		border-radius: 50%;
-		background: transparent;
-		color: #eaf4ef;
-		font-size: var(--type-small-size);
-		font-weight: 600;
-		letter-spacing: 0.04em;
-		transition:
-			background-color var(--dur-fast) var(--ease),
-			color var(--dur-fast) var(--ease);
-	}
-
-	.testimonials__avatar:hover,
-	.testimonials__avatar[aria-selected="true"] {
-		background: #3fc391;
-		color: #062017;
-	}
-
-	.testimonials__controls {
-		display: flex;
-		gap: var(--space-xs);
-	}
-
-	.testimonials__control {
-		display: grid;
-		place-items: center;
-		width: 40px;
-		height: 40px;
-		padding: 0;
-		border: 1px solid color-mix(in srgb, #eaf4ef 30%, transparent);
-		border-radius: 6px;
-		background: transparent;
-		color: #eaf4ef;
-		transition:
-			background-color var(--dur-fast) var(--ease),
-			border-color var(--dur-fast) var(--ease);
-	}
-
-	.testimonials__control:hover,
-	.testimonials__control:focus-visible {
-		border-color: #3fc391;
-		background: color-mix(in srgb, #3fc391 18%, transparent);
-	}
-
-	.testimonials__icon-play {
-		display: none;
-	}
-
-	.testimonials__control.is-paused .testimonials__icon-pause {
-		display: none;
-	}
-
-	.testimonials__control.is-paused .testimonials__icon-play {
-		display: inline;
-	}
-
-	@media (max-width: 760px) {
-		.testimonials__main {
+	@media (max-width: 900px) {
+		.reviews__inner {
 			grid-template-columns: 1fr;
+			gap: var(--space-xl);
 		}
 
-		.testimonials__side {
-			grid-auto-flow: column;
-			align-items: center;
-			justify-content: space-between;
-			justify-items: start;
-		}
-
-		.testimonials__avatars {
-			grid-auto-flow: column;
-		}
-
-		.testimonials__indicator {
+		.reviews__curve {
 			display: none;
 		}
 
-		.testimonials__glyph {
-			font-size: calc(var(--type-display-size) * 2.6);
+		.reviews__reviewers {
+			grid-auto-flow: column;
+			overflow-x: auto;
+			gap: var(--space-xs);
+			scroll-snap-type: x mandatory;
+		}
+
+		.reviews__reviewer {
+			scroll-snap-align: start;
+		}
+
+		.reviews__quote-col {
+			grid-template-rows: auto auto auto;
 		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.testimonials__quote-area,
-		.testimonials__indicator {
-			transition: none;
+		.reviews__progress-bar {
+			animation: none;
+			transform: scaleX(1);
 		}
 
-		.testimonials__progress-bar {
-			animation: none;
-			transform: none;
+		.reviews__avatar,
+		.reviews__reviewer-btn,
+		.reviews__ctrl {
+			transition: none;
 		}
 	}
 </style>
