@@ -99,7 +99,11 @@ const preselectedCourse = Astro.url.searchParams.get("course") ?? "";
 					<option value="">Not sure yet</option>
 					{
 						courses.map((course) => (
-							<option value={course.name} selected={course.id === preselectedCourse}>
+							<option
+								value={course.name}
+								data-course-id={course.id}
+								selected={course.id === preselectedCourse}
+							>
 								{course.name}
 							</option>
 						))
@@ -112,7 +116,11 @@ const preselectedCourse = Astro.url.searchParams.get("course") ?? "";
 					<option value="">Help me choose</option>
 					{
 						plans.map((plan) => (
-							<option value={plan.name} selected={plan.id === preselectedPlan}>
+							<option
+								value={plan.name}
+								data-plan-id={plan.id}
+								selected={plan.id === preselectedPlan}
+							>
 								{plan.name}
 							</option>
 						))
@@ -178,6 +186,35 @@ const preselectedCourse = Astro.url.searchParams.get("course") ?? "";
 		const label = form.querySelector<HTMLElement>("[data-label]");
 		const status = form.querySelector<HTMLElement>("[data-status]");
 		const turnstile = form.querySelector<HTMLElement>(".cf-turnstile");
+		const planSelect = form.querySelector("#trial-plan") as HTMLSelectElement | null;
+		const courseSelect = form.querySelector("#trial-course") as HTMLSelectElement | null;
+
+		// Plan and course links carry their id in the query string. Apply it
+		// on load and when a link scrolls here without a page reload.
+		const preselect = (select: HTMLSelectElement | null, key: string, params: URLSearchParams) => {
+			if (!select) return;
+			const id = params.get(key);
+			if (!id) return;
+			for (const option of Array.from(select.options)) {
+				if (option.dataset.planId === id || option.dataset.courseId === id) {
+					select.value = option.value;
+					return;
+				}
+			}
+		};
+
+		const applyParams = (href: string) => {
+			const url = new URL(href, window.location.href);
+			preselect(planSelect, "plan", url.searchParams);
+			preselect(courseSelect, "course", url.searchParams);
+		};
+
+		applyParams(window.location.href);
+
+		document.addEventListener("click", (event) => {
+			const link = (event.target as Element | null)?.closest?.('a[href*="#book"]');
+			if (link instanceof HTMLAnchorElement) applyParams(link.href);
+		});
 
 		if (turnstile) {
 			const script = document.createElement("script");
