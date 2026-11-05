@@ -416,15 +416,6 @@ const steps = [
 		<Container>
 			<FeatureCards cards={featureCards} />
 		</Container>
-		<!-- Mobile CTA below feature cards -->
-		<div class="hero-cards__mobile-cta">
-			<a href="#book" class="hero__cta hero__cta--mobile">
-				Start your free trial
-				<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-					<path d="M4 10h12m-5-5 5 5-5 5" />
-				</svg>
-			</a>
-		</div>
 	</div>
 
 	<!-- ===== REST OF PAGE ===== -->
@@ -806,7 +797,7 @@ const steps = [
 		margin-top: var(--space-xl);
 		border-radius: 999px;
 		background: var(--green);
-		color: #ffffff;
+		color: var(--on-accent);
 		font-size: var(--type-body-size);
 		font-weight: 500;
 		line-height: 1;
@@ -822,8 +813,10 @@ const steps = [
 		transform: translateY(-1px);
 	}
 
-	.hero__cta--mobile {
-		display: none;
+	@media (min-width: 1024px) {
+		.hero__cta {
+			display: none;
+		}
 	}
 
 	/* ---- Visual group: circle + chips ---- */
@@ -953,7 +946,7 @@ const steps = [
 	.course-pill:hover,
 	.course-pill:focus-visible {
 		background: var(--green);
-		color: #ffffff;
+		color: var(--on-accent);
 		transform: translateX(2px);
 	}
 
@@ -973,8 +966,8 @@ const steps = [
 
 	.course-pill:hover .course-pill__icon,
 	.course-pill:focus-visible .course-pill__icon {
-		background: color-mix(in srgb, #ffffff 20%, var(--green));
-		color: #ffffff;
+		background: color-mix(in srgb, var(--on-accent) 20%, var(--green));
+		color: var(--on-accent);
 	}
 
 	:global(html[data-theme="dark"]) .course-pill {
@@ -999,12 +992,6 @@ const steps = [
 		position: relative;
 		z-index: 5;
 		margin-top: -72px;
-	}
-
-	.hero-cards__mobile-cta {
-		display: none;
-		margin-top: var(--space-lg);
-		justify-content: center;
 	}
 
 	:global(section.section--space-normal.section--after-hero) {
@@ -1192,19 +1179,6 @@ const steps = [
 		/* Feature cards overlap */
 		.hero-cards {
 			margin-top: -40px;
-		}
-
-		/* Mobile CTA */
-		.hero-cards__mobile-cta {
-			display: flex;
-		}
-
-		.hero__cta--mobile {
-			display: inline-flex;
-			width: 100%;
-			max-width: 360px;
-			justify-content: center;
-			margin-top: 0;
 		}
 
 		:global(body[data-is-home] .section--space-normal:not(.hero)) {
