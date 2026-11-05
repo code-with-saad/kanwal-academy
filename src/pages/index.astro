@@ -606,7 +606,7 @@ const steps = [
 	}
 
 	{
-		testimonials.length > 0 ? (
+		hasTestimonials ? (
 			<div id="testimonials">
 				<Testimonials
 					reviews={testimonials.map((testimonial) => ({
@@ -614,6 +614,7 @@ const steps = [
 						author: testimonial.data.author,
 						country: testimonial.data.country,
 					}))}
+					demo={demo}
 				/>
 			</div>
 		) : null

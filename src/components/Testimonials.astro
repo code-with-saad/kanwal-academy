@@ -14,13 +14,17 @@ interface Props {
 
 const { reviews, demo = false } = Astro.props;
 
-const placeholder: Review = {
-	quote: "Placeholder, replace with a real review",
-	author: "Demo placeholder",
-	country: "",
+/**
+ * Demo mode only: three identical clearly marked sample cards. Never shown
+ * in production. We do not invent names or quotes: every field says Sample.
+ */
+const sampleReview: Review = {
+	quote: "Sample review text. Replace with a real review from a parent or student.",
+	author: "Parent name",
+	country: "Country",
 };
 
-const items = reviews.length > 0 ? reviews : demo ? [placeholder] : [];
+const items = reviews.length > 0 ? reviews : demo ? [sampleReview, sampleReview, sampleReview] : [];
 const isDemoCard = reviews.length === 0 && demo;
 
 const initials = (name: string) =>
@@ -64,7 +68,7 @@ const reviewsJson = JSON.stringify(items).replace(/</g, "\\u003c");
 										<span class="testimonials__country" data-country>
 											{items[0]?.country}
 										</span>
-										{isDemoCard && <span class="testimonials__flag">Demo placeholder</span>}
+										{isDemoCard && <span class="testimonials__flag">Sample</span>}
 									</footer>
 								</blockquote>
 							</div>
