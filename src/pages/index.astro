@@ -131,28 +131,14 @@ const seo = homePage
 
 const rawHeadline = homeText(
 	"home_headline",
-	"Recite the *Qur'an* with a teacher who knows your name.",
+	"Recite the Qur'an with a teacher who knows your name.",
 );
-const legacyHighlight = rawHeadline.match(/\*([^*]+)\*/)?.[1];
+// Strip markdown-style asterisks the CMS uses for word highlighting.
 const heroHeadline = rawHeadline.replace(/\*([^*]+)\*/g, "$1");
-const heroHighlight = homeText("home_highlight", legacyHighlight ?? "Qur'an");
 const heroLead = homeText(
 	"home_lead",
 	"One-to-one lessons in recitation, tajweed and memorization. Start with a free trial class from wherever you are.",
 );
-
-const highlightStart = heroHeadline.indexOf(heroHighlight);
-const headlineParts =
-	highlightStart >= 0
-		? [
-				{ text: heroHeadline.slice(0, highlightStart), highlight: false },
-				{ text: heroHighlight, highlight: true },
-				{
-					text: heroHeadline.slice(highlightStart + heroHighlight.length),
-					highlight: false,
-				},
-			].filter((part) => part.text !== "")
-		: [{ text: heroHeadline, highlight: false }];
 
 const toPlanCard = (plan: (typeof plans)[number]) => ({
 	slug: plan.id,
@@ -169,7 +155,9 @@ const lowestPlanPrice = plans.length
 	: 20;
 
 const [recitationCourse, tajweedCourse, memorizationCourse] = courses;
-const orbitLinks = [
+
+// Pill chips linking to course sections.
+const coursePills = [
 	{
 		href: "/#courses",
 		label: recitationCourse?.data.name ?? "Qur'anic Recitation",
@@ -198,6 +186,7 @@ const featureCards = [
 		text: "Meet your teacher first.",
 		href: "/#book",
 		icon: "trial" as const,
+		isFirst: true,
 	},
 	{
 		title: `Plans from ${formatUsdPrice(lowestPlanPrice)}/month`,
@@ -259,33 +248,52 @@ const steps = [
 	}
 	nav={navItems}
 >
-	<Section id="home" tone="mint" space="flush" class="hero">
-		<div class="hero__pattern" aria-hidden="true"></div>
+	<!-- ===== HERO ===== -->
+	<section id="home" class="hero" data-hero>
+		<!-- Gradient background -->
+		<div class="hero__bg" aria-hidden="true"></div>
+
+		<!-- Star motifs near edges -->
+		<div class="hero__stars" aria-hidden="true">
+			<svg class="hero__star hero__star--tl" viewBox="0 0 80 80" width="80" height="80">
+				<g fill="none" stroke="currentColor" stroke-width="0.8">
+					<rect x="20" y="20" width="40" height="40" />
+					<rect x="20" y="20" width="40" height="40" transform="rotate(45 40 40)" />
+					<circle cx="40" cy="40" r="14" />
+				</g>
+			</svg>
+			<svg class="hero__star hero__star--tr" viewBox="0 0 80 80" width="64" height="64">
+				<g fill="none" stroke="currentColor" stroke-width="0.8">
+					<rect x="20" y="20" width="40" height="40" />
+					<rect x="20" y="20" width="40" height="40" transform="rotate(45 40 40)" />
+					<circle cx="40" cy="40" r="14" />
+				</g>
+			</svg>
+			<svg class="hero__star hero__star--bl" viewBox="0 0 80 80" width="56" height="56">
+				<g fill="none" stroke="currentColor" stroke-width="0.8">
+					<rect x="20" y="20" width="40" height="40" />
+					<rect x="20" y="20" width="40" height="40" transform="rotate(45 40 40)" />
+					<circle cx="40" cy="40" r="14" />
+				</g>
+			</svg>
+			<svg class="hero__star hero__star--br" viewBox="0 0 80 80" width="72" height="72">
+				<g fill="none" stroke="currentColor" stroke-width="0.8">
+					<rect x="20" y="20" width="40" height="40" />
+					<rect x="20" y="20" width="40" height="40" transform="rotate(45 40 40)" />
+					<circle cx="40" cy="40" r="14" />
+				</g>
+			</svg>
+		</div>
+
 		<Container>
 			<div class="hero__grid">
-				<div class="hero__copy">
-					<span class="hero__eyebrow" data-reveal="up">
-						<Eyebrow edit={homeEdit?.home_eyebrow}>
-							{homeText("home_eyebrow", "Online Qur'an academy")}
-						</Eyebrow>
-					</span>
-					<h1 {...homeEdit?.home_headline} data-reveal-words data-reveal-delay="60">
-						{
-							headlineParts.map((part) =>
-								part.highlight ? (
-									<span class="heading-highlight" {...homeEdit?.home_highlight}>
-										{part.text}
-									</span>
-								) : (
-									part.text
-								),
-							)
-						}
-					</h1>
-					<p class="hero__lead" {...homeEdit?.home_lead} data-reveal="up" data-reveal-delay="220">
+				<!-- Left: Copy -->
+				<div class="hero__copy" data-reveal="up">
+					<h1 class="hero__headline">{heroHeadline}</h1>
+					<p class="hero__lead" data-reveal="up" data-reveal-delay="120">
 						{heroLead}
 					</p>
-					<p class="hero__reach" data-reveal="up" data-reveal-delay="320">
+					<p class="hero__reach" data-reveal="up" data-reveal-delay="200">
 						<svg
 							class="hero__reach-icon"
 							viewBox="0 0 20 20"
@@ -300,111 +308,126 @@ const steps = [
 						</svg>
 						<span>Students learning from {contact.stats.countries} countries</span>
 					</p>
+					<a href="#book" class="hero__cta" data-reveal="up" data-reveal-delay="280">
+						Start your free trial
+						<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M4 10h12m-5-5 5 5-5 5" />
+						</svg>
+					</a>
 				</div>
 
-				<div class="hero__visual">
-					<div class="stage" data-orbit-stage>
-						<span class="stage__backdrop" aria-hidden="true"></span>
-						<svg class="stage__ring" viewBox="0 0 100 100" aria-hidden="true">
-							<circle
-								class="stage__ring-path"
-								cx="50"
-								cy="50"
-								r="49.25"
-								pathLength="100"
-								vector-effect="non-scaling-stroke"
-							/>
-						</svg>
-						<svg class="stage__dashed" viewBox="0 0 100 100" aria-hidden="true">
-							<circle
-								cx="50"
-								cy="50"
-								r="49.25"
-								pathLength="100"
-								vector-effect="non-scaling-stroke"
-							/>
-						</svg>
-						<div class="stage__orbit">
-							{
-								orbitLinks.map((item, index) => (
-									<span
-										class="orbit-node"
-										style={`--orbit-pos: ${index * 90}deg; --orbit-index: ${index}`}
-									>
-										<span class="orbit-node__frame">
-											<a
-												class="orbit-node__btn"
-												href={item.href}
-												aria-label={item.label}
-												data-orbit-btn
-											>
-												<span class="orbit-node__glyph" aria-hidden="true">
-													<svg
-														viewBox="0 0 24 24"
-														width="24"
-														height="24"
-														fill="none"
-														stroke="currentColor"
-														stroke-width="1.5"
-														stroke-linecap="round"
-														stroke-linejoin="round"
-													>
-														{item.icon === "book" && (
-															<path d="M12 6.1c-1.9-1.55-4.25-2-7-1.9v13.6c2.75-.1 5.1.35 7 1.9 1.9-1.55 4.25-2 7-1.9V4.2c-2.75-.1-5.1.35-7 1.9zm0 0v13.6" />
-														)}
-														{item.icon === "waves" && (
-															<path d="M5.25 10.5v3M8.5 8.25v7.5M12 6.25v11.5M15.5 8.25v7.5M18.75 10.5v3" />
-														)}
-														{item.icon === "bookmark" && (
-															<path d="M7.25 4.5h9.5v15l-4.75-3.5-4.75 3.5z" />
-														)}
-														{item.icon === "headset" && (
-															<>
-																<path d="M6.25 15.75v-2.25a5.75 5.75 0 0 1 11.5 0v2.25" />
-																<rect x="4.75" y="15" width="3.75" height="5.25" rx="1.7" />
-																<rect x="15.5" y="15" width="3.75" height="5.25" rx="1.7" />
-															</>
-														)}
-													</svg>
-												</span>
-											</a>
-											<span class="orbit-node__label-wrap">
-												<span class="orbit-node__label">{item.label}</span>
-											</span>
-										</span>
+				<!-- Right: Visual + Chips -->
+				<div class="hero__visual-group">
+					<!-- Desktop: circle + chips side by side -->
+					<!-- Mobile: white card containing both -->
+					<div class="hero__visual-card">
+						<div class="hero__visual">
+							<div class="quran-stage">
+								<!-- Mint circle backdrop -->
+								<span class="quran-stage__backdrop" aria-hidden="true"></span>
+								<!-- Ornamental geometric ring (rotating) -->
+								<svg class="quran-stage__ring" viewBox="0 0 200 200" aria-hidden="true">
+									<g fill="none" stroke="currentColor" stroke-width="0.55" opacity="0.35">
+										<circle cx="100" cy="100" r="96" />
+										<path d="M100 6 L108 92 L194 100 L108 108 L100 194 L92 108 L6 100 L92 92 Z" />
+										<path d="M100 6 L108 92 L194 100 L108 108 L100 194 L92 108 L6 100 L92 92 Z" transform="rotate(22.5 100 100)" />
+										<circle cx="100" cy="100" r="72" />
+										<path d="M100 28 Q128 64 100 100 Q72 64 100 28" />
+										<path d="M100 28 Q128 64 100 100 Q72 64 100 28" transform="rotate(45 100 100)" />
+										<path d="M100 28 Q128 64 100 100 Q72 64 100 28" transform="rotate(90 100 100)" />
+										<path d="M100 28 Q128 64 100 100 Q72 64 100 28" transform="rotate(135 100 100)" />
+										<path d="M100 28 Q128 64 100 100 Q72 64 100 28" transform="rotate(180 100 100)" />
+										<path d="M100 28 Q128 64 100 100 Q72 64 100 28" transform="rotate(225 100 100)" />
+										<path d="M100 28 Q128 64 100 100 Q72 64 100 28" transform="rotate(270 100 100)" />
+										<path d="M100 28 Q128 64 100 100 Q72 64 100 28" transform="rotate(315 100 100)" />
+										<circle cx="100" cy="100" r="48" />
+									</g>
+								</svg>
+								<!-- Quran image -->
+								<figure class="quran-stage__figure" {...homeEdit?.home_image}>
+									<span class="quran-stage__float">
+										{
+											homePage?.data.home_image ? (
+												<Image
+													image={homePage.data.home_image}
+													alt={heroImage.alt}
+													class="quran-stage__image"
+													priority
+												/>
+											) : (
+												<img src={heroImage.src} alt={heroImage.alt} class="quran-stage__image" />
+											)
+										}
 									</span>
+								</figure>
+							</div>
+						</div>
+
+						<!-- Course pill chips -->
+						<div class="hero__chips">
+							{
+								coursePills.map((pill) => (
+									<a href={pill.href} class="course-pill">
+										<span class="course-pill__icon" aria-hidden="true">
+											{pill.icon === "book" && (
+												<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+													<path d="M12 6.1c-1.9-1.55-4.25-2-7-1.9v13.6c2.75-.1 5.1.35 7 1.9 1.9-1.55 4.25-2 7-1.9V4.2c-2.75-.1-5.1.35-7 1.9zm0 0v13.6" />
+												</svg>
+											)}
+											{pill.icon === "waves" && (
+												<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+													<path d="M5.25 10.5v3M8.5 8.25v7.5M12 6.25v11.5M15.5 8.25v7.5M18.75 10.5v3" />
+												</svg>
+											)}
+											{pill.icon === "bookmark" && (
+												<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+													<path d="M7.25 4.5h9.5v15l-4.75-3.5-4.75 3.5z" />
+												</svg>
+											)}
+											{pill.icon === "headset" && (
+												<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+													<path d="M6.25 15.75v-2.25a5.75 5.75 0 0 1 11.5 0v2.25" />
+													<rect x="4.75" y="15" width="3.75" height="5.25" rx="1.7" />
+													<rect x="15.5" y="15" width="3.75" height="5.25" rx="1.7" />
+												</svg>
+											)}
+										</span>
+										<span class="course-pill__label">{pill.label}</span>
+									</a>
 								))
 							}
 						</div>
-						<span class="stage__ground" aria-hidden="true"></span>
-						<figure class="stage__figure" {...homeEdit?.home_image}>
-							<span class="stage__float">
-								{
-									homePage?.data.home_image ? (
-										<Image
-											image={homePage.data.home_image}
-											alt={heroImage.alt}
-											class="stage__image"
-											priority
-										/>
-									) : (
-										<img src={heroImage.src} alt={heroImage.alt} class="stage__image" />
-									)
-								}
-							</span>
-						</figure>
 					</div>
 				</div>
 			</div>
 		</Container>
-	</Section>
 
+		<!-- Wave at bottom edge -->
+		<div class="hero__wave" aria-hidden="true">
+			<svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+				<path class="hero__wave-path hero__wave-path--back" d="M0,45 C200,85 440,10 720,50 C1000,90 1240,15 1440,45 L1440,100 L0,100 Z" />
+				<path class="hero__wave-path hero__wave-path--front" d="M0,60 C280,25 560,85 860,45 C1080,18 1300,65 1440,50 L1440,100 L0,100 Z" />
+			</svg>
+		</div>
+	</section>
+
+	<!-- ===== FLOATING FEATURE CARDS ===== -->
 	<div class="hero-cards">
 		<Container>
 			<FeatureCards cards={featureCards} />
 		</Container>
+		<!-- Mobile CTA below feature cards -->
+		<div class="hero-cards__mobile-cta">
+			<a href="#book" class="hero__cta hero__cta--mobile">
+				Start your free trial
+				<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<path d="M4 10h12m-5-5 5 5-5 5" />
+				</svg>
+			</a>
+		</div>
 	</div>
 
+	<!-- ===== REST OF PAGE ===== -->
 	<Section id="about" class="section--after-hero">
 		<Container>
 			<WisdomPanel years={contact.stats.years} />
@@ -607,127 +630,154 @@ const steps = [
 </Base>
 
 <script>
-	// Pause every orbit loop while the hero is off screen.
-	const stage = document.querySelector<HTMLElement>("[data-orbit-stage]");
-	if (stage) {
+	// Pause decorative loops while the hero is off screen.
+	const hero = document.querySelector<HTMLElement>("[data-hero]");
+	if (hero) {
+		const ring = hero.querySelector<SVGSVGElement>(".quran-stage__ring");
+		const floatEl = hero.querySelector<HTMLElement>(".quran-stage__float");
 		const observer = new IntersectionObserver(
 			([entry]) => {
-				stage.classList.toggle("is-offscreen", !entry?.isIntersecting);
+				const offscreen = !entry?.isIntersecting;
+				if (ring) ring.style.animationPlayState = offscreen ? "paused" : "running";
+				if (floatEl) floatEl.style.animationPlayState = offscreen ? "paused" : "running";
 			},
 			{ threshold: 0.15 },
 		);
-		observer.observe(stage);
-	}
-
-	// Touch devices: first tap shows the label, second tap follows the link.
-	if (stage && window.matchMedia("(hover: none), (pointer: coarse)").matches) {
-		const buttons = stage.querySelectorAll<HTMLAnchorElement>("[data-orbit-btn]");
-		for (const button of buttons) {
-			let armed = false;
-			let timer: number | undefined;
-			button.addEventListener("click", (event) => {
-				if (armed) {
-					window.clearTimeout(timer);
-					return;
-				}
-				event.preventDefault();
-				armed = true;
-				button.classList.add("is-armed");
-				timer = window.setTimeout(() => {
-					armed = false;
-					button.classList.remove("is-armed");
-				}, 2500);
-			});
-			button.addEventListener("keydown", (event) => {
-				if (event.key === "Escape") button.classList.remove("is-armed");
-			});
-		}
+		observer.observe(hero);
 	}
 </script>
 
 <style>
-	/* -----------------------------------------------------------------
-	 * Hero: full-bleed mint section at the very top of the page. The
-	 * header sits in normal flow above the hero content; the negative
-	 * margin lets the mint panel run behind the transparent header.
-	 * Only the bottom two corners are rounded.
-	 * ----------------------------------------------------------------- */
-	/* section.section--space-flush.hero: out-specifies the Section space
-	 * modifier (which Astro scopes as a 2-class selector) so these hero
-	 * paddings always apply. */
-	:global(section.section--space-flush.hero) {
+	/* ================================================================
+	 * HERO: full-bleed mint-gradient section at the very top.
+	 * The floating pill header sits over it.
+	 * ================================================================ */
+
+	.hero {
 		position: relative;
-		margin-top: calc(-1 * var(--header-height));
-		padding-top: calc(var(--header-height));
-		padding-bottom: 80px;
-		min-height: min(640px, calc(100svh - 80px));
-		border-radius: 0 0 48px 48px;
-		/* Clips the orbit box sweep so the turning stage can never add
-		 * page overflow; content inside the hero is unaffected. */
+		padding-top: calc(var(--header-height) + 24px);
+		padding-bottom: 100px;
+		min-height: min(620px, calc(100svh - 40px));
 		overflow: clip;
+		/* Out-specify Section's space-flush */
+		margin-top: 0 !important;
 	}
 
-	.hero__pattern {
-		border-radius: inherit;
+	/* Mint gradient background: --mint-300 at top, --mint-100 near bottom. */
+	.hero__bg {
 		position: absolute;
 		inset: 0;
-		background: var(--ink);
-		opacity: 0.06;
+		background: linear-gradient(180deg, var(--mint-300) 0%, var(--mint-100) 100%);
+		border-radius: 0 0 48px 48px;
+		z-index: 0;
+	}
+
+	:global(html[data-theme="dark"]) .hero__bg {
+		background: linear-gradient(180deg, var(--mint-300) 0%, var(--mint-100) 100%);
+	}
+
+	/* ---- Star motifs near edges (6% opacity light, 8% white dark) ---- */
+	.hero__stars {
+		position: absolute;
+		inset: 0;
 		pointer-events: none;
-		/* Islamic 8-point star tile. */
-		-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='black' stroke-width='0.9'%3E%3Crect x='20' y='20' width='40' height='40'/%3E%3Crect x='20' y='20' width='40' height='40' transform='rotate(45 40 40)'/%3E%3Ccircle cx='40' cy='40' r='16'/%3E%3C/g%3E%3C/svg%3E");
-		mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='black' stroke-width='0.9'%3E%3Crect x='20' y='20' width='40' height='40'/%3E%3Crect x='20' y='20' width='40' height='40' transform='rotate(45 40 40)'/%3E%3Ccircle cx='40' cy='40' r='16'/%3E%3C/g%3E%3C/svg%3E");
-		-webkit-mask-repeat: repeat;
-		mask-repeat: repeat;
-		-webkit-mask-size: 80px 80px;
-		mask-size: 80px 80px;
-		/* Pattern only on the right half. */
-		-webkit-mask-position: 100% 0;
-		mask-position: 100% 0;
+		z-index: 1;
+		color: var(--ink);
+		opacity: 0.06;
 	}
 
-	@supports (mask-composite: intersect) or (-webkit-mask-composite: source-in) {
-		.hero__pattern {
-			-webkit-mask-image:
-				url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='black' stroke-width='0.9'%3E%3Crect x='20' y='20' width='40' height='40'/%3E%3Crect x='20' y='20' width='40' height='40' transform='rotate(45 40 40)'/%3E%3Ccircle cx='40' cy='40' r='16'/%3E%3C/g%3E%3C/svg%3E"),
-				linear-gradient(to left, black 55%, transparent 75%);
-			mask-image:
-				url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='black' stroke-width='0.9'%3E%3Crect x='20' y='20' width='40' height='40'/%3E%3Crect x='20' y='20' width='40' height='40' transform='rotate(45 40 40)'/%3E%3Ccircle cx='40' cy='40' r='16'/%3E%3C/g%3E%3C/svg%3E"),
-				linear-gradient(to left, black 55%, transparent 75%);
-			-webkit-mask-composite: source-in;
-			mask-composite: intersect;
-			-webkit-mask-size: 80px 80px, 100% 100%;
-			mask-size: 80px 80px, 100% 100%;
-			-webkit-mask-position: 0 0, 0 0;
-			mask-position: 0 0, 0 0;
-		}
+	:global(html[data-theme="dark"]) .hero__stars {
+		color: #ffffff;
+		opacity: 0.08;
 	}
 
+	.hero__star {
+		position: absolute;
+	}
+
+	.hero__star--tl {
+		top: 4%;
+		left: 3%;
+	}
+
+	.hero__star--tr {
+		top: 6%;
+		right: 4%;
+	}
+
+	.hero__star--bl {
+		bottom: 22%;
+		left: 4%;
+	}
+
+	.hero__star--br {
+		bottom: 18%;
+		right: 3%;
+	}
+
+	/* ---- Wave at bottom edge ---- */
+	.hero__wave {
+		position: absolute;
+		bottom: -2px;
+		left: 0;
+		right: 0;
+		height: 80px;
+		z-index: 2;
+		pointer-events: none;
+	}
+
+	.hero__wave svg {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+
+	.hero__wave-path {
+		fill: var(--page);
+	}
+
+	.hero__wave-path--back {
+		opacity: 0.35;
+	}
+
+	.hero__wave-path--front {
+		opacity: 0.65;
+	}
+
+	/* ---- Hero grid: copy left, visual+chips right ---- */
 	.hero__grid {
+		position: relative;
+		z-index: 3;
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) min(46vw, 520px);
-		gap: clamp(32px, 6vw, 80px);
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: clamp(32px, 5vw, 64px);
 		align-items: center;
 	}
 
+	/* ---- Copy column ---- */
 	.hero__copy {
-		max-width: 640px;
+		max-width: 580px;
 	}
 
-	.hero__copy h1 {
-		max-width: 18ch;
-		margin-top: var(--space-lg);
+	.hero__headline {
+		font-size: clamp(2rem, 4.5vw, 3.25rem);
+		font-weight: 400;
+		line-height: 1.08;
+		letter-spacing: -0.02em;
 		color: var(--ink);
+		margin: 0;
+		max-width: 14ch;
+		text-wrap: balance;
 	}
 
 	.hero__lead {
-		max-width: 46ch;
 		margin-top: var(--space-lg);
 		color: var(--ink);
 		font-size: var(--type-lead-size);
+		line-height: 1.6;
+		max-width: 46ch;
 	}
 
-	/* Reach line: globe + stat */
 	.hero__reach {
 		display: inline-flex;
 		align-items: center;
@@ -743,327 +793,224 @@ const steps = [
 		color: var(--green-deep);
 	}
 
-	/* Visual: square stage with floating Quran image over an orbit of
-	 * four course link buttons. The stage also shrinks with the viewport
-	 * height so the header, the full hero and the first floating card's
-	 * peek all fit the initial screen without scrolling, and the top
-	 * orbit icon never rides up into the navbar. Transform and opacity only. */
+	/* Primary CTA pill */
+	.hero__cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		height: 56px;
+		padding: 0 28px;
+		margin-top: var(--space-xl);
+		border-radius: 999px;
+		background: var(--green);
+		color: #ffffff;
+		font-size: var(--type-body-size);
+		font-weight: 500;
+		line-height: 1;
+		text-decoration: none;
+		white-space: nowrap;
+		transition:
+			background-color var(--transition),
+			transform var(--transition);
+	}
+
+	.hero__cta:hover {
+		background: var(--green-deep);
+		transform: translateY(-1px);
+	}
+
+	.hero__cta--mobile {
+		display: none;
+	}
+
+	/* ---- Visual group: circle + chips ---- */
+	.hero__visual-group {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+	}
+
+	/* White card on mobile containing circle + chips */
+	.hero__visual-card {
+		display: flex;
+		align-items: center;
+		gap: clamp(16px, 3vw, 32px);
+	}
+
+	/* ---- Quran stage ---- */
 	.hero__visual {
-		--stage-size: min(46vw, 520px, calc(100svh - 290px));
-		--ring-size: calc(var(--stage-size) * 0.76);
-		--orbit-radius: calc(var(--ring-size) / 2);
-		--stage-half: calc(var(--stage-size) / 2);
-		--ground-shift: calc(var(--stage-size) * 0.325);
-		position: relative;
-		justify-self: end;
-		width: var(--stage-size);
+		flex: none;
+		width: clamp(200px, 28vw, 340px);
 		aspect-ratio: 1;
 	}
 
-	.stage {
+	.quran-stage {
 		position: relative;
 		width: 100%;
 		height: 100%;
 	}
 
-	/* Flat backdrop circle behind the image. */
-	.stage__backdrop {
+	/* Mint circle backdrop */
+	.quran-stage__backdrop {
 		position: absolute;
 		left: 50%;
 		top: 50%;
-		width: 70%;
+		width: 82%;
 		aspect-ratio: 1;
 		border-radius: 50%;
-		background: color-mix(in srgb, var(--mint-100) 40%, transparent);
+		background: color-mix(in srgb, var(--mint-100) 60%, var(--mint-300) 40%);
 		transform: translate(-50%, -50%);
 	}
 
-	:global(html[data-theme="dark"]) .stage__backdrop {
-		background: color-mix(in srgb, #ffffff 6%, transparent);
+	:global(html[data-theme="dark"]) .quran-stage__backdrop {
+		background: color-mix(in srgb, #ffffff 8%, var(--mint-300));
 	}
 
-	/* Main orbit ring: 1px, draws itself in. */
-	.stage__ring {
-		position: absolute;
-		left: calc(50% - var(--ring-size) / 2);
-		top: calc(50% - var(--ring-size) / 2);
-		width: var(--ring-size);
-		height: var(--ring-size);
-		fill: none;
-	}
-
-	.stage__ring-path {
-		stroke: color-mix(in srgb, var(--ink) 18%, transparent);
-		stroke-width: 1;
-		stroke-dasharray: 100;
-		stroke-dashoffset: 100;
-		animation: stage-ring-draw 1.2s var(--ease-out) 150ms forwards;
-	}
-
-	@keyframes stage-ring-draw {
-		to {
-			stroke-dashoffset: 0;
-		}
-	}
-
-	/* Inner dashed ring, counter-rotating once per 90s. Ambient only:
-	 * nothing clickable ever moves on the stage. */
-	.stage__dashed {
-		--dashed-size: calc(var(--stage-size) * 0.55);
-		position: absolute;
-		left: calc(50% - var(--dashed-size) / 2);
-		top: calc(50% - var(--dashed-size) / 2);
-		width: var(--dashed-size);
-		height: var(--dashed-size);
-		fill: none;
-		animation: stage-spin-rev 90s linear infinite;
-	}
-
-	.stage__dashed circle {
-		stroke: color-mix(in srgb, var(--ink) 25%, transparent);
-		stroke-width: 1;
-		stroke-dasharray: 1 1.2;
-	}
-
-	/* Orbit layer: static. The four nodes sit at 0/90/180/270 forever so
-	 * hover and focus are instant and the label never moves while read. */
-	.stage__orbit {
+	/* Ornamental geometric ring — rotates once per 90s */
+	.quran-stage__ring {
 		position: absolute;
 		inset: 0;
-	}
-
-	@keyframes stage-spin-rev {
-		to {
-			transform: rotate(-360deg);
-		}
-	}
-
-	/* Node: fixed on the ring at its angle; the frame un-rotates it so
-	 * the button sits upright. Nothing turns. */
-	.orbit-node {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		width: 56px;
-		height: 56px;
-		margin: -28px;
-		z-index: 3;
-		transform: rotate(var(--orbit-pos)) translateY(calc(-1 * var(--orbit-radius)));
-	}
-
-	.orbit-node__frame {
-		position: relative;
-		display: block;
 		width: 100%;
 		height: 100%;
-		opacity: 0;
-		animation: stage-pop 360ms var(--ease-out) calc(280ms + var(--orbit-index) * 120ms) both;
-	}
-
-	@keyframes stage-pop {
-		from {
-			opacity: 0;
-			transform: rotate(calc(-1 * var(--orbit-pos))) scale(0.5);
-		}
-		to {
-			opacity: 1;
-			transform: rotate(calc(-1 * var(--orbit-pos))) scale(1);
-		}
-	}
-
-	.orbit-node__btn {
-		display: grid;
-		place-items: center;
-		width: 100%;
-		height: 100%;
-		border: 1px solid var(--line);
-		border-radius: 50%;
-		background: var(--surface);
-		color: var(--green-deep);
-		text-decoration: none;
-		transition:
-			background-color var(--transition),
-			border-color var(--transition),
-			color var(--transition);
-	}
-
-	.orbit-node__glyph {
-		display: grid;
-		place-items: center;
-		transition: transform var(--transition);
-	}
-
-	.orbit-node__btn:hover,
-	.orbit-node__btn:focus-visible {
-		background: var(--green);
-		border-color: var(--green);
-		color: var(--on-accent);
-	}
-
-	.orbit-node__btn:hover .orbit-node__glyph,
-	.orbit-node__btn:focus-visible .orbit-node__glyph {
-		transform: scale(1.12);
-	}
-
-	/* Label pill, shown on hover, focus and first tap. The pill itself is
-	 * still: a short show delay avoids flicker, hide is instant. */
-	.orbit-node__label-wrap {
-		position: absolute;
-		inset: 0;
-		pointer-events: none;
-		opacity: 0;
-		visibility: hidden;
-		transition:
-			opacity 180ms var(--ease-out),
-			visibility var(--transition);
-		z-index: 4;
-	}
-
-	.orbit-node__label {
-		position: absolute;
-		display: inline-flex;
-		align-items: center;
-		height: 36px;
-		padding: 0 14px;
-		border: 1px solid var(--line);
-		border-radius: 999px;
-		background: var(--surface);
 		color: var(--ink);
-		font-size: var(--type-small-size);
-		line-height: 1;
-		white-space: nowrap;
-		box-shadow: 0 8px 24px -14px rgba(11, 26, 20, 0.3);
+		animation: quran-ring-spin 90s linear infinite;
 	}
 
-	.orbit-node:first-child .orbit-node__label {
-		bottom: calc(100% + 10px);
-		left: 50%;
-		transform: translateX(-50%);
+	:global(html[data-theme="dark"]) .quran-stage__ring {
+		color: #ffffff;
 	}
 
-	/* Right node: the pill leans to the inner side. There is not enough
-	 * room beyond the stage on the right at common desktop widths, and
-	 * the never-clipped rule wins over the outer-side preference. */
-	.orbit-node:nth-child(2) .orbit-node__label {
-		right: calc(100% + 10px);
-		top: 50%;
-		transform: translateY(-50%);
-	}
-
-	.orbit-node:nth-child(3) .orbit-node__label {
-		top: calc(100% + 10px);
-		left: 50%;
-		transform: translateX(-50%);
-	}
-
-	.orbit-node:nth-child(4) .orbit-node__label {
-		right: calc(100% + 10px);
-		top: 50%;
-		transform: translateY(-50%);
-	}
-
-	.orbit-node__btn:hover ~ .orbit-node__label-wrap,
-	.orbit-node__btn:focus-visible ~ .orbit-node__label-wrap,
-	.orbit-node__btn.is-armed ~ .orbit-node__label-wrap {
-		opacity: 1;
-		visibility: visible;
-		transition-delay: 120ms;
-	}
-
-	/* Only the decorative loops pause when the stage is off screen. */
-	.stage.is-offscreen .stage__dashed,
-	.stage.is-offscreen .stage__float,
-	.stage.is-offscreen .stage__ground {
-		animation-play-state: paused;
-	}
-
-	/* Ground shadow, opposite phase to the float. */
-	.stage__ground {
-		position: absolute;
-		left: 50%;
-		top: 50%;
-		width: 45%;
-		height: 22px;
-		border-radius: 50%;
-		background: color-mix(in srgb, var(--ink) 16%, transparent);
-		transform: translate(-50%, var(--ground-shift)) scale(1);
-		animation: stage-ground 5s ease-in-out infinite;
-	}
-
-	@keyframes stage-ground {
-		0%,
-		100% {
-			transform: translate(-50%, var(--ground-shift)) scale(1);
-			opacity: 1;
-		}
-		50% {
-			transform: translate(-50%, var(--ground-shift)) scale(0.78);
-			opacity: 0.55;
+	@keyframes quran-ring-spin {
+		to {
+			transform: rotate(360deg);
 		}
 	}
 
-	/* Quran image, floating over the stage. */
-	.stage__figure {
+	/* Quran image */
+	.quran-stage__figure {
 		position: absolute;
 		left: 50%;
 		top: 50%;
 		z-index: 2;
 		margin: 0;
-		width: min(340px, calc(100% - 120px));
+		width: 62%;
 		transform: translate(-50%, -50%);
 	}
 
-	.stage__float {
+	.quran-stage__float {
 		display: block;
-		animation: stage-float 5s ease-in-out infinite;
+		animation: quran-float 5s ease-in-out infinite;
 	}
 
-	@keyframes stage-float {
-		0%,
-		100% {
-			transform: translateY(0) rotate(-1.2deg);
+	@keyframes quran-float {
+		0%, 100% {
+			transform: translateY(0) rotate(-1deg);
 		}
 		50% {
-			transform: translateY(-14px) rotate(1.2deg);
+			transform: translateY(-12px) rotate(1deg);
 		}
 	}
 
-	:global(.stage__image) {
+	:global(.quran-stage__image) {
 		display: block;
 		width: 100%;
 		height: auto;
 		object-fit: contain;
-		animation: stage-image-in 700ms var(--ease-out) both;
+		filter: drop-shadow(0 8px 20px rgba(11, 26, 20, 0.15));
 	}
 
-	@keyframes stage-image-in {
-		from {
-			opacity: 0;
-			transform: scale(0.92);
-		}
-		to {
-			opacity: 1;
-			transform: scale(1);
-		}
+	/* ---- Course pill chips ---- */
+	.hero__chips {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		flex: none;
 	}
 
-	/* -----------------------------------------------------------------
-	 * Floating feature cards: overlap the hero's bottom edge by 72px
-	 * (40px mobile) and sit above the surrounding sections.
-	 * ----------------------------------------------------------------- */
+	.course-pill {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		height: 48px;
+		padding: 0 16px 0 8px;
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--surface) 85%, var(--mint-100) 15%);
+		color: var(--ink);
+		font-size: var(--type-small-size);
+		font-weight: 500;
+		line-height: 1;
+		text-decoration: none;
+		white-space: nowrap;
+		transition:
+			background-color var(--transition),
+			color var(--transition),
+			transform var(--transition);
+	}
+
+	.course-pill:hover,
+	.course-pill:focus-visible {
+		background: var(--green);
+		color: #ffffff;
+		transform: translateX(2px);
+	}
+
+	.course-pill__icon {
+		display: grid;
+		place-items: center;
+		width: 36px;
+		height: 36px;
+		flex: none;
+		border-radius: 50%;
+		background: var(--mint-100);
+		color: var(--green-deep);
+		transition:
+			background-color var(--transition),
+			color var(--transition);
+	}
+
+	.course-pill:hover .course-pill__icon,
+	.course-pill:focus-visible .course-pill__icon {
+		background: color-mix(in srgb, #ffffff 20%, var(--green));
+		color: #ffffff;
+	}
+
+	:global(html[data-theme="dark"]) .course-pill {
+		background: var(--surface);
+	}
+
+	:global(html[data-theme="dark"]) .course-pill__icon {
+		background: var(--mint-100);
+		color: var(--green);
+	}
+
+	:global(html[data-theme="dark"]) .course-pill:hover .course-pill__icon,
+	:global(html[data-theme="dark"]) .course-pill:focus-visible .course-pill__icon {
+		background: var(--green);
+		color: var(--on-accent);
+	}
+
+	/* ================================================================
+	 * FLOATING FEATURE CARDS
+	 * ================================================================ */
 	.hero-cards {
 		position: relative;
 		z-index: 5;
 		margin-top: -72px;
 	}
 
+	.hero-cards__mobile-cta {
+		display: none;
+		margin-top: var(--space-lg);
+		justify-content: center;
+	}
+
 	:global(section.section--space-normal.section--after-hero) {
 		padding-top: calc(var(--section-space) + var(--space-lg));
 	}
 
-	/* -----------------------------------------------------------------
-	 * Generic page-level styles
-	 * ----------------------------------------------------------------- */
+	/* ================================================================
+	 * GENERIC PAGE-LEVEL STYLES (kept from before)
+	 * ================================================================ */
 	.section-lead {
 		max-width: 48ch;
 		margin-top: var(--space-md);
@@ -1131,25 +1078,14 @@ const steps = [
 		gap: var(--space-xl);
 	}
 
-	/* -----------------------------------------------------------------
-	 * Breakpoints
-	 * ----------------------------------------------------------------- */
+	/* ================================================================
+	 * BREAKPOINTS
+	 * ================================================================ */
+
+	/* Tablet: shrink visual, keep 2-col grid */
 	@media (max-width: 1000px) {
-		.hero__grid {
-			grid-template-columns: minmax(0, 1fr) min(36vw, 300px);
-			gap: clamp(16px, 4vw, 36px);
-		}
-
 		.hero__visual {
-			--stage-size: min(36vw, 300px, calc(100svh - 290px));
-			--ring-size: calc(var(--stage-size) * 0.84);
-			justify-self: end;
-			width: var(--stage-size);
-		}
-
-		.hero__pattern {
-			/* On mobile the pattern sits behind the whole hero, faded more. */
-			opacity: 0.04;
+			width: clamp(160px, 24vw, 260px);
 		}
 
 		.plan-grid {
@@ -1157,28 +1093,22 @@ const steps = [
 		}
 	}
 
-	/* Narrow desktop: shrink the stage to the viewport height and work
-	 * with a slightly smaller h1 so the hero still fits one screen. */
+	/* Narrow desktop */
 	@media (min-width: 1001px) and (max-width: 1359px) {
 		.hero__visual {
-			--stage-size: min(40vw, 520px, calc(100svh - 290px));
-		}
-
-		.hero__copy h1 {
-			font-size: var(--type-display-size);
+			width: clamp(180px, 26vw, 300px);
 		}
 	}
 
+	/* Mobile: single column, white card for visual+chips */
 	@media (max-width: 760px) {
-		.hero-cards {
-			margin-top: -40px;
-		}
-
-		:global(section.section--space-flush.hero) {
-			/* Preserve room for the orbit controls above the overlapping cards. */
+		.hero {
 			padding-top: calc(var(--header-height) + 16px);
 			padding-bottom: 80px;
 			min-height: 0;
+		}
+
+		.hero__bg {
 			border-radius: 0 0 32px 32px;
 		}
 
@@ -1187,10 +1117,13 @@ const steps = [
 			gap: 0;
 		}
 
-		.hero__copy h1 {
-			max-width: 15ch;
-			margin-top: var(--space-md);
-			font-size: var(--type-display-size);
+		.hero__copy {
+			max-width: 100%;
+		}
+
+		.hero__headline {
+			max-width: 14ch;
+			font-size: clamp(1.75rem, 7vw, 2.5rem);
 		}
 
 		.hero__lead {
@@ -1204,32 +1137,71 @@ const steps = [
 			font-size: var(--type-eyebrow-size);
 		}
 
+		.hero__cta {
+			margin-top: var(--space-lg);
+		}
+
+		/* Visual group: white card containing circle + chips */
+		.hero__visual-group {
+			justify-content: center;
+			margin-top: var(--space-lg);
+		}
+
+		.hero__visual-card {
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			background: var(--surface);
+			border-radius: 24px;
+			padding: 20px;
+			box-shadow: 0 8px 28px -12px rgba(11, 26, 20, 0.18);
+			width: 100%;
+			max-width: 480px;
+		}
+
 		.hero__visual {
-			justify-self: center;
-			--stage-size: max(150px, min(54vw, 208px, calc(100svh - 470px)));
-			--ring-size: calc(var(--stage-size) * 0.82);
-			width: var(--stage-size);
-			margin-top: 24px;
+			width: 130px;
+			flex: none;
 		}
 
-		.stage__figure {
-			width: min(72%, 176px);
+		.hero__chips {
+			flex: 1;
+			gap: 8px;
 		}
 
-		/* On touch widths every label leans above its icon, inside the screen. */
-		.orbit-node:nth-child(2) .orbit-node__label,
-		.orbit-node:nth-child(3) .orbit-node__label,
-		.orbit-node:nth-child(4) .orbit-node__label {
-			left: 50%;
-			right: auto;
-			top: auto;
-			bottom: calc(100% + 10px);
-			transform: translateX(-50%);
+		.course-pill {
+			height: 42px;
+			padding: 0 12px 0 6px;
+			font-size: 13px;
+			gap: 10px;
 		}
 
-		.steps {
-			grid-template-columns: 1fr;
-			gap: var(--space-lg);
+		.course-pill__icon {
+			width: 32px;
+			height: 32px;
+		}
+
+		.course-pill__icon svg {
+			width: 16px;
+			height: 16px;
+		}
+
+		/* Feature cards overlap */
+		.hero-cards {
+			margin-top: -40px;
+		}
+
+		/* Mobile CTA */
+		.hero-cards__mobile-cta {
+			display: flex;
+		}
+
+		.hero__cta--mobile {
+			display: inline-flex;
+			width: 100%;
+			max-width: 360px;
+			justify-content: center;
+			margin-top: 0;
 		}
 
 		:global(body[data-is-home] .section--space-normal:not(.hero)) {
@@ -1244,6 +1216,16 @@ const steps = [
 			padding-block: 36px;
 		}
 
+		.steps {
+			grid-template-columns: 1fr;
+			gap: var(--space-lg);
+		}
+
+		/* Star motif sizing on mobile */
+		.hero__star--tl { width: 56px; height: 56px; }
+		.hero__star--tr { width: 48px; height: 48px; }
+		.hero__star--bl { width: 40px; height: 40px; }
+		.hero__star--br { width: 52px; height: 52px; }
 	}
 
 	@media (max-width: 560px) {
@@ -1263,6 +1245,28 @@ const steps = [
 		:global(body[data-is-home] .section-lead) {
 			font-size: var(--type-small-size);
 		}
+
+		/* Smaller visual card on very small screens */
+		.hero__visual-card {
+			padding: 16px;
+			gap: 12px;
+		}
+
+		.hero__visual {
+			width: 110px;
+		}
+
+		.course-pill {
+			height: 38px;
+			font-size: 12px;
+			gap: 8px;
+			padding: 0 10px 0 4px;
+		}
+
+		.course-pill__icon {
+			width: 28px;
+			height: 28px;
+		}
 	}
 
 	@media (max-width: 420px) {
@@ -1272,8 +1276,8 @@ const steps = [
 	}
 
 	@media (max-width: 340px) {
-		.hero__copy h1 {
-			font-size: var(--type-display-size);
+		.hero__headline {
+			font-size: clamp(1.5rem, 7vw, 2rem);
 		}
 
 		.hero__lead {
@@ -1282,19 +1286,38 @@ const steps = [
 			line-height: 1.5;
 		}
 
-		.hero__visual {
-			--stage-size: max(148px, min(52vw, 190px, calc(100svh - 500px)));
-			margin-top: var(--space-md);
-		}
-
-		:global(section.section--space-flush.hero) {
+		.hero {
 			padding-bottom: 64px;
 		}
 	}
 
+	/* ================================================================
+	 * REDUCED MOTION
+	 * ================================================================ */
 	@media (prefers-reduced-motion: reduce) {
-		:global(.hero) {
+		.hero {
 			transition: none;
+		}
+
+		.quran-stage__ring {
+			animation: none;
+		}
+
+		.quran-stage__float {
+			animation: none;
+		}
+
+		.hero__cta {
+			transition: none;
+		}
+
+		.course-pill {
+			transition: none;
+		}
+
+		.course-pill:hover,
+		.course-pill:focus-visible {
+			transform: none;
 		}
 	}
 </style>

@@ -82,13 +82,17 @@ const pageCtx = createPublicPageContext({
 				try {
 					var media = window.matchMedia("(prefers-color-scheme: dark)");
 					var apply = function () {
+						var url = new URL(window.location.href);
+						var param = url.searchParams.get("theme");
 						var stored = localStorage.getItem("theme");
 						var theme =
-							stored === "light" || stored === "dark"
-								? stored
-								: media.matches
-									? "dark"
-									: "light";
+							param === "light" || param === "dark"
+								? param
+								: stored === "light" || stored === "dark"
+									? stored
+									: media.matches
+										? "dark"
+										: "light";
 						document.documentElement.setAttribute("data-theme", theme);
 					};
 					apply();

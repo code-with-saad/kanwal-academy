@@ -5,6 +5,7 @@ interface FeatureCard {
 	href?: string;
 	icon: "trial" | "price" | "globe" | "device";
 	dark?: boolean;
+	isFirst?: boolean;
 }
 
 interface Props {
@@ -19,72 +20,82 @@ const { cards } = Astro.props;
 		cards.map((card, index) => {
 			const body = (
 				<>
-					<span class="feature-card__icon" aria-hidden="true">
-						{card.icon === "trial" && (
-							<svg
-								viewBox="0 0 24 24"
-								width="22"
-								height="22"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<rect x="4" y="5.5" width="16" height="14" rx="3" />
-								<path d="M4 10.5h16M9 3v4m6-4v4" />
-								<path d="M9.6 15.2l2 2 3.6-3.6" />
-							</svg>
-						)}
-						{card.icon === "price" && (
-							<svg
-								viewBox="0 0 24 24"
-								width="22"
-								height="22"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<circle cx="12" cy="12" r="8.25" />
-								<path d="M12 6.75v10.5M14.4 9.4c-.5-.65-1.35-1.05-2.4-1.05-1.5 0-2.55.75-2.55 1.75s1.05 1.55 2.55 1.55 2.55.55 2.55 1.55-1.05 1.75-2.55 1.75c-1.05 0-1.9-.4-2.4-1.05" />
-							</svg>
-						)}
-						{card.icon === "globe" && (
-							<svg
-								viewBox="0 0 24 24"
-								width="22"
-								height="22"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-								stroke-linecap="round"
-							>
-								<circle cx="12" cy="12" r="8.5" />
-								<ellipse cx="12" cy="12" rx="4" ry="8.5" />
-								<path d="M3.5 12h17" />
-							</svg>
-						)}
-						{card.icon === "device" && (
-							<svg
-								viewBox="0 0 24 24"
-								width="22"
-								height="22"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<rect x="4.75" y="3.5" width="14.5" height="17" rx="2.5" />
-								<circle cx="12" cy="7.75" r="1" />
-								<path d="M9.5 17.25h5" />
-							</svg>
-						)}
+					<span class="feature-card__top">
+						<span class="feature-card__icon" aria-hidden="true">
+							{card.icon === "trial" && (
+								<svg
+									viewBox="0 0 24 24"
+									width="22"
+									height="22"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.5"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<rect x="4" y="5.5" width="16" height="14" rx="3" />
+									<path d="M4 10.5h16M9 3v4m6-4v4" />
+									<path d="M9.6 15.2l2 2 3.6-3.6" />
+								</svg>
+							)}
+							{card.icon === "price" && (
+								<svg
+									viewBox="0 0 24 24"
+									width="22"
+									height="22"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.5"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<circle cx="12" cy="12" r="8.25" />
+									<path d="M12 6.75v10.5M14.4 9.4c-.5-.65-1.35-1.05-2.4-1.05-1.5 0-2.55.75-2.55 1.75s1.05 1.55 2.55 1.55 2.55.55 2.55 1.55-1.05 1.75-2.55 1.75c-1.05 0-1.9-.4-2.4-1.05" />
+								</svg>
+							)}
+							{card.icon === "globe" && (
+								<svg
+									viewBox="0 0 24 24"
+									width="22"
+									height="22"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.5"
+									stroke-linecap="round"
+								>
+									<circle cx="12" cy="12" r="8.5" />
+									<ellipse cx="12" cy="12" rx="4" ry="8.5" />
+									<path d="M3.5 12h17" />
+								</svg>
+							)}
+							{card.icon === "device" && (
+								<svg
+									viewBox="0 0 24 24"
+									width="22"
+									height="22"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.5"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<rect x="4.75" y="3.5" width="14.5" height="17" rx="2.5" />
+									<circle cx="12" cy="7.75" r="1" />
+									<path d="M9.5 17.25h5" />
+								</svg>
+							)}
+						</span>
+						{card.isFirst && <span class="feature-card__chip">Free Trial</span>}
 					</span>
-					<span class="feature-card__title">{card.title}</span>
-					<span class="feature-card__text">{card.text}</span>
+					<span class="feature-card__body">
+						<span class="feature-card__title">{card.title}</span>
+						<span class="feature-card__text">{card.text}</span>
+					</span>
+					<span class="feature-card__arrow" aria-hidden="true">
+						<svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M4 10h12m-5-5 5 5-5 5" />
+						</svg>
+					</span>
 				</>
 			);
 
@@ -112,16 +123,18 @@ const { cards } = Astro.props;
 
 	.feature-card {
 		display: grid;
-		gap: 6px;
-		align-content: start;
+		grid-template-columns: 1fr auto;
+		grid-template-rows: auto 1fr auto;
+		gap: 10px 12px;
+		align-items: start;
 		height: 100%;
 		padding: 24px;
 		background: var(--surface);
 		border: 1px solid var(--line);
-		border-radius: var(--radius-card);
+		border-radius: 24px;
 		color: inherit;
 		text-decoration: none;
-		box-shadow: 0 12px 32px -16px rgba(11, 26, 20, 0.25);
+		box-shadow: 0 8px 28px -12px rgba(11, 26, 20, 0.18);
 		transition: transform var(--dur-base) var(--ease);
 		animation: feature-card-in 520ms var(--ease-out) backwards;
 		animation-delay: calc(600ms + var(--card-index, 0) * 120ms);
@@ -132,19 +145,53 @@ const { cards } = Astro.props;
 		transform: translateY(-4px);
 	}
 
+	/* Top row: icon + optional chip */
+	.feature-card__top {
+		grid-column: 1;
+		grid-row: 1;
+		display: flex;
+		align-items: flex-start;
+		gap: 12px;
+	}
+
 	.feature-card__icon {
 		display: grid;
 		place-items: center;
 		width: 44px;
 		height: 44px;
-		margin-bottom: 10px;
+		flex: none;
 		border-radius: 50%;
 		background: var(--mint-100);
 		color: var(--green-deep);
 	}
 
+	/* Free Trial chip on first card */
+	.feature-card__chip {
+		display: inline-flex;
+		align-items: center;
+		height: 26px;
+		padding: 0 10px;
+		border-radius: 999px;
+		background: var(--mint-100);
+		color: var(--green-deep);
+		font-size: 12px;
+		font-weight: 600;
+		line-height: 1;
+		white-space: nowrap;
+	}
+
+	/* Body: title + text */
+	.feature-card__body {
+		grid-column: 1 / -1;
+		grid-row: 2;
+		display: grid;
+		gap: 4px;
+		align-content: start;
+	}
+
 	.feature-card__title {
-		font-weight: 500;
+		font-weight: 600;
+		font-size: var(--type-body-size);
 		line-height: 1.3;
 		color: var(--ink);
 	}
@@ -153,6 +200,32 @@ const { cards } = Astro.props;
 		color: var(--ink-muted);
 		font-size: var(--type-small-size);
 		line-height: 1.5;
+	}
+
+	/* Arrow button at bottom-right */
+	.feature-card__arrow {
+		grid-column: 2;
+		grid-row: 1 / 4;
+		align-self: end;
+		justify-self: end;
+		display: grid;
+		place-items: center;
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
+		background: var(--mint-100);
+		color: var(--green-deep);
+		transition:
+			background-color var(--transition),
+			color var(--transition),
+			transform var(--transition);
+	}
+
+	.feature-card:hover .feature-card__arrow,
+	.feature-card:focus-within .feature-card__arrow {
+		background: var(--green);
+		color: var(--on-accent);
+		transform: translateX(2px);
 	}
 
 	@keyframes feature-card-in {
@@ -178,27 +251,36 @@ const { cards } = Astro.props;
 		}
 
 		.feature-card {
-			gap: 4px;
-			padding: 14px;
+			gap: 8px 10px;
+			padding: 18px;
 		}
 
 		.feature-card__icon {
-			width: 32px;
-			height: 32px;
-			margin-bottom: 4px;
+			width: 38px;
+			height: 38px;
 		}
 
 		.feature-card__icon svg {
-			width: 17px;
-			height: 17px;
+			width: 18px;
+			height: 18px;
 		}
 
 		.feature-card__title {
-			font-size: var(--type-eyebrow-size);
+			font-size: var(--type-body-size);
 		}
 
 		.feature-card__text {
-			font-size: var(--type-eyebrow-size);
+			font-size: var(--type-small-size);
+		}
+
+		.feature-card__arrow {
+			width: 32px;
+			height: 32px;
+		}
+
+		.feature-card__arrow svg {
+			width: 14px;
+			height: 14px;
 		}
 	}
 

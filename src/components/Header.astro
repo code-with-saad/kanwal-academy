@@ -22,14 +22,9 @@ const {
 const path = currentPath.length > 1 ? currentPath.replace(/\/+$/, "") : "/";
 const isLinkCurrent = (item: NavItem) =>
 	item.href.startsWith("#") ? false : item.href === "/" ? path === "/" : path === item.href;
-
-const isHome = tone === "dark";
 ---
 
-<header
-	class:list={["site-header", isHome && "site-header--home"]}
-	data-header
->
+<header class="site-header" data-header>
 	<div class="header__inner">
 		<a href="/" class="header__brand" aria-label={`${siteName}, home`}>
 			<img
@@ -211,7 +206,6 @@ const isHome = tone === "dark";
 			});
 			const url = new URL(link.href);
 			history.pushState(null, "", `${url.pathname}${url.search}${url.hash}`);
-			// Keep keyboard focus with the visitor, without a second jump.
 			if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
 			target.focus({ preventScroll: true });
 		});
@@ -254,39 +248,24 @@ const isHome = tone === "dark";
 </script>
 
 <style>
+	/* Floating white pill header — always visible, 12px from viewport top. */
 	.site-header {
 		position: sticky;
-		top: 0;
-		z-index: 50;
-		background: var(--page);
-		border-bottom: 1px solid var(--line);
-		transition:
-			top 220ms var(--ease-out),
-			background-color 220ms var(--ease-out),
-			border-color 220ms var(--ease-out),
-			margin 220ms var(--ease-out),
-			border-radius 220ms var(--ease-out),
-			box-shadow 220ms var(--ease-out);
-	}
-
-	.site-header--home {
-		background: transparent;
-		border-bottom-color: transparent;
-	}
-
-	/* Sticky pill, 12px from the viewport top, narrower than the sheet. */
-	.site-header.is-scrolled {
 		top: 12px;
-		background: var(--page);
-		border: 1px solid var(--line);
-		border-radius: var(--radius-panel);
-		margin-inline: 16px;
-		box-shadow: 0 1px 0 color-mix(in srgb, var(--ink) 4%, transparent);
+		z-index: 50;
+		background: var(--surface);
+		border-radius: 999px;
+		margin-inline: 12px;
+		box-shadow:
+			0 1px 3px rgba(11, 26, 20, 0.06),
+			0 4px 12px rgba(11, 26, 20, 0.08);
+		transition: box-shadow 220ms var(--ease-out);
 	}
 
-	.site-header.is-scrolled.site-header--home {
-		background: var(--page);
-		border-color: var(--line);
+	.site-header.is-scrolled {
+		box-shadow:
+			0 2px 6px rgba(11, 26, 20, 0.1),
+			0 8px 24px rgba(11, 26, 20, 0.12);
 	}
 
 	.header__inner {
@@ -297,7 +276,7 @@ const isHome = tone === "dark";
 		width: 100%;
 		max-width: calc(var(--container) + var(--gutter) * 2);
 		margin-inline: auto;
-		padding-inline: var(--gutter);
+		padding: 8px 12px 8px 16px;
 		min-height: var(--header-height);
 	}
 
@@ -317,6 +296,7 @@ const isHome = tone === "dark";
 		object-fit: contain;
 	}
 
+	/* Theme-based logo visibility only — the pill always has a solid surface. */
 	.header__mark--on-dark {
 		display: none;
 	}
@@ -326,41 +306,6 @@ const isHome = tone === "dark";
 	}
 
 	:global(html[data-theme="dark"]) .header__mark--on-dark {
-		display: block;
-	}
-
-	/* On Home the mint panel sits behind the header; pick the mark that
-	   reads against the mint surface rather than the page surface. */
-	:global(body[data-is-home]) .header__mark--on-light {
-		display: block;
-	}
-
-	:global(body[data-is-home]) .header__mark--on-dark {
-		display: none;
-	}
-
-	:global(body[data-is-home][data-theme="dark"]) .header__mark--on-light {
-		display: none;
-	}
-
-	:global(body[data-is-home][data-theme="dark"]) .header__mark--on-dark {
-		display: block;
-	}
-
-	/* Once the pill has formed, the surface is --page again. */
-	.site-header.is-scrolled .header__mark--on-light {
-		display: block;
-	}
-
-	.site-header.is-scrolled .header__mark--on-dark {
-		display: none;
-	}
-
-	:global(html[data-theme="dark"]) .site-header.is-scrolled .header__mark--on-light {
-		display: none;
-	}
-
-	:global(html[data-theme="dark"]) .site-header.is-scrolled .header__mark--on-dark {
 		display: block;
 	}
 
@@ -401,8 +346,7 @@ const isHome = tone === "dark";
 	}
 
 	.header__link[aria-current] {
-		background: var(--mint-100);
-		color: var(--ink);
+		color: var(--green-deep);
 	}
 
 	/* End cluster */
@@ -551,7 +495,7 @@ const isHome = tone === "dark";
 	@media (max-width: 560px) {
 		.header__inner {
 			gap: var(--space-sm);
-			padding-inline: var(--space-md);
+			padding-inline: var(--space-sm);
 		}
 
 		.header__name {
@@ -576,7 +520,6 @@ const isHome = tone === "dark";
 			display: none;
 		}
 
-		/* The slide panel and scrim are desktop-hidden regardless of state. */
 		.header__panel,
 		.header__panel.is-open {
 			display: none;
