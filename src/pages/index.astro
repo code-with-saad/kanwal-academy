@@ -13,6 +13,7 @@ import FeatureSplit from "../components/FeatureSplit.astro";
 import PlanCard from "../components/PlanCard.astro";
 import Section from "../components/Section.astro";
 import StandingOut from "../components/StandingOut.astro";
+import StatsBand from "../components/StatsBand.astro";
 import Step from "../components/Step.astro";
 import TeachersGrid from "../components/TeachersGrid.astro";
 import Testimonials from "../components/Testimonials.astro";
@@ -506,6 +507,13 @@ const steps = [
 			</div>
 		</Container>
 	</Section>
+
+	<!-- ===== STATS BAND ===== -->
+	<StatsBand
+		students={contact.stats.students}
+		sessions={contact.stats.sessions}
+		countries={contact.stats.countries}
+	/>
 
 	<Section id="how-it-works" space="tight">
 		<Container>

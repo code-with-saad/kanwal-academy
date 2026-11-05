@@ -1,0 +1,290 @@
+---
+import Button from "./Button.astro";
+import Container from "./Container.astro";
+import Eyebrow from "./Eyebrow.astro";
+
+interface Props {
+	students: string;
+	sessions: string;
+	countries: string;
+}
+
+const { students, sessions, countries } = Astro.props;
+
+/** Split "99+" into { value: 99, suffix: "+" }. Non-numeric stays static. */
+const parse = (raw: string) => {
+	const match = raw.match(/^(\d+)(.*)$/);
+	return match
+		? { value: Number(match[1]), suffix: match[2], raw }
+		: { value: null, suffix: "", raw };
+};
+
+const rings = [
+	{ label: "Students", stat: parse(students) },
+	{ label: "Sessions", stat: parse(sessions) },
+	{ label: "Countries", stat: parse(countries) },
+];
+---
+
+<section id="success" class="stats-band" aria-labelledby="success-heading" data-stats-band>
+	<Container>
+		<div class="stats-band__panel">
+			<div class="stats-band__copy">
+				<Eyebrow>Over the past 5 years</Eyebrow>
+				<h2 id="success-heading" data-reveal-words>Our success</h2>
+				<p data-reveal="up" data-reveal-delay="80">
+					Our three courses, Qur'anic Recitation, Tajweed Proficiency and Memorization
+					Excellence, help students learn the Qur'an at their own pace and from the comfort
+					of home.
+				</p>
+				<div class="stats-band__cta">
+					<Button href="#book" variant="primary">Book free trial</Button>
+				</div>
+			</div>
+
+			<div class="stats-band__rings">
+				{
+					rings.map((ring) => (
+						<div class="ring-cell">
+							<svg
+								class="ring-cell__ring"
+								viewBox="0 0 100 100"
+								role="img"
+								aria-label={`${ring.stat.raw} ${ring.label}`}
+							>
+								<circle class="ring-cell__track" cx="50" cy="50" r="45" pathLength="100" />
+								<circle
+									class="ring-cell__arc"
+									cx="50"
+									cy="50"
+									r="45"
+									pathLength="100"
+									data-ring-arc
+								/>
+							</svg>
+							<span class="ring-cell__text">
+								<span class="ring-cell__number">
+									{
+										ring.stat.value !== null ? (
+											<span
+												data-ring-count={String(ring.stat.value)}
+											>{ring.stat.value}</span>
+										) : (
+											<span>{ring.stat.raw}</span>
+										)
+									}
+									{ring.stat.suffix && (
+										<span class="ring-cell__suffix">{ring.stat.suffix}</span>
+									)}
+								</span>
+								<span class="ring-cell__label">{ring.label}</span>
+							</span>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</Container>
+</section>
+
+<script>
+	// Draw the rings and count up once, when 40% of the band is in view.
+	// The final values already live in the HTML, so no-JS and reduced
+	// motion visitors always see the complete band.
+	const band = document.querySelector<HTMLElement>("[data-stats-band]");
+	if (
+		band &&
+		"IntersectionObserver" in window &&
+		!window.matchMedia("(prefers-reduced-motion: reduce)").matches
+	) {
+		let started = false;
+
+		const run = () => {
+			started = true;
+			const arcs = band.querySelectorAll<SVGCircleElement>("[data-ring-arc]");
+			for (const arc of arcs) arc.classList.add("is-drawing");
+
+			const DURATION = 1600;
+			const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+			for (const el of band.querySelectorAll<HTMLElement>("[data-ring-count]")) {
+				const target = Number(el.dataset.ringCount);
+				if (!Number.isFinite(target)) continue;
+				const start = performance.now();
+				const step = (now: number) => {
+					const progress = Math.min((now - start) / DURATION, 1);
+					el.textContent = String(Math.round(easeOutCubic(progress) * target));
+					if (progress < 1) requestAnimationFrame(step);
+					else el.textContent = String(target);
+				};
+				el.textContent = "0";
+				requestAnimationFrame(step);
+			}
+		};
+
+		// Hide the drawn state only once JS confirms it will animate, so
+		// visitors without this script never see an empty ring.
+		for (const arc of band.querySelectorAll<SVGCircleElement>("[data-ring-arc]")) {
+			arc.classList.add("is-armed");
+		}
+
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (entry?.isIntersecting && !started) {
+					run();
+					observer.disconnect();
+				}
+			},
+			{ threshold: 0.4 },
+		);
+		observer.observe(band);
+	}
+</script>
+
+<style>
+	.stats-band {
+		background: var(--page);
+		padding-block: var(--section-space);
+	}
+
+	.stats-band__panel {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: clamp(32px, 5vw, 72px);
+		align-items: center;
+		padding: clamp(28px, 4vw, 56px);
+		border-radius: var(--radius-panel);
+		background: var(--mint-50);
+	}
+
+	.stats-band__copy {
+		display: grid;
+		justify-items: start;
+		gap: var(--space-md);
+		max-width: 46ch;
+	}
+
+	.stats-band__copy h2 {
+		font-size: var(--type-h2-size);
+		line-height: var(--type-h2-line);
+		font-weight: var(--type-h2-weight);
+	}
+
+	.stats-band__copy p {
+		color: var(--ink-muted);
+	}
+
+	.stats-band__cta {
+		margin-top: var(--space-sm);
+	}
+
+	.stats-band__rings {
+		display: grid;
+		grid-template-columns: repeat(3, auto);
+		gap: clamp(20px, 3vw, 36px);
+		justify-content: end;
+	}
+
+	/* One ring cell: SVG track + arc, number and label centered inside. */
+	.ring-cell {
+		position: relative;
+		display: grid;
+		width: 168px;
+		aspect-ratio: 1;
+	}
+
+	.ring-cell__ring {
+		width: 100%;
+		height: 100%;
+		transform: rotate(-90deg);
+	}
+
+	.ring-cell__track,
+	.ring-cell__arc {
+		fill: none;
+		stroke-width: 7;
+	}
+
+	.ring-cell__track {
+		stroke: var(--mint-100);
+	}
+
+	.ring-cell__arc {
+		stroke: var(--green);
+		stroke-linecap: round;
+		stroke-dasharray: 100;
+		/* No JS or reduced motion: the arc is complete. */
+		stroke-dashoffset: 0;
+	}
+
+	.ring-cell__arc.is-armed {
+		stroke-dashoffset: 100;
+	}
+
+	.ring-cell__arc.is-drawing {
+		stroke-dashoffset: 0;
+		transition: stroke-dashoffset 1600ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.ring-cell__text {
+		position: absolute;
+		inset: 0;
+		display: grid;
+		place-content: center;
+		gap: 2px;
+		text-align: center;
+	}
+
+	.ring-cell__number {
+		font-size: 30px;
+		font-weight: 600;
+		line-height: 1.1;
+		color: var(--ink);
+		/* Fixed-width digits so the count-up does not jitter. */
+		font-variant-numeric: tabular-nums;
+	}
+
+	.ring-cell__label {
+		font-size: var(--type-small-size);
+		font-weight: 500;
+		color: var(--ink-muted);
+	}
+
+	@media (max-width: 900px) {
+		.stats-band__panel {
+			grid-template-columns: 1fr;
+		}
+
+		.stats-band__rings {
+			justify-content: stretch;
+			grid-template-columns: repeat(3, 1fr);
+			gap: var(--space-sm);
+		}
+
+		.ring-cell {
+			width: 104px;
+			justify-self: center;
+		}
+
+		.ring-cell__number {
+			font-size: 20px;
+		}
+
+		.ring-cell__label {
+			font-size: var(--type-eyebrow-size);
+		}
+	}
+
+	/* Mobile: full bleed, no radius. */
+	@media (max-width: 760px) {
+		.stats-band {
+			padding-block: 48px;
+		}
+
+		.stats-band__panel {
+			margin-inline: calc(-1 * var(--gutter));
+			padding-inline: var(--gutter);
+			padding-block: 40px;
+			border-radius: 0;
+		}
+	}
+</style>
