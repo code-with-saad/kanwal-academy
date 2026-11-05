@@ -803,7 +803,9 @@ const steps = [
 		color: var(--green-deep);
 	}
 
-	/* Primary CTA pill */
+	/* Primary CTA pill: shown below 1024px only. On wider screens the header
+	 * already carries the "Book free trial" button, so exactly one free trial
+	 * button is visible per screen size. */
 	.hero__cta {
 		display: inline-flex;
 		align-items: center;
