@@ -37,9 +37,6 @@ const steps: StepItem[] = [
 
 	<!-- Desktop: horizontal cards with centered numbers and connector line -->
 	<ol class="trial-steps__desktop">
-		<!-- Connector line through center of all number circles -->
-		<span class="trial-steps__line" aria-hidden="true"></span>
-
 		{
 			steps.map((step, i) => (
 				<li
@@ -144,32 +141,21 @@ const steps: StepItem[] = [
 	.trial-steps__desktop {
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: clamp(16px, 3vw, 32px);
+		--steps-gap: clamp(16px, 3vw, 32px);
+		gap: var(--steps-gap);
 		align-items: start;
 		position: relative;
 		width: 100%;
 	}
 
-	/* Horizontal connector line through center of number circles */
-	.trial-steps__line {
+	/* Dotted connectors sit between cards at the number-circle center. */
+	.trial-steps__card:not(:last-child)::after {
+		content: "";
 		position: absolute;
-		top: 24px; /* center of 48px number circle */
-		left: calc(16.666% + 24px); /* from center of card 1 */
-		right: calc(16.666% + 24px); /* to center of card 3 */
-		height: 2px;
-		background: var(--green);
-		z-index: 0;
-	}
-
-	/* Line draw animation */
-	.js-motion .trial-steps__line {
-		transform: scaleX(0);
-		transform-origin: left center;
-		transition: transform 800ms var(--ease) 600ms;
-	}
-
-	.js-motion .trial-steps.is-revealed .trial-steps__line {
-		transform: scaleX(1);
+		top: 24px;
+		left: 100%;
+		width: var(--steps-gap);
+		border-top: 2px dotted var(--green);
 	}
 
 	.trial-steps__card {
@@ -196,7 +182,7 @@ const steps: StepItem[] = [
 	/* Numbered circle: centered at top, full circle */
 	.trial-steps__number {
 		position: absolute;
-		top: -24px;
+		top: 0;
 		left: 50%;
 		transform: translateX(-50%);
 		display: grid;
@@ -257,8 +243,9 @@ const steps: StepItem[] = [
 		}
 
 		.trial-steps__mobile-rail {
-			display: grid;
-			justify-items: center;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
 		}
 
 		.trial-steps__mobile-step .trial-steps__number {
@@ -274,10 +261,10 @@ const steps: StepItem[] = [
 		/* Connector line between number circles */
 		.trial-steps__connector {
 			position: relative;
-			width: 2px;
+			width: 0;
 			flex: 1;
 			margin-top: 8px;
-			background: var(--green);
+			border-left: 2px dotted var(--green);
 			opacity: 0.4;
 		}
 
@@ -308,12 +295,8 @@ const steps: StepItem[] = [
 		stroke: var(--green);
 	}
 
-	:global(html[data-theme="dark"]) .trial-steps__line {
-		background: var(--green);
-	}
-
 	:global(html[data-theme="dark"]) .trial-steps__connector {
-		background: var(--green);
+		border-color: var(--green);
 	}
 
 	@media (prefers-reduced-motion: reduce) {
@@ -322,10 +305,5 @@ const steps: StepItem[] = [
 			transition: none;
 		}
 
-		.js-motion .trial-steps__line {
-			opacity: 1;
-			transform: none;
-			transition: none;
-		}
 	}
 </style>

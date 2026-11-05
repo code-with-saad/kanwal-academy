@@ -256,12 +256,14 @@ const rings = [
 
 		.stats-band__rings {
 			justify-content: stretch;
-			grid-template-columns: repeat(3, 1fr);
+			grid-template-columns: repeat(3, minmax(0, 1fr));
 			gap: var(--space-sm);
 		}
 
 		.ring-cell {
-			width: 104px;
+			width: 100%;
+			max-width: 104px;
+			min-width: 0;
 			justify-self: center;
 		}
 

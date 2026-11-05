@@ -84,7 +84,7 @@ const initialIndex = 1; // Plan II (most popular) is the default
 	// Scroll to Plan II on load (no animation, no layout shift)
 	const scrollToStart = () => {
 		if (slides[start]) {
-			track.scrollLeft = slides[start].offsetLeft;
+			track.scrollLeft = slides[start].offsetLeft - slides[0].offsetLeft;
 		}
 	};
 	// Try immediately, fallback to rAF if layout not ready
@@ -97,7 +97,10 @@ const initialIndex = 1; // Plan II (most popular) is the default
 	const scrollTo = (index: number) => {
 		if (index < 0 || index >= total) return;
 		current = index;
-		slides[index]?.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+		track.scrollTo({
+			left: slides[index].offsetLeft - slides[0].offsetLeft,
+			behavior: "smooth",
+		});
 	};
 
 	const updateUI = () => {
@@ -163,7 +166,9 @@ const initialIndex = 1; // Plan II (most popular) is the default
 		display: flex;
 		gap: 16px;
 		overflow-x: auto;
+		overflow-y: hidden;
 		scroll-snap-type: x mandatory;
+		overscroll-behavior-x: contain;
 		-webkit-overflow-scrolling: touch;
 		scrollbar-width: none;
 		-ms-overflow-style: none;

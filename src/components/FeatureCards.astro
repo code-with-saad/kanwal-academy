@@ -122,6 +122,7 @@ const { cards } = Astro.props;
 	}
 
 	.feature-card {
+		position: relative;
 		display: grid;
 		grid-template-rows: auto 1fr;
 		gap: 12px;
@@ -244,6 +245,23 @@ const { cards } = Astro.props;
 		}
 	}
 
+	@media (max-width: 760px) {
+		.feature-card__top {
+			flex-wrap: wrap;
+		}
+
+		.feature-card__arrow {
+			position: absolute;
+			right: 14px;
+			bottom: 14px;
+			margin-left: 0;
+		}
+
+		.feature-card__body {
+			padding-bottom: 42px;
+		}
+	}
+
 	@media (max-width: 420px) {
 		.feature-grid {
 			gap: var(--space-sm);
@@ -270,11 +288,6 @@ const { cards } = Astro.props;
 
 		.feature-card__text {
 			font-size: var(--type-small-size);
-		}
-
-		.feature-card__arrow {
-			width: 44px;
-			height: 44px;
 		}
 
 		.feature-card__arrow svg {

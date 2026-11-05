@@ -124,6 +124,17 @@ const planHref = plan.slug ? `/?plan=${encodeURIComponent(plan.slug)}#book` : "/
 		box-shadow: 0 16px 48px -12px rgba(14, 134, 96, 0.24);
 	}
 
+	@media (hover: none) {
+		.plan-card:hover {
+			transform: none;
+			box-shadow: 0 8px 28px -12px rgba(11, 26, 20, 0.1);
+		}
+
+		.plan-card--popular:hover {
+			box-shadow: 0 12px 40px -12px rgba(14, 134, 96, 0.18);
+		}
+	}
+
 	.plan-card__badge {
 		position: absolute;
 		top: 16px;
