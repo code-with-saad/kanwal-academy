@@ -2,7 +2,7 @@
 /**
  * Pricing carousel for mobile. Native CSS scroll-snap so swipe works
  * without JS. JS enhances with dots, buttons and a11y live region.
- * Reorders slides so the popular plan (Plan II) appears first.
+ * Plan order: I, II, III, IV. Scrolls to Plan II (index 1) on load.
  */
 import type { PlanCardData } from "./PlanCard.astro";
 import PlanCard from "./PlanCard.astro";
@@ -12,13 +12,7 @@ interface Props {
 }
 
 const { plans } = Astro.props;
-
-// Reorder: put popular plan first, keep rest in original order
-const popularIndex = plans.findIndex((p) => p.isPopular);
-const orderedPlans = popularIndex > 0
-	? [plans[popularIndex], ...plans.slice(0, popularIndex), ...plans.slice(popularIndex + 1)]
-	: plans;
-const initialIndex = 0; // Popular plan is now first
+const initialIndex = 1; // Plan II (most popular) is the default
 ---
 
 <div
@@ -31,7 +25,7 @@ const initialIndex = 0; // Popular plan is now first
 >
 	<div class="pricing-carousel__track">
 		{
-			orderedPlans.map((plan) => (
+			plans.map((plan) => (
 				<div class="pricing-carousel__slide" data-slide>
 					<PlanCard plan={plan} revealDelay={0} />
 				</div>
@@ -48,7 +42,7 @@ const initialIndex = 0; // Popular plan is now first
 
 		<div class="pricing-carousel__dots" data-dots role="tablist" aria-label="Plan selector">
 			{
-				orderedPlans.map((plan, i) => (
+				plans.map((plan, i) => (
 					<button
 						type="button"
 						class="pricing-carousel__dot"
@@ -84,7 +78,21 @@ const initialIndex = 0; // Popular plan is now first
 	const statusEl = root.querySelector<HTMLElement>("[data-status]")!;
 	const total = slides.length;
 
-	let current = 0;
+	const start = Number(root.dataset.start ?? 1);
+	let current = start;
+
+	// Scroll to Plan II on load (no animation, no layout shift)
+	const scrollToStart = () => {
+		if (slides[start]) {
+			track.scrollLeft = slides[start].offsetLeft;
+		}
+	};
+	// Try immediately, fallback to rAF if layout not ready
+	if (slides[start]?.offsetLeft) {
+		scrollToStart();
+	} else {
+		requestAnimationFrame(scrollToStart);
+	}
 
 	const scrollTo = (index: number) => {
 		if (index < 0 || index >= total) return;

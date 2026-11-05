@@ -35,13 +35,11 @@ const steps: StepItem[] = [
 	</span>
 	<h2 class="trial-steps__title" data-reveal-words>How the free trial works</h2>
 
-	<!-- Desktop: horizontal cards with connectors -->
+	<!-- Desktop: horizontal cards with centered numbers and connector line -->
 	<ol class="trial-steps__desktop">
-		<!-- Connector lines between cards -->
-		<span class="trial-steps__connectors" aria-hidden="true">
-			<span class="trial-steps__connector-line trial-steps__connector-line--dotted"></span>
-			<span class="trial-steps__connector-line trial-steps__connector-line--solid"></span>
-		</span>
+		<!-- Connector line through center of all number circles -->
+		<span class="trial-steps__line" aria-hidden="true"></span>
+
 		{
 			steps.map((step, i) => (
 				<li
@@ -152,69 +150,26 @@ const steps: StepItem[] = [
 		width: 100%;
 	}
 
-	/* Connector overlay: sits between cards at number-circle height */
-	.trial-steps__connectors {
+	/* Horizontal connector line through center of number circles */
+	.trial-steps__line {
 		position: absolute;
 		top: 24px; /* center of 48px number circle */
-		left: 0;
-		right: 0;
+		left: calc(16.666% + 24px); /* from center of card 1 */
+		right: calc(16.666% + 24px); /* to center of card 3 */
 		height: 2px;
-		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: clamp(16px, 3vw, 32px);
-		pointer-events: none;
+		background: var(--green);
 		z-index: 0;
 	}
 
-	.trial-steps__connector-line {
-		position: relative;
-		height: 2px;
-	}
-
-	.trial-steps__connector-line::after {
-		content: "";
-		position: absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
-	}
-
-	/* Dotted line from 01 to 02: spans the gap between card 1 and card 2 */
-	.trial-steps__connector-line--dotted {
-		grid-column: 1;
-	}
-
-	.trial-steps__connector-line--dotted::after {
-		left: 50%;
-		border-top: 2px dotted var(--green);
-		opacity: 0.5;
-	}
-
-	/* Solid line from 02 to 03: spans the gap between card 2 and card 3 */
-	.trial-steps__connector-line--solid {
-		grid-column: 2;
-	}
-
-	.trial-steps__connector-line--solid::after {
-		left: 50%;
-		background: var(--green);
-	}
-
 	/* Line draw animation */
-	.js-motion .trial-steps__connector-line::after {
+	.js-motion .trial-steps__line {
 		transform: scaleX(0);
 		transform-origin: left center;
-		transition: transform var(--dur-slow) var(--ease);
-		transition-delay: 600ms;
+		transition: transform 800ms var(--ease) 600ms;
 	}
 
-	.js-motion .trial-steps.is-revealed .trial-steps__connector-line::after {
+	.js-motion .trial-steps.is-revealed .trial-steps__line {
 		transform: scaleX(1);
-	}
-
-	.js-motion .trial-steps__connector-line--solid::after {
-		transition-delay: 800ms;
 	}
 
 	.trial-steps__card {
@@ -222,8 +177,7 @@ const steps: StepItem[] = [
 		display: grid;
 		align-content: start;
 		gap: var(--space-md);
-		padding: 40px 28px 28px;
-		margin-top: 24px;
+		padding: 48px 28px 28px;
 		border-radius: 24px;
 		border: 1px solid var(--line);
 		background: var(--surface);
@@ -231,6 +185,7 @@ const steps: StepItem[] = [
 		transition:
 			transform var(--transition),
 			box-shadow var(--transition);
+		z-index: 1;
 	}
 
 	.trial-steps__card:hover {
@@ -238,11 +193,12 @@ const steps: StepItem[] = [
 		box-shadow: 0 16px 40px -16px rgba(11, 26, 20, 0.18);
 	}
 
-	/* Numbered circle overlapping top edge */
+	/* Numbered circle: centered at top, full circle */
 	.trial-steps__number {
 		position: absolute;
 		top: -24px;
-		left: 24px;
+		left: 50%;
+		transform: translateX(-50%);
 		display: grid;
 		place-items: center;
 		width: 48px;
@@ -260,7 +216,7 @@ const steps: StepItem[] = [
 	/* Icon at top right */
 	.trial-steps__icon {
 		justify-self: end;
-		margin-top: -4px;
+		margin-top: -8px;
 	}
 
 	.trial-steps__card-title {
@@ -289,7 +245,7 @@ const steps: StepItem[] = [
 
 		.trial-steps__mobile {
 			display: grid;
-			gap: 0;
+			gap: 16px;
 			width: 100%;
 		}
 
@@ -309,6 +265,7 @@ const steps: StepItem[] = [
 			position: relative;
 			top: auto;
 			left: auto;
+			transform: none;
 			width: 48px;
 			height: 48px;
 			z-index: 2;
@@ -320,15 +277,8 @@ const steps: StepItem[] = [
 			width: 2px;
 			flex: 1;
 			margin-top: 8px;
-		}
-
-		.trial-steps__mobile-step:nth-child(1) .trial-steps__connector {
-			border-left: 2px dotted var(--green);
-			opacity: 0.5;
-		}
-
-		.trial-steps__mobile-step:nth-child(2) .trial-steps__connector {
-			border-left: 2px solid var(--green);
+			background: var(--green);
+			opacity: 0.4;
 		}
 
 		.trial-steps__mobile-step:last-child .trial-steps__connector {
@@ -348,19 +298,6 @@ const steps: StepItem[] = [
 		}
 	}
 
-	@media (prefers-reduced-motion: reduce) {
-		.trial-steps__card,
-		.trial-steps__mobile-card {
-			transition: none;
-		}
-
-		.js-motion .trial-steps__connector-line::after {
-			opacity: 1;
-			transform: none;
-			transition: none;
-		}
-	}
-
 	/* Dark theme */
 	:global(html[data-theme="dark"]) .trial-steps__number {
 		background: var(--green);
@@ -371,19 +308,24 @@ const steps: StepItem[] = [
 		stroke: var(--green);
 	}
 
-	:global(html[data-theme="dark"]) .trial-steps__connector-line--dotted::after {
-		border-top-color: var(--green);
-	}
-
-	:global(html[data-theme="dark"]) .trial-steps__connector-line--solid::after {
+	:global(html[data-theme="dark"]) .trial-steps__line {
 		background: var(--green);
 	}
 
-	:global(html[data-theme="dark"]) .trial-steps__mobile-step:nth-child(1) .trial-steps__connector {
-		border-left-color: var(--green);
+	:global(html[data-theme="dark"]) .trial-steps__connector {
+		background: var(--green);
 	}
 
-	:global(html[data-theme="dark"]) .trial-steps__mobile-step:nth-child(2) .trial-steps__connector {
-		border-left-color: var(--green);
+	@media (prefers-reduced-motion: reduce) {
+		.trial-steps__card,
+		.trial-steps__mobile-card {
+			transition: none;
+		}
+
+		.js-motion .trial-steps__line {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
 	}
 </style>
