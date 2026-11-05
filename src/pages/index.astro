@@ -15,10 +15,9 @@ import Section from "../components/Section.astro";
 import StandingOut from "../components/StandingOut.astro";
 import StatsBand from "../components/StatsBand.astro";
 import Step from "../components/Step.astro";
-import TeachersGrid from "../components/TeachersGrid.astro";
 import Testimonials from "../components/Testimonials.astro";
 import WisdomPanel from "../components/WisdomPanel.astro";
-import { site, teacherNavItem } from "../config/site";
+import { site } from "../config/site";
 import { heroImage } from "../config/images";
 import { getSiteContact } from "../utils/site-config";
 import { isDemoMode } from "../utils/env";
@@ -66,7 +65,6 @@ const [
 	testimonialsResult,
 	contactResult,
 	homeResult,
-	teachersResult,
 ] = await Promise.all([
 	getEmDashCollection("courses", {
 		status: "published",
@@ -82,10 +80,6 @@ const [
 	}),
 	getSiteContact(),
 	getEmDashEntry("pages", "home"),
-	getEmDashCollection("teachers", {
-		status: "published",
-		orderBy: { order: "asc" },
-	}),
 ]);
 
 if (Astro.cache?.enabled) {
@@ -94,7 +88,6 @@ if (Astro.cache?.enabled) {
 	Astro.cache.set(testimonialsResult.cacheHint);
 	Astro.cache.set(contactResult.cacheHint);
 	Astro.cache.set(homeResult.cacheHint);
-	Astro.cache.set(teachersResult.cacheHint);
 }
 
 const courses = coursesResult.entries;
@@ -102,13 +95,9 @@ const plans = plansResult.entries;
 const testimonials = testimonialsResult.entries.filter(
 	(testimonial) => testimonial.data.consent_given === true,
 );
-const teachers = teachersResult.entries;
 const contact = contactResult.data;
 const demo = isDemoMode();
-const hasTeachers = teachers.length > 0 || demo;
-const navItems = hasTeachers
-	? [...site.nav.slice(0, 4), teacherNavItem, ...site.nav.slice(4)]
-	: [...site.nav];
+const navItems = [...site.nav];
 
 // Arabic course names supplied by the academy.
 const courseArabic: Record<string, string> = {
@@ -586,24 +575,6 @@ const steps = [
 			</div>
 		</Container>
 	</Section>
-
-	{
-		teachers.length > 0 || demo ? (
-			<Section id="teachers">
-				<Container>
-					<div class="section-head">
-						<Eyebrow>Teachers</Eyebrow>
-						<h2 data-reveal-words>Meet your teachers</h2>
-						<p class="section-lead" data-reveal="up" data-reveal-delay="80">
-							Every lesson is one to one. We match students with a teacher who fits their
-							course, level and time zone.
-						</p>
-					</div>
-					<TeachersGrid teachers={teachers} demo={demo} />
-				</Container>
-			</Section>
-		) : null
-	}
 
 	{
 		hasTestimonials ? (

@@ -22,7 +22,6 @@ const courseLinks = [
 
 const academyLinks = [
 	{ label: "About", href: "/#about" },
-	{ label: contact.footer.teachersLabel, href: "/#teachers", field: "footer_teachers_label" as const },
 	{ label: contact.footer.pricingLabel, href: "/#pricing", field: "footer_pricing_label" as const },
 	{ label: contact.footer.trialLabel, href: "/#book", field: "footer_trial_label" as const },
 	{ label: contact.footer.contactLinkLabel, href: "/#book", field: "footer_contact_link_label" as const },
@@ -120,48 +119,10 @@ const academyLinks = [
 			</ul>
 			<div class="footer__end">
 				<ThemeToggle />
-				<button
-					class="footer__top-btn"
-					type="button"
-					data-go-top
-					aria-label="Go to top"
-					hidden
-				>
-					<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-						<path
-							d="M12 19V5m-6 6 6-6 6 6"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="1.8"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						/>
-					</svg>
-				</button>
 			</div>
 		</div>
 	</Container>
 </footer>
-
-<script>
-	const goTop = document.querySelector<HTMLButtonElement>("[data-go-top]");
-	if (goTop) {
-		const update = () => {
-			goTop.hidden = window.scrollY < 320;
-		};
-		window.addEventListener("scroll", update, { passive: true });
-		update();
-		document.addEventListener("astro:after-swap", update);
-		goTop.addEventListener("click", () => {
-			window.scrollTo({
-				top: 0,
-				behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-					? "auto"
-					: "smooth",
-			});
-		});
-	}
-</script>
 
 <style>
 	.site-footer {
@@ -285,31 +246,6 @@ const academyLinks = [
 		display: flex;
 		align-items: center;
 		gap: var(--space-sm);
-	}
-
-	.footer__top-btn {
-		display: grid;
-		place-items: center;
-		width: 44px;
-		height: 44px;
-		padding: 0;
-		border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
-		border-radius: var(--radius-button);
-		background: transparent;
-		color: var(--ink);
-		transition:
-			border-color var(--transition),
-			color var(--transition),
-			background-color var(--transition);
-	}
-
-	.footer__top-btn:hover {
-		border-color: var(--ink);
-		background: color-mix(in srgb, var(--ink) 5%, transparent);
-	}
-
-	.footer__top-btn[hidden] {
-		display: none;
 	}
 
 	@media (max-width: 900px) {
