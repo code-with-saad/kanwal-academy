@@ -117,7 +117,6 @@ const steps: StepItem[] = [
 <style>
 	.trial-steps {
 		display: grid;
-		justify-items: center;
 		gap: clamp(32px, 5vw, 56px);
 	}
 
@@ -140,7 +139,7 @@ const steps: StepItem[] = [
 	}
 
 	.trial-steps__title {
-		text-align: center;
+		margin-top: var(--space-md);
 	}
 
 	/* ========== DESKTOP ========== */
@@ -224,6 +223,7 @@ const steps: StepItem[] = [
 		align-content: start;
 		gap: var(--space-md);
 		padding: 40px 28px 28px;
+		margin-top: 24px;
 		border-radius: 24px;
 		border: 1px solid var(--line);
 		background: var(--surface);

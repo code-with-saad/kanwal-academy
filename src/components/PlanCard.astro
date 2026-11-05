@@ -27,7 +27,7 @@ const planHref = plan.slug ? `/?plan=${encodeURIComponent(plan.slug)}#book` : "/
 	class="plan-card"
 	class:list={[plan.isPopular && "plan-card--popular"]}
 	role="group"
-	aria-label={`{plan.name}`}
+	aria-label={plan.name}
 	data-reveal="up"
 	style={revealDelay ? `--reveal-delay: ${revealDelay}ms` : undefined}
 >
@@ -94,6 +94,7 @@ const planHref = plan.slug ? `/?plan=${encodeURIComponent(plan.slug)}#book` : "/
 		</a>
 	</div>
 
+	<!-- Quran visual: only on mobile/tablet (right side, ~40% width) -->
 	<div class="plan-card__visual" aria-hidden="true">
 		<div class="plan-card__quran-ring">
 			<svg viewBox="0 0 100 100" fill="none" stroke="var(--green-deep)" stroke-width="0.6" opacity="0.3">
@@ -110,7 +111,7 @@ const planHref = plan.slug ? `/?plan=${encodeURIComponent(plan.slug)}#book` : "/
 	.plan-card {
 		position: relative;
 		display: grid;
-		grid-template-columns: 1fr auto;
+		grid-template-columns: 1fr;
 		gap: 0;
 		border-radius: 24px;
 		border: 1px solid var(--line);
@@ -255,61 +256,62 @@ const planHref = plan.slug ? `/?plan=${encodeURIComponent(plan.slug)}#book` : "/
 		background: var(--green-deep);
 	}
 
-	/* Quran visual */
+	/* Quran visual: hidden on desktop, shown on mobile/tablet */
 	.plan-card__visual {
-		position: relative;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: min(38%, 200px);
-		padding: 24px;
+		display: none;
 	}
 
-	.plan-card__quran-ring {
-		position: absolute;
-		inset: 16px;
-		border-radius: 50%;
-		background: var(--mint-100);
+	/* ========== MOBILE/TABLET: image on right side (~40%) ========== */
+	@media (max-width: 1099px) {
+		.plan-card {
+			grid-template-columns: 1fr min(40%, 200px);
+		}
+
+		.plan-card__visual {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+			padding: 24px 16px;
+		}
+
+		.plan-card__quran-ring {
+			position: absolute;
+			inset: 12px;
+			border-radius: 50%;
+			background: var(--mint-100);
+		}
+
+		.plan-card__quran-ring svg {
+			position: absolute;
+			inset: 4px;
+			width: calc(100% - 8px);
+			height: calc(100% - 8px);
+		}
+
+		.plan-card__quran-img {
+			position: relative;
+			z-index: 1;
+			width: 85%;
+			height: auto;
+			object-fit: contain;
+			filter: drop-shadow(0 4px 12px rgba(11, 26, 20, 0.12));
+		}
 	}
 
-	.plan-card__quran-ring svg {
-		position: absolute;
-		inset: 4px;
-		width: calc(100% - 8px);
-		height: calc(100% - 8px);
-	}
-
-	.plan-card__quran-img {
-		position: relative;
-		z-index: 1;
-		width: 80%;
-		height: auto;
-		object-fit: contain;
-		filter: drop-shadow(0 4px 12px rgba(11, 26, 20, 0.12));
-	}
-
-	/* ========== MOBILE: full-width card, image below ========== */
-	@media (max-width: 768px) {
+	/* ========== Very small screens: stack vertically ========== */
+	@media (max-width: 400px) {
 		.plan-card {
 			grid-template-columns: 1fr;
 		}
 
-		.plan-card__body {
-			padding: 24px 20px;
-		}
-
 		.plan-card__visual {
-			width: 100%;
-			min-height: 180px;
+			min-height: 160px;
 			padding: 20px;
-		}
-
-		.plan-card__quran-ring {
-			inset: 12px;
 		}
 	}
 
-	/* Dark theme adjustments */
+	/* Dark theme adjustments for popular card */
 	:global(html[data-theme="dark"]) .plan-card--popular {
 		background: var(--green);
 		color: var(--on-accent);

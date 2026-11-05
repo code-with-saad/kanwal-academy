@@ -2,7 +2,7 @@
 /**
  * Pricing carousel for mobile. Native CSS scroll-snap so swipe works
  * without JS. JS enhances with dots, buttons and a11y live region.
- * Starts on the popular plan without animation or layout shift.
+ * Reorders slides so the popular plan (Plan II) appears first.
  */
 import type { PlanCardData } from "./PlanCard.astro";
 import PlanCard from "./PlanCard.astro";
@@ -12,8 +12,13 @@ interface Props {
 }
 
 const { plans } = Astro.props;
+
+// Reorder: put popular plan first, keep rest in original order
 const popularIndex = plans.findIndex((p) => p.isPopular);
-const initialIndex = popularIndex >= 0 ? popularIndex : 1;
+const orderedPlans = popularIndex > 0
+	? [plans[popularIndex], ...plans.slice(0, popularIndex), ...plans.slice(popularIndex + 1)]
+	: plans;
+const initialIndex = 0; // Popular plan is now first
 ---
 
 <div
@@ -26,7 +31,7 @@ const initialIndex = popularIndex >= 0 ? popularIndex : 1;
 >
 	<div class="pricing-carousel__track">
 		{
-			plans.map((plan) => (
+			orderedPlans.map((plan) => (
 				<div class="pricing-carousel__slide" data-slide>
 					<PlanCard plan={plan} revealDelay={0} />
 				</div>
@@ -43,7 +48,7 @@ const initialIndex = popularIndex >= 0 ? popularIndex : 1;
 
 		<div class="pricing-carousel__dots" data-dots role="tablist" aria-label="Plan selector">
 			{
-				plans.map((plan, i) => (
+				orderedPlans.map((plan, i) => (
 					<button
 						type="button"
 						class="pricing-carousel__dot"
@@ -79,19 +84,7 @@ const initialIndex = popularIndex >= 0 ? popularIndex : 1;
 	const statusEl = root.querySelector<HTMLElement>("[data-status]")!;
 	const total = slides.length;
 
-	const start = Number(root.dataset.start ?? 1);
-	let current = start;
-
-	// Set initial scroll position before first paint — no animation, no layout shift.
-	const setInitialScroll = () => {
-		track.scrollLeft = slides[start]?.offsetLeft ?? 0;
-	};
-	// Try immediately; if layout not ready, use rAF.
-	if (slides[start]) {
-		setInitialScroll();
-	} else {
-		requestAnimationFrame(setInitialScroll);
-	}
+	let current = 0;
 
 	const scrollTo = (index: number) => {
 		if (index < 0 || index >= total) return;
@@ -100,7 +93,6 @@ const initialIndex = popularIndex >= 0 ? popularIndex : 1;
 	};
 
 	const updateUI = () => {
-		// Compute current from scroll position
 		const trackRect = track.getBoundingClientRect();
 		const center = trackRect.left + trackRect.width / 2;
 
@@ -120,45 +112,37 @@ const initialIndex = popularIndex >= 0 ? popularIndex : 1;
 			current = closest;
 		}
 
-		// Update dots
 		dots.forEach((dot, i) => {
 			const active = i === current;
 			dot.classList.toggle("pricing-carousel__dot--active", active);
 			dot.setAttribute("aria-selected", String(active));
 		});
 
-		// Update button states
 		prevBtn.disabled = current === 0;
 		nextBtn.disabled = current === total - 1;
 
-		// Announce to screen readers
 		const planName = slides[current]?.querySelector(".plan-card__name")?.textContent?.trim() ?? "";
 		statusEl.textContent = `${planName}, plan ${current + 1} of ${total}`;
 	};
 
-	// Button clicks
 	prevBtn.addEventListener("click", () => scrollTo(current - 1));
 	nextBtn.addEventListener("click", () => scrollTo(current + 1));
 
-	// Dot clicks
 	dots.forEach((dot, i) => {
 		dot.addEventListener("click", () => scrollTo(i));
 	});
 
-	// Scroll listener for sync
 	let scrollTimer: ReturnType<typeof setTimeout>;
 	track.addEventListener("scroll", () => {
 		clearTimeout(scrollTimer);
 		scrollTimer = setTimeout(updateUI, 80);
 	}, { passive: true });
 
-	// Keyboard: arrow keys when carousel is focused
 	root.addEventListener("keydown", (e: KeyboardEvent) => {
 		if (e.key === "ArrowLeft") { e.preventDefault(); scrollTo(current - 1); }
 		if (e.key === "ArrowRight") { e.preventDefault(); scrollTo(current + 1); }
 	});
 
-	// Initial UI state
 	updateUI();
 </script>
 
