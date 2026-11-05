@@ -22,7 +22,7 @@ const items: Item[] = [
 	{
 		number: "03",
 		title: "Live one on one sessions",
-		text: "You and your teacher meet face to face on every class, so each correction is heard as you recite.",
+		text: "Video lessons with direct feedback, so your questions are answered in the moment.",
 		icon: "screens",
 	},
 ];
@@ -38,11 +38,12 @@ const items: Item[] = [
 					class="standing__item"
 					style={`--item-index: ${index}`}
 					data-reveal="up"
-					data-reveal-delay={80 + index * 80}
+					data-reveal-delay={120 + index * 100}
 				>
-					<span class="standing__number" aria-hidden="true">
+					<span class="standing__tab" aria-hidden="true">
 						{item.number}
 					</span>
+
 					<span class="standing__icon" aria-hidden="true">
 						<svg
 							viewBox="0 0 48 48"
@@ -56,31 +57,33 @@ const items: Item[] = [
 						>
 							{item.icon === "clock" && (
 								<>
-									<circle cx="24" cy="24" r="16.5" />
-									<path class="standing__mark standing__mark--tick" d="M24 10.5v3M37.5 24h-3M24 37.5v-3M10.5 24h3" />
-									<path class="standing__hand standing__hand--hour" d="M24 24V17" />
-									<path class="standing__hand standing__hand--minute" d="M24 24h9" />
+									<circle cx="24" cy="24" r="18" />
+									<circle cx="24" cy="24" r="14" />
+									<path class="standing__hand standing__hand--hour" d="M24 24V16" />
+									<path class="standing__hand standing__hand--minute" d="M24 24h8" />
 									<circle cx="24" cy="24" r="1.6" fill="currentColor" stroke="none" />
 								</>
 							)}
 							{item.icon === "book" && (
 								<>
-									<path d="M24 15.5c-3.7-3-8.4-3.9-13.5-3.7v24c5.1-.2 9.8.7 13.5 3.7 3.7-3 8.4-3.9 13.5-3.7v-24c-5.1-.2-9.8.7-13.5 3.7Z" />
-									<path d="M24 15.5v23.5" />
-									<path class="standing__ribbon" d="M24 16.5v12l3.8-3 3.8 3v-12" />
+									<circle cx="24" cy="24" r="18" />
+									<path d="M24 14c-3.7-2.5-8.4-3.2-13.5-3v26c5.1-.2 9.8.5 13.5 3 3.7-2.5 8.4-3.2 13.5-3v-26c-5.1-.2-9.8.5-13.5 3Z" />
+									<path d="M24 14v22" />
+									<path class="standing__ribbon" d="M24 15v10l3-2.5 3 2.5v-10" />
 								</>
 							)}
 							{item.icon === "screens" && (
 								<>
-									<rect x="4" y="13" width="15.5" height="18" rx="3" />
-									<rect x="28.5" y="13" width="15.5" height="18" rx="3" />
-									<path d="M19.5 22h9" />
-									<circle class="standing__pulse" cx="20.5" cy="22" r="1.7" fill="currentColor" stroke="none" />
-									<path d="M9.5 35.5h22" />
+									<circle cx="24" cy="24" r="18" />
+									<rect x="7" y="14" width="13" height="16" rx="2.5" />
+									<rect x="28" y="14" width="13" height="16" rx="2.5" />
+									<path d="M20 22h8" />
+									<circle class="standing__pulse" cx="24" cy="22" r="1.5" fill="currentColor" stroke="none" />
 								</>
 							)}
 						</svg>
 					</span>
+
 					<h3 class="standing__item-title">{item.title}</h3>
 					<p class="standing__text">{item.text}</p>
 				</li>
@@ -89,14 +92,15 @@ const items: Item[] = [
 	</ul>
 </div>
 
-
-
 <style>
 	.standing {
-		padding: clamp(28px, 4vw, 40px);
+		padding: clamp(28px, 5vw, 48px);
 		border-radius: var(--radius-panel);
 		background: var(--mint-100);
 		color: var(--ink);
+		display: grid;
+		justify-items: center;
+		gap: clamp(32px, 5vw, 56px);
 	}
 
 	.standing__title {
@@ -106,57 +110,68 @@ const items: Item[] = [
 	.standing__grid {
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
-		margin-top: clamp(32px, 5vw, 56px);
+		gap: clamp(16px, 3vw, 32px);
+		width: 100%;
 	}
 
 	.standing__item {
+		position: relative;
 		display: grid;
-		justify-items: start;
 		align-content: start;
-		gap: var(--space-sm);
-		padding-inline: clamp(0px, 2.4vw, 32px);
+		gap: var(--space-md);
+		padding: 48px 24px 28px;
+		border-radius: 24px;
+		background: var(--surface);
+		border: 1px solid var(--line);
+		box-shadow: 0 8px 28px -12px rgba(11, 26, 20, 0.1);
+		transition:
+			transform var(--transition),
+			box-shadow var(--transition);
 	}
 
-	.standing__item + .standing__item {
-		border-inline-start: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+	.standing__item:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 12px 36px -12px rgba(11, 26, 20, 0.16);
 	}
 
-	.standing__item:first-child {
-		padding-inline-start: 0;
-	}
-
-	.standing__item:last-child {
-		padding-inline-end: 0;
-	}
-
-	.standing__number {
+	/* Mint number tab with rounded inner corner */
+	.standing__tab {
+		position: absolute;
+		top: 0;
+		left: 0;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 56px;
+		height: 36px;
+		padding-left: 16px;
+		background: var(--mint-100);
 		color: var(--green-deep);
-		font-size: var(--type-display-size);
-		font-weight: 400;
+		font-size: 18px;
+		font-weight: 600;
 		font-variant-numeric: tabular-nums;
 		line-height: 1;
-		letter-spacing: -0.02em;
+		border-radius: 0 0 16px 0;
 	}
 
+	/* 96px outlined ring icon circle */
 	.standing__icon {
 		display: grid;
 		place-items: center;
 		width: 96px;
 		height: 96px;
-		margin-top: var(--space-sm);
-		border: 1px solid var(--line);
+		border: 1.5px solid var(--line);
 		border-radius: 50%;
-		background: var(--surface);
+		background: var(--mint-50);
 		color: var(--green-deep);
 	}
 
 	.standing__icon svg {
-		width: 48px;
-		height: 48px;
+		width: 44px;
+		height: 44px;
 	}
 
 	.standing__item-title {
-		margin-top: var(--space-sm);
 		font-size: var(--type-h3-size);
 		font-weight: 500;
 	}
@@ -168,7 +183,7 @@ const items: Item[] = [
 		line-height: 1.6;
 	}
 
-	/* Icon motion starts when the panel scrolls into view. */
+	/* Icon animations on reveal */
 	.standing__hand {
 		transform-origin: 24px 24px;
 	}
@@ -182,7 +197,7 @@ const items: Item[] = [
 	}
 
 	.standing__ribbon {
-		transform-origin: 24px 16.5px;
+		transform-origin: 24px 15px;
 	}
 
 	.standing.is-revealed .standing__ribbon {
@@ -198,79 +213,62 @@ const items: Item[] = [
 	}
 
 	@keyframes standing-sweep {
-		to {
-			transform: rotate(360deg);
-		}
+		to { transform: rotate(360deg); }
 	}
 
 	@keyframes standing-wave {
-		0% {
-			transform: rotate(0deg);
-		}
-		30% {
-			transform: rotate(9deg);
-		}
-		55% {
-			transform: rotate(-5deg);
-		}
-		78% {
-			transform: rotate(3deg);
-		}
-		100% {
-			transform: rotate(0deg);
-		}
+		0%   { transform: rotate(0deg); }
+		30%  { transform: rotate(9deg); }
+		55%  { transform: rotate(-5deg); }
+		78%  { transform: rotate(3deg); }
+		100% { transform: rotate(0deg); }
 	}
 
 	@keyframes standing-travel {
-		0% {
-			transform: translateX(0);
-			opacity: 0;
-		}
-		15% {
-			opacity: 1;
-		}
-		85% {
-			opacity: 1;
-		}
-		100% {
-			transform: translateX(8px);
-			opacity: 0;
-		}
+		0%   { transform: translateX(0); opacity: 0; }
+		15%  { opacity: 1; }
+		85%  { opacity: 1; }
+		100% { transform: translateX(8px); opacity: 0; }
 	}
 
-	@media (max-width: 860px) {
+	/* ========== MOBILE ========== */
+	@media (max-width: 768px) {
+		.standing {
+			padding: clamp(24px, 5vw, 36px);
+			border-radius: 0;
+		}
+
 		.standing__grid {
 			grid-template-columns: 1fr;
+			gap: 20px;
 		}
 
 		.standing__item {
-			padding-inline: 0;
-			padding-block: var(--space-lg);
-		}
-
-		.standing__item:first-child {
-			padding-top: 0;
-		}
-
-		.standing__item:last-child {
-			padding-bottom: 0;
-		}
-
-		.standing__item + .standing__item {
-			border-inline-start: 0;
-			border-block-start: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+			padding: 44px 20px 24px;
 		}
 	}
 
-	@media (max-width: 560px) {
+	@media (max-width: 400px) {
 		.standing__icon {
-			width: 76px;
-			height: 76px;
+			width: 80px;
+			height: 80px;
 		}
 
 		.standing__icon svg {
-			width: 40px;
-			height: 40px;
+			width: 36px;
+			height: 36px;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.standing__item {
+			transition: none;
+		}
+
+		.standing__hand,
+		.standing__ribbon,
+		.standing__pulse {
+			animation: none !important;
 		}
 	}
 </style>

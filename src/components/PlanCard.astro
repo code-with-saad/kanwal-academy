@@ -1,6 +1,5 @@
 ---
-import type { EditProxy } from "emdash";
-import Button from "./Button.astro";
+import { heroImage } from "../config/images";
 import { formatUsdPrice } from "../utils/price";
 
 export interface PlanCardData {
@@ -15,144 +14,152 @@ export interface PlanCardData {
 
 interface Props {
 	plan: PlanCardData;
-	variant?: "default" | "inverted" | "hero";
-	showBismillah?: boolean;
 	href?: string;
-	headingLevel?: 2 | 3;
-	planEdit?: EditProxy;
-	homeEdit?: EditProxy;
-	periodLabel?: string;
-	classesWeekLabel?: string;
-	classesMonthLabel?: string;
-	hoursLabel?: string;
-	popularLabel?: string;
-	selectLabel?: string;
-	/** Stagger delay in milliseconds for the shared reveal utility. */
 	revealDelay?: number;
 }
 
-const {
-	plan,
-	variant = "default",
-	showBismillah = false,
-	href,
-	headingLevel = 3,
-	planEdit,
-	homeEdit,
-	periodLabel = "/ month",
-	classesWeekLabel = "Classes each week",
-	classesMonthLabel = "Classes each month",
-	hoursLabel = "Teaching hours each month",
-	popularLabel = "Most popular",
-	selectLabel = "Select plan",
-	revealDelay,
-} = Astro.props;
-const inverted = variant === "inverted" || variant === "hero";
-const Heading = `h${headingLevel}` as "h2" | "h3";
-
+const { plan, revealDelay } = Astro.props;
 const priceLabel = formatUsdPrice(plan.price);
-
-const planHref =
-	href ?? (plan.slug ? `/?plan=${encodeURIComponent(plan.slug)}#book` : "/#book");
+const planHref = plan.slug ? `/?plan=${encodeURIComponent(plan.slug)}#book` : "/#book";
 ---
 
-<article
-	class:list={[
-		"plan-card",
-		"lift",
-		variant === "inverted" && "plan-card--inverted",
-		variant === "hero" && "plan-card--hero",
-	]}
+<div
+	class="plan-card"
+	class:list={[plan.isPopular && "plan-card--popular"]}
+	role="group"
+	aria-label={`{plan.name}`}
 	data-reveal="up"
 	style={revealDelay ? `--reveal-delay: ${revealDelay}ms` : undefined}
 >
-	{
-		showBismillah && (
-			<p class="plan-card__bismillah" lang="ar" dir="rtl">
-				بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-			</p>
-		)
-	}
+	{plan.isPopular && (
+		<span class="plan-card__badge">
+			<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true">
+				<path d="M8 1.5l1.76 3.57 3.94.57-2.85 2.78.67 3.93L8 10.47l-3.52 1.88.67-3.93L2.3 5.64l3.94-.57z" />
+			</svg>
+			Most popular
+		</span>
+	)}
 
-	<div class="plan-card__head">
-		<Heading class="plan-card__name" {...planEdit?.name}>{plan.name}</Heading>
-		{plan.isPopular && <span class="plan-card__badge" {...homeEdit?.pricing_popular_label}>{popularLabel}</span>}
+	<div class="plan-card__body">
+		<h3 class="plan-card__name">{plan.name}</h3>
+		<p class="plan-card__price">
+			<span class="plan-card__amount">{priceLabel}</span>
+			<span class="plan-card__period">/ month</span>
+		</p>
+
+		<div class="plan-card__hairline" aria-hidden="true"></div>
+
+		<ul class="plan-card__meta">
+			<li>
+				<span class="plan-card__meta-icon" aria-hidden="true">
+					<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="var(--green-deep)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+						<rect x="3" y="4" width="14" height="13" rx="2" />
+						<path d="M3 8h14" />
+						<path d="M7 2v3" />
+						<path d="M13 2v3" />
+					</svg>
+				</span>
+				<span class="plan-card__meta-label">Classes each week</span>
+				<span class="plan-card__meta-value">{plan.classesPerWeek}</span>
+			</li>
+			<li>
+				<span class="plan-card__meta-icon" aria-hidden="true">
+					<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="var(--green-deep)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+						<rect x="3" y="4" width="14" height="13" rx="2" />
+						<path d="M3 8h14" />
+						<path d="M7 2v3" />
+						<path d="M13 2v3" />
+					</svg>
+				</span>
+				<span class="plan-card__meta-label">Classes each month</span>
+				<span class="plan-card__meta-value">{plan.classesPerMonth}</span>
+			</li>
+			<li>
+				<span class="plan-card__meta-icon" aria-hidden="true">
+					<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="var(--green-deep)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+						<circle cx="10" cy="10" r="7.5" />
+						<path d="M10 6v4l2.5 2.5" />
+					</svg>
+				</span>
+				<span class="plan-card__meta-label">Teaching hours each month</span>
+				<span class="plan-card__meta-value">{plan.hoursPerMonth}</span>
+			</li>
+		</ul>
+
+		<a class="plan-card__cta" href={planHref}>
+			Select plan
+			<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<path d="M4 10h12m-5-5 5 5-5 5" />
+			</svg>
+		</a>
 	</div>
 
-	<p class="plan-card__price">
-		<span class="plan-card__amount" {...planEdit?.price}>{priceLabel}</span>
-		<span class="plan-card__period" {...homeEdit?.pricing_period_label}>{periodLabel}</span>
-	</p>
-
-	<dl class="plan-card__meta">
-		<div>
-			<dt {...homeEdit?.pricing_classes_week_label}>{classesWeekLabel}</dt>
-			<dd {...planEdit?.classes_per_week}>{plan.classesPerWeek}</dd>
+	<div class="plan-card__visual" aria-hidden="true">
+		<div class="plan-card__quran-ring">
+			<svg viewBox="0 0 100 100" fill="none" stroke="var(--green-deep)" stroke-width="0.6" opacity="0.3">
+				<circle cx="50" cy="50" r="48" />
+				<circle cx="50" cy="50" r="40" />
+				<path d="M50 4 L54 46 L96 50 L54 54 L50 96 L46 54 L4 50 L46 46 Z" />
+			</svg>
 		</div>
-		<div>
-			<dt {...homeEdit?.pricing_classes_month_label}>{classesMonthLabel}</dt>
-			<dd {...planEdit?.classes_per_month}>{plan.classesPerMonth}</dd>
-		</div>
-		<div>
-			<dt {...homeEdit?.pricing_hours_label}>{hoursLabel}</dt>
-			<dd {...planEdit?.hours_per_month}>{plan.hoursPerMonth}</dd>
-		</div>
-	</dl>
-
-	<div class="plan-card__cta">
-		<Button href={planHref} variant={inverted ? "secondary" : "primary"} edit={homeEdit?.pricing_select_cta}>{selectLabel}</Button>
+		<img src={heroImage.src} alt={heroImage.alt} class="plan-card__quran-img" loading="lazy" />
 	</div>
-</article>
+</div>
 
 <style>
 	.plan-card {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-		padding: var(--space-lg);
+		position: relative;
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 0;
+		border-radius: 24px;
 		border: 1px solid var(--line);
-		border-radius: var(--radius-card);
-		background: var(--page);
-		color: var(--ink);
+		background: var(--surface);
+		box-shadow: 0 8px 28px -12px rgba(11, 26, 20, 0.1);
+		overflow: hidden;
+		transition:
+			transform var(--transition),
+			box-shadow var(--transition),
+			border-color var(--transition);
 	}
 
-	.plan-card--inverted,
-	.plan-card--hero {
-		border-color: transparent;
+	.plan-card:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 12px 36px -12px rgba(11, 26, 20, 0.16);
+	}
+
+	.plan-card--popular {
+		border-color: var(--green);
+		box-shadow: 0 12px 40px -12px rgba(14, 134, 96, 0.18);
+	}
+
+	.plan-card--popular:hover {
+		box-shadow: 0 16px 48px -12px rgba(14, 134, 96, 0.24);
+	}
+
+	.plan-card__badge {
+		position: absolute;
+		top: 16px;
+		right: 16px;
+		z-index: 3;
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		height: 30px;
+		padding: 0 14px;
+		border-radius: 999px;
 		background: var(--green);
-		color: var(--on-accent);
-		--ink: var(--on-accent);
-		--ink-muted: var(--on-accent);
-		--line: color-mix(in srgb, var(--on-accent) 26%, transparent);
-		--accent: var(--on-accent);
-		--green-deep: var(--on-accent);
-		--focus: var(--on-accent);
+		color: #ffffff;
+		font-size: 12px;
+		font-weight: 600;
+		line-height: 1;
 	}
 
-	.plan-card--inverted .plan-card__cta :global(.btn--secondary) {
-		border-color: color-mix(in srgb, var(--ink) 55%, transparent);
-		background: transparent;
-		color: var(--ink);
-	}
-
-	.plan-card--inverted .plan-card__cta :global(.btn--secondary:hover) {
-		border-color: var(--ink);
-		background: color-mix(in srgb, var(--ink) 12%, transparent);
-	}
-
-	.plan-card__bismillah {
-		margin-bottom: var(--space-lg);
-		color: var(--green-deep);
-		font-size: var(--type-h3-size);
-		line-height: 1.6;
-		text-align: center;
-	}
-
-	.plan-card__head {
-		display: flex;
-		align-items: flex-start;
-		justify-content: space-between;
-		gap: var(--space-md);
+	.plan-card__body {
+		display: grid;
+		align-content: start;
+		gap: var(--space-sm);
+		padding: 28px 24px;
 	}
 
 	.plan-card__name {
@@ -160,33 +167,15 @@ const planHref =
 		font-weight: 500;
 	}
 
-	.plan-card__badge {
-		flex: none;
-		display: inline-flex;
-		align-items: center;
-		height: 30px;
-		padding: 0 12px;
-		border: 1px solid color-mix(in srgb, var(--ink) 45%, transparent);
-		border-radius: var(--radius-chip);
-		background: transparent;
-		color: var(--ink);
-		font-size: var(--type-eyebrow-size);
-		font-weight: 500;
-		letter-spacing: 0;
-		line-height: 1;
-		text-transform: none;
-	}
-
 	.plan-card__price {
 		display: flex;
 		align-items: baseline;
-		gap: var(--space-xs);
-		margin-top: var(--space-md);
-		padding-bottom: var(--space-lg);
+		gap: 6px;
+		margin-top: 4px;
 	}
 
 	.plan-card__amount {
-		font-size: var(--type-display-size);
+		font-size: clamp(36px, 4vw, 48px);
 		font-weight: 400;
 		line-height: 1;
 		letter-spacing: -0.02em;
@@ -197,36 +186,179 @@ const planHref =
 		font-size: var(--type-small-size);
 	}
 
+	.plan-card__hairline {
+		height: 1px;
+		background: var(--line);
+		margin: 4px 0;
+	}
+
 	.plan-card__meta {
 		display: grid;
+		gap: 0;
 		margin: 0;
+		padding: 0;
+		list-style: none;
 	}
 
-	.plan-card__meta > div {
-		display: flex;
-		align-items: baseline;
-		justify-content: space-between;
-		gap: var(--space-md);
+	.plan-card__meta li {
+		display: grid;
+		grid-template-columns: 32px 1fr auto;
+		align-items: center;
+		gap: 12px;
 		padding-block: 10px;
-		border-top: 1px solid var(--line);
+		border-bottom: 1px solid var(--line);
 	}
 
-	.plan-card__meta dt {
+	.plan-card__meta li:last-child {
+		border-bottom: none;
+	}
+
+	.plan-card__meta-icon {
+		display: grid;
+		place-items: center;
+		width: 32px;
+		height: 32px;
+		border-radius: 50%;
+		background: var(--mint-100);
+	}
+
+	.plan-card__meta-label {
 		color: var(--ink-muted);
 		font-size: var(--type-small-size);
 	}
 
-	.plan-card__meta dd {
-		margin: 0;
+	.plan-card__meta-value {
 		font-weight: 600;
+		font-size: var(--type-body-size);
 	}
 
 	.plan-card__cta {
-		margin-top: auto;
-		padding-top: var(--space-lg);
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+		width: 100%;
+		height: 48px;
+		margin-top: var(--space-sm);
+		border-radius: 999px;
+		background: var(--green);
+		color: #ffffff;
+		font-size: var(--type-body-size);
+		font-weight: 500;
+		text-decoration: none;
+		transition:
+			background-color var(--transition),
+			transform var(--transition);
 	}
 
-	.plan-card__cta :global(.btn) {
-		width: 100%;
+	.plan-card__cta:hover {
+		background: var(--green-deep);
+	}
+
+	/* Quran visual */
+	.plan-card__visual {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: min(38%, 200px);
+		padding: 24px;
+	}
+
+	.plan-card__quran-ring {
+		position: absolute;
+		inset: 16px;
+		border-radius: 50%;
+		background: var(--mint-100);
+	}
+
+	.plan-card__quran-ring svg {
+		position: absolute;
+		inset: 4px;
+		width: calc(100% - 8px);
+		height: calc(100% - 8px);
+	}
+
+	.plan-card__quran-img {
+		position: relative;
+		z-index: 1;
+		width: 80%;
+		height: auto;
+		object-fit: contain;
+		filter: drop-shadow(0 4px 12px rgba(11, 26, 20, 0.12));
+	}
+
+	/* ========== MOBILE: full-width card, image below ========== */
+	@media (max-width: 768px) {
+		.plan-card {
+			grid-template-columns: 1fr;
+		}
+
+		.plan-card__body {
+			padding: 24px 20px;
+		}
+
+		.plan-card__visual {
+			width: 100%;
+			min-height: 180px;
+			padding: 20px;
+		}
+
+		.plan-card__quran-ring {
+			inset: 12px;
+		}
+	}
+
+	/* Dark theme adjustments */
+	:global(html[data-theme="dark"]) .plan-card--popular {
+		background: var(--green);
+		color: var(--on-accent);
+	}
+
+	:global(html[data-theme="dark"]) .plan-card--popular .plan-card__name,
+	:global(html[data-theme="dark"]) .plan-card--popular .plan-card__amount {
+		color: var(--on-accent);
+	}
+
+	:global(html[data-theme="dark"]) .plan-card--popular .plan-card__period,
+	:global(html[data-theme="dark"]) .plan-card--popular .plan-card__meta-label {
+		color: color-mix(in srgb, var(--on-accent) 70%, transparent);
+	}
+
+	:global(html[data-theme="dark"]) .plan-card--popular .plan-card__hairline,
+	:global(html[data-theme="dark"]) .plan-card--popular .plan-card__meta li {
+		border-color: color-mix(in srgb, var(--on-accent) 20%, transparent);
+	}
+
+	:global(html[data-theme="dark"]) .plan-card--popular .plan-card__meta-icon {
+		background: color-mix(in srgb, var(--on-accent) 20%, transparent);
+	}
+
+	:global(html[data-theme="dark"]) .plan-card--popular .plan-card__meta-icon svg {
+		stroke: var(--on-accent);
+	}
+
+	:global(html[data-theme="dark"]) .plan-card--popular .plan-card__cta {
+		background: var(--on-accent);
+		color: var(--green);
+	}
+
+	:global(html[data-theme="dark"]) .plan-card--popular .plan-card__cta:hover {
+		background: #ffffff;
+	}
+
+	:global(html[data-theme="dark"]) .plan-card--popular .plan-card__badge {
+		background: var(--on-accent);
+		color: var(--green);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.plan-card {
+			transition: none;
+		}
+
+		.plan-card__cta {
+			transition: none;
+		}
 	}
 </style>

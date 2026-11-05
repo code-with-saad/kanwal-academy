@@ -319,10 +319,7 @@ const steps = [
 			<div class="plan-grid">
 				{
 					plans.map((plan) => (
-						<PlanCard
-							plan={plan}
-							variant={plan.slug === "plan-ii" ? "inverted" : "default"}
-						/>
+						<PlanCard plan={plan} />
 					))
 				}
 			</div>
@@ -379,8 +376,6 @@ const steps = [
 			<div class="featured-demo">
 				<PlanCard
 					plan={plans[1]}
-					variant="inverted"
-					showBismillah
 					href="/free-trial?plan=plan-ii"
 				/>
 			</div>

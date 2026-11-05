@@ -10,11 +10,12 @@ import CourseRow from "../components/CourseRow.astro";
 import Eyebrow from "../components/Eyebrow.astro";
 import FeatureCards from "../components/FeatureCards.astro";
 import FeatureSplit from "../components/FeatureSplit.astro";
+import HowItWorks from "../components/HowItWorks.astro";
 import PlanCard from "../components/PlanCard.astro";
+import PricingCarousel from "../components/PricingCarousel.astro";
 import Section from "../components/Section.astro";
 import StandingOut from "../components/StandingOut.astro";
 import StatsBand from "../components/StatsBand.astro";
-import Step from "../components/Step.astro";
 import Testimonials from "../components/Testimonials.astro";
 import WisdomPanel from "../components/WisdomPanel.astro";
 import { site } from "../config/site";
@@ -49,12 +50,6 @@ interface HomePageFields {
 	pricing_select_cta?: string;
 	trial_eyebrow?: string;
 	trial_heading?: string;
-	trial_step_1_title?: string;
-	trial_step_1_body?: string;
-	trial_step_2_title?: string;
-	trial_step_2_body?: string;
-	trial_step_3_title?: string;
-	trial_step_3_body?: string;
 }
 
 type HomeTextField = Exclude<keyof HomePageFields, "home_image">;
@@ -199,36 +194,6 @@ const featureCards = [
 		text: "Phone, tablet or laptop.",
 		href: "#how-it-works",
 		icon: "device" as const,
-	},
-];
-
-const steps = [
-	{
-		title: homeText("trial_step_1_title", "Book your free trial"),
-		body: homeText(
-			"trial_step_1_body",
-			"Choose a plan and pick a time that works for you. The trial class is free.",
-		),
-		titleEdit: homeEdit?.trial_step_1_title,
-		bodyEdit: homeEdit?.trial_step_1_body,
-	},
-	{
-		title: homeText("trial_step_2_title", "Meet your teacher"),
-		body: homeText(
-			"trial_step_2_body",
-			"We match you with a teacher for your course and level, then assess where you are.",
-		),
-		titleEdit: homeEdit?.trial_step_2_title,
-		bodyEdit: homeEdit?.trial_step_2_body,
-	},
-	{
-		title: homeText("trial_step_3_title", "Start your plan"),
-		body: homeText(
-			"trial_step_3_body",
-			"Your teacher builds a weekly schedule around your goals and keeps you accountable.",
-		),
-		titleEdit: homeEdit?.trial_step_3_title,
-		bodyEdit: homeEdit?.trial_step_3_body,
 	},
 ];
 ---
@@ -506,27 +471,7 @@ const steps = [
 
 	<Section id="how-it-works" space="tight">
 		<Container>
-			<div class="section-head">
-				<Eyebrow edit={homeEdit?.trial_eyebrow}>
-					{homeText("trial_eyebrow", "Free trial")}
-				</Eyebrow>
-				<h2 {...homeEdit?.trial_heading} data-reveal-words>
-					{homeText("trial_heading", "How the free trial works")}
-				</h2>
-			</div>
-			<ol class="steps">
-				{
-					steps.map((step, index) => (
-						<Step
-							number={index + 1}
-							title={step.title}
-							body={step.body}
-							titleEdit={step.titleEdit}
-							bodyEdit={step.bodyEdit}
-						/>
-					))
-				}
-			</ol>
+			<HowItWorks />
 		</Container>
 	</Section>
 
@@ -552,26 +497,15 @@ const steps = [
 					plans.map((plan, index) => (
 						<PlanCard
 							plan={toPlanCard(plan)}
-							variant={plan.data.is_popular ? "inverted" : "default"}
 							href={`/?plan=${encodeURIComponent(plan.id)}#book`}
 							revealDelay={index * 80}
-							planEdit={plan.edit}
-							homeEdit={homeEdit}
-							periodLabel={homeText("pricing_period_label", "/ month")}
-							classesWeekLabel={homeText(
-								"pricing_classes_week_label",
-								"Classes each week",
-							)}
-							classesMonthLabel={homeText(
-								"pricing_classes_month_label",
-								"Classes each month",
-							)}
-							hoursLabel={homeText("pricing_hours_label", "Teaching hours each month")}
-							popularLabel={homeText("pricing_popular_label", "Most popular")}
-							selectLabel={homeText("pricing_select_cta", "Select plan")}
 						/>
 					))
 				}
+			</div>
+
+			<div class="plan-carousel-mobile">
+				<PricingCarousel plans={plans.map(toPlanCard)} />
 			</div>
 		</Container>
 	</Section>
@@ -1051,18 +985,19 @@ const steps = [
 		align-items: stretch;
 	}
 
-	.steps {
-		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: var(--space-xl);
+	/* Carousel only on mobile */
+	.plan-carousel-mobile {
+		display: none;
 	}
+
+	/* Remove steps styles - now handled by HowItWorks component */
 
 	/* ================================================================
 	 * BREAKPOINTS
 	 * ================================================================ */
 
 	/* Tablet: shrink visual, keep 2-col grid */
-	@media (max-width: 1000px) {
+	@media (max-width: 1100px) {
 		.hero__visual {
 			width: clamp(160px, 24vw, 260px);
 		}
@@ -1187,6 +1122,15 @@ const steps = [
 			gap: var(--space-lg);
 		}
 
+		/* Show carousel on mobile, hide grid */
+		.plan-grid {
+			display: none;
+		}
+
+		.plan-carousel-mobile {
+			display: block;
+		}
+
 		/* Star motif sizing on mobile */
 		.hero__star--tl { width: 56px; height: 56px; }
 		.hero__star--tr { width: 48px; height: 48px; }
@@ -1195,11 +1139,6 @@ const steps = [
 	}
 
 	@media (max-width: 560px) {
-		.plan-grid {
-			grid-template-columns: 1fr;
-			gap: var(--space-md);
-		}
-
 		:global(body[data-is-home] .section-head) {
 			margin-bottom: var(--space-lg);
 		}
