@@ -413,7 +413,10 @@ const initials = (name: string) =>
     width: 100%;
     background: var(--tm-accent);
     transform-origin: left;
-    animation: tm-progress 3s linear infinite;
+    animation: tm-progress 3s linear forwards;
+  }
+  .tm-progress-bar.is-paused {
+  	animation-play-state: paused;
   }
 
   @keyframes tm-progress {
@@ -461,8 +464,13 @@ const initials = (name: string) =>
     .tm-quote {
       transition: none;
     }
+	.tm-progress-bar {
+	  animation: none;
+	  transform: scaleX(1);
+    }
   }
 </style>
+
 
 <script>
   document.querySelectorAll<HTMLElement>("[data-testimonial]").forEach((root) => {
@@ -473,9 +481,13 @@ const initials = (name: string) =>
     if (!n) return;
 
     let active = 0;
-    let timer: number | undefined;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const INTERVAL = 3000;
+
+    function restartProgress() {
+      if (!progress) return;
+      progress.style.animation = "none";
+      void progress.offsetWidth;
+      progress.style.animation = "";
+    }
 
     function render() {
       items.forEach((el, i) => {
@@ -487,11 +499,7 @@ const initials = (name: string) =>
         el.tabIndex = off === 0 ? 0 : -1;
       });
       quotes.forEach((q, i) => (q.dataset.active = String(i === active)));
-      if (progress && !reduce) {
-        progress.style.animation = "none";
-        void progress.offsetWidth;
-        progress.style.animation = "";
-      }
+      restartProgress();
     }
 
     function go(i: number) {
@@ -499,39 +507,30 @@ const initials = (name: string) =>
       render();
     }
 
-    function start() {
-      if (reduce || n < 2) return;
-      stop();
-      timer = window.setInterval(() => go(active + 1), INTERVAL);
-    }
-    function stop() {
-      if (timer) window.clearInterval(timer);
+    // The progress bar is the timer: when one run ends, show the next review.
+    if (progress && n > 1) {
+      progress.addEventListener("animationend", () => go(active + 1));
+    } else if (progress) {
+      progress.parentElement?.setAttribute("hidden", "");
     }
 
-    items.forEach((el, i) =>
-      el.addEventListener("click", () => {
-        go(i);
-        start();
-      })
-    );
+    items.forEach((el, i) => el.addEventListener("click", () => go(i)));
 
-    const prevBtn = root.querySelector("[data-prev]");
-    const nextBtn = root.querySelector("[data-next]");
-    if (prevBtn) prevBtn.addEventListener("click", () => { go(active - 1); start(); });
-    if (nextBtn) nextBtn.addEventListener("click", () => { go(active + 1); start(); });
+    root.querySelector("[data-prev]")?.addEventListener("click", () => go(active - 1));
+    root.querySelector("[data-next]")?.addEventListener("click", () => go(active + 1));
 
     root.addEventListener("keydown", (e) => {
       if (e.key === "ArrowDown" || e.key === "ArrowRight") go(active + 1);
       else if (e.key === "ArrowUp" || e.key === "ArrowLeft") go(active - 1);
       else return;
       items[active].focus();
-      start();
     });
 
-    root.addEventListener("mouseenter", stop);
-    root.addEventListener("mouseleave", start);
+    // Hover pauses the bar, and so pauses autoplay too.
+    const card = root.querySelector<HTMLElement>(".tm-card");
+	card?.addEventListener("mouseenter", () => progress?.classList.add("is-paused"));
+	card?.addEventListener("mouseleave", () => progress?.classList.remove("is-paused"));
 
     render();
-    start();
   });
 </script>
