@@ -63,9 +63,9 @@ const isLinkCurrent = (item: NavItem) =>
 		<div class="header__end">
 			<ThemeToggle />
 			<div class="header__cta-wrap">
-				<Button href={cta.href} variant="primary">
+				<button type="button" class="header__cta-btn btn-primary" data-open-modal>
 					{cta.label}
-				</Button>
+				</button>
 			</div>
 
 			<button
@@ -118,9 +118,9 @@ const isLinkCurrent = (item: NavItem) =>
 		</nav>
 		<div class="header__panel-end">
 			<ThemeToggle />
-			<Button href={cta.href} variant="primary">
+			<button type="button" class="header__cta-btn btn-primary" data-open-modal>
 				{cta.label}
-			</Button>
+			</button>
 		</div>
 	</div>
 	<div class="header__scrim" data-menu-scrim hidden></div>
@@ -547,4 +547,26 @@ const isLinkCurrent = (item: NavItem) =>
 			animation: none;
 		}
 	}
+
+	/* Modal trigger button styled as primary */
+	.header__cta-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		height: 44px;
+		padding: 0 20px;
+		border: 1px solid var(--green);
+		border-radius: var(--radius-button);
+		background: var(--green);
+		color: var(--on-accent);
+		font: inherit;
+		font-size: var(--type-small-size);
+		font-weight: 500;
+		cursor: pointer;
+		transition: background-color var(--transition), border-color var(--transition);
+		white-space: nowrap;
+	}
+
+	.header__cta-btn:hover { background: var(--green-deep); border-color: var(--green-deep); }
+	.header__cta-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 </style>

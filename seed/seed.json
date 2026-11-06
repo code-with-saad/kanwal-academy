@@ -641,6 +641,75 @@
 					"slug": "footer_copyright_label",
 					"label": "Footer copyright text",
 					"type": "string"
+				},
+				{
+					"slug": "owner_email",
+					"label": "Owner notification email (receives enrolment leads)",
+					"type": "string"
+				}
+			]
+		},
+		{
+			"slug": "enrolments",
+			"label": "Enrolments",
+			"labelSingular": "Enrolment",
+			"description": "Leads submitted via the contact and free trial form. Status moves from new to contacted once the academy reaches out.",
+			"icon": "user-plus",
+			"group": "Settings",
+			"sortOrder": 90,
+			"routable": false,
+			"titleField": "name",
+			"admin": {
+				"listColumns": ["email", "plan", "course", "status", "created_at"]
+			},
+			"supports": [],
+			"fields": [
+				{
+					"slug": "name",
+					"label": "Name",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "email",
+					"label": "Email",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "phone",
+					"label": "Phone",
+					"type": "string"
+				},
+				{
+					"slug": "course",
+					"label": "Course",
+					"type": "string"
+				},
+				{
+					"slug": "plan",
+					"label": "Plan",
+					"type": "string"
+				},
+				{
+					"slug": "message",
+					"label": "Message",
+					"type": "text"
+				},
+				{
+					"slug": "created_at",
+					"label": "Submitted at",
+					"type": "string"
+				},
+				{
+					"slug": "status",
+					"label": "Status",
+					"type": "select",
+					"required": true,
+					"defaultValue": "new",
+					"validation": {
+						"options": ["new", "contacted"]
+					}
 				}
 			]
 		}

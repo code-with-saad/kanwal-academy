@@ -9,6 +9,7 @@ export interface SocialLink {
 export interface SiteContact {
 	phone: string;
 	email: string;
+	ownerEmail: string;
 	address: string;
 	socialLinks: SocialLink[];
 	stats: {
@@ -41,6 +42,7 @@ export interface SiteContact {
 interface SiteSettingsData {
 	phone?: string | null;
 	email?: string | null;
+	owner_email?: string | null;
 	address?: string | null;
 	social_links?: Array<{ label?: string | null; url?: string | null }> | null;
 	years?: string | null;
@@ -67,6 +69,7 @@ interface SiteSettingsData {
 const FALLBACK: SiteContact = {
 	phone: site.phone,
 	email: site.email,
+	ownerEmail: site.email,
 	address: site.address,
 	socialLinks: [],
 	stats: {
@@ -111,6 +114,7 @@ function normalize(data: SiteSettingsData | undefined): SiteContact {
 	return {
 		phone: clean(data?.phone, FALLBACK.phone),
 		email: clean(data?.email, FALLBACK.email),
+		ownerEmail: clean(data?.owner_email, FALLBACK.ownerEmail),
 		address: clean(data?.address, FALLBACK.address),
 		socialLinks,
 		stats: {

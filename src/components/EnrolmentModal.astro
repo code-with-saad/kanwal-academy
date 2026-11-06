@@ -1,0 +1,858 @@
+---
+/**
+ * EnrolmentModal
+ *
+ * A single globally shared modal that handles:
+ *   - Free trial / "Book free trial" buttons
+ *   - "Select plan" buttons (prefill plan)
+ *   - Course CTA buttons (prefill course)
+ *
+ * Usage: drop once in Base.astro. Trigger buttons carry
+ *   data-open-modal (opens blank)
+ *   data-open-modal data-prefill-plan="Plan I" (prefill plan)
+ *   data-open-modal data-prefill-course="Quranic Recitation" (prefill course)
+ *
+ * Props are the courses and plans lists plus the WhatsApp number.
+ */
+import { env as hostEnv } from "virtual:emdash/env";
+
+export interface CourseOption { id: string; name: string }
+export interface PlanOption   { id: string; name: string }
+
+interface Props {
+	courses:     CourseOption[];
+	plans:       PlanOption[];
+	whatsappPhone?: string;
+}
+
+const { courses = [], plans = [], whatsappPhone = "" } = Astro.props;
+
+const runtimeEnv = hostEnv as Record<string, unknown> | undefined;
+const buildEnv   = import.meta.env as unknown as Record<string, string | undefined>;
+const tsKey      = String(runtimeEnv?.PUBLIC_TURNSTILE_SITE_KEY ?? buildEnv.PUBLIC_TURNSTILE_SITE_KEY ?? "").trim();
+
+const waHref = whatsappPhone
+	? `https://wa.me/${whatsappPhone.replace(/[^0-9]/g, "")}`
+	: "";
+---
+
+{/* Dialog – rendered server-side, hidden until JS opens it */}
+<dialog
+	id="enrol-modal"
+	class="em"
+	aria-label="Book a free trial class"
+	aria-modal="true"
+>
+	<div class="em__inner" role="document">
+		{/* Header */}
+		<div class="em__head">
+			<div>
+				<p class="em__eyebrow">Free trial</p>
+				<h2 class="em__title" id="em-title">Book a free trial class</h2>
+			</div>
+			<button
+				type="button"
+				class="em__close"
+				data-em-close
+				aria-label="Close"
+			>
+				<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+					<path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+				</svg>
+			</button>
+		</div>
+
+		{/* ---- Idle / form panel ---- */}
+		<form
+			class="em__form"
+			id="em-form"
+			novalidate
+			data-em-form
+			aria-labelledby="em-title"
+		>
+			{/* Honeypot */}
+			<div class="em__honeypot" aria-hidden="true">
+				<input name="website" type="text" tabindex="-1" autocomplete="off" />
+			</div>
+
+			{/* Name */}
+			<div class="em__field">
+				<label class="em__label" for="em-name">
+					Your name <span class="em__req" aria-hidden="true">*</span>
+				</label>
+				<input
+					id="em-name"
+					name="name"
+					type="text"
+					class="em__input"
+					autocomplete="name"
+					maxlength="120"
+					required
+					aria-required="true"
+					aria-describedby="em-name-err"
+				/>
+				<span class="em__err" id="em-name-err" role="alert" aria-live="polite" data-err="name"></span>
+			</div>
+
+			{/* Email */}
+			<div class="em__field">
+				<label class="em__label" for="em-email">
+					Email address <span class="em__req" aria-hidden="true">*</span>
+				</label>
+				<input
+					id="em-email"
+					name="email"
+					type="email"
+					class="em__input"
+					inputmode="email"
+					autocomplete="email"
+					maxlength="254"
+					required
+					aria-required="true"
+					aria-describedby="em-email-err"
+				/>
+				<span class="em__err" id="em-email-err" role="alert" aria-live="polite" data-err="email"></span>
+			</div>
+
+			{/* Phone with intl-tel-input */}
+			<div class="em__field">
+				<label class="em__label" for="em-phone">
+					Phone number <span class="em__req" aria-hidden="true">*</span>
+				</label>
+				<div class="em__phone-wrap">
+					<input
+						id="em-phone"
+						name="phone_local"
+						type="tel"
+						class="em__input em__input--phone"
+						inputmode="tel"
+						autocomplete="tel"
+						required
+						aria-required="true"
+						aria-describedby="em-phone-err"
+					/>
+				</div>
+				{/* Hidden field that carries the full E.164 number to the server */}
+				<input type="hidden" name="phone" id="em-phone-full" />
+				<span class="em__err" id="em-phone-err" role="alert" aria-live="polite" data-err="phone"></span>
+			</div>
+
+			{/* Course + Plan selects */}
+			<div class="em__row">
+				<div class="em__field">
+					<label class="em__label" for="em-course">Course</label>
+					<select id="em-course" name="course" class="em__select">
+						<option value="">Not sure yet</option>
+						{courses.map((c) => (
+							<option value={c.name} data-course-id={c.id}>{c.name}</option>
+						))}
+					</select>
+				</div>
+				<div class="em__field">
+					<label class="em__label" for="em-plan">Plan</label>
+					<select id="em-plan" name="plan" class="em__select">
+						<option value="">Help me choose</option>
+						{plans.map((p) => (
+							<option value={p.name} data-plan-id={p.id}>{p.name}</option>
+						))}
+					</select>
+				</div>
+			</div>
+
+			{/* Message */}
+			<div class="em__field">
+				<label class="em__label" for="em-message">
+					Message <span class="em__optional">(optional)</span>
+				</label>
+				<textarea
+					id="em-message"
+					name="message"
+					class="em__textarea"
+					rows="3"
+					maxlength="2000"
+					placeholder="Student age, current level, any questions"
+				></textarea>
+			</div>
+
+			{/* Turnstile */}
+			{tsKey && (
+				<div
+					class="cf-turnstile em__turnstile"
+					data-sitekey={tsKey}
+					data-theme="auto"
+				/>
+			)}
+
+			{/* Submit */}
+			<div class="em__foot">
+				<button type="submit" class="em__submit" data-em-submit>
+					<span class="em__spinner" aria-hidden="true"></span>
+					<span data-em-submit-label>Request free trial</span>
+				</button>
+				<p class="em__global-err" role="alert" aria-live="polite" data-em-global-err></p>
+			</div>
+		</form>
+
+		{/* ---- Success panel ---- */}
+		<div class="em__success" data-em-success hidden>
+			<svg class="em__success-icon" viewBox="0 0 48 48" width="52" height="52" fill="none" aria-hidden="true">
+				<circle cx="24" cy="24" r="22" stroke="var(--green)" stroke-width="2"/>
+				<path d="M14 24l7 7 13-14" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>
+			<h3 class="em__success-title">Request received</h3>
+			<p class="em__success-body">
+				Thank you. We will reply within one business day with the next available trial slot. The class is free and no payment is needed.
+			</p>
+			<button type="button" class="em__submit em__submit--outline" data-em-close>
+				Close
+			</button>
+		</div>
+
+		{/* ---- Server-error panel ---- */}
+		<div class="em__error-panel" data-em-error-panel hidden>
+			<p class="em__error-panel-msg" data-em-error-panel-msg></p>
+			<div class="em__error-panel-actions">
+				<button type="button" class="em__submit em__submit--outline" data-em-retry>
+					Try again
+				</button>
+				{waHref && (
+					<a
+						href={waHref}
+						class="em__wa-link"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						Contact us on WhatsApp
+					</a>
+				)}
+			</div>
+		</div>
+	</div>
+</dialog>
+
+<script>
+	// Import intl-tel-input (ESM build).
+	import intlTelInput from "intl-tel-input";
+	// @ts-ignore
+	import "intl-tel-input/build/css/intlTelInput.css";
+	import { utilsScriptUrl } from "intl-tel-input/utils";
+
+	// ---------------------------------------------------------------------------
+	// Modal state machine
+	// ---------------------------------------------------------------------------
+	type ModalState = "idle" | "submitting" | "success" | "error";
+
+	const dialog  = document.getElementById("enrol-modal") as HTMLDialogElement | null;
+	const form    = document.getElementById("em-form")   as HTMLFormElement | null;
+	const tsWidget= form?.querySelector(".cf-turnstile") as HTMLElement | null;
+
+	if (!dialog || !form) throw new Error("EnrolmentModal: required elements not found.");
+
+	// Elements
+	const submitBtn       = form.querySelector<HTMLButtonElement>("[data-em-submit]")!;
+	const submitLabel     = form.querySelector<HTMLElement>("[data-em-submit-label]")!;
+	const globalErr       = form.querySelector<HTMLElement>("[data-em-global-err]")!;
+	const successPanel    = dialog.querySelector<HTMLElement>("[data-em-success]")!;
+	const errorPanel      = dialog.querySelector<HTMLElement>("[data-em-error-panel]")!;
+	const errorPanelMsg   = dialog.querySelector<HTMLElement>("[data-em-error-panel-msg]")!;
+	const retryBtn        = dialog.querySelector<HTMLButtonElement>("[data-em-retry]")!;
+	const closeButtons    = dialog.querySelectorAll<HTMLButtonElement>("[data-em-close]");
+	const phoneFull       = document.getElementById("em-phone-full") as HTMLInputElement;
+	const courseSelect    = document.getElementById("em-course")     as HTMLSelectElement;
+	const planSelect      = document.getElementById("em-plan")       as HTMLSelectElement;
+	const phoneInput      = document.getElementById("em-phone")      as HTMLInputElement;
+
+	// ---------------------------------------------------------------------------
+	// intl-tel-input
+	// ---------------------------------------------------------------------------
+	const iti = intlTelInput(phoneInput, {
+		initialCountry: "auto",
+		geoIpLookup: (success) => {
+			fetch("https://ipapi.co/json")
+				.then((r) => r.json())
+				.then((data: { country_code?: string }) => success(data.country_code ?? "pk"))
+				.catch(() => success("pk"));
+		},
+		loadUtils: () => import("intl-tel-input/utils").then(() => utilsScriptUrl),
+		separateDialCode: true,
+		strictMode: false,
+	});
+
+	// ---------------------------------------------------------------------------
+	// Focus trap
+	// ---------------------------------------------------------------------------
+	const getFocusable = () =>
+		Array.from(
+			dialog.querySelectorAll<HTMLElement>(
+				'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])',
+			),
+		).filter((el) => !el.closest("[aria-hidden='true']") && !el.closest(".em__honeypot"));
+
+	const trapFocus = (e: KeyboardEvent) => {
+		if (e.key !== "Tab") return;
+		const focusable = getFocusable();
+		if (!focusable.length) return;
+		const first = focusable[0];
+		const last  = focusable[focusable.length - 1];
+		if (e.shiftKey) {
+			if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+		} else {
+			if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+		}
+	};
+
+	// ---------------------------------------------------------------------------
+	// Open / close
+	// ---------------------------------------------------------------------------
+	let lastFocus: HTMLElement | null = null;
+
+	const openModal = (prefillPlan?: string, prefillCourse?: string) => {
+		lastFocus = document.activeElement as HTMLElement;
+
+		// Reset to idle state
+		setState("idle");
+		clearErrors();
+
+		if (prefillPlan) selectByValue(planSelect, prefillPlan);
+		if (prefillCourse) selectByValue(courseSelect, prefillCourse);
+
+		dialog.showModal();
+		dialog.addEventListener("keydown", trapFocus);
+		document.body.setAttribute("data-modal-open", "1");
+
+		// Focus first field
+		requestAnimationFrame(() => {
+			(form.querySelector<HTMLElement>("input:not([type=hidden]):not([tabindex='-1'])"))?.focus();
+		});
+
+		// Load Turnstile script once
+		if (tsWidget && !document.getElementById("cf-turnstile-script")) {
+			const s   = document.createElement("script");
+			s.id      = "cf-turnstile-script";
+			s.src     = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+			s.async   = true;
+			s.defer   = true;
+			document.head.appendChild(s);
+		}
+	};
+
+	const closeModal = () => {
+		dialog.close();
+		dialog.removeEventListener("keydown", trapFocus);
+		document.body.removeAttribute("data-modal-open");
+		lastFocus?.focus();
+	};
+
+	// Close on backdrop click (click on <dialog> itself, not its children).
+	dialog.addEventListener("click", (e) => {
+		if (e.target === dialog) closeModal();
+	});
+	dialog.addEventListener("cancel", (e) => { e.preventDefault(); closeModal(); });
+	closeButtons.forEach((btn) => btn.addEventListener("click", closeModal));
+	retryBtn?.addEventListener("click", () => setState("idle"));
+
+	// ---------------------------------------------------------------------------
+	// State switcher
+	// ---------------------------------------------------------------------------
+	const setState = (state: ModalState, errorMsg = "") => {
+		form.hidden          = state !== "idle" && state !== "submitting";
+		successPanel.hidden  = state !== "success";
+		errorPanel.hidden    = state !== "error";
+
+		if (state === "submitting") {
+			submitBtn.disabled = true;
+			submitBtn.classList.add("is-loading");
+			submitLabel.textContent = "Sending request";
+		} else {
+			submitBtn.disabled = false;
+			submitBtn.classList.remove("is-loading");
+			submitLabel.textContent = "Request free trial";
+		}
+
+		if (state === "error") {
+			errorPanelMsg.textContent = errorMsg;
+		}
+	};
+
+	// ---------------------------------------------------------------------------
+	// Inline validation helpers
+	// ---------------------------------------------------------------------------
+	const setFieldError = (fieldName: string, msg: string) => {
+		const el = form.querySelector<HTMLElement>(`[data-err="${fieldName}"]`);
+		if (!el) return;
+		el.textContent = msg;
+		el.classList.toggle("is-visible", !!msg);
+		const input = form.querySelector<HTMLElement>(`[name="${fieldName}"], #em-phone`);
+		input?.setAttribute("aria-invalid", msg ? "true" : "false");
+	};
+
+	const clearErrors = () => {
+		form.querySelectorAll<HTMLElement>("[data-err]").forEach((el) => {
+			el.textContent = "";
+			el.classList.remove("is-visible");
+		});
+		form.querySelectorAll<HTMLElement>("[aria-invalid]").forEach((el) => {
+			el.removeAttribute("aria-invalid");
+		});
+		globalErr.textContent = "";
+	};
+
+	// ---------------------------------------------------------------------------
+	// Client-side validation
+	// ---------------------------------------------------------------------------
+	const validateForm = (): boolean => {
+		clearErrors();
+		let valid = true;
+
+		const name  = (form.querySelector<HTMLInputElement>("#em-name")?.value ?? "").trim();
+		const email = (form.querySelector<HTMLInputElement>("#em-email")?.value ?? "").trim();
+
+		if (name.length < 2) { setFieldError("name", "Please enter your name."); valid = false; }
+
+		const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+		if (!emailRe.test(email)) { setFieldError("email", "Enter a valid email address."); valid = false; }
+
+		// Phone: intl-tel-input validation
+		if (!iti.isValidNumber()) {
+			setFieldError("phone", "Enter a valid phone number with country code.");
+			valid = false;
+		} else {
+			// Write full E.164 to hidden field
+			phoneFull.value = iti.getNumber() ?? "";
+		}
+
+		return valid;
+	};
+
+	// ---------------------------------------------------------------------------
+	// Turnstile token
+	// ---------------------------------------------------------------------------
+	const getTurnstileToken = (): string => {
+		const api = (window as unknown as { turnstile?: { getResponse?: (el?: HTMLElement) => string | undefined } }).turnstile;
+		return api?.getResponse?.(tsWidget ?? undefined) ?? "";
+	};
+
+	// ---------------------------------------------------------------------------
+	// Submit
+	// ---------------------------------------------------------------------------
+	form.addEventListener("submit", async (e) => {
+		e.preventDefault();
+		if (submitBtn.disabled) return;
+
+		if (!validateForm()) {
+			// Focus first invalid field.
+			const firstInvalid = form.querySelector<HTMLElement>("[aria-invalid='true']");
+			firstInvalid?.focus();
+			return;
+		}
+
+		setState("submitting");
+
+		// Build E.164 phone if not already set by validate.
+		if (!phoneFull.value) phoneFull.value = iti.getNumber() ?? "";
+
+		const data = new FormData(form);
+
+		const payload = {
+			name:            (data.get("name")    as string).trim(),
+			email:           (data.get("email")   as string).trim().toLowerCase(),
+			phone:           (data.get("phone")   as string).trim(),
+			course:          (data.get("course")  as string).trim(),
+			plan:            (data.get("plan")    as string).trim(),
+			message:         (data.get("message") as string).trim(),
+			website:         (data.get("website") as string ?? ""),
+			turnstileToken:  getTurnstileToken(),
+		};
+
+		try {
+			const res = await fetch("/api/enrol", {
+				method: "POST",
+				headers: { "Content-Type": "application/json", Accept: "application/json" },
+				body:    JSON.stringify(payload),
+			});
+
+			const result = await res.json().catch(() => ({})) as { ok?: boolean; message?: string; field?: string };
+
+			if (res.status === 429) {
+				setState("error", result.message ?? "Too many attempts. Please try again later.");
+				return;
+			}
+
+			if (res.ok && result.ok) {
+				setState("success");
+				form.reset();
+				(window as unknown as { turnstile?: { reset?: (el?: HTMLElement) => void } }).turnstile?.reset?.(tsWidget ?? undefined);
+				// Focus the success panel close button
+				successPanel.querySelector<HTMLElement>("button")?.focus();
+			} else if (!res.ok && result.field) {
+				setState("idle");
+				setFieldError(result.field, result.message ?? "Please check this field.");
+				form.querySelector<HTMLElement>(`[name="${result.field}"], #em-${result.field}`)?.focus();
+			} else {
+				setState(
+					"error",
+					result.message ?? "Something went wrong. Please try again or contact us directly.",
+				);
+			}
+		} catch {
+			setState("error", "We could not reach the server. Check your connection and try again.");
+		}
+	});
+
+	// ---------------------------------------------------------------------------
+	// Trigger wire-up
+	// ---------------------------------------------------------------------------
+	const selectByValue = (sel: HTMLSelectElement | null, value: string) => {
+		if (!sel || !value) return;
+		for (const opt of Array.from(sel.options)) {
+			if (opt.value === value || opt.dataset.planId === value || opt.dataset.courseId === value) {
+				sel.value = opt.value;
+				return;
+			}
+		}
+	};
+
+	document.addEventListener("click", (e) => {
+		const btn = (e.target as Element)?.closest<HTMLElement>("[data-open-modal]");
+		if (!btn) return;
+		e.preventDefault();
+		openModal(
+			btn.dataset.prefillPlan ?? "",
+			btn.dataset.prefillCourse ?? "",
+		);
+	});
+
+	// Also respond to custom events (e.g., from non-button elements).
+	document.addEventListener("open-enrol-modal", (e) => {
+		const { plan, course } = (e as CustomEvent<{ plan?: string; course?: string }>).detail ?? {};
+		openModal(plan, course);
+	});
+</script>
+
+<style is:global>
+	/* Suppress intl-tel-input's own flag sprite sheet and re-skin to match our tokens */
+	.iti { --iti-hover-color: var(--mint-50); --iti-border-color: var(--line); width: 100%; }
+	.iti__flag-container { border-radius: var(--radius-input) 0 0 var(--radius-input); }
+	.iti__selected-dial-code { font-size: var(--type-small-size); }
+	.iti__dropdown-content { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); box-shadow: 0 8px 24px -8px rgba(11,26,20,0.16); }
+	.iti__search-input { background: var(--page); color: var(--ink); border-color: var(--line); }
+	.iti__country.iti__highlight { background: var(--mint-50); }
+	.iti--separate-dial-code .iti__selected-flag { border-radius: var(--radius-input) 0 0 var(--radius-input); background: var(--mint-50); border-right: 1px solid var(--line); }
+</style>
+
+<style>
+	/* ---- Dialog reset --------------------------------------------------- */
+	.em {
+		position: fixed;
+		inset: 0;
+		z-index: 200;
+		display: none;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		max-width: 100%;
+		height: 100%;
+		max-height: 100%;
+		margin: 0;
+		padding: 0;
+		border: none;
+		background: transparent;
+		overflow: hidden;
+	}
+
+	.em[open] { display: flex; }
+
+	.em::backdrop {
+		background: color-mix(in srgb, var(--ink) 48%, transparent);
+		backdrop-filter: blur(2px);
+	}
+
+	/* ---- Inner card ---------------------------------------------------- */
+	.em__inner {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		width: min(560px, calc(100vw - 24px));
+		max-height: calc(100dvh - 24px);
+		background: var(--surface);
+		border: 1px solid var(--line);
+		border-radius: var(--radius-panel);
+		box-shadow: 0 24px 64px -16px rgba(11,26,20,0.28);
+		overflow: hidden;
+	}
+
+	/* ---- Header -------------------------------------------------------- */
+	.em__head {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: var(--space-md);
+		padding: 24px 24px 20px;
+		border-bottom: 1px solid var(--line);
+		flex-shrink: 0;
+	}
+
+	.em__eyebrow {
+		font-size: var(--type-eyebrow-size);
+		font-weight: var(--type-eyebrow-weight);
+		letter-spacing: var(--type-eyebrow-tracking);
+		color: var(--green-deep);
+		text-transform: uppercase;
+		margin: 0 0 4px;
+	}
+
+	.em__title {
+		font-size: var(--type-h3-size);
+		font-weight: 500;
+		line-height: 1.2;
+		margin: 0;
+	}
+
+	.em__close {
+		flex-shrink: 0;
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		border: 1px solid var(--line);
+		border-radius: 50%;
+		background: transparent;
+		color: var(--ink);
+		cursor: pointer;
+		transition: background-color var(--transition), border-color var(--transition);
+	}
+
+	.em__close:hover {
+		background: var(--mint-50);
+		border-color: var(--green);
+	}
+
+	.em__close:focus-visible {
+		outline: 2px solid var(--focus);
+		outline-offset: 2px;
+	}
+
+	/* ---- Scrollable body ----------------------------------------------- */
+	.em__form,
+	.em__success,
+	.em__error-panel {
+		display: grid;
+		gap: var(--space-md);
+		padding: 24px;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+	}
+
+	/* ---- Fields -------------------------------------------------------- */
+	.em__field { display: grid; gap: 6px; }
+
+	.em__label {
+		font-size: var(--type-small-size);
+		font-weight: 600;
+		color: var(--ink);
+	}
+
+	.em__req { color: #b3261e; }
+
+	.em__optional {
+		font-weight: 400;
+		color: var(--ink-muted);
+	}
+
+	.em__input,
+	.em__select,
+	.em__textarea {
+		width: 100%;
+		min-height: 48px;
+		padding: 11px 14px;
+		border: 1px solid var(--line);
+		border-radius: var(--radius-input);
+		background: var(--page);
+		color: var(--ink);
+		font: inherit;
+		font-size: var(--type-body-size);
+		transition: border-color var(--transition);
+	}
+
+	.em__input:focus-visible,
+	.em__select:focus-visible,
+	.em__textarea:focus-visible {
+		outline: 2px solid var(--focus);
+		outline-offset: 2px;
+		border-color: var(--green-deep);
+	}
+
+	.em__input[aria-invalid="true"],
+	.em__select[aria-invalid="true"],
+	.em__textarea[aria-invalid="true"] {
+		border-color: #b3261e;
+	}
+
+	.em__input--phone {
+		border-radius: 0 var(--radius-input) var(--radius-input) 0;
+	}
+
+	.em__phone-wrap { position: relative; }
+
+	.em__select { appearance: auto; }
+
+	.em__textarea {
+		min-height: 88px;
+		resize: vertical;
+	}
+
+	.em__row {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: var(--space-md);
+	}
+
+	/* ---- Inline error -------------------------------------------------- */
+	.em__err {
+		display: none;
+		font-size: var(--type-small-size);
+		color: #b3261e;
+		line-height: 1.4;
+	}
+
+	.em__err.is-visible { display: block; }
+
+	/* ---- Global error (below submit) ----------------------------------- */
+	.em__global-err {
+		font-size: var(--type-small-size);
+		color: #b3261e;
+		min-height: 1.4em;
+	}
+
+	/* ---- Honeypot ------------------------------------------------------ */
+	.em__honeypot {
+		position: absolute;
+		left: -9999px;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+	}
+
+	/* ---- Turnstile ----------------------------------------------------- */
+	.em__turnstile { justify-self: start; }
+
+	/* ---- Footer / submit ----------------------------------------------- */
+	.em__foot { display: grid; gap: var(--space-sm); }
+
+	.em__submit {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-xs);
+		height: 48px;
+		padding: 0 28px;
+		border: 1px solid var(--green);
+		border-radius: var(--radius-button);
+		background: var(--green);
+		color: var(--on-accent);
+		font: inherit;
+		font-size: var(--type-body-size);
+		font-weight: 500;
+		cursor: pointer;
+		transition: background-color var(--transition), border-color var(--transition);
+		width: 100%;
+	}
+
+	.em__submit:hover { background: var(--green-deep); border-color: var(--green-deep); }
+
+	.em__submit:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+	.em__submit:disabled { opacity: 0.72; cursor: progress; }
+
+	.em__submit--outline {
+		background: transparent;
+		color: var(--green-deep);
+	}
+
+	.em__submit--outline:hover { background: var(--mint-50); }
+
+	/* ---- Spinner ------------------------------------------------------- */
+	.em__spinner {
+		display: none;
+		width: 16px;
+		height: 16px;
+		border: 2px solid color-mix(in srgb, var(--on-accent) 35%, transparent);
+		border-top-color: var(--on-accent);
+		border-radius: 50%;
+		animation: em-spin 700ms linear infinite;
+	}
+
+	.em__submit.is-loading .em__spinner { display: block; }
+
+	@keyframes em-spin { to { transform: rotate(360deg); } }
+
+	/* ---- Success panel ------------------------------------------------- */
+	.em__success { text-align: center; justify-items: center; }
+
+	.em__success-icon { margin-bottom: var(--space-sm); }
+
+	.em__success-title {
+		font-size: var(--type-h3-size);
+		font-weight: 500;
+		margin: 0 0 var(--space-xs);
+	}
+
+	.em__success-body {
+		color: var(--ink-muted);
+		max-width: 38ch;
+		line-height: 1.6;
+		margin: 0 0 var(--space-lg);
+	}
+
+	/* ---- Error panel --------------------------------------------------- */
+	.em__error-panel { text-align: center; justify-items: center; }
+
+	.em__error-panel-msg {
+		color: var(--ink);
+		margin: 0 0 var(--space-md);
+	}
+
+	.em__error-panel-actions { display: flex; gap: var(--space-sm); flex-wrap: wrap; justify-content: center; }
+
+	.em__wa-link {
+		display: inline-flex;
+		align-items: center;
+		height: 48px;
+		padding: 0 24px;
+		border: 1px solid var(--line);
+		border-radius: var(--radius-button);
+		color: var(--green-deep);
+		font-size: var(--type-body-size);
+		font-weight: 500;
+		text-decoration: none;
+		transition: background-color var(--transition);
+	}
+
+	.em__wa-link:hover { background: var(--mint-50); }
+
+	/* ---- Mobile sheet -------------------------------------------------- */
+	@media (max-width: 600px) {
+		.em {
+			align-items: flex-end;
+		}
+
+		.em__inner {
+			width: 100%;
+			max-height: calc(100dvh - 56px);
+			border-radius: var(--radius-panel) var(--radius-panel) 0 0;
+			border-bottom: none;
+		}
+
+		.em__row { grid-template-columns: 1fr; }
+	}
+
+	/* ---- Body scroll lock when modal open ------------------------------ */
+	:global(body[data-modal-open]) { overflow: hidden; }
+
+	/* ---- Reduced motion ------------------------------------------------ */
+	@media (prefers-reduced-motion: reduce) {
+		.em__spinner { animation-duration: 1.4s; }
+	}
+</style>
+

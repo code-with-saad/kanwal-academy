@@ -73,9 +73,15 @@ const {
 		{summary && <p class="course-card__summary" {...edit?.summary}>{summary}</p>}
 
 		<div class="course-card__cta">
-			<Button href={`/?course=${encodeURIComponent(slug)}#book`} variant="primary" edit={homeEdit?.courses_trial_cta}>
+			<button
+				type="button"
+				class="course-card__trial-btn"
+				data-open-modal
+				data-prefill-course={title}
+				{...homeEdit?.courses_trial_cta}
+			>
 				{trialLabel}
-			</Button>
+			</button>
 			<Button href={href} variant="secondary" edit={homeEdit?.courses_details_cta}>{detailsLabel}</Button>
 		</div>
 	</div>
@@ -160,4 +166,26 @@ const {
 	.course-card__cta :global(.btn) {
 		flex: 1 1 150px;
 	}
+
+	/* Modal trigger button styled as primary */
+	.course-card__trial-btn {
+		flex: 1 1 150px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		height: 44px;
+		padding: 0 20px;
+		border: 1px solid var(--green);
+		border-radius: var(--radius-button);
+		background: var(--green);
+		color: var(--on-accent);
+		font: inherit;
+		font-size: var(--type-small-size);
+		font-weight: 500;
+		cursor: pointer;
+		transition: background-color var(--transition), border-color var(--transition);
+	}
+
+	.course-card__trial-btn:hover { background: var(--green-deep); border-color: var(--green-deep); }
+	.course-card__trial-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 </style>

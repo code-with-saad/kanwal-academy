@@ -1,8 +1,9 @@
 ---
 import { Font } from "astro:assets";
-import { getSiteSettingsWithCacheHint } from "emdash";
+import { getEmDashCollection, getSiteSettingsWithCacheHint } from "emdash";
 import { createPublicPageContext } from "emdash/page";
 import { EmDashBodyEnd, EmDashBodyStart, EmDashHead } from "emdash/ui";
+import EnrolmentModal from "../components/EnrolmentModal.astro";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import Newsletter from "../components/Newsletter.astro";
@@ -35,14 +36,18 @@ const {
 	nav,
 } = Astro.props;
 
-const [settingsResult, contactResult] = await Promise.all([
+const [settingsResult, contactResult, coursesResult, plansResult] = await Promise.all([
 	getSiteSettingsWithCacheHint(),
 	getSiteContact(),
+	getEmDashCollection("courses", { status: "published", orderBy: { order: "asc" } }),
+	getEmDashCollection("plans",   { status: "published", orderBy: { order: "asc" } }),
 ]);
 
 if (Astro.cache?.enabled) {
 	Astro.cache.set(settingsResult.cacheHint);
 	Astro.cache.set(contactResult.cacheHint);
+	Astro.cache.set(coursesResult.cacheHint);
+	Astro.cache.set(plansResult.cacheHint);
 }
 
 const { siteTitle, siteTagline, titleSeparator } = resolveSiteIdentity(settingsResult.data);
@@ -54,6 +59,9 @@ const fullTitle = title
 
 const headerItems = nav ?? [...site.nav];
 const headerCta = site.cta;
+
+const modalCourses = coursesResult.entries.map((c) => ({ id: c.id, name: String(c.data.name ?? "") }));
+const modalPlans   = plansResult.entries.map((p)   => ({ id: p.id, name: String(p.data.name ?? "") }));
 
 const pageCtx = createPublicPageContext({
 	Astro,
@@ -165,6 +173,11 @@ const pageCtx = createPublicPageContext({
 				</svg>
 			</button>
 		</div>
+		<EnrolmentModal
+			courses={modalCourses}
+			plans={modalPlans}
+			whatsappPhone={contactResult.data.phone}
+		/>
 		<EmDashBodyEnd page={pageCtx} />
 		<script>
 			import "../scripts/motion";
