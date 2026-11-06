@@ -20,7 +20,7 @@ import Testimonials from "../components/Testimonials.astro";
 import WisdomPanel from "../components/WisdomPanel.astro";
 import { site } from "../config/site";
 import { heroImage } from "../config/images";
-import { getSiteContact } from "../utils/site-config";
+import { getSiteContact, whatsappHref } from "../utils/site-config";
 import { isDemoMode } from "../utils/env";
 import { formatUsdPrice } from "../utils/price";
 import type { Page } from "../../emdash-env";
@@ -33,12 +33,55 @@ interface HomePageFields {
 	home_image?: ImageValue;
 	home_primary_cta?: string;
 	home_secondary_cta?: string;
+	home_reach_text?: string;
+	home_cta_label?: string;
+	feature_card_1_title?: string;
+	feature_card_1_text?: string;
+	feature_card_1_chip?: string;
+	feature_card_2_title?: string;
+	feature_card_2_text?: string;
+	feature_card_3_title?: string;
+	feature_card_3_text?: string;
+	feature_card_4_title?: string;
+	feature_card_4_text?: string;
 	courses_eyebrow?: string;
 	courses_heading?: string;
 	courses_intro?: string;
+	courses_journey_heading?: string;
+	courses_journey_intro?: string;
 	courses_trial_cta?: string;
 	courses_details_cta?: string;
 	courses_format_label?: string;
+	split1_heading_before?: string;
+	split1_heading_highlight?: string;
+	split1_paragraph_1?: string;
+	split1_paragraph_2?: string;
+	split1_image?: ImageValue;
+	split1_image_label?: string;
+	split2_heading_before?: string;
+	split2_heading_highlight?: string;
+	split2_paragraph_1?: string;
+	split2_list_items?: string;
+	split2_image?: ImageValue;
+	split2_image_label?: string;
+	stats_eyebrow?: string;
+	stats_heading?: string;
+	stats_description?: string;
+	about_eyebrow?: string;
+	about_title_before?: string;
+	about_title_highlight?: string;
+	about_paragraph_1?: string;
+	about_paragraph_2?: string;
+	about_image?: ImageValue;
+	about_image_alt?: string;
+	standing_eyebrow?: string;
+	standing_heading?: string;
+	standing_item_1_title?: string;
+	standing_item_1_text?: string;
+	standing_item_2_title?: string;
+	standing_item_2_text?: string;
+	standing_item_3_title?: string;
+	standing_item_3_text?: string;
 	pricing_eyebrow?: string;
 	pricing_heading?: string;
 	pricing_intro?: string;
@@ -50,9 +93,25 @@ interface HomePageFields {
 	pricing_select_cta?: string;
 	trial_eyebrow?: string;
 	trial_heading?: string;
+	trial_step_1_title?: string;
+	trial_step_1_body?: string;
+	trial_step_2_title?: string;
+	trial_step_2_body?: string;
+	trial_step_3_title?: string;
+	trial_step_3_body?: string;
+	testimonials_eyebrow?: string;
+	testimonials_heading?: string;
+	book_eyebrow?: string;
+	book_heading?: string;
+	book_lead?: string;
+	book_contact_label?: string;
+	book_note?: string;
+	book_form_title?: string;
+	book_form_sub?: string;
+	book_submit_label?: string;
 }
 
-type HomeTextField = Exclude<keyof HomePageFields, "home_image">;
+type HomeTextField = keyof HomePageFields;
 
 const [
 	coursesResult,
@@ -85,21 +144,20 @@ if (Astro.cache?.enabled) {
 	Astro.cache.set(homeResult.cacheHint);
 }
 
-const courses = coursesResult.entries;
-const plans = plansResult.entries;
+const courses = coursesResult.entries.filter(
+	(c) => c.data.visible !== false,
+);
+const plans = plansResult.entries.filter(
+	(p) => p.data.visible !== false,
+);
 const testimonials = testimonialsResult.entries.filter(
-	(testimonial) => testimonial.data.consent_given === true,
+	(testimonial) =>
+		testimonial.data.consent_given === true &&
+		testimonial.data.visible !== false,
 );
 const contact = contactResult.data;
 const demo = isDemoMode();
 const navItems = [...site.nav];
-
-// Arabic course names supplied by the academy.
-const courseArabic: Record<string, string> = {
-	"quranic-recitation": "القراءة",
-	"tajweed-proficiency": "التجويد",
-	"memorization-excellence": "الحفظ",
-};
 
 const homePage = homeResult.entry as ContentEntry<Page & HomePageFields> | null;
 const homeText = (field: HomeTextField, fallback: string) =>
@@ -129,6 +187,8 @@ const toPlanCard = (plan: (typeof plans)[number]) => ({
 	slug: plan.id,
 	name: plan.data.name,
 	price: plan.data.price,
+	currencySymbol: plan.data.currency_symbol ?? "$",
+	billingPeriod: plan.data.billing_period ?? "/ month",
 	classesPerWeek: plan.data.classes_per_week,
 	classesPerMonth: plan.data.classes_per_month,
 	hoursPerMonth: plan.data.hours_per_month,
@@ -139,63 +199,107 @@ const lowestPlanPrice = plans.length
 	? Math.min(...plans.map((plan) => Number(plan.data.price)))
 	: 20;
 
-const [recitationCourse, tajweedCourse, memorizationCourse] = courses;
+// Build the four floating feature cards from CMS values, interpolating dynamic tokens.
+const replaceTokens = (template: string, tokens: Record<string, string | number>) =>
+	template.replace(/\{(\w+)\}/g, (match, key) =>
+		tokens[key] !== undefined ? String(tokens[key]) : match,
+	);
 
-// Pill chips linking to course sections.
-const coursePills = [
-	{
-		href: "/#courses",
-		label: recitationCourse?.data.name ?? "Qur'anic Recitation",
-		icon: "book" as const,
-	},
-	{
-		href: "/#courses",
-		label: tajweedCourse?.data.name ?? "Tajweed Proficiency",
-		icon: "waves" as const,
-	},
-	{
-		href: "/#courses",
-		label: memorizationCourse?.data.name ?? "Memorization Excellence",
-		icon: "bookmark" as const,
-	},
-	{
-		href: "/#book",
-		label: "Live one-to-one",
-		icon: "headset" as const,
-	},
-];
-
-// The testimonials section is only rendered when it has content, so the
-// globe card falls back to #about when it is hidden.
-const hasTestimonials = testimonials.length > 0 || demo;
+const featureTokens = {
+	countries: contact.stats.countries,
+	price: formatUsdPrice(lowestPlanPrice),
+};
 
 const featureCards = [
 	{
-		title: "Free trial class",
-		text: "Meet your teacher first.",
+		title: replaceTokens(homeText("feature_card_1_title", "Free trial class"), featureTokens),
+		text: replaceTokens(homeText("feature_card_1_text", "Meet your teacher first."), featureTokens),
 		href: "#book",
 		icon: "trial" as const,
 		isFirst: true,
+		chipLabel: homeText("feature_card_1_chip", "Free Trial"),
 	},
 	{
-		title: `Plans from ${formatUsdPrice(lowestPlanPrice)}/month`,
-		text: "Choose a weekly pace.",
+		title: replaceTokens(homeText("feature_card_2_title", "Plans from {price}/month"), featureTokens),
+		text: replaceTokens(homeText("feature_card_2_text", "Choose a weekly pace."), featureTokens),
 		href: "#pricing",
 		icon: "price" as const,
 	},
 	{
-		title: `Students in ${contact.stats.countries} countries`,
-		text: "Join families worldwide.",
-		href: hasTestimonials ? "#testimonials" : "#about",
+		title: replaceTokens(homeText("feature_card_3_title", "Students in {countries} countries"), featureTokens),
+		text: replaceTokens(homeText("feature_card_3_text", "Join families worldwide."), featureTokens),
+		href: testimonials.length > 0 || demo ? "#testimonials" : "#about",
 		icon: "globe" as const,
 	},
 	{
-		title: "Learn on any device",
-		text: "Phone, tablet or laptop.",
+		title: replaceTokens(homeText("feature_card_4_title", "Learn on any device"), featureTokens),
+		text: replaceTokens(homeText("feature_card_4_text", "Phone, tablet or laptop."), featureTokens),
 		href: "#how-it-works",
 		icon: "device" as const,
 	},
 ];
+
+// Standing out items from CMS
+const standingItems = [
+	{
+		number: "01",
+		title: homeText("standing_item_1_title", "Personalized schedules"),
+		text: homeText("standing_item_1_text", "You pick the days and times that suit your week, and your teacher keeps that slot for you."),
+		icon: "clock" as const,
+	},
+	{
+		number: "02",
+		title: homeText("standing_item_2_title", "Qualified Qur'an teachers"),
+		text: homeText("standing_item_2_text", "Every class is taught by a teacher with formal Qur'anic training, matched to your course and level."),
+		icon: "book" as const,
+	},
+	{
+		number: "03",
+		title: homeText("standing_item_3_title", "Live one on one sessions"),
+		text: homeText("standing_item_3_text", "Video lessons with direct feedback, so your questions are answered in the moment."),
+		icon: "screens" as const,
+	},
+];
+
+// How it works steps from CMS
+const howItWorksSteps = [
+	{
+		title: homeText("trial_step_1_title", "Book your free trial"),
+		text: homeText("trial_step_1_body", "Choose a plan and pick a time that works for you. The trial class is free."),
+		icon: "book-trial" as const,
+	},
+	{
+		title: homeText("trial_step_2_title", "Meet your teacher"),
+		text: homeText("trial_step_2_body", "We match you with a teacher for your course and level, then assess where you are."),
+		icon: "teacher" as const,
+	},
+	{
+		title: homeText("trial_step_3_title", "Start your plan"),
+		text: homeText("trial_step_3_body", "Your teacher builds a weekly schedule around your goals and keeps you accountable."),
+		icon: "calendar-check" as const,
+	},
+];
+
+// Split list items from newline-separated CMS text
+const split2List = homeText("split2_list_items", "")
+	.split("\n")
+	.map((line) => line.trim())
+	.filter(Boolean);
+
+// Course pills for the hero header area
+const coursePills = courses.slice(0, 3).map((c, i) => ({
+	href: "/#courses",
+	label: c.data.name,
+	icon: (["book", "waves", "bookmark"] as const)[i] ?? "book",
+}));
+coursePills.push({
+	href: "/#book",
+	label: homeText("courses_format_label", "Live one on one"),
+	icon: "headset" as const,
+});
+
+// The testimonials section is only rendered when it has content.
+const hasTestimonials = testimonials.length > 0 || demo;
 ---
 
 <Base
@@ -250,8 +354,8 @@ const featureCards = [
 			<div class="hero__grid">
 				<!-- Left: Copy -->
 				<div class="hero__copy" data-reveal="up">
-					<h1 class="hero__headline">{heroHeadline}</h1>
-					<p class="hero__lead" data-reveal="up" data-reveal-delay="120">
+					<h1 class="hero__headline" {...homeEdit?.home_headline}>{heroHeadline}</h1>
+					<p class="hero__lead" data-reveal="up" data-reveal-delay="120" {...homeEdit?.home_lead}>
 						{heroLead}
 					</p>
 					<p class="hero__reach" data-reveal="up" data-reveal-delay="200">
@@ -267,10 +371,10 @@ const featureCards = [
 							<ellipse cx="10" cy="10" rx="3.5" ry="8.5" fill="none" stroke="currentColor" stroke-width="1.3" />
 							<path d="M1.5 10h17" stroke="currentColor" stroke-width="1.3" />
 						</svg>
-						<span>Students learning from {contact.stats.countries} countries</span>
+						<span>{replaceTokens(homeText("home_reach_text", "Students learning from {countries} countries"), { countries: contact.stats.countries })}</span>
 					</p>
 					<button type="button" class="hero__cta" data-book-cta data-reveal="up" data-reveal-delay="280">
-						Start your free trial
+						{homeText("home_cta_label", "Start your free trial")}
 						<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 							<path d="M4 10h12m-5-5 5 5-5 5" />
 						</svg>
@@ -382,13 +486,26 @@ const featureCards = [
 	<!-- ===== REST OF PAGE ===== -->
 	<Section id="about" class="section--after-hero">
 		<Container>
-			<WisdomPanel years={contact.stats.years} />
+			<WisdomPanel
+				eyebrow={homeText("about_eyebrow", "Why Kanwal")}
+				titleBefore={homeText("about_title_before", "Experience Qur'anic")}
+				titleHighlight={homeText("about_title_highlight", "wisdom")}
+				paragraph1={homeText("about_paragraph_1", "Kanwal Quran Academy teaches the Qur'an online in live one to one classes. Your teacher listens to your recitation, corrects it as you read, and sets a weekly plan around your level.")}
+				paragraph2={homeText("about_paragraph_2", "Students join from more than five countries, on a phone, tablet or laptop. Every student starts with a free trial class before choosing a plan.")}
+				image={homePage?.data.about_image}
+				imageAlt={homeText("about_image_alt", "A student reciting the Qur'an during a live online lesson")}
+				years={contact.stats.years}
+			/>
 		</Container>
 	</Section>
 
 	<Section id="standing-out" space="tight">
 		<Container>
-			<StandingOut />
+			<StandingOut
+				eyebrow={homeText("standing_eyebrow", "Standing out")}
+				heading={homeText("standing_heading", "Standing out")}
+				items={standingItems}
+			/>
 		</Container>
 	</Section>
 
@@ -396,10 +513,11 @@ const featureCards = [
 		<Container>
 			<div class="journey-head">
 				<div class="journey-head__copy">
-					<h2 data-reveal-words>Start your journey</h2>
-					<p data-reveal="up" data-reveal-delay="80">
-						Three courses, each taught one to one. Pick the path that matches where you are and
-						your teacher will set the pace from there.
+					<h2 data-reveal-words {...homeEdit?.courses_journey_heading}>
+						{homeText("courses_journey_heading", "Start your journey")}
+					</h2>
+					<p data-reveal="up" data-reveal-delay="80" {...homeEdit?.courses_journey_intro}>
+						{homeText("courses_journey_intro", "Three courses, each taught one to one. Pick the path that matches where you are and your teacher will set the pace from there.")}
 					</p>
 				</div>
 				<Button book variant="secondary">Book free trial</Button>
@@ -413,7 +531,7 @@ const featureCards = [
 							title={course.data.name}
 							summary={course.data.summary}
 							level={course.data.level}
-							arabic={courseArabic[course.id]}
+							arabic={course.data.arabic_name}
 							prefillCourse={course.data.name}
 						/>
 					))
@@ -422,37 +540,32 @@ const featureCards = [
 
 			<div class="study-stack">
 				<FeatureSplit
-					headingBefore="Easy Qur'an learning"
-					headingHighlight="online"
+					headingBefore={homeText("split1_heading_before", "Easy Qur'an learning")}
+					headingHighlight={homeText("split1_heading_highlight", "online")}
 					paragraphs={[
-						"Lessons run live in a video call, so you only need a phone, tablet or laptop with a camera. Your teacher shares the page you are reading and listens while you recite.",
-						"The same teacher stays with you each week, so corrections and progress carry over from class to class.",
+						homeText("split1_paragraph_1", "Lessons run live in a video call, so you only need a phone, tablet or laptop with a camera. Your teacher shares the page you are reading and listens while you recite."),
+						homeText("split1_paragraph_2", "The same teacher stays with you each week, so corrections and progress carry over from class to class."),
 					]}
+					image={homePage?.data.split1_image}
 					imageSrc="/images/section-phone.png"
 					imageAlt="A student joining a Qur'an lesson on a phone"
-					imageLabel="Lesson on a phone (4:3)"
+					imageLabel={homeText("split1_image_label", "Lesson on a phone (4:3)")}
 					imageRatio="4 / 3"
 					buttonLabel="Book free trial"
 				/>
 
 				<FeatureSplit
-					headingBefore="How to memorize the Qur'an"
-					headingHighlight="with confidence"
+					headingBefore={homeText("split2_heading_before", "How to memorize the Qur'an")}
+					headingHighlight={homeText("split2_heading_highlight", "with confidence")}
 					paragraphs={[
-						"Memorization grows in small, steady steps. Your teacher sets a monthly target, listens to what you have learned, and revises with you before adding new lines.",
+						homeText("split2_paragraph_1", "Memorization grows in small, steady steps. Your teacher sets a monthly target, listens to what you have learned, and revises with you before adding new lines."),
 					]}
+					image={homePage?.data.split2_image}
 					imageSrc="/images/section-memorize.jpg"
 					imageAlt="An open Qur'an with a page marker, ready for memorization practice"
-					imageLabel="Memorization practice (4:3)"
+					imageLabel={homeText("split2_image_label", "Memorization practice (4:3)")}
 					imageRatio="4 / 3"
-					list={[
-						"Set your intention",
-						"Create a quiet space",
-						"Listen and repeat",
-						"Revise daily",
-						"Break it into small parts",
-						"Choose one surah at a time",
-					]}
+					list={split2List}
 					buttonLabel="Book free trial"
 					imageFirst
 				/>
@@ -462,14 +575,24 @@ const featureCards = [
 
 	<!-- ===== STATS BAND ===== -->
 	<StatsBand
+		eyebrow={homeText("stats_eyebrow", "Over the past 5 years")}
+		heading={homeText("stats_heading", "Our success")}
+		description={homeText("stats_description", "Our three courses, Qur'anic Recitation, Tajweed Proficiency and Memorization Excellence, help students learn the Qur'an at their own pace and from the comfort of home.")}
 		students={contact.stats.students}
 		sessions={contact.stats.sessions}
 		countries={contact.stats.countries}
+		studentsLabel={contact.stats.labels.students}
+		sessionsLabel={contact.stats.labels.sessions}
+		countriesLabel={contact.stats.labels.countries}
 	/>
 
 	<Section id="how-it-works" space="tight">
 		<Container>
-			<HowItWorks />
+			<HowItWorks
+				eyebrow={homeText("trial_eyebrow", "Free trial")}
+				heading={homeText("trial_heading", "How the free trial works")}
+				steps={howItWorksSteps}
+			/>
 		</Container>
 	</Section>
 
@@ -497,31 +620,51 @@ const featureCards = [
 							plan={toPlanCard(plan)}
 							href={`/?plan=${encodeURIComponent(plan.id)}#book`}
 							revealDelay={index * 80}
+							periodLabel={homeText("pricing_period_label", "/ month")}
+							classesWeekLabel={homeText("pricing_classes_week_label", "Classes each week")}
+							classesMonthLabel={homeText("pricing_classes_month_label", "Classes each month")}
+							hoursLabel={homeText("pricing_hours_label", "Teaching hours each month")}
+							popularLabel={homeText("pricing_popular_label", "Most popular")}
+							selectCta={homeText("pricing_select_cta", "Select plan")}
 						/>
 					))
 				}
 			</div>
 
 			<div class="plan-carousel-mobile">
-				<PricingCarousel plans={plans.map(toPlanCard)} />
+				<PricingCarousel
+					plans={plans.map(toPlanCard)}
+					periodLabel={homeText("pricing_period_label", "/ month")}
+					classesWeekLabel={homeText("pricing_classes_week_label", "Classes each week")}
+					classesMonthLabel={homeText("pricing_classes_month_label", "Classes each month")}
+					hoursLabel={homeText("pricing_hours_label", "Teaching hours each month")}
+					popularLabel={homeText("pricing_popular_label", "Most popular")}
+					selectCta={homeText("pricing_select_cta", "Select plan")}
+				/>
 			</div>
 		</Container>
 	</Section>
 
+	{hasTestimonials && (
 	<div id="testimonials">
 		<Testimonials
+			heading={homeText("testimonials_heading", "Customer Reviews")}
 			reviews={
 				testimonials.length > 0
 					? testimonials.map((testimonial) => ({
 							name: testimonial.data.author,
-							country: testimonial.data.country,
-							rating: "5.0",
+							country: testimonial.data.country ?? "",
+							rating: testimonial.data.rating ?? "5.0",
 							text: testimonial.data.quote,
+							relation: testimonial.data.relation,
+							avatarSrc: testimonial.data.avatar?.src,
+							avatarAlt: testimonial.data.avatar?.alt,
 						}))
 					: undefined
 			}
 		/>
 	</div>
+	)}
 
 	<Section id="book">
 		<Container>
@@ -539,6 +682,14 @@ const featureCards = [
 				}))}
 				initialPlan={Astro.url.searchParams.get("plan") ?? ""}
 				initialCourse={Astro.url.searchParams.get("course") ?? ""}
+				eyebrow={homeText("book_eyebrow", "Free trial")}
+				heading={homeText("book_heading", "Book a free trial class")}
+				lead={homeText("book_lead", "Tell us a little about the student and the times that suit you. We will reply with the next available trial slot. The trial class is free and no payment details are needed.")}
+				contactLabel={homeText("book_contact_label", "Reach us directly")}
+				note={homeText("book_note", "Lessons run live in a video call. You only need a phone, tablet or laptop with a camera.")}
+				formTitle={homeText("book_form_title", "Start your free trial")}
+				formSub={homeText("book_form_sub", "Every student starts with one free trial class.")}
+				submitLabel={homeText("book_submit_label", "Request free trial")}
 			/>
 		</Container>
 	</Section>

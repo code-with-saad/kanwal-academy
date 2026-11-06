@@ -1,19 +1,31 @@
 ---
 import Button from "./Button.astro";
 import Eyebrow from "./Eyebrow.astro";
+import { Image } from "emdash/ui";
 import ImagePlaceholder from "./ImagePlaceholder.astro";
+import type { ImageValue } from "emdash";
 
 interface Props {
 	eyebrow?: string;
+	titleBefore?: string;
+	titleHighlight?: string;
+	paragraph1?: string;
+	paragraph2?: string;
 	imageSrc?: string;
 	imageAlt?: string;
+	image?: ImageValue | null;
 	years?: string;
 }
 
 const {
 	eyebrow = "Why Kanwal",
+	titleBefore = "Experience Qur'anic",
+	titleHighlight = "wisdom",
+	paragraph1 = "Kanwal Quran Academy teaches the Qur'an online in live one to one classes. Your teacher listens to your recitation, corrects it as you read, and sets a weekly plan around your level.",
+	paragraph2 = "Students join from more than five countries, on a phone, tablet or laptop. Every student starts with a free trial class before choosing a plan.",
 	imageSrc = "/images/wisdom.jpg",
 	imageAlt = "A student reciting the Qur'an during a live online lesson",
+	image,
 	years = "5+",
 } = Astro.props;
 
@@ -26,13 +38,21 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 	<div class="wisdom__media">
 		<span class="wisdom__block" aria-hidden="true"></span>
 		<div class="wisdom__frame" data-reveal="image">
-			<ImagePlaceholder
-				src={imageSrc}
-				alt={imageAlt}
-				label="Wisdom image (4:5)"
-				ratio="4 / 5"
-				class="wisdom__image"
-			/>
+			{image ? (
+				<Image
+					image={image}
+					alt={image.alt || imageAlt}
+					class="wisdom__image"
+				/>
+			) : (
+				<ImagePlaceholder
+					src={imageSrc}
+					alt={imageAlt}
+					label="Wisdom image (4:5)"
+					ratio="4 / 5"
+					class="wisdom__image"
+				/>
+			)}
 		</div>
 		<p class="wisdom__badge" data-reveal="up" data-reveal-delay="200">
 			<span class="wisdom__badge-value">
@@ -47,16 +67,13 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 			<Eyebrow>{eyebrow}</Eyebrow>
 		</span>
 		<h2 class="wisdom__title" data-reveal-words>
-			Experience Qur'anic <span class="heading-highlight">wisdom</span> with us
+			{titleBefore} <span class="heading-highlight">{titleHighlight}</span> with us
 		</h2>
 		<p data-reveal="up" data-reveal-delay="80">
-			Kanwal Quran Academy teaches the Qur'an online in live one to one classes. Your teacher
-			listens to your recitation, corrects it as you read, and sets a weekly plan around your
-			level.
+			{paragraph1}
 		</p>
 		<p data-reveal="up" data-reveal-delay="160">
-			Students join from more than five countries, on a phone, tablet or laptop. Every student
-			starts with a free trial class before choosing a plan.
+			{paragraph2}
 		</p>
 		<div class="wisdom__actions" data-reveal="up" data-reveal-delay="240">
 			<Button book variant="primary">Book free trial</Button>

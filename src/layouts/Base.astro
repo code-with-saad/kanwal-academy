@@ -1,6 +1,6 @@
 ---
 import { Font } from "astro:assets";
-import { getSiteSettingsWithCacheHint } from "emdash";
+import { getEmDashCollection, getSiteSettingsWithCacheHint } from "emdash";
 import { createPublicPageContext } from "emdash/page";
 import { EmDashBodyEnd, EmDashBodyStart, EmDashHead } from "emdash/ui";
 import ResultModal from "../components/ResultModal.astro";
@@ -35,15 +35,24 @@ const {
 	nav,
 } = Astro.props;
 
-const [settingsResult, contactResult] = await Promise.all([
+const [settingsResult, contactResult, coursesResult] = await Promise.all([
 	getSiteSettingsWithCacheHint(),
 	getSiteContact(),
+	getEmDashCollection("courses", {
+		status: "published",
+		orderBy: { order: "asc" },
+	}),
 ]);
 
 if (Astro.cache?.enabled) {
 	Astro.cache.set(settingsResult.cacheHint);
 	Astro.cache.set(contactResult.cacheHint);
+	Astro.cache.set(coursesResult.cacheHint);
 }
+
+const footerCourseNames = coursesResult.entries
+	.filter((c) => c.data.visible !== false)
+	.map((c) => ({ name: String(c.data.name ?? "") }));
 
 const { siteTitle, siteTagline, titleSeparator } = resolveSiteIdentity(settingsResult.data);
 const fullTitle = title
@@ -136,6 +145,8 @@ const pageCtx = createPublicPageContext({
 				tone={headerTone}
 				currentPath={Astro.url.pathname}
 				siteName={siteTitle}
+				headerMarkLight={contactResult.data.headerMarkLight}
+				headerMarkDark={contactResult.data.headerMarkDark}
 			/>
 			<main id="main">
 				<slot />
@@ -144,6 +155,9 @@ const pageCtx = createPublicPageContext({
 				contact={contactResult.data}
 				settingsEdit={contactResult.entry?.edit}
 				siteName={siteTitle}
+				courseNames={footerCourseNames}
+				logoLight={contactResult.data.logoLight}
+				logoDark={contactResult.data.logoDark}
 			/>
 			<button
 				type="button"

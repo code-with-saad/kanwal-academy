@@ -1,5 +1,6 @@
 ---
-import type { EditProxy } from "emdash";
+import type { EditProxy, ImageValue } from "emdash";
+import { Image } from "emdash/ui";
 import Container from "./Container.astro";
 import Newsletter from "./Newsletter.astro";
 import { site } from "../config/site";
@@ -9,16 +10,21 @@ interface Props {
 	contact: SiteContact;
 	siteName?: string;
 	settingsEdit?: EditProxy;
+	courseNames?: Array<{ name: string; href?: string }>;
+	logoLight?: ImageValue | null;
+	logoDark?: ImageValue | null;
 }
 
-const { contact, siteName = site.name, settingsEdit } = Astro.props;
+const { contact, siteName = site.name, settingsEdit, courseNames, logoLight, logoDark } = Astro.props;
 const year = new Date().getFullYear();
 
-const courseLinks = [
-	{ label: "Qur'anic Recitation", href: "/#courses" },
-	{ label: "Tajweed Proficiency", href: "/#courses" },
-	{ label: "Memorization Excellence", href: "/#courses" },
-];
+const links = courseNames?.length
+	? courseNames.map((c) => ({ label: c.name, href: c.href ?? "/#courses" }))
+	: [
+			{ label: "Qur'anic Recitation", href: "/#courses" },
+			{ label: "Tajweed Proficiency", href: "/#courses" },
+			{ label: "Memorization Excellence", href: "/#courses" },
+		];
 
 const academyLinks = [
 	{ label: "About", href: "/#about" },
@@ -33,20 +39,36 @@ const academyLinks = [
 		<div class="footer__top">
 			<div class="footer__brand">
 				<a href="/" class="footer__logo-link" aria-label={`${siteName}, home`}>
-					<img
-						class="footer__logo footer__logo--on-light"
-						src="/images/kanwal-logo-on-light.png"
-						alt={siteName}
-						width="1668"
-						height="712"
-					/>
-					<img
-						class="footer__logo footer__logo--on-dark"
-						src="/images/kanwal-logo-on-dark.png"
-						alt={siteName}
-						width="1668"
-						height="712"
-					/>
+					{logoLight ? (
+						<Image
+							image={logoLight}
+							alt={siteName}
+							class="footer__logo footer__logo--on-light"
+						/>
+					) : (
+						<img
+							class="footer__logo footer__logo--on-light"
+							src="/images/kanwal-logo-on-light.png"
+							alt={siteName}
+							width="1668"
+							height="712"
+						/>
+					)}
+					{logoDark ? (
+						<Image
+							image={logoDark}
+							alt={siteName}
+							class="footer__logo footer__logo--on-dark"
+						/>
+					) : (
+						<img
+							class="footer__logo footer__logo--on-dark"
+							src="/images/kanwal-logo-on-dark.png"
+							alt={siteName}
+							width="1668"
+							height="712"
+						/>
+					)}
 				</a>
 				<p class="footer__description" {...settingsEdit?.footer_tagline}>
 					{contact.footer.tagline}
@@ -58,11 +80,8 @@ const academyLinks = [
 					{contact.footer.coursesLabel}
 				</h2>
 				<ul class="footer__links">
-					<li>
-						<a href="/#courses">{contact.footer.coursesLabel}</a>
-					</li>
 					{
-						courseLinks.map((link) => (
+						links.map((link) => (
 							<li>
 								<a href={link.href}>{link.label}</a>
 							</li>
@@ -72,7 +91,9 @@ const academyLinks = [
 			</nav>
 
 			<nav class="footer__column" aria-labelledby="footer-academy">
-				<h2 id="footer-academy" class="footer__heading">Academy</h2>
+				<h2 id="footer-academy" class="footer__heading" {...settingsEdit?.footer_academy_label}>
+					{contact.footer.academyLabel}
+				</h2>
 				<ul class="footer__links">
 					{
 						academyLinks.map((link) => {
@@ -101,10 +122,11 @@ const academyLinks = [
 
 		<div class="footer__news">
 			<div class="footer__news-copy">
-				<h2 class="footer__news-heading">Stay in touch</h2>
+				<h2 class="footer__news-heading" {...settingsEdit?.footer_stay_in_touch}>
+					{contact.footer.stayInTouch}
+				</h2>
 				<p class="footer__news-consent">
-					We only use your email to send occasional learning notes.
-					Read our <a href="/privacy-policy">Privacy Policy</a>.
+					{contact.footer.newsletterConsent}
 				</p>
 			</div>
 			<div class="footer__news-form">

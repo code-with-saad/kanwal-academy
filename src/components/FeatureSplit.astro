@@ -1,7 +1,9 @@
 ---
 import Button from "./Button.astro";
 import Eyebrow from "./Eyebrow.astro";
+import { Image } from "emdash/ui";
 import ImagePlaceholder from "./ImagePlaceholder.astro";
+import type { ImageValue } from "emdash";
 
 interface Props {
 	eyebrow?: string;
@@ -18,6 +20,7 @@ interface Props {
 	buttonLabel: string;
 	/** When set the button navigates; otherwise it scrolls to the inline #book form. */
 	buttonHref?: string;
+	image?: ImageValue | null;
 }
 
 const {
@@ -34,6 +37,7 @@ const {
 	imageFirst = false,
 	buttonLabel,
 	buttonHref,
+	image,
 } = Astro.props;
 ---
 
@@ -68,13 +72,21 @@ const {
 
 	<div class="feature-split__media" data-reveal="image">
 		<div class="feature-split__frame">
-			<ImagePlaceholder
-				src={imageSrc}
-				alt={imageAlt}
-				label={imageLabel}
-				ratio={imageRatio}
-				class="feature-split__image"
-			/>
+			{image ? (
+				<Image
+					image={image}
+					alt={image.alt || imageAlt}
+					class="feature-split__image"
+				/>
+			) : (
+				<ImagePlaceholder
+					src={imageSrc}
+					alt={imageAlt}
+					label={imageLabel}
+					ratio={imageRatio}
+					class="feature-split__image"
+				/>
+			)}
 		</div>
 	</div>
 </div>

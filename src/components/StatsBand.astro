@@ -4,12 +4,28 @@ import Container from "./Container.astro";
 import Eyebrow from "./Eyebrow.astro";
 
 interface Props {
+	eyebrow?: string;
+	heading?: string;
+	description?: string;
 	students: string;
 	sessions: string;
 	countries: string;
+	studentsLabel?: string;
+	sessionsLabel?: string;
+	countriesLabel?: string;
 }
 
-const { students, sessions, countries } = Astro.props;
+const {
+	eyebrow = "Over the past 5 years",
+	heading = "Our success",
+	description = "Our three courses, Qur'anic Recitation, Tajweed Proficiency and Memorization Excellence, help students learn the Qur'an at their own pace and from the comfort of home.",
+	students,
+	sessions,
+	countries,
+	studentsLabel = "Students",
+	sessionsLabel = "Sessions",
+	countriesLabel = "Countries",
+} = Astro.props;
 
 /** Split "99+" into { value: 99, suffix: "+" }. Non-numeric stays static. */
 const parse = (raw: string) => {
@@ -20,9 +36,9 @@ const parse = (raw: string) => {
 };
 
 const rings = [
-	{ label: "Students", stat: parse(students) },
-	{ label: "Sessions", stat: parse(sessions) },
-	{ label: "Countries", stat: parse(countries) },
+	{ label: studentsLabel, stat: parse(students) },
+	{ label: sessionsLabel, stat: parse(sessions) },
+	{ label: countriesLabel, stat: parse(countries) },
 ];
 ---
 
@@ -30,12 +46,10 @@ const rings = [
 	<Container>
 		<div class="stats-band__panel">
 			<div class="stats-band__copy">
-				<Eyebrow>Over the past 5 years</Eyebrow>
-				<h2 id="success-heading" data-reveal-words>Our success</h2>
+				<Eyebrow>{eyebrow}</Eyebrow>
+				<h2 id="success-heading" data-reveal-words>{heading}</h2>
 				<p data-reveal="up" data-reveal-delay="80">
-					Our three courses, Qur'anic Recitation, Tajweed Proficiency and Memorization
-					Excellence, help students learn the Qur'an at their own pace and from the comfort
-					of home.
+					{description}
 				</p>
 				<div class="stats-band__cta">
 					<Button book variant="primary">Book free trial</Button>

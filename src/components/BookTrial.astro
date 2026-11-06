@@ -29,9 +29,31 @@ interface Props {
 	/** Values from ?plan / ?course deep links, matched by name, slug or id. */
 	initialPlan?: string;
 	initialCourse?: string;
+	eyebrow?: string;
+	heading?: string;
+	lead?: string;
+	contactLabel?: string;
+	note?: string;
+	formTitle?: string;
+	formSub?: string;
+	submitLabel?: string;
 }
 
-const { contact, courses = [], plans = [], initialPlan = "", initialCourse = "" } = Astro.props;
+const {
+	contact,
+	courses = [],
+	plans = [],
+	initialPlan = "",
+	initialCourse = "",
+	eyebrow = "Free trial",
+	heading = "Book a free trial class",
+	lead = "Tell us a little about the student and the times that suit you. We will reply with the next available trial slot. The trial class is free and no payment details are needed.",
+	contactLabel = "Reach us directly",
+	note = "Lessons run live in a video call. You only need a phone, tablet or laptop with a camera.",
+	formTitle = "Start your free trial",
+	formSub = "Every student starts with one free trial class.",
+	submitLabel = "Request free trial",
+} = Astro.props;
 
 const runtimeEnv = hostEnv as Record<string, unknown> | undefined;
 const buildEnv = import.meta.env as unknown as Record<string, string | undefined>;
@@ -39,7 +61,7 @@ const tsKey = String(
 	runtimeEnv?.PUBLIC_TURNSTILE_SITE_KEY ?? buildEnv.PUBLIC_TURNSTILE_SITE_KEY ?? "",
 ).trim();
 
-const wa = whatsappHref(contact.phone);
+const wa = whatsappHref(contact.whatsappNumber || contact.phone);
 
 /** Match a deep-link / CTA value against an option by name, slug or id. */
 function matches(option: BookOption, value: string): boolean {
@@ -56,15 +78,14 @@ function matches(option: BookOption, value: string): boolean {
 <div class="book">
 	<!-- Left: heading, text and direct contact -->
 	<div class="book__copy">
-		<Eyebrow>Free trial</Eyebrow>
-		<h2 class="book__title">Book a free trial class</h2>
+		<Eyebrow>{eyebrow}</Eyebrow>
+		<h2 class="book__title">{heading}</h2>
 		<p class="book__lead">
-			Tell us a little about the student and the times that suit you. We will reply with the
-			next available trial slot. The trial class is free and no payment details are needed.
+			{lead}
 		</p>
 
 		<address class="book__contact">
-			<span class="book__contact-label">Reach us directly</span>
+			<span class="book__contact-label">{contactLabel}</span>
 			<a href={phoneHref(contact.phone)}>{contact.phone}</a>
 			<a href={emailHref(contact.email)}>{contact.email}</a>
 			{wa && <a href={wa} target="_blank" rel="noopener noreferrer">WhatsApp</a>}
@@ -72,15 +93,15 @@ function matches(option: BookOption, value: string): boolean {
 		</address>
 
 		<p class="book__note">
-			Lessons run live in a video call. You only need a phone, tablet or laptop with a camera.
+			{note}
 		</p>
 	</div>
 
 	<!-- Right: the inline form card -->
 	<div class="book__card">
 		<form class="book__form" id="book-form" novalidate data-book-form>
-			<h3 class="book__form-title">Start your free trial</h3>
-			<p class="book__form-sub">Every student starts with one free trial class.</p>
+			<h3 class="book__form-title">{formTitle}</h3>
+			<p class="book__form-sub">{formSub}</p>
 
 			<!-- Honeypot -->
 			<div class="book__honeypot" aria-hidden="true">
@@ -213,7 +234,7 @@ function matches(option: BookOption, value: string): boolean {
 			<div class="book__foot">
 				<button type="submit" class="book__submit" data-book-submit>
 					<span class="book__spinner" aria-hidden="true"></span>
-					<span data-book-submit-label>Request free trial</span>
+					<span data-book-submit-label>{submitLabel}</span>
 				</button>
 			</div>
 		</form>
@@ -243,6 +264,7 @@ function matches(option: BookOption, value: string): boolean {
 		const honeypot = form.querySelector<HTMLInputElement>("#book-website")!;
 		const submitBtn = form.querySelector<HTMLButtonElement>("[data-book-submit]")!;
 		const submitLabel = form.querySelector<HTMLElement>("[data-book-submit-label]")!;
+		const defaultSubmitLabel = submitLabel.textContent ?? "Request free trial";
 		const tsWidget = form.querySelector<HTMLElement>(".cf-turnstile");
 
 		// --- intl-tel-input -------------------------------------------------
@@ -410,7 +432,7 @@ function matches(option: BookOption, value: string): boolean {
 			submitBtn.disabled = busy;
 			submitBtn.classList.toggle("is-loading", busy);
 			submitBtn.setAttribute("aria-busy", String(busy));
-			submitLabel.textContent = busy ? "Sending request" : "Request free trial";
+			submitLabel.textContent = busy ? "Sending request" : defaultSubmitLabel;
 		};
 
 		const validate = (): boolean => {

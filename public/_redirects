@@ -1,0 +1,18 @@
+# Common WordPress URL patterns redirecting to the single-page anchors
+/about-us /#about 301
+/about-us/ /#about 301
+/contact-us /#book 301
+/contact-us/ /#book 301
+/courses /#courses 301
+/courses/ /#courses 301
+/pricing /#pricing 301
+/pricing/ /#pricing 301
+/teachers /#teachers 301
+/teachers/ /#teachers 301
+/free-trial /#book 301
+/free-trial/ /#book 301
+/blog / 301
+/blog/ / 301
+/wp-admin / 301
+/wp-login.php / 301
+/xmlrpc.php / 301

@@ -1,39 +1,49 @@
 ---
 interface StepItem {
-	number: string;
 	title: string;
 	text: string;
 	icon: "book-trial" | "teacher" | "calendar-check";
 }
 
-const steps: StepItem[] = [
+interface Props {
+	eyebrow?: string;
+	heading?: string;
+	steps?: StepItem[];
+}
+
+const defaultSteps: StepItem[] = [
 	{
-		number: "01",
 		title: "Book your free trial",
 		text: "Choose a plan and pick a time that works for you. The trial class is free.",
 		icon: "book-trial",
 	},
 	{
-		number: "02",
 		title: "Meet your teacher",
 		text: "We match you with a teacher for your course and level, then assess where you are.",
 		icon: "teacher",
 	},
 	{
-		number: "03",
 		title: "Start your plan",
 		text: "Your teacher builds a weekly schedule around your goals and keeps you accountable.",
 		icon: "calendar-check",
 	},
 ];
+
+const icons: StepItem["icon"][] = ["book-trial", "teacher", "calendar-check"];
+
+const {
+	eyebrow = "Free trial",
+	heading = "How the free trial works",
+	steps = defaultSteps,
+} = Astro.props;
 ---
 
 <div class="trial-steps" data-reveal="fade">
 	<span class="trial-steps__eyebrow">
 		<span class="trial-steps__eyebrow-rule" aria-hidden="true"></span>
-		Free trial
+		{eyebrow}
 	</span>
-	<h2 class="trial-steps__title" data-reveal-words>How the free trial works</h2>
+	<h2 class="trial-steps__title" data-reveal-words>{heading}</h2>
 
 	<!-- Desktop: horizontal cards with centered numbers and connector line -->
 	<ol class="trial-steps__desktop">
@@ -45,10 +55,10 @@ const steps: StepItem[] = [
 					data-reveal="up"
 					data-reveal-delay={200 + i * 120}
 				>
-					<span class="trial-steps__number" aria-hidden="true">{step.number}</span>
+					<span class="trial-steps__number" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
 
 					<div class="trial-steps__icon" aria-hidden="true">
-						{step.icon === "book-trial" && (
+						{(step.icon ?? icons[i] ?? "book-trial") === "book-trial" && (
 							<svg viewBox="0 0 48 48" width="36" height="36" fill="none" stroke="var(--green-deep)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
 								<rect x="8" y="10" width="32" height="26" rx="3" />
 								<path d="M8 18h32" />
@@ -56,7 +66,7 @@ const steps: StepItem[] = [
 								<path d="M30 26v4l2.5 2" />
 							</svg>
 						)}
-						{step.icon === "teacher" && (
+						{(step.icon ?? icons[i] ?? "book-trial") === "teacher" && (
 							<svg viewBox="0 0 48 48" width="36" height="36" fill="none" stroke="var(--green-deep)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
 								<rect x="4" y="8" width="32" height="24" rx="3" />
 								<circle cx="20" cy="18" r="4" />
@@ -66,7 +76,7 @@ const steps: StepItem[] = [
 								<path d="M32 35h8" />
 							</svg>
 						)}
-						{step.icon === "calendar-check" && (
+						{(step.icon ?? icons[i] ?? "book-trial") === "calendar-check" && (
 							<svg viewBox="0 0 48 48" width="36" height="36" fill="none" stroke="var(--green-deep)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
 								<rect x="8" y="10" width="32" height="26" rx="3" />
 								<path d="M8 18h32" />
@@ -96,7 +106,7 @@ const steps: StepItem[] = [
 					data-reveal-delay={200 + i * 120}
 				>
 					<div class="trial-steps__mobile-rail">
-						<span class="trial-steps__number" aria-hidden="true">{step.number}</span>
+						<span class="trial-steps__number" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
 						<span class="trial-steps__connector" aria-hidden="true"></span>
 					</div>
 					<div class="trial-steps__mobile-card">

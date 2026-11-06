@@ -5,6 +5,8 @@ export interface PlanCardData {
 	slug?: string;
 	name: string;
 	price: number | string;
+	currencySymbol?: string;
+	billingPeriod?: string;
 	classesPerWeek: number;
 	classesPerMonth: number;
 	hoursPerMonth: number;
@@ -15,10 +17,27 @@ interface Props {
 	plan: PlanCardData;
 	href?: string;
 	revealDelay?: number;
+	periodLabel?: string;
+	classesWeekLabel?: string;
+	classesMonthLabel?: string;
+	hoursLabel?: string;
+	popularLabel?: string;
+	selectCta?: string;
 }
 
-const { plan, revealDelay } = Astro.props;
-const priceLabel = formatUsdPrice(plan.price);
+const {
+	plan,
+	revealDelay,
+	periodLabel = "/ month",
+	classesWeekLabel = "Classes each week",
+	classesMonthLabel = "Classes each month",
+	hoursLabel = "Teaching hours each month",
+	popularLabel = "Most popular",
+	selectCta = "Select plan",
+} = Astro.props;
+
+const priceLabel = formatUsdPrice(plan.price, plan.currencySymbol);
+const period = plan.billingPeriod ?? periodLabel;
 ---
 
 <div
@@ -34,7 +53,7 @@ const priceLabel = formatUsdPrice(plan.price);
 			<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true">
 				<path d="M8 1.5l1.76 3.57 3.94.57-2.85 2.78.67 3.93L8 10.47l-3.52 1.88.67-3.93L2.3 5.64l3.94-.57z" />
 			</svg>
-			Most popular
+			{popularLabel}
 		</span>
 	)}
 
@@ -42,7 +61,7 @@ const priceLabel = formatUsdPrice(plan.price);
 		<h3 class="plan-card__name">{plan.name}</h3>
 		<p class="plan-card__price">
 			<span class="plan-card__amount">{priceLabel}</span>
-			<span class="plan-card__period">/ month</span>
+			<span class="plan-card__period">{period}</span>
 		</p>
 
 		<div class="plan-card__hairline" aria-hidden="true"></div>
@@ -57,7 +76,7 @@ const priceLabel = formatUsdPrice(plan.price);
 						<path d="M13 2v3" />
 					</svg>
 				</span>
-				<span class="plan-card__meta-label">Classes each week</span>
+				<span class="plan-card__meta-label">{classesWeekLabel}</span>
 				<span class="plan-card__meta-value">{plan.classesPerWeek}</span>
 			</li>
 			<li>
@@ -69,7 +88,7 @@ const priceLabel = formatUsdPrice(plan.price);
 						<path d="M13 2v3" />
 					</svg>
 				</span>
-				<span class="plan-card__meta-label">Classes each month</span>
+				<span class="plan-card__meta-label">{classesMonthLabel}</span>
 				<span class="plan-card__meta-value">{plan.classesPerMonth}</span>
 			</li>
 			<li>
@@ -79,7 +98,7 @@ const priceLabel = formatUsdPrice(plan.price);
 						<path d="M10 6v4l2.5 2.5" />
 					</svg>
 				</span>
-				<span class="plan-card__meta-label">Teaching hours each month</span>
+				<span class="plan-card__meta-label">{hoursLabel}</span>
 				<span class="plan-card__meta-value">{plan.hoursPerMonth}</span>
 			</li>
 		</ul>
@@ -90,7 +109,7 @@ const priceLabel = formatUsdPrice(plan.price);
 			data-book-cta
 			data-prefill-plan={plan.name}
 		>
-			Select plan
+			{selectCta}
 			<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 				<path d="M4 10h12m-5-5 5 5-5 5" />
 			</svg>

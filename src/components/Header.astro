@@ -1,6 +1,8 @@
 ---
 import ThemeToggle from "./ThemeToggle.astro";
 import { site, type NavItem } from "../config/site";
+import { Image } from "emdash/ui";
+import type { ImageValue } from "emdash";
 
 interface Props {
 	items?: NavItem[];
@@ -8,6 +10,8 @@ interface Props {
 	tone?: "dark" | "light";
 	currentPath?: string;
 	siteName?: string;
+	headerMarkLight?: ImageValue | null;
+	headerMarkDark?: ImageValue | null;
 }
 
 const {
@@ -16,6 +20,8 @@ const {
 	tone = "light",
 	currentPath = Astro.url.pathname,
 	siteName = site.name,
+	headerMarkLight,
+	headerMarkDark,
 } = Astro.props;
 
 const path = currentPath.length > 1 ? currentPath.replace(/\/+$/, "") : "/";
@@ -26,20 +32,40 @@ const isLinkCurrent = (item: NavItem) =>
 <header class="site-header" data-header>
 	<div class="header__inner">
 		<a href="/" class="header__brand" aria-label={`${siteName}, home`}>
-			<img
-				class="header__mark header__mark--on-light"
-				src="/images/kanwal-mark-on-light.png"
-				alt=""
-				width="592"
-				height="688"
-			/>
-			<img
-				class="header__mark header__mark--on-dark"
-				src="/images/kanwal-mark-on-dark.png"
-				alt=""
-				width="592"
-				height="688"
-			/>
+			{headerMarkLight ? (
+				<Image
+					image={headerMarkLight}
+					alt=""
+					class="header__mark header__mark--on-light"
+					width="44"
+					height="44"
+				/>
+			) : (
+				<img
+					class="header__mark header__mark--on-light"
+					src="/images/kanwal-mark-on-light.png"
+					alt=""
+					width="592"
+					height="688"
+				/>
+			)}
+			{headerMarkDark ? (
+				<Image
+					image={headerMarkDark}
+					alt=""
+					class="header__mark header__mark--on-dark"
+					width="44"
+					height="44"
+				/>
+			) : (
+				<img
+					class="header__mark header__mark--on-dark"
+					src="/images/kanwal-mark-on-dark.png"
+					alt=""
+					width="592"
+					height="688"
+				/>
+			)}
 			<span class="header__name">{siteName}</span>
 		</a>
 

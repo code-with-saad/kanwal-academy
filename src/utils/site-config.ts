@@ -1,4 +1,5 @@
 import { getEmDashEntry } from "emdash";
+import type { ImageValue } from "emdash";
 import { site } from "../config/site";
 
 export interface SocialLink {
@@ -8,10 +9,16 @@ export interface SocialLink {
 
 export interface SiteContact {
 	phone: string;
+	whatsappNumber: string;
 	email: string;
 	ownerEmail: string;
 	address: string;
 	socialLinks: SocialLink[];
+	logoLight?: ImageValue | null;
+	logoDark?: ImageValue | null;
+	headerMarkLight?: ImageValue | null;
+	headerMarkDark?: ImageValue | null;
+	ogImage?: ImageValue | null;
 	stats: {
 		years: string;
 		countries: string;
@@ -29,6 +36,7 @@ export interface SiteContact {
 		exploreLabel: string;
 		contactLabel: string;
 		coursesLabel: string;
+		academyLabel: string;
 		pricingLabel: string;
 		teachersLabel: string;
 		trialLabel: string;
@@ -36,15 +44,24 @@ export interface SiteContact {
 		termsLabel: string;
 		privacyLabel: string;
 		copyrightLabel: string;
+		newsletterHeading: string;
+		newsletterConsent: string;
+		stayInTouch: string;
 	};
 }
 
 interface SiteSettingsData {
 	phone?: string | null;
+	whatsapp_number?: string | null;
 	email?: string | null;
 	owner_email?: string | null;
 	address?: string | null;
 	social_links?: Array<{ label?: string | null; url?: string | null }> | null;
+	logo_light?: ImageValue | null;
+	logo_dark?: ImageValue | null;
+	header_mark_light?: ImageValue | null;
+	header_mark_dark?: ImageValue | null;
+	og_image?: ImageValue | null;
 	years?: string | null;
 	countries?: string | null;
 	students?: string | null;
@@ -57,6 +74,7 @@ interface SiteSettingsData {
 	footer_explore_label?: string | null;
 	footer_contact_label?: string | null;
 	footer_courses_label?: string | null;
+	footer_academy_label?: string | null;
 	footer_pricing_label?: string | null;
 	footer_teachers_label?: string | null;
 	footer_trial_label?: string | null;
@@ -64,10 +82,14 @@ interface SiteSettingsData {
 	footer_terms_label?: string | null;
 	footer_privacy_label?: string | null;
 	footer_copyright_label?: string | null;
+	footer_newsletter_heading?: string | null;
+	footer_newsletter_consent?: string | null;
+	footer_stay_in_touch?: string | null;
 }
 
 const FALLBACK: SiteContact = {
 	phone: site.phone,
+	whatsappNumber: "923422766346",
 	email: site.email,
 	ownerEmail: site.email,
 	address: site.address,
@@ -86,6 +108,7 @@ const FALLBACK: SiteContact = {
 		exploreLabel: "Explore",
 		contactLabel: "Contact",
 		coursesLabel: "Courses",
+		academyLabel: "Academy",
 		pricingLabel: "Pricing",
 		teachersLabel: "Teachers",
 		trialLabel: "Free trial",
@@ -93,6 +116,10 @@ const FALLBACK: SiteContact = {
 		termsLabel: "Terms of Service",
 		privacyLabel: "Privacy Policy",
 		copyrightLabel: "All rights reserved.",
+		newsletterHeading: "Stay in touch",
+		newsletterConsent:
+			"We only use your email to send occasional learning notes. Read our Privacy Policy.",
+		stayInTouch: "Stay in touch",
 	},
 };
 
@@ -113,10 +140,16 @@ function normalize(data: SiteSettingsData | undefined): SiteContact {
 
 	return {
 		phone: clean(data?.phone, FALLBACK.phone),
+		whatsappNumber: clean(data?.whatsapp_number, FALLBACK.whatsappNumber),
 		email: clean(data?.email, FALLBACK.email),
 		ownerEmail: clean(data?.owner_email, FALLBACK.ownerEmail),
 		address: clean(data?.address, FALLBACK.address),
 		socialLinks,
+		logoLight: data?.logo_light ?? null,
+		logoDark: data?.logo_dark ?? null,
+		headerMarkLight: data?.header_mark_light ?? null,
+		headerMarkDark: data?.header_mark_dark ?? null,
+		ogImage: data?.og_image ?? null,
 		stats: {
 			years: clean(data?.years, FALLBACK.stats.years),
 			countries: clean(data?.countries, FALLBACK.stats.countries),
@@ -134,6 +167,7 @@ function normalize(data: SiteSettingsData | undefined): SiteContact {
 			exploreLabel: clean(data?.footer_explore_label, FALLBACK.footer.exploreLabel),
 			contactLabel: clean(data?.footer_contact_label, FALLBACK.footer.contactLabel),
 			coursesLabel: clean(data?.footer_courses_label, FALLBACK.footer.coursesLabel),
+			academyLabel: clean(data?.footer_academy_label, FALLBACK.footer.academyLabel),
 			pricingLabel: clean(data?.footer_pricing_label, FALLBACK.footer.pricingLabel),
 			teachersLabel: clean(data?.footer_teachers_label, FALLBACK.footer.teachersLabel),
 			trialLabel: clean(data?.footer_trial_label, FALLBACK.footer.trialLabel),
@@ -141,6 +175,9 @@ function normalize(data: SiteSettingsData | undefined): SiteContact {
 			termsLabel: clean(data?.footer_terms_label, FALLBACK.footer.termsLabel),
 			privacyLabel: clean(data?.footer_privacy_label, FALLBACK.footer.privacyLabel),
 			copyrightLabel: clean(data?.footer_copyright_label, FALLBACK.footer.copyrightLabel),
+			newsletterHeading: clean(data?.footer_newsletter_heading, FALLBACK.footer.newsletterHeading),
+			newsletterConsent: clean(data?.footer_newsletter_consent, FALLBACK.footer.newsletterConsent),
+			stayInTouch: clean(data?.footer_stay_in_touch, FALLBACK.footer.stayInTouch),
 		},
 	};
 }

@@ -9,9 +9,23 @@ import PlanCard from "./PlanCard.astro";
 
 interface Props {
 	plans: PlanCardData[];
+	periodLabel?: string;
+	classesWeekLabel?: string;
+	classesMonthLabel?: string;
+	hoursLabel?: string;
+	popularLabel?: string;
+	selectCta?: string;
 }
 
-const { plans } = Astro.props;
+const {
+	plans,
+	periodLabel,
+	classesWeekLabel,
+	classesMonthLabel,
+	hoursLabel,
+	popularLabel,
+	selectCta,
+} = Astro.props;
 const initialIndex = 1; // Plan II (most popular) is the default
 ---
 
@@ -27,7 +41,16 @@ const initialIndex = 1; // Plan II (most popular) is the default
 		{
 			plans.map((plan) => (
 				<div class="pricing-carousel__slide" data-slide>
-					<PlanCard plan={plan} revealDelay={0} />
+					<PlanCard
+						plan={plan}
+						revealDelay={0}
+						periodLabel={periodLabel}
+						classesWeekLabel={classesWeekLabel}
+						classesMonthLabel={classesMonthLabel}
+						hoursLabel={hoursLabel}
+						popularLabel={popularLabel}
+						selectCta={selectCta}
+					/>
 				</div>
 			))
 		}

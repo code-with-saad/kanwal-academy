@@ -1,0 +1,1954 @@
+{
+	"$schema": "https://emdashcms.com/seed.schema.json",
+	"version": "1",
+	"meta": {
+		"name": "Kanwal Quran Academy",
+		"description": "Content schema and launch content for the Kanwal Quran Academy website"
+	},
+	"settings": {
+		"title": "Kanwal Quran Academy",
+		"tagline": "Online Qur'an education from Karachi, Pakistan.",
+		"seo": {
+			"titleSeparator": "|"
+		}
+	},
+	"collections": [
+		{
+			"slug": "pages",
+			"label": "Pages",
+			"labelSingular": "Page",
+			"description": "Standard pages such as About, Terms of Service and Privacy Policy. The Home entry also sets the home hero copy, floating feature cards, Standing Out items, How it works steps, the stats band, the About panel, course section headings, pricing labels, the Book trial form copy, and the testimonials heading.",
+			"icon": "file-text",
+			"group": "Content",
+			"sortOrder": 10,
+			"urlPattern": "/{slug}",
+			"supports": ["drafts", "revisions", "preview", "search", "seo"],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "content",
+					"label": "Page content (used on About, Terms and Privacy)",
+					"type": "portableText",
+					"searchable": true
+				},
+				{
+					"slug": "home_eyebrow",
+					"label": "Home hero: small label above the headline",
+					"type": "string"
+				},
+				{
+					"slug": "home_headline",
+					"label": "Home hero: headline",
+					"type": "string",
+					"searchable": true
+				},
+				{
+					"slug": "home_highlight",
+					"label": "Home hero: highlighted phrase",
+					"type": "string"
+				},
+				{
+					"slug": "home_lead",
+					"label": "Home hero: introduction",
+					"type": "text"
+				},
+				{
+					"slug": "home_image",
+					"label": "Home hero: image",
+					"type": "image"
+				},
+				{
+					"slug": "home_primary_cta",
+					"label": "Home hero: primary button",
+					"type": "string"
+				},
+				{
+					"slug": "home_secondary_cta",
+					"label": "Home hero: secondary button",
+					"type": "string"
+				},
+				{
+					"slug": "home_reach_text",
+					"label": "Home hero: reach line (for example 'Students learning from 5+ countries')",
+					"type": "string"
+				},
+				{
+					"slug": "home_cta_label",
+					"label": "Home hero: mobile call to action",
+					"type": "string"
+				},
+				{
+					"slug": "feature_card_1_title",
+					"label": "Floating card 1: title",
+					"type": "string"
+				},
+				{
+					"slug": "feature_card_1_text",
+					"label": "Floating card 1: text",
+					"type": "string"
+				},
+				{
+					"slug": "feature_card_1_chip",
+					"label": "Floating card 1: chip label (shown on the first card only)",
+					"type": "string"
+				},
+				{
+					"slug": "feature_card_2_title",
+					"label": "Floating card 2: title",
+					"type": "string"
+				},
+				{
+					"slug": "feature_card_2_text",
+					"label": "Floating card 2: text",
+					"type": "string"
+				},
+				{
+					"slug": "feature_card_3_title",
+					"label": "Floating card 3: title",
+					"type": "string"
+				},
+				{
+					"slug": "feature_card_3_text",
+					"label": "Floating card 3: text",
+					"type": "string"
+				},
+				{
+					"slug": "feature_card_4_title",
+					"label": "Floating card 4: title",
+					"type": "string"
+				},
+				{
+					"slug": "feature_card_4_text",
+					"label": "Floating card 4: text",
+					"type": "string"
+				},
+				{
+					"slug": "courses_eyebrow",
+					"label": "Home courses: eyebrow",
+					"type": "string"
+				},
+				{
+					"slug": "courses_heading",
+					"label": "Home courses: heading",
+					"type": "string"
+				},
+				{
+					"slug": "courses_intro",
+					"label": "Home courses: introduction",
+					"type": "text"
+				},
+				{
+					"slug": "courses_journey_heading",
+					"label": "Home courses: journey heading (above the course list)",
+					"type": "string"
+				},
+				{
+					"slug": "courses_journey_intro",
+					"label": "Home courses: journey introduction (above the course list)",
+					"type": "text"
+				},
+				{
+					"slug": "courses_trial_cta",
+					"label": "Home course cards: trial button",
+					"type": "string"
+				},
+				{
+					"slug": "courses_details_cta",
+					"label": "Home course cards: details button",
+					"type": "string"
+				},
+				{
+					"slug": "courses_format_label",
+					"label": "Home course cards: lesson format",
+					"type": "string"
+				},
+				{
+					"slug": "split1_heading_before",
+					"label": "Feature split 1: heading before the highlight",
+					"type": "string"
+				},
+				{
+					"slug": "split1_heading_highlight",
+					"label": "Feature split 1: highlighted word",
+					"type": "string"
+				},
+				{
+					"slug": "split1_paragraph_1",
+					"label": "Feature split 1: paragraph 1",
+					"type": "text"
+				},
+				{
+					"slug": "split1_paragraph_2",
+					"label": "Feature split 1: paragraph 2",
+					"type": "text"
+				},
+				{
+					"slug": "split1_image",
+					"label": "Feature split 1: image",
+					"type": "image"
+				},
+				{
+					"slug": "split1_image_label",
+					"label": "Feature split 1: image label",
+					"type": "string"
+				},
+				{
+					"slug": "split2_image",
+					"label": "Feature split 2: image",
+					"type": "image"
+				},
+				{
+					"slug": "split2_image_label",
+					"label": "Feature split 2: image label",
+					"type": "string"
+				},
+				{
+					"slug": "split2_heading_before",
+					"label": "Feature split 2: heading before the highlight",
+					"type": "string"
+				},
+				{
+					"slug": "split2_heading_highlight",
+					"label": "Feature split 2: highlighted word",
+					"type": "string"
+				},
+				{
+					"slug": "split2_paragraph_1",
+					"label": "Feature split 2: paragraph 1",
+					"type": "text"
+				},
+				{
+					"slug": "split2_list_items",
+					"label": "Feature split 2: list items (one per line)",
+					"type": "text"
+				},
+				{
+					"slug": "stats_eyebrow",
+					"label": "Stats band: eyebrow",
+					"type": "string"
+				},
+				{
+					"slug": "stats_heading",
+					"label": "Stats band: heading",
+					"type": "string"
+				},
+				{
+					"slug": "stats_description",
+					"label": "Stats band: description",
+					"type": "text"
+				},
+				{
+					"slug": "about_eyebrow",
+					"label": "About panel: eyebrow",
+					"type": "string"
+				},
+				{
+					"slug": "about_title_before",
+					"label": "About panel: heading before the highlight",
+					"type": "string"
+				},
+				{
+					"slug": "about_title_highlight",
+					"label": "About panel: highlighted word",
+					"type": "string"
+				},
+				{
+					"slug": "about_paragraph_1",
+					"label": "About panel: paragraph 1",
+					"type": "text"
+				},
+				{
+					"slug": "about_paragraph_2",
+					"label": "About panel: paragraph 2",
+					"type": "text"
+				},
+				{
+					"slug": "about_image",
+					"label": "About panel: image",
+					"type": "image"
+				},
+				{
+					"slug": "about_image_alt",
+					"label": "About panel: image description (alt text)",
+					"type": "string"
+				},
+				{
+					"slug": "standing_eyebrow",
+					"label": "Standing out: eyebrow",
+					"type": "string"
+				},
+				{
+					"slug": "standing_heading",
+					"label": "Standing out: heading",
+					"type": "string"
+				},
+				{
+					"slug": "standing_item_1_title",
+					"label": "Standing out 1: title",
+					"type": "string"
+				},
+				{
+					"slug": "standing_item_1_text",
+					"label": "Standing out 1: text",
+					"type": "text"
+				},
+				{
+					"slug": "standing_item_2_title",
+					"label": "Standing out 2: title",
+					"type": "string"
+				},
+				{
+					"slug": "standing_item_2_text",
+					"label": "Standing out 2: text",
+					"type": "text"
+				},
+				{
+					"slug": "standing_item_3_title",
+					"label": "Standing out 3: title",
+					"type": "string"
+				},
+				{
+					"slug": "standing_item_3_text",
+					"label": "Standing out 3: text",
+					"type": "text"
+				},
+				{
+					"slug": "pricing_eyebrow",
+					"label": "Home pricing: eyebrow",
+					"type": "string"
+				},
+				{
+					"slug": "pricing_heading",
+					"label": "Home pricing: heading",
+					"type": "string"
+				},
+				{
+					"slug": "pricing_intro",
+					"label": "Home pricing: introduction",
+					"type": "text"
+				},
+				{
+					"slug": "pricing_period_label",
+					"label": "Home pricing: billing period",
+					"type": "string"
+				},
+				{
+					"slug": "pricing_classes_week_label",
+					"label": "Home pricing: weekly classes label",
+					"type": "string"
+				},
+				{
+					"slug": "pricing_classes_month_label",
+					"label": "Home pricing: monthly classes label",
+					"type": "string"
+				},
+				{
+					"slug": "pricing_hours_label",
+					"label": "Home pricing: monthly hours label",
+					"type": "string"
+				},
+				{
+					"slug": "pricing_popular_label",
+					"label": "Home pricing: popular badge",
+					"type": "string"
+				},
+				{
+					"slug": "pricing_select_cta",
+					"label": "Home pricing: select plan button",
+					"type": "string"
+				},
+				{
+					"slug": "trial_eyebrow",
+					"label": "Home free trial: eyebrow",
+					"type": "string"
+				},
+				{
+					"slug": "trial_heading",
+					"label": "Home free trial: heading",
+					"type": "string"
+				},
+				{
+					"slug": "trial_step_1_title",
+					"label": "Home free trial: step 1 title",
+					"type": "string"
+				},
+				{
+					"slug": "trial_step_1_body",
+					"label": "Home free trial: step 1 description",
+					"type": "text"
+				},
+				{
+					"slug": "trial_step_2_title",
+					"label": "Home free trial: step 2 title",
+					"type": "string"
+				},
+				{
+					"slug": "trial_step_2_body",
+					"label": "Home free trial: step 2 description",
+					"type": "text"
+				},
+				{
+					"slug": "trial_step_3_title",
+					"label": "Home free trial: step 3 title",
+					"type": "string"
+				},
+				{
+					"slug": "trial_step_3_body",
+					"label": "Home free trial: step 3 description",
+					"type": "text"
+				},
+				{
+					"slug": "testimonials_eyebrow",
+					"label": "Home testimonials: eyebrow",
+					"type": "string"
+				},
+				{
+					"slug": "testimonials_heading",
+					"label": "Home testimonials: heading",
+					"type": "string"
+				},
+				{
+					"slug": "book_eyebrow",
+					"label": "Book trial section: eyebrow",
+					"type": "string"
+				},
+				{
+					"slug": "book_heading",
+					"label": "Book trial section: heading",
+					"type": "string"
+				},
+				{
+					"slug": "book_lead",
+					"label": "Book trial section: introduction",
+					"type": "text"
+				},
+				{
+					"slug": "book_contact_label",
+					"label": "Book trial section: direct contact label",
+					"type": "string"
+				},
+				{
+					"slug": "book_note",
+					"label": "Book trial section: lesson note",
+					"type": "text"
+				},
+				{
+					"slug": "book_form_title",
+					"label": "Book trial form: card heading",
+					"type": "string"
+				},
+				{
+					"slug": "book_form_sub",
+					"label": "Book trial form: subheading",
+					"type": "string"
+				},
+				{
+					"slug": "book_submit_label",
+					"label": "Book trial form: submit button",
+					"type": "string"
+				}
+			]
+		},
+		{
+			"slug": "posts",
+			"label": "Blog posts",
+			"labelSingular": "Blog post",
+			"description": "Optional blog articles. The blog is not linked in the navigation yet.",
+			"icon": "article",
+			"group": "Content",
+			"sortOrder": 20,
+			"urlPattern": "/blog/{slug}",
+			"supports": ["drafts", "revisions", "preview", "scheduling", "search", "seo"],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "excerpt",
+					"label": "Excerpt (shown on the blog index)",
+					"type": "text",
+					"searchable": true
+				},
+				{
+					"slug": "featured_image",
+					"label": "Featured image",
+					"type": "image"
+				},
+				{
+					"slug": "content",
+					"label": "Article",
+					"type": "portableText",
+					"searchable": true
+				}
+			]
+		},
+		{
+			"slug": "courses",
+			"label": "Courses",
+			"labelSingular": "Course",
+			"description": "The Qur'an courses. The URL slug is generated from the entry slug in the sidebar. Uncheck Visible to hide a course from the home page, course list and the contact form dropdown.",
+			"icon": "book-open-text",
+			"group": "Academy",
+			"sortOrder": 30,
+			"urlPattern": "/courses/{slug}",
+			"titleField": "name",
+			"admin": {
+				"listColumns": ["level", "order", "visible"]
+			},
+			"supports": ["drafts", "revisions", "preview", "search", "seo"],
+			"fields": [
+				{
+					"slug": "name",
+					"label": "Course name",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "summary",
+					"label": "Summary (one sentence shown on cards and the home page)",
+					"type": "text",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "description",
+					"label": "Long description",
+					"type": "portableText",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "level",
+					"label": "Level",
+					"type": "select",
+					"required": true,
+					"validation": {
+						"options": ["All levels", "Beginner", "Intermediate", "Advanced"]
+					}
+				},
+				{
+					"slug": "image",
+					"label": "Course image",
+					"type": "image"
+				},
+				{
+					"slug": "arabic_name",
+					"label": "Arabic name (shown at the end of the course row on the home page)",
+					"type": "string"
+				},
+				{
+					"slug": "order",
+					"label": "Display order (lowest first)",
+					"type": "integer",
+					"required": true,
+					"defaultValue": 0
+				},
+				{
+					"slug": "visible",
+					"label": "Visible on the site",
+					"type": "boolean",
+					"required": true,
+					"defaultValue": true
+				}
+			]
+		},
+		{
+			"slug": "plans",
+			"label": "Plans",
+			"labelSingular": "Plan",
+			"description": "Monthly lesson plans. Prices are in US dollars. Uncheck Visible to hide a plan without deleting it.",
+			"icon": "currency-dollar",
+			"group": "Academy",
+			"sortOrder": 40,
+			"routable": false,
+			"titleField": "name",
+			"admin": {
+				"listColumns": ["price", "classes_per_week", "is_popular", "visible"]
+			},
+			"supports": ["drafts", "revisions", "preview"],
+			"fields": [
+				{
+					"slug": "name",
+					"label": "Plan name",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "price",
+					"label": "Price in US dollars, billed monthly",
+					"type": "number",
+					"required": true
+				},
+				{
+					"slug": "currency_symbol",
+					"label": "Currency symbol shown before the price (for example $)",
+					"type": "string",
+					"defaultValue": "$"
+				},
+				{
+					"slug": "billing_period",
+					"label": "Billing period shown after the price (for example '/ month')",
+					"type": "string",
+					"defaultValue": "/ month"
+				},
+				{
+					"slug": "classes_per_week",
+					"label": "Classes each week",
+					"type": "integer",
+					"required": true
+				},
+				{
+					"slug": "classes_per_month",
+					"label": "Classes each month",
+					"type": "integer",
+					"required": true
+				},
+				{
+					"slug": "hours_per_month",
+					"label": "Teaching hours each month",
+					"type": "number",
+					"required": true
+				},
+				{
+					"slug": "is_popular",
+					"label": "Mark as the most popular plan",
+					"type": "boolean",
+					"defaultValue": false
+				},
+				{
+					"slug": "order",
+					"label": "Display order (lowest first)",
+					"type": "integer",
+					"required": true,
+					"defaultValue": 0
+				},
+				{
+					"slug": "visible",
+					"label": "Visible on the site",
+					"type": "boolean",
+					"required": true,
+					"defaultValue": true
+				}
+			]
+		},
+		{
+			"slug": "teachers",
+			"label": "Teachers",
+			"labelSingular": "Teacher",
+			"description": "Teacher profiles. Add a photo from the Media Library, or leave it empty for an initials card. Uncheck Visible to hide a teacher without deleting them.",
+			"icon": "users-three",
+			"group": "Academy",
+			"sortOrder": 50,
+			"routable": false,
+			"titleField": "name",
+			"admin": {
+				"listColumns": ["role", "order", "visible"]
+			},
+			"supports": ["drafts", "revisions", "preview", "seo"],
+			"fields": [
+				{
+					"slug": "name",
+					"label": "Full name",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "role",
+					"label": "Role (for example Qur'an teacher or Head of Tajweed)",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "photo",
+					"label": "Photo",
+					"type": "image"
+				},
+				{
+					"slug": "bio",
+					"label": "Short bio",
+					"type": "text"
+				},
+				{
+					"slug": "qualifications",
+					"label": "Qualifications (one per line)",
+					"type": "text"
+				},
+				{
+					"slug": "order",
+					"label": "Display order (lowest first)",
+					"type": "integer",
+					"required": true,
+					"defaultValue": 0
+				},
+				{
+					"slug": "visible",
+					"label": "Visible on the site",
+					"type": "boolean",
+					"required": true,
+					"defaultValue": true
+				}
+			]
+		},
+		{
+			"slug": "testimonials",
+			"label": "Testimonials",
+			"labelSingular": "Testimonial",
+			"description": "Real student or parent reviews only. Only entries with consent marked and Visible checked are shown on the site.",
+			"icon": "quotes",
+			"group": "Academy",
+			"sortOrder": 60,
+			"routable": false,
+			"titleField": "author",
+			"admin": {
+				"listColumns": ["country", "consent_given", "visible"]
+			},
+			"supports": ["drafts", "revisions", "preview"],
+			"fields": [
+				{
+					"slug": "quote",
+					"label": "Quote",
+					"type": "text",
+					"required": true
+				},
+				{
+					"slug": "author",
+					"label": "Author name",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "country",
+					"label": "Country",
+					"type": "string"
+				},
+				{
+					"slug": "relation",
+					"label": "Relation to the academy (for example Student, Parent, Graduate)",
+					"type": "string"
+				},
+				{
+					"slug": "rating",
+					"label": "Rating (for example 5.0)",
+					"type": "string",
+					"defaultValue": "5.0"
+				},
+				{
+					"slug": "avatar",
+					"label": "Author photo (optional, initials are shown when empty)",
+					"type": "image"
+				},
+				{
+					"slug": "consent_given",
+					"label": "The author has given permission to publish this review",
+					"type": "boolean",
+					"required": true,
+					"defaultValue": false
+				},
+				{
+					"slug": "visible",
+					"label": "Visible on the site",
+					"type": "boolean",
+					"required": true,
+					"defaultValue": true
+				},
+				{
+					"slug": "order",
+					"label": "Display order (lowest first)",
+					"type": "integer",
+					"required": true,
+					"defaultValue": 0
+				}
+			]
+		},
+		{
+			"slug": "faqs",
+			"label": "FAQs",
+			"labelSingular": "FAQ",
+			"description": "Questions and answers used on the free trial and contact pages. Uncheck Visible to hide a question without deleting it.",
+			"icon": "question",
+			"group": "Academy",
+			"sortOrder": 70,
+			"routable": false,
+			"titleField": "question",
+			"admin": {
+				"listColumns": ["order", "visible"]
+			},
+			"supports": ["drafts", "revisions", "preview", "search"],
+			"fields": [
+				{
+					"slug": "question",
+					"label": "Question",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "answer",
+					"label": "Answer",
+					"type": "text",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "order",
+					"label": "Display order (lowest first)",
+					"type": "integer",
+					"required": true,
+					"defaultValue": 0
+				},
+				{
+					"slug": "visible",
+					"label": "Visible on the site",
+					"type": "boolean",
+					"required": true,
+					"defaultValue": true
+				}
+			]
+		},
+		{
+			"slug": "site_settings",
+			"label": "Site settings",
+			"labelSingular": "Site settings",
+			"description": "Contact details, social links, headline numbers, logos, and footer text used across the site. Keep one entry. The owner notification email receives lead submissions from the trial form.",
+			"icon": "gear-six",
+			"group": "Settings",
+			"sortOrder": 80,
+			"routable": false,
+			"titleField": "email",
+			"admin": {
+				"listColumns": ["phone", "address", "owner_email"]
+			},
+			"supports": [],
+			"fields": [
+				{
+					"slug": "phone",
+					"label": "Phone number",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "whatsapp_number",
+					"label": "WhatsApp number (digits only, with country code). Leave empty to hide the WhatsApp link.",
+					"type": "string"
+				},
+				{
+					"slug": "email",
+					"label": "Email address",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "owner_email",
+					"label": "Owner notification email (receives enrolment leads)",
+					"type": "string"
+				},
+				{
+					"slug": "address",
+					"label": "Address",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "social_links",
+					"label": "Social links",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "label",
+								"label": "Platform name",
+								"type": "string",
+								"required": true
+							},
+							{
+								"slug": "url",
+								"label": "Profile URL",
+								"type": "url",
+								"required": true
+							}
+						]
+					}
+				},
+				{
+					"slug": "logo_light",
+					"label": "Logo for light background (header and footer)",
+					"type": "image"
+				},
+				{
+					"slug": "logo_dark",
+					"label": "Logo for dark background (header and footer)",
+					"type": "image"
+				},
+				{
+					"slug": "header_mark_light",
+					"label": "Header mark for light background (small icon)",
+					"type": "image"
+				},
+				{
+					"slug": "header_mark_dark",
+					"label": "Header mark for dark background (small icon)",
+					"type": "image"
+				},
+				{
+					"slug": "og_image",
+					"label": "Default sharing image (used when a page has no specific OG image)",
+					"type": "image"
+				},
+				{
+					"slug": "years",
+					"label": "Years teaching (for example 5+)",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "countries",
+					"label": "Countries served (for example 5+)",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "students",
+					"label": "Students taught",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "sessions",
+					"label": "Sessions delivered",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "years_label",
+					"label": "Home metric: years label",
+					"type": "string"
+				},
+				{
+					"slug": "countries_label",
+					"label": "Home metric: countries label",
+					"type": "string"
+				},
+				{
+					"slug": "students_label",
+					"label": "Home metric: students label",
+					"type": "string"
+				},
+				{
+					"slug": "sessions_label",
+					"label": "Home metric: sessions label",
+					"type": "string"
+				},
+				{
+					"slug": "footer_tagline",
+					"label": "Footer introduction",
+					"type": "text"
+				},
+				{
+					"slug": "footer_explore_label",
+					"label": "Footer explore heading",
+					"type": "string"
+				},
+				{
+					"slug": "footer_contact_label",
+					"label": "Footer contact heading",
+					"type": "string"
+				},
+				{
+					"slug": "footer_courses_label",
+					"label": "Footer courses heading",
+					"type": "string"
+				},
+				{
+					"slug": "footer_academy_label",
+					"label": "Footer academy heading",
+					"type": "string"
+				},
+				{
+					"slug": "footer_pricing_label",
+					"label": "Footer pricing link",
+					"type": "string"
+				},
+				{
+					"slug": "footer_teachers_label",
+					"label": "Footer teachers link",
+					"type": "string"
+				},
+				{
+					"slug": "footer_trial_label",
+					"label": "Footer free trial link",
+					"type": "string"
+				},
+				{
+					"slug": "footer_contact_link_label",
+					"label": "Footer contact link",
+					"type": "string"
+				},
+				{
+					"slug": "footer_terms_label",
+					"label": "Footer terms link",
+					"type": "string"
+				},
+				{
+					"slug": "footer_privacy_label",
+					"label": "Footer privacy link",
+					"type": "string"
+				},
+				{
+					"slug": "footer_copyright_label",
+					"label": "Footer copyright text",
+					"type": "string"
+				},
+				{
+					"slug": "footer_newsletter_heading",
+					"label": "Footer newsletter heading",
+					"type": "string"
+				},
+				{
+					"slug": "footer_newsletter_consent",
+					"label": "Footer newsletter consent text",
+					"type": "text"
+				},
+				{
+					"slug": "footer_stay_in_touch",
+					"label": "Footer stay in touch heading",
+					"type": "string"
+				}
+			]
+		},
+		{
+			"slug": "enrolments",
+			"label": "Enrolments",
+			"labelSingular": "Enrolment",
+			"description": "Leads submitted via the contact and free trial form. Status moves from new to contacted once the academy reaches out.",
+			"icon": "user-plus",
+			"group": "Settings",
+			"sortOrder": 90,
+			"routable": false,
+			"titleField": "name",
+			"admin": {
+				"listColumns": ["email", "plan", "course", "lead_status"]
+			},
+			"supports": [],
+			"fields": [
+				{
+					"slug": "name",
+					"label": "Name",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "email",
+					"label": "Email",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "phone",
+					"label": "Phone",
+					"type": "string"
+				},
+				{
+					"slug": "course",
+					"label": "Course",
+					"type": "string"
+				},
+				{
+					"slug": "plan",
+					"label": "Plan",
+					"type": "string"
+				},
+				{
+					"slug": "message",
+					"label": "Message",
+					"type": "text"
+				},
+				{
+					"slug": "submitted_at",
+					"label": "Submitted at",
+					"type": "string"
+				},
+				{
+					"slug": "lead_status",
+					"label": "Status",
+					"type": "select",
+					"required": true,
+					"defaultValue": "new",
+					"validation": {
+						"options": ["new", "contacted"]
+					}
+				}
+			]
+		},
+		{
+			"slug": "subscribers",
+			"label": "Subscribers",
+			"labelSingular": "Subscriber",
+			"description": "Email addresses collected through the footer newsletter form. Stored only, no emails are sent from the site.",
+			"icon": "envelope",
+			"group": "Settings",
+			"sortOrder": 100,
+			"routable": false,
+			"titleField": "email",
+			"admin": {
+				"listColumns": ["subscriber_status", "subscribed_at"]
+			},
+			"supports": [],
+			"fields": [
+				{
+					"slug": "email",
+					"label": "Email",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "subscriber_status",
+					"label": "Status",
+					"type": "select",
+					"required": true,
+					"defaultValue": "active",
+					"validation": {
+						"options": ["active", "unsubscribed"]
+					}
+				},
+				{
+					"slug": "subscribed_at",
+					"label": "Subscribed at",
+					"type": "string"
+				}
+			]
+		}
+	],
+	"menus": [
+		{
+			"name": "primary",
+			"label": "Primary Navigation",
+			"items": [
+				{
+					"type": "custom",
+					"label": "Home",
+					"url": "/"
+				},
+				{
+					"type": "custom",
+					"label": "About",
+					"url": "/about"
+				},
+				{
+					"type": "custom",
+					"label": "Courses",
+					"url": "/courses"
+				},
+				{
+					"type": "custom",
+					"label": "Pricing",
+					"url": "/pricing"
+				},
+				{
+					"type": "custom",
+					"label": "Teachers",
+					"url": "/teachers"
+				},
+				{
+					"type": "custom",
+					"label": "Contact",
+					"url": "/contact"
+				},
+				{
+					"type": "custom",
+					"label": "Get free trial",
+					"url": "/free-trial",
+					"cssClasses": "button"
+				}
+			]
+		}
+	],
+	"content": {
+		"courses": [
+			{
+				"id": "course-quranic-recitation",
+				"slug": "quranic-recitation",
+				"status": "published",
+				"data": {
+					"name": "Qur'anic Recitation",
+					"summary": "Build fluent, accurate recitation with a teacher who listens and corrects in real time.",
+					"level": "All levels",
+					"arabic_name": "القراءة",
+					"order": 1,
+					"visible": true,
+					"description": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "This course is for students who want to read the Qur'an aloud with confidence. Lessons focus on pronunciation, rhythm and the correct articulation of each letter."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "What you will work on" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Your teacher listens to you recite, corrects mistakes as they happen and gives you a short practice plan for the week."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Students can start from the alphabet or from full surahs. The pace is set by you and your teacher."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Who it is for" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Children and adults who are beginning to read, or who want to return to recitation after a break."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "course-tajweed-proficiency",
+				"slug": "tajweed-proficiency",
+				"status": "published",
+				"data": {
+					"name": "Tajweed Proficiency",
+					"summary": "Learn the rules of tajweed and apply them consistently in your daily recitation.",
+					"level": "Intermediate",
+					"arabic_name": "التجويد",
+					"order": 2,
+					"visible": true,
+					"description": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Tajweed lessons explain the rules behind correct recitation, then put them into practice on the surahs you already read."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "What you will work on" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Makharij, the characteristics of letters, the rules of noon and meem, madd, and the points where recitation should stop or continue."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Each rule is practised on real verses, not only memorised as a definition."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Who it is for" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Students who can already read Qur'anic Arabic and want to recite with more precision."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "course-memorization-excellence",
+				"slug": "memorization-excellence",
+				"status": "published",
+				"data": {
+					"name": "Memorization Excellence",
+					"summary": "Follow a structured hifz plan with regular revision and one-to-one accountability.",
+					"level": "Advanced",
+					"arabic_name": "الحفظ",
+					"order": 3,
+					"visible": true,
+					"description": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "This course is for students who want to memorise the Qur'an with a clear plan and regular revision."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "What you will work on" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "New portions, recent revision and long-term revision are scheduled together so that memorised surahs stay strong."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Your teacher checks your recitation each class and adjusts the plan when your pace changes."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Who it is for" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Students who can read accurately and are ready for a consistent daily memorisation routine."
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"plans": [
+			{
+				"id": "plan-i",
+				"slug": "plan-i",
+				"status": "published",
+				"data": {
+					"name": "Plan I",
+					"price": 20,
+					"currency_symbol": "$",
+					"billing_period": "/ month",
+					"classes_per_week": 1,
+					"classes_per_month": 4,
+					"hours_per_month": 2,
+					"is_popular": false,
+					"order": 1,
+					"visible": true
+				}
+			},
+			{
+				"id": "plan-ii",
+				"slug": "plan-ii",
+				"status": "published",
+				"data": {
+					"name": "Plan II",
+					"price": 40,
+					"currency_symbol": "$",
+					"billing_period": "/ month",
+					"classes_per_week": 2,
+					"classes_per_month": 8,
+					"hours_per_month": 4,
+					"is_popular": true,
+					"order": 2,
+					"visible": true
+				}
+			},
+			{
+				"id": "plan-iii",
+				"slug": "plan-iii",
+				"status": "published",
+				"data": {
+					"name": "Plan III",
+					"price": 82,
+					"currency_symbol": "$",
+					"billing_period": "/ month",
+					"classes_per_week": 4,
+					"classes_per_month": 16,
+					"hours_per_month": 8,
+					"is_popular": false,
+					"order": 3,
+					"visible": true
+				}
+			},
+			{
+				"id": "plan-iv",
+				"slug": "plan-iv",
+				"status": "published",
+				"data": {
+					"name": "Plan IV",
+					"price": 102,
+					"currency_symbol": "$",
+					"billing_period": "/ month",
+					"classes_per_week": 5,
+					"classes_per_month": 20,
+					"hours_per_month": 10,
+					"is_popular": false,
+					"order": 4,
+					"visible": true
+				}
+			}
+		],
+		"faqs": [
+			{
+				"id": "faq-free-trial",
+				"slug": "free-trial",
+				"status": "published",
+				"data": {
+					"question": "Is the trial class really free?",
+					"answer": "Yes. Every student starts with one free trial class. You can meet the teacher, ask questions and try the lesson before choosing a plan.",
+					"order": 1,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-class-length",
+				"slug": "class-length",
+				"status": "published",
+				"data": {
+					"question": "How long is each class?",
+					"answer": "Classes are 30 minutes. The monthly hours for each plan are based on four classes in a week, so a plan with one class each week gives two teaching hours each month.",
+					"order": 2,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-choose-course",
+				"slug": "choose-a-course",
+				"status": "published",
+				"data": {
+					"question": "Which course should I choose?",
+					"answer": "Choose Qur'anic Recitation if you are starting out or want to improve fluency. Choose Tajweed Proficiency if you can already read and want to refine your recitation. Choose Memorization Excellence if you are ready for a structured hifz plan. Your teacher can adjust the course after the trial class.",
+					"order": 3,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-children",
+				"slug": "children-and-adults",
+				"status": "published",
+				"data": {
+					"question": "Do you teach children and adults?",
+					"answer": "Yes. We teach children and adults, and lessons are one to one. Tell us the student's age and experience when you book the trial so we can match the right teacher.",
+					"order": 4,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-booking",
+				"slug": "booking-a-time",
+				"status": "published",
+				"data": {
+					"question": "How do I book a time?",
+					"answer": "Use the free trial form or contact us by phone or email. Tell us your time zone and the days that suit you, and we will confirm a slot.",
+					"order": 5,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-after-plan",
+				"slug": "after-choosing-a-plan",
+				"status": "published",
+				"data": {
+					"question": "What happens after I choose a plan?",
+					"answer": "Select a plan and complete the enrolment form. We confirm your schedule, match you with a teacher and start your first paid month after the free trial.",
+					"order": 6,
+					"visible": true
+				}
+			}
+		],
+		"site_settings": [
+			{
+				"id": "site-settings",
+				"slug": "site",
+				"status": "published",
+				"data": {
+					"phone": "+92 342 2766346",
+					"whatsapp_number": "923422766346",
+					"email": "hello@kanwalquranacademy.com",
+					"owner_email": "hello@kanwalquranacademy.com",
+					"address": "Karachi, Pakistan",
+					"social_links": [],
+					"years": "5+",
+					"countries": "5+",
+					"students": "[000]+",
+					"sessions": "[000]+",
+					"years_label": "Years teaching",
+					"countries_label": "Countries served",
+					"students_label": "Students taught",
+					"sessions_label": "Sessions delivered",
+					"footer_tagline": "Online Qur'an education from Karachi, Pakistan. Every student starts with a free trial class.",
+					"footer_explore_label": "Explore",
+					"footer_contact_label": "Contact",
+					"footer_courses_label": "Courses",
+					"footer_academy_label": "Academy",
+					"footer_pricing_label": "Pricing",
+					"footer_teachers_label": "Teachers",
+					"footer_trial_label": "Free trial",
+					"footer_contact_link_label": "Contact",
+					"footer_terms_label": "Terms of Service",
+					"footer_privacy_label": "Privacy Policy",
+					"footer_copyright_label": "All rights reserved.",
+					"footer_newsletter_heading": "Stay in touch",
+					"footer_newsletter_consent": "We only use your email to send occasional learning notes. Read our Privacy Policy.",
+					"footer_stay_in_touch": "Stay in touch"
+				}
+			}
+		],
+		"pages": [
+			{
+				"id": "page-home",
+				"slug": "home",
+				"status": "published",
+				"data": {
+					"title": "Home",
+					"home_eyebrow": "Online Qur'an academy",
+					"home_headline": "Recite the Qur'an with a teacher who knows your name.",
+					"home_highlight": "Qur'an",
+					"home_lead": "One-to-one lessons in recitation, tajweed and memorization. Start with a free trial class from wherever you are.",
+					"home_reach_text": "Students learning from {countries} countries",
+					"home_cta_label": "Start your free trial",
+					"feature_card_1_title": "Free trial class",
+					"feature_card_1_text": "Meet your teacher first.",
+					"feature_card_1_chip": "Free Trial",
+					"feature_card_2_title": "Plans from {price}/month",
+					"feature_card_2_text": "Choose a weekly pace.",
+					"feature_card_3_title": "Students in {countries} countries",
+					"feature_card_3_text": "Join families worldwide.",
+					"feature_card_4_title": "Learn on any device",
+					"feature_card_4_text": "Phone, tablet or laptop.",
+					"courses_eyebrow": "Courses",
+					"courses_heading": "Explore our courses",
+					"courses_intro": "Start where you are. Your teacher will meet you there and build the lessons around your level.",
+					"courses_journey_heading": "Start your journey",
+					"courses_journey_intro": "Three courses, each taught one to one. Pick the path that matches where you are and your teacher will set the pace from there.",
+					"courses_trial_cta": "Book free trial",
+					"courses_details_cta": "See details",
+					"courses_format_label": "Live one on one",
+					"split1_heading_before": "Easy Qur'an learning",
+					"split1_heading_highlight": "online",
+					"split1_paragraph_1": "Lessons run live in a video call, so you only need a phone, tablet or laptop with a camera. Your teacher shares the page you are reading and listens while you recite.",
+					"split1_paragraph_2": "The same teacher stays with you each week, so corrections and progress carry over from class to class.",
+					"split1_image_label": "Lesson on a phone (4:3)",
+					"split2_heading_before": "How to memorize the Qur'an",
+					"split2_heading_highlight": "with confidence",
+					"split2_paragraph_1": "Memorization grows in small, steady steps. Your teacher sets a monthly target, listens to what you have learned, and revises with you before adding new lines.",
+					"split2_list_items": "Set your intention\nCreate a quiet space\nListen and repeat\nRevise daily\nBreak it into small parts\nChoose one surah at a time",
+					"split2_image_label": "Memorization practice (4:3)",
+					"stats_eyebrow": "Over the past 5 years",
+					"stats_heading": "Our success",
+					"stats_description": "Our three courses, Qur'anic Recitation, Tajweed Proficiency and Memorization Excellence, help students learn the Qur'an at their own pace and from the comfort of home.",
+					"about_eyebrow": "Why Kanwal",
+					"about_title_before": "Experience Qur'anic",
+					"about_title_highlight": "wisdom",
+					"about_paragraph_1": "Kanwal Quran Academy teaches the Qur'an online in live one to one classes. Your teacher listens to your recitation, corrects it as you read, and sets a weekly plan around your level.",
+					"about_paragraph_2": "Students join from more than five countries, on a phone, tablet or laptop. Every student starts with a free trial class before choosing a plan.",
+					"about_image_alt": "A student reciting the Qur'an during a live online lesson",
+					"standing_eyebrow": "Standing out",
+					"standing_heading": "Standing out",
+					"standing_item_1_title": "Personalized schedules",
+					"standing_item_1_text": "You pick the days and times that suit your week, and your teacher keeps that slot for you.",
+					"standing_item_2_title": "Qualified Qur'an teachers",
+					"standing_item_2_text": "Every class is taught by a teacher with formal Qur'anic training, matched to your course and level.",
+					"standing_item_3_title": "Live one on one sessions",
+					"standing_item_3_text": "Video lessons with direct feedback, so your questions are answered in the moment.",
+					"pricing_eyebrow": "Pricing",
+					"pricing_heading": "Choose a plan that fits your week.",
+					"pricing_intro": "Every plan is billed monthly and starts with a free trial class. Prices are in US dollars.",
+					"pricing_period_label": "/ month",
+					"pricing_classes_week_label": "Classes each week",
+					"pricing_classes_month_label": "Classes each month",
+					"pricing_hours_label": "Teaching hours each month",
+					"pricing_popular_label": "Most popular",
+					"pricing_select_cta": "Select plan",
+					"trial_eyebrow": "Free trial",
+					"trial_heading": "How the free trial works",
+					"trial_step_1_title": "Book your free trial",
+					"trial_step_1_body": "Choose a plan and pick a time that works for you. The trial class is free.",
+					"trial_step_2_title": "Meet your teacher",
+					"trial_step_2_body": "We match you with a teacher for your course and level, then assess where you are.",
+					"trial_step_3_title": "Start your plan",
+					"trial_step_3_body": "Your teacher builds a weekly schedule around your goals and keeps you accountable.",
+					"testimonials_eyebrow": "Student voices",
+					"testimonials_heading": "Customer Reviews",
+					"book_eyebrow": "Free trial",
+					"book_heading": "Book a free trial class",
+					"book_lead": "Tell us a little about the student and the times that suit you. We will reply with the next available trial slot. The trial class is free and no payment details are needed.",
+					"book_contact_label": "Reach us directly",
+					"book_note": "Lessons run live in a video call. You only need a phone, tablet or laptop with a camera.",
+					"book_form_title": "Start your free trial",
+					"book_form_sub": "Every student starts with one free trial class.",
+					"book_submit_label": "Request free trial"
+				}
+			},
+			{
+				"id": "page-about",
+				"slug": "about",
+				"status": "published",
+				"data": {
+					"title": "About",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Kanwal Quran Academy is an online Qur'an academy based in Karachi, Pakistan. We teach students in 5+ countries."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "What we teach" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "We teach Qur'anic recitation, tajweed and memorization. Every lesson is one to one, so the teacher can hear the student, correct mistakes and move at the right pace."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "How we teach" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Every student starts with a free trial class. After that, your teacher builds a weekly plan around your level and goals. Progress comes from regular practice, clear correction and a teacher who listens."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Get in touch" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Phone +92 342 2766346. Email hello@kanwalquranacademy.com. We are based in Karachi, Pakistan and teach online."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "page-terms",
+				"slug": "terms-of-service",
+				"status": "published",
+				"data": {
+					"title": "Terms of Service",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "These terms explain how Kanwal Quran Academy provides online Qur'an classes. By using this website or enrolling in a class, you agree to them."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "The free trial" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Every new student can book one free trial class. The trial is for assessment and introduction. It does not create an obligation to enrol."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Plans and fees" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Plans are billed monthly in US dollars. The price, number of classes and teaching hours for each plan are shown on the Pricing page. Fees are due before the first class of each month."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Scheduling and attendance" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Class times are agreed with your teacher. Contact us as early as possible if you need to change a class so that we can arrange another time."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Conduct" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Students and guardians are expected to treat teachers and other students with respect. We may end a course if behaviour makes lessons unsafe or unworkable."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Ending a plan" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Contact us before the next billing date if you want to pause or end a plan. We will confirm the end date with you."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Changes to these terms" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "We may update these terms. The current version will always be on this page."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Contact" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Questions about these terms can be sent to hello@kanwalquranacademy.com or +92 342 2766346."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "page-privacy",
+				"slug": "privacy-policy",
+				"status": "published",
+				"data": {
+					"title": "Privacy Policy",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "This policy explains what information Kanwal Quran Academy collects and how we use it."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "What we collect" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "When you contact us or enrol, we may collect your name, email address, phone number, country, time zone and details about the course you want."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "How we use it" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "We use this information to reply to your enquiry, arrange a trial class, match you with a teacher and manage your enrolment."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Payments" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Payments are not processed on this website yet. If this changes, payment details will be handled by a payment provider and not stored by us."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Who we share it with" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "We do not sell your information. We share it only with the teacher assigned to you and with service providers that host the site or help us communicate."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Cookies" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "This site uses only the cookies needed to run the site and the admin panel. We do not use advertising cookies."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Your choices" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "You can ask us to correct or delete your information by emailing hello@kanwalquranacademy.com."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Contact" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Questions about this policy can be sent to hello@kanwalquranacademy.com or +92 342 2766346."
+								}
+							]
+						}
+					]
+				}
+			}
+		]
+	}
+}
