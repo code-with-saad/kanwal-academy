@@ -2,7 +2,6 @@
 import type { EditProxy } from "emdash";
 import Container from "./Container.astro";
 import Newsletter from "./Newsletter.astro";
-import ThemeToggle from "./ThemeToggle.astro";
 import { site } from "../config/site";
 import { emailHref, phoneHref, type SiteContact } from "../utils/site-config";
 
@@ -101,7 +100,16 @@ const academyLinks = [
 		</div>
 
 		<div class="footer__news">
-			<Newsletter />
+			<div class="footer__news-copy">
+				<h2 class="footer__news-heading">Stay in touch</h2>
+				<p class="footer__news-consent">
+					We only use your email to send occasional learning notes.
+					Read our <a href="/privacy-policy">Privacy Policy</a>.
+				</p>
+			</div>
+			<div class="footer__news-form">
+				<Newsletter />
+			</div>
 		</div>
 
 		<div class="footer__bottom">
@@ -116,15 +124,12 @@ const academyLinks = [
 						const label = isTerms ? contact.footer.termsLabel : contact.footer.privacyLabel;
 						return (
 							<li>
-								<a href={item.href} {...settingsEdit?.[field]}>{label}</a>
+								<a href={item.href} {...(field ? settingsEdit?.[field] : {})}>{label}</a>
 							</li>
 						);
 					})
 				}
 			</ul>
-			<div class="footer__end">
-				<ThemeToggle />
-			</div>
 		</div>
 	</Container>
 </footer>
@@ -217,10 +222,50 @@ const academyLinks = [
 	}
 
 	.footer__news {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		align-items: start;
+		gap: clamp(24px, 4vw, 48px);
 		padding-top: var(--space-xl);
 		border-top: 1px solid var(--line);
 		margin-top: var(--space-2xl);
-		max-width: 460px;
+	}
+
+	.footer__news-copy {
+		display: grid;
+		gap: var(--space-sm);
+	}
+
+	.footer__news-heading {
+		margin: 0;
+		color: var(--ink);
+		font-size: var(--type-h3-size);
+		font-weight: 500;
+		line-height: 1.25;
+	}
+
+	.footer__news-consent {
+		margin: 0;
+		color: var(--ink-muted);
+		font-size: var(--type-small-size);
+		line-height: 1.6;
+		max-width: 40ch;
+	}
+
+	.footer__news-consent a {
+		color: var(--green-deep);
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+
+	.footer__news-consent a:hover {
+		color: var(--green);
+	}
+
+	.footer__news-form {
+		justify-self: start;
+		width: 100%;
+		max-width: 480px;
 	}
 
 	.footer__bottom {
@@ -254,12 +299,6 @@ const academyLinks = [
 		color: var(--green-deep);
 	}
 
-	.footer__end {
-		display: flex;
-		align-items: center;
-		gap: var(--space-sm);
-	}
-
 	@media (max-width: 900px) {
 		.footer__top {
 			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -268,6 +307,10 @@ const academyLinks = [
 
 		.footer__brand {
 			grid-column: 1 / -1;
+		}
+
+		.footer__news {
+			grid-template-columns: 1fr;
 		}
 	}
 

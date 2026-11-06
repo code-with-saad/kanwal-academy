@@ -2,10 +2,12 @@
 /**
  * Newsletter
  *
- * Footer-only capture: one email field, Subscribe button and a consent line
- * with a Privacy Policy link. Addresses are STORED ONLY in the EmDash
- * `subscribers` collection through the shared /api/enrol route
- * ({ type: "newsletter" }). No email is ever sent to subscribers.
+ * Footer-only email capture. The heading and consent text live in Footer.astro;
+ * this component is just the input row + hidden helpers + status line.
+ *
+ * Addresses are STORED ONLY in the EmDash `subscribers` collection through the
+ * shared /api/enrol route ({ type: "newsletter" }). No email is ever sent to
+ * subscribers.
  *
  * States: idle, invalid (message under the field), submitting (spinner),
  * success, error. Duplicates are accepted silently.
@@ -19,9 +21,7 @@ const turnstileSiteKey = String(
 ).trim();
 ---
 
-<form class="newsletter" data-newsletter novalidate aria-labelledby="newsletter-heading">
-	<h2 class="newsletter__heading" id="newsletter-heading">Stay in touch</h2>
-
+<form class="newsletter" data-newsletter novalidate>
 	<div class="newsletter__row">
 		<label class="visually-hidden" for="newsletter-email">Email address</label>
 		<input
@@ -64,11 +64,6 @@ const turnstileSiteKey = String(
 	}
 
 	<p class="newsletter__status" id="newsletter-status" role="status" aria-live="polite" data-status></p>
-
-	<p class="newsletter__consent">
-		We only use your email to send occasional learning notes. Read our
-		<a href="/privacy-policy">Privacy Policy</a>.
-	</p>
 </form>
 
 <script>
@@ -81,7 +76,6 @@ const turnstileSiteKey = String(
 		const status = form.querySelector<HTMLElement>("[data-status]")!;
 		const turnstile = form.querySelector<HTMLElement>(".cf-turnstile");
 
-		// Load the Turnstile widget only when a site key is configured.
 		if (turnstile && !document.getElementById("cf-turnstile-newsletter")) {
 			const script = document.createElement("script");
 			script.id = "cf-turnstile-newsletter";
@@ -167,18 +161,7 @@ const turnstileSiteKey = String(
 
 <style>
 	.newsletter {
-		display: grid;
-		gap: var(--space-sm);
-		justify-items: start;
 		width: 100%;
-	}
-
-	.newsletter__heading {
-		margin: 0;
-		color: var(--ink);
-		font-size: var(--type-small-size);
-		font-weight: 600;
-		line-height: 1.2;
 	}
 
 	.newsletter__row {
@@ -190,14 +173,15 @@ const turnstileSiteKey = String(
 	.newsletter__input {
 		flex: 1 1 auto;
 		min-width: 0;
-		height: 44px;
-		padding: 0 14px;
+		height: 48px;
+		padding: 0 16px;
 		border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
 		border-radius: var(--radius-input);
 		background: var(--page);
 		color: var(--ink);
 		font: inherit;
-		font-size: var(--type-small-size);
+		font-size: var(--type-body-size);
+		transition: border-color var(--transition);
 	}
 
 	.newsletter__input[aria-invalid="true"] {
@@ -207,6 +191,7 @@ const turnstileSiteKey = String(
 	.newsletter__input:focus-visible {
 		outline: 2px solid var(--focus);
 		outline-offset: 2px;
+		border-color: var(--green-deep);
 	}
 
 	.newsletter__submit {
@@ -215,14 +200,14 @@ const turnstileSiteKey = String(
 		justify-content: center;
 		gap: var(--space-xs);
 		flex: none;
-		height: 44px;
-		padding: 0 20px;
+		height: 48px;
+		padding: 0 24px;
 		border: 1px solid var(--green);
 		border-radius: var(--radius-button);
 		background: var(--green);
 		color: var(--on-accent);
 		font: inherit;
-		font-size: var(--type-small-size);
+		font-size: var(--type-body-size);
 		font-weight: 500;
 		cursor: pointer;
 		transition:
@@ -238,7 +223,7 @@ const turnstileSiteKey = String(
 
 	.newsletter__submit:focus-visible {
 		outline: 2px solid var(--focus);
-		outline-offset: 2px;
+		outline-offset: 3px;
 	}
 
 	.newsletter__submit:disabled {
@@ -246,11 +231,10 @@ const turnstileSiteKey = String(
 		opacity: 0.72;
 	}
 
-	/* Spinner, never a skeleton loader. */
 	.newsletter__spinner {
 		display: none;
-		width: 14px;
-		height: 14px;
+		width: 16px;
+		height: 16px;
 		border: 2px solid color-mix(in srgb, var(--on-accent) 40%, transparent);
 		border-top-color: var(--on-accent);
 		border-radius: 50%;
@@ -273,7 +257,7 @@ const turnstileSiteKey = String(
 
 	.newsletter__status {
 		min-height: 1.25em;
-		margin: 0;
+		margin: var(--space-xs) 0 0;
 		color: var(--ink-muted);
 		font-size: var(--type-small-size);
 		line-height: 1.4;
@@ -293,17 +277,6 @@ const turnstileSiteKey = String(
 		color: #ff9b8a;
 	}
 
-	.newsletter__consent {
-		margin: 0;
-		color: var(--ink-muted);
-		font-size: var(--type-small-size);
-		line-height: 1.5;
-	}
-
-	.newsletter__consent a {
-		color: var(--green-deep);
-	}
-
 	.newsletter__honeypot {
 		position: absolute;
 		left: -9999px;
@@ -312,7 +285,7 @@ const turnstileSiteKey = String(
 		overflow: hidden;
 	}
 
-	@media (max-width: 420px) {
+	@media (max-width: 480px) {
 		.newsletter__row {
 			flex-direction: column;
 		}
