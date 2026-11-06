@@ -8,6 +8,10 @@ interface Props {
 	type?: "button" | "submit" | "reset";
 	class?: string;
 	edit?: Partial<FieldAnnotation>;
+	/** Opens the enrolment modal instead of navigating. */
+	modal?: boolean;
+	prefillPlan?: string;
+	prefillCourse?: string;
 }
 
 const {
@@ -17,13 +21,27 @@ const {
 	type = "button",
 	class: className,
 	edit,
+	modal,
+	prefillPlan,
+	prefillCourse,
 } = Astro.props;
 
 const classes = ["btn", `btn--${variant}`, size === "lg" && "btn--lg", className];
+const modalAttrs = modal
+	? {
+			"data-open-modal": "",
+			...(prefillPlan ? { "data-prefill-plan": prefillPlan } : {}),
+			...(prefillCourse ? { "data-prefill-course": prefillCourse } : {}),
+		}
+	: {};
 ---
 
 {
-	href ? (
+	modal ? (
+		<button type="button" class:list={classes} {...modalAttrs} {...edit}>
+			<slot />
+		</button>
+	) : href ? (
 		<a {href} class:list={classes} {...edit}>
 			<slot />
 		</a>

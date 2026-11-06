@@ -269,12 +269,12 @@ const featureCards = [
 						</svg>
 						<span>Students learning from {contact.stats.countries} countries</span>
 					</p>
-					<a href="#book" class="hero__cta" data-reveal="up" data-reveal-delay="280">
+					<button type="button" class="hero__cta" data-open-modal data-reveal="up" data-reveal-delay="280">
 						Start your free trial
 						<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 							<path d="M4 10h12m-5-5 5 5-5 5" />
 						</svg>
-					</a>
+					</button>
 				</div>
 
 				<!-- Right: Visual + Chips -->
@@ -402,7 +402,7 @@ const featureCards = [
 						your teacher will set the pace from there.
 					</p>
 				</div>
-				<Button href="/#book" variant="secondary">Book free trial</Button>
+				<Button modal variant="secondary">Book free trial</Button>
 			</div>
 
 			<ol class="journey-list">
@@ -414,7 +414,7 @@ const featureCards = [
 							summary={course.data.summary}
 							level={course.data.level}
 							arabic={courseArabic[course.id]}
-							href={`/?course=${encodeURIComponent(course.id)}#book`}
+							prefillCourse={course.data.name}
 						/>
 					))
 				}
@@ -433,7 +433,6 @@ const featureCards = [
 					imageLabel="Lesson on a phone (4:3)"
 					imageRatio="4 / 3"
 					buttonLabel="Book free trial"
-					buttonHref="/#book"
 				/>
 
 				<FeatureSplit
@@ -455,7 +454,6 @@ const featureCards = [
 						"Choose one surah at a time",
 					]}
 					buttonLabel="Book free trial"
-					buttonHref="/#book"
 					imageFirst
 				/>
 			</div>
@@ -527,15 +525,7 @@ const featureCards = [
 
 	<Section id="book">
 		<Container>
-			<BookTrial
-				contact={contact}
-				plans={plans.map((plan) => ({
-					id: plan.id,
-					name: plan.data.name,
-					price: plan.data.price,
-				}))}
-				courses={courses.map((course) => ({ id: course.id, name: course.data.name }))}
-			/>
+			<BookTrial contact={contact} />
 		</Container>
 	</Section>
 </Base>
@@ -718,7 +708,10 @@ const featureCards = [
 		height: 56px;
 		padding: 0 28px;
 		margin-top: var(--space-xl);
+		border: none;
 		border-radius: 999px;
+		cursor: pointer;
+		font: inherit;
 		background: var(--green);
 		color: var(--on-accent);
 		font-size: var(--type-body-size);

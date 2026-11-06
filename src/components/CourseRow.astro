@@ -6,17 +6,26 @@ interface Props {
 	title: string;
 	summary?: string;
 	level?: string;
-	href: string;
+	/** Opens the enrolment modal with this course preselected. */
+	prefillCourse?: string;
 	/** Arabic course name, shown at the end of the row. */
 	arabic?: string;
 }
 
-const { index, title, summary, level, href, arabic } = Astro.props;
+const { index, title, summary, level, prefillCourse, arabic } = Astro.props;
 const number = String(index).padStart(2, "0");
+
+const modalAttrs = prefillCourse
+	? { "data-open-modal": "", "data-prefill-course": prefillCourse }
+	: {};
 ---
 
 <li class="course-row" data-reveal="up" data-reveal-delay={index * 80}>
-	<a class:list={["course-row__link", "lift", arabic && "course-row__link--arabic"]} {href}>
+	<button
+		type="button"
+		class:list={["course-row__link", "lift", arabic && "course-row__link--arabic"]}
+		{...modalAttrs}
+	>
 		<span class="course-row__index" aria-hidden="true">{number}</span>
 		<span class="course-row__body">
 			<span class="course-row__head">
@@ -48,7 +57,7 @@ const number = String(index).padStart(2, "0");
 				stroke-linecap="round"
 				stroke-linejoin="round"></path>
 		</svg>
-	</a>
+	</button>
 </li>
 
 <style>
@@ -63,12 +72,18 @@ const number = String(index).padStart(2, "0");
 	.course-row__link {
 		display: grid;
 		grid-template-columns: 44px minmax(0, 1fr) 20px;
+		width: 100%;
 		align-items: center;
 		gap: var(--space-md);
 		padding: var(--space-lg) var(--space-md);
+		border: none;
 		border-radius: var(--radius-card);
+		background: none;
 		color: var(--ink);
+		font: inherit;
+		text-align: start;
 		text-decoration: none;
+		cursor: pointer;
 		transition:
 			background-color var(--transition),
 			color var(--transition),

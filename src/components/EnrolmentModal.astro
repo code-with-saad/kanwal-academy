@@ -36,7 +36,7 @@ const waHref = whatsappPhone
 	: "";
 ---
 
-{/* Dialog – rendered server-side, hidden until JS opens it */}
+{/* Dialog: rendered server-side, hidden until JS opens it */}
 <dialog
 	id="enrol-modal"
 	class="em"
@@ -234,8 +234,7 @@ const waHref = whatsappPhone
 	// Import intl-tel-input (ESM build).
 	import intlTelInput from "intl-tel-input";
 	// @ts-ignore
-	import "intl-tel-input/build/css/intlTelInput.css";
-	import { utilsScriptUrl } from "intl-tel-input/utils";
+	import "intl-tel-input/styles";
 
 	// ---------------------------------------------------------------------------
 	// Modal state machine
@@ -258,22 +257,18 @@ const waHref = whatsappPhone
 	const retryBtn        = dialog.querySelector<HTMLButtonElement>("[data-em-retry]")!;
 	const closeButtons    = dialog.querySelectorAll<HTMLButtonElement>("[data-em-close]");
 	const phoneFull       = document.getElementById("em-phone-full") as HTMLInputElement;
-	const courseSelect    = document.getElementById("em-course")     as HTMLSelectElement;
-	const planSelect      = document.getElementById("em-plan")       as HTMLSelectElement;
+	const courseSelect    = document.getElementById("em-course")     as HTMLSelectElement | null;
+	const planSelect      = document.getElementById("em-plan")       as HTMLSelectElement | null;
 	const phoneInput      = document.getElementById("em-phone")      as HTMLInputElement;
 
 	// ---------------------------------------------------------------------------
 	// intl-tel-input
 	// ---------------------------------------------------------------------------
 	const iti = intlTelInput(phoneInput, {
-		initialCountry: "auto",
-		geoIpLookup: (success) => {
-			fetch("https://ipapi.co/json")
-				.then((r) => r.json())
-				.then((data: { country_code?: string }) => success(data.country_code ?? "pk"))
-				.catch(() => success("pk"));
-		},
-		loadUtils: () => import("intl-tel-input/utils").then(() => utilsScriptUrl),
+		// Academy is in Karachi, so Pakistan is the default. Users pick their
+		// own country; no third-party geo lookup is performed.
+		initialCountry: "pk",
+		loadUtils: () => import("intl-tel-input/utils"),
 		separateDialCode: true,
 		strictMode: false,
 	});
@@ -717,6 +712,12 @@ const waHref = whatsappPhone
 
 	.em__err.is-visible { display: block; }
 
+	/* `[hidden]` must win over the display rules above, or the success and
+	   error panels render together with the form. */
+	.em__form[hidden],
+	.em__success[hidden],
+	.em__error-panel[hidden] { display: none; }
+
 	/* ---- Global error (below submit) ----------------------------------- */
 	.em__global-err {
 		font-size: var(--type-small-size);
@@ -852,7 +853,7 @@ const waHref = whatsappPhone
 
 	/* ---- Reduced motion ------------------------------------------------ */
 	@media (prefers-reduced-motion: reduce) {
-		.em__spinner { animation-duration: 1.4s; }
+		.em__spinner { animation: none; }
 	}
 </style>
 

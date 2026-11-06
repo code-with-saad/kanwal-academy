@@ -4,9 +4,9 @@
  * Receives enrolment / free-trial leads from the modal form.
  *
  * Security layers (in order):
- *   1. Honeypot field – silent accept so bots learn nothing.
+ *   1. Honeypot field: silent accept so bots learn nothing.
  *   2. Zod schema validation.
- *   3. Per-IP rate limit (hashed, stored in D1) – 5 per hour.
+ *   3. Per-IP rate limit (hashed, stored in D1): 5 per hour.
  *   4. Cloudflare Turnstile verification (skipped when no secret is set).
  *
  * On success:
@@ -32,12 +32,12 @@ export const prerender = false;
 
 const EnrolSchema = z.object({
 	name: z.string().min(2).max(120),
-	email: z.string().email().max(254),
+	email: z.email().max(254),
 	phone: z
 		.string()
 		.min(7, "Phone number is too short.")
 		.max(20, "Phone number is too long.")
-		.regex(/^\+\d[\d\s\-().]{5,18}$/, "Enter a valid phone number with country code."),
+		.regex(/^\+[1-9]\d{6,14}$/, "Enter a valid phone number with country code."),
 	course: z.string().max(120).optional().default(""),
 	plan: z.string().max(120).optional().default(""),
 	message: z.string().max(2000).optional().default(""),
@@ -55,7 +55,7 @@ const json = (body: { ok: boolean; message: string; field?: string }, status = 2
 		headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
 	});
 
-/** SHA-256 hex of the IP – we never store the raw address. */
+/** SHA-256 hex of the IP: we never store the raw address. */
 async function hashIp(ip: string): Promise<string> {
 	const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ip));
 	return Array.from(new Uint8Array(buf))
@@ -91,41 +91,66 @@ async function verifyTurnstile(
 const RATE_LIMIT = 5;
 const RATE_WINDOW_S = 3600; // 1 hour in seconds
 
-async function checkRateLimit(db: D1Database, rawIp: string): Promise<boolean> {
-	const key = await hashIp(rawIp || "unknown");
-	const now = Math.floor(Date.now() / 1000);
-	const windowStart = now - RATE_WINDOW_S;
+let rateTableReady: Promise<void> | null = null;
 
-	await db
+const ensureRateTable = async (db: D1Database) => {
+	rateTableReady ??= db
 		.prepare(
 			`CREATE TABLE IF NOT EXISTS enrol_rate (
 				ip_hash TEXT NOT NULL,
 				ts      INTEGER NOT NULL
 			)`,
 		)
-		.run();
+		.run()
+		.then(() => undefined)
+		.catch((error: unknown) => {
+			rateTableReady = null;
+			throw error;
+		});
+	return rateTableReady;
+};
 
-	// Delete expired rows for this key to keep the table lean.
+const windowCount = async (db: D1Database, key: string, windowStart: number): Promise<number> => {
 	await db
 		.prepare(`DELETE FROM enrol_rate WHERE ip_hash = ? AND ts < ?`)
 		.bind(key, windowStart)
 		.run();
-
 	const { results } = await db
 		.prepare(`SELECT COUNT(*) AS cnt FROM enrol_rate WHERE ip_hash = ? AND ts >= ?`)
 		.bind(key, windowStart)
 		.all<{ cnt: number }>();
+	return results[0]?.cnt ?? 0;
+};
 
-	const count = results[0]?.cnt ?? 0;
-	if (count >= RATE_LIMIT) return true; // is limited
+const recordAttempt = async (db: D1Database, key: string) => {
+	await db
+		.prepare(`INSERT INTO enrol_rate (ip_hash, ts) VALUES (?, ?)`)
+		.bind(key, Math.floor(Date.now() / 1000))
+		.run();
+};
 
-	await db.prepare(`INSERT INTO enrol_rate (ip_hash, ts) VALUES (?, ?)`).bind(key, now).run();
-	return false;
+// ---------------------------------------------------------------------------
+// Save lead to the EmDash enrolments collection
+// ---------------------------------------------------------------------------
+
+/** Minimal ULID generator (Crockford base32, 48-bit time + 80-bit randomness). */
+function generateUlid(): string {
+	const ENCODING = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+	let time = Date.now();
+	let timeChars = "";
+	for (let i = 0; i < 10; i++) {
+		timeChars = ENCODING[time % 32] + timeChars;
+		time = Math.floor(time / 32);
+	}
+	const bytes = new Uint8Array(10);
+	crypto.getRandomValues(bytes);
+	let randomness = 0n;
+	for (const b of bytes) randomness = (randomness << 8n) | BigInt(b);
+	const randomChars = randomness.toString(2).padStart(80, "0").match(/.{5}/g) ?? [];
+	let randomCharsJoined = "";
+	for (const chunk of randomChars) randomCharsJoined += ENCODING[parseInt(chunk, 2)];
+	return (timeChars + randomCharsJoined).slice(0, 26);
 }
-
-// ---------------------------------------------------------------------------
-// Save lead to EmDash enrolments collection via D1
-// ---------------------------------------------------------------------------
 
 async function saveEnrolment(
 	db: D1Database,
@@ -138,47 +163,25 @@ async function saveEnrolment(
 		message: string;
 	},
 ): Promise<void> {
-	// EmDash stores content in an `entries` table. We insert directly with the
-	// collection slug so the entry appears in the admin list instantly.
-	// createdAt is an ISO-8601 string stored in `data` (a JSON column).
-	const createdAt = new Date().toISOString();
-	const entryData = JSON.stringify({
-		name: data.name,
-		email: data.email,
-		phone: data.phone,
-		course: data.course,
-		plan: data.plan,
-		message: data.message,
-		created_at: createdAt,
-		status: "new",
-	});
+	// EmDash stores content in per-collection tables (`ec_<slug>`) with one
+	// column per field. This insert mirrors the columns and defaults EmDash
+	// writes on its own create path (ulid id, version 1, locale, translation
+	// group, published status) so the lead shows up in the admin like any
+	// other entry of the collection.
+	const now = new Date().toISOString();
+	const id = generateUlid();
+	const createdAt = now;
 
-	// Use a plain fallback table if EmDash's entries table is not available,
-	// to guard against schema differences.
-	try {
-		await db
-			.prepare(
-				`INSERT INTO entries (collection, slug, status, data, published_at, created_at, updated_at)
-				 VALUES ('enrolments', lower(hex(randomblob(8))), 'published', ?, ?, ?, ?)`,
-			)
-			.bind(entryData, createdAt, createdAt, createdAt)
-			.run();
-	} catch {
-		// EmDash schema not ready (dev without seed) – use a fallback table.
-		await db
-			.prepare(
-				`CREATE TABLE IF NOT EXISTS enrolments_fallback (
-					id INTEGER PRIMARY KEY AUTOINCREMENT,
-					data TEXT NOT NULL,
-					created_at TEXT NOT NULL
-				)`,
-			)
-			.run();
-		await db
-			.prepare(`INSERT INTO enrolments_fallback (data, created_at) VALUES (?, ?)`)
-			.bind(entryData, createdAt)
-			.run();
-	}
+	await db
+		.prepare(
+			`INSERT INTO ec_enrolments (
+				id, slug, status, author_id, primary_byline_id,
+				created_at, updated_at, published_at, version, locale, translation_group,
+				name, email, phone, course, plan, message, submitted_at, lead_status
+			) VALUES (?, NULL, 'published', NULL, NULL, ?, ?, ?, 1, 'en', ?, ?, ?, ?, ?, ?, ?, ?, 'new')`,
+		)
+		.bind(id, createdAt, now, now, id, data.name, data.email, data.phone, data.course, data.plan, data.message, now)
+		.run();
 }
 
 // ---------------------------------------------------------------------------
@@ -302,15 +305,28 @@ export const POST: APIRoute = async ({ request, clientAddress, url }) => {
 		);
 	}
 
-	// Rate limit
+	// Rate limit: count attempts in the current window, but only record this
+	// attempt once Turnstile has passed, so a failed challenge does not burn
+	// the visitor's quota.
 	let ip: string | null = null;
 	try {
 		ip = clientAddress ?? null;
 	} catch {
 		ip = null;
 	}
-	const limited = await checkRateLimit(db, ip ?? "unknown").catch(() => false);
-	if (limited) {
+
+	const rateKey = await hashIp(ip ?? "unknown").catch(() => "unknown");
+	let rateLimited = true;
+	try {
+		await ensureRateTable(db);
+		rateLimited =
+			(await windowCount(db, rateKey, Math.floor(Date.now() / 1000) - RATE_WINDOW_S)) >=
+			RATE_LIMIT;
+	} catch {
+		// If rate limiting fails we prefer availability over strictness.
+		rateLimited = false;
+	}
+	if (rateLimited) {
 		return json(
 			{ ok: false, message: "Too many attempts. Please try again in an hour." },
 			429,
@@ -328,6 +344,9 @@ export const POST: APIRoute = async ({ request, clientAddress, url }) => {
 			);
 		}
 	}
+
+	// Record the attempt now that it is a real submission.
+	await recordAttempt(db, rateKey).catch(() => {});
 
 	// Save lead
 	try {

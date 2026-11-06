@@ -16,7 +16,8 @@ interface Props {
 	imageRatio?: string;
 	imageFirst?: boolean;
 	buttonLabel: string;
-	buttonHref: string;
+	/** When set the button navigates; otherwise it opens the enrolment modal. */
+	buttonHref?: string;
 }
 
 const {
@@ -61,7 +62,7 @@ const {
 			)
 		}
 		<div data-reveal="up" data-reveal-delay="320">
-			<Button href={buttonHref} variant="secondary">{buttonLabel}</Button>
+			<Button href={buttonHref} modal={!buttonHref} variant="secondary">{buttonLabel}</Button>
 		</div>
 	</div>
 

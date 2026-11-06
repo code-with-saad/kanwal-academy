@@ -19,7 +19,6 @@ interface Props {
 
 const { plan, revealDelay } = Astro.props;
 const priceLabel = formatUsdPrice(plan.price);
-const planHref = plan.slug ? `/?plan=${encodeURIComponent(plan.slug)}#book` : "/#book";
 ---
 
 <div

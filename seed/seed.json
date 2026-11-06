@@ -660,7 +660,7 @@
 			"routable": false,
 			"titleField": "name",
 			"admin": {
-				"listColumns": ["email", "plan", "course", "status", "created_at"]
+				"listColumns": ["email", "plan", "course", "lead_status", "submitted_at"]
 			},
 			"supports": [],
 			"fields": [
@@ -697,12 +697,12 @@
 					"type": "text"
 				},
 				{
-					"slug": "created_at",
+					"slug": "submitted_at",
 					"label": "Submitted at",
 					"type": "string"
 				},
 				{
-					"slug": "status",
+					"slug": "lead_status",
 					"label": "Status",
 					"type": "select",
 					"required": true,
