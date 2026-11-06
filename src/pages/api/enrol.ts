@@ -446,25 +446,33 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 		}
 
 		if (ownerEmail) {
-			sendOwnerEmail({
-				serviceId,
-				templateId,
-				publicKey,
-				privateKey,
-				toEmail: ownerEmail,
-				lead: {
-					name: oneLine(name),
-					email,
-					phone,
-					course: oneLine(course),
-					plan: oneLine(plan),
-					message: oneLine(message),
-					time: new Date().toUTCString(),
-				},
-			}).catch(() => {
-				// Email failure must not expose internals. The lead is saved.
-				console.error("[enrol] Owner notification email could not be sent.");
-			});
+			// Awaited on purpose: Cloudflare Workers can end the request context
+			// as soon as the response is returned, which would kill a floating
+			// promise and the email would silently never be sent.
+			try {
+				await sendOwnerEmail({
+					serviceId,
+					templateId,
+					publicKey,
+					privateKey,
+					toEmail: ownerEmail,
+					lead: {
+						name: oneLine(name),
+						email,
+						phone,
+						course: oneLine(course),
+						plan: oneLine(plan),
+						message: oneLine(message),
+						time: new Date().toUTCString(),
+					},
+				});
+			} catch (error) {
+				// Email failure must not expose internals or block the success
+				// response. The lead is already saved. Log only the EmailJS
+				// status text, never the form contents.
+				const reason = error instanceof Error ? error.message : "unknown error";
+				console.error("[enrol] Owner notification failed:", reason.slice(0, 200));
+			}
 		}
 	}
 
