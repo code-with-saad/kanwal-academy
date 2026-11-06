@@ -255,6 +255,60 @@ function matches(option: BookOption, value: string): boolean {
 			strictMode: false,
 		});
 
+		// --- Phone digit limit by country ------------------------------------
+		// Derived from libphonenumber through intl-tel-input's own utils, so
+		// every country in the picker gets the right cap. The field holds the
+		// national number (separateDialCode keeps the dial code outside it),
+		// so the cap is the national length plus, where the country uses one,
+		// a single leading trunk prefix (the "0" people dial at home, as in
+		// Pakistan: 0301 2345678 is 11 digits, while +92 301 2345678 is 10).
+		let nationalMaxDigits = 10;
+		let hasTrunkPrefix = false;
+
+		const phoneDigits = () => phoneInput.value.replace(/\D/g, "");
+
+		const phoneLimit = () => {
+			const digits = phoneDigits();
+			return nationalMaxDigits + (hasTrunkPrefix && digits.startsWith("0") ? 1 : 0);
+		};
+
+		const trimPhone = () => {
+			const digits = phoneDigits();
+			const limit = phoneLimit();
+			if (digits.length > limit) phoneInput.value = digits.slice(0, limit);
+		};
+
+		const readCountryLimit = (iso2: string) => {
+			const utils = intlTelInput.utils;
+			if (!utils || !iso2) return;
+			try {
+				const core = utils
+					.getCoreNumber(utils.getExampleNumber(iso2, "MOBILE", "E164"), iso2)
+					.replace(/\D/g, "");
+				if (core.length) nationalMaxDigits = core.length;
+				const country = iti.getSelectedCountry();
+				hasTrunkPrefix = country?.nationalPrefix === "0";
+			} catch {
+				nationalMaxDigits = 10;
+				hasTrunkPrefix = false;
+			}
+			trimPhone();
+		};
+
+		phoneInput.addEventListener("countrychange", () => {
+			const country = iti.getSelectedCountry();
+			if (country) readCountryLimit(country.iso2);
+		});
+
+		phoneInput.addEventListener("input", trimPhone);
+
+		// `iti.promise` resolves once the utils chunk is ready; until then the
+		// input still works with the 10 digit fallback above.
+		iti.promise.then(() => {
+			const country = iti.getSelectedCountry();
+			if (country) readCountryLimit(country.iso2);
+		});
+
 		// --- Turnstile ------------------------------------------------------
 		if (tsWidget && !document.getElementById("cf-turnstile-script")) {
 			const s = document.createElement("script");
