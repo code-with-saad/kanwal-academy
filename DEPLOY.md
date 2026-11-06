@@ -1,16 +1,40 @@
 # Deployment Guide
 
-This guide covers deploying Kanwal Quran Academy to Cloudflare Pages with EmDash CMS.
+This guide covers deploying Kanwal Quran Academy to Cloudflare Workers with EmDash CMS. The site is a Worker (not Cloudflare Pages).
 
 ## Prerequisites
 
-- Node.js 18+ and pnpm
+- Node.js 22.16+ and pnpm 11.9+
 - Cloudflare account with Workers Paid plan ($5/month)
-- Domain (optional, can use `kanwal-academy.pages.dev` initially)
+- Wrangler authenticated: `pnpm wrangler login`
+- Domain managed by Cloudflare in the same account (for custom domain)
 
-## First Deployment
+## Bindings and variables the code reads
 
-### 1. Clone and Install
+These are every binding and environment variable referenced in `src/`:
+
+| Name | Type | Required | Where set | Notes |
+|---|---|---|---|---|
+| `DB` | D1 binding | Yes | `wrangler.jsonc` `d1_databases` | EmDash database |
+| `MEDIA` | R2 binding | Yes | `wrangler.jsonc` `r2_buckets` | Media uploads |
+| `EMDASH_ENCRYPTION_KEY` | Worker secret | Yes | `wrangler secret put` | Encrypts plugin secrets. Generate with `npx emdash secrets generate` |
+| `PUBLIC_TURNSTILE_SITE_KEY` | Public var | No | `.env` locally, `vars` in wrangler | Build-time value read by `import.meta.env`. Client-side Turnstile widget key |
+| `TURNSTILE_SECRET_KEY` | Worker secret | No | `wrangler secret put` | Server-side Turnstile verification |
+| `EMAILJS_SERVICE_ID` | Worker secret | No | `wrangler secret put` | EmailJS service ID for owner notifications |
+| `EMAILJS_TEMPLATE_ID` | Worker secret | No | `wrangler secret put` | EmailJS template ID |
+| `EMAILJS_PUBLIC_KEY` | Worker secret | No | `wrangler secret put` | EmailJS public key |
+| `EMAILJS_PRIVATE_KEY` | Worker secret | No | `wrangler secret put` | EmailJS private key (accessToken for server calls) |
+| `OWNER_EMAIL` | Worker secret | No | `wrangler secret put` | Fallback recipient for lead notifications when `site_settings.owner_email` is empty |
+| `EMDASH_DEMO` | Public var | No | `.env` locally, `vars` in wrangler | Set to `1` to show placeholder teachers and sample testimonials |
+| `EMDASH_SITE_URL` | Worker var | Recommended | `vars` in wrangler | Canonical site URL. Set this before completing setup so passkeys are bound to the production domain |
+
+`PUBLIC_TURNSTILE_SITE_KEY` is a public, build-time value. It is embedded in the client bundle by Vite and read from `import.meta.env` at runtime. Set it in `.env` locally and in `vars` in `wrangler.jsonc` for production. Do not use `wrangler secret put` for it.
+
+`SESSION` KV is added automatically by the Astro Cloudflare adapter. `wrangler deploy` provisions it. You do not need to create it manually in `wrangler.jsonc`.
+
+## First deployment
+
+### 1. Install dependencies
 
 ```bash
 git clone <your-repo-url>
@@ -18,25 +42,31 @@ cd kanwal-academy
 pnpm install
 ```
 
-### 2. Configure Cloudflare
-
-Create the required resources in Cloudflare:
+### 2. Generate the encryption key
 
 ```bash
-# Login to Cloudflare
-npx wrangler login
-
-# Create D1 database
-npx wrangler d1 create kanwal-academy
-
-# Create R2 bucket for media
-npx wrangler r2 bucket create kanwal-academy-media
-
-# Create KV namespace for sessions
-npx wrangler kv namespace create SESSION
+npx emdash secrets generate
 ```
 
-Update `wrangler.jsonc` with the IDs from the output:
+Copy the key. Add it to your local `.env`:
+
+```
+EMDASH_ENCRYPTION_KEY=<the generated key>
+```
+
+Back up this key separately. EmDash cannot decrypt stored plugin secrets without it.
+
+### 3. Create Cloudflare resources
+
+```bash
+# Create D1 database
+pnpm wrangler d1 create kanwal-academy
+
+# Create R2 bucket for media
+pnpm wrangler r2 bucket create kanwal-academy-media
+```
+
+Wrangler prints the database ID. Update `wrangler.jsonc` with it:
 
 ```jsonc
 {
@@ -46,269 +76,252 @@ Update `wrangler.jsonc` with the IDs from the output:
       "database_name": "kanwal-academy",
       "database_id": "<DATABASE_ID_FROM_OUTPUT>"
     }
-  ],
-  "r2_buckets": [
-    {
-      "binding": "MEDIA",
-      "bucket_name": "kanwal-academy-media"
-    }
-  ],
-  "kv_namespaces": [
-    {
-      "binding": "SESSION",
-      "id": "<KV_NAMESPACE_ID_FROM_OUTPUT>"
-    }
   ]
 }
 ```
 
-### 3. Set Environment Secrets
+### 4. Set Worker secrets
 
-Generate an encryption key and set all required secrets:
+Only true secrets go through `wrangler secret put`. Public values go in `vars`.
 
 ```bash
-# Generate encryption key
-npx emdash generate secret
-
-# Set all secrets
-npx wrangler secret put EMDASH_ENCRYPTION_KEY
+# Encryption key (required)
+pnpm wrangler secret put EMDASH_ENCRYPTION_KEY
 # Paste the generated key
 
-# Optional: Cloudflare Turnstile for form spam protection
-npx wrangler secret put PUBLIC_TURNSTILE_SITE_KEY
-npx wrangler secret put TURNSTILE_SECRET_KEY
-# Get these from https://dash.cloudflare.com/?to=/:account/turnstile
+# Optional: Cloudflare Turnstile
+pnpm wrangler secret put TURNSTILE_SECRET_KEY
+# Get keys from https://dash.cloudflare.com/?to=/:account/turnstile
 
-# Optional: EmailJS for lead notifications
-npx wrangler secret put EMAILJS_SERVICE_ID
-npx wrangler secret put EMAILJS_TEMPLATE_ID
-npx wrangler secret put EMAILJS_PUBLIC_KEY
-npx wrangler secret put EMAILJS_PRIVATE_KEY
+# Optional: EmailJS for owner lead notifications
+pnpm wrangler secret put EMAILJS_SERVICE_ID
+pnpm wrangler secret put EMAILJS_TEMPLATE_ID
+pnpm wrangler secret put EMAILJS_PUBLIC_KEY
+pnpm wrangler secret put EMAILJS_PRIVATE_KEY
 # Get these from https://emailjs.com
+
+# Optional: Fallback owner notification email
+pnpm wrangler secret put OWNER_EMAIL
 ```
 
-### 4. Deploy
+`PUBLIC_TURNSTILE_SITE_KEY` is set separately in `vars` (see step 6).
+
+### 5. Deploy
 
 ```bash
-pnpm run deploy
+pnpm build
+pnpm wrangler deploy
 ```
 
-This will:
-- Build the Astro site
-- Apply the seed (creates collections and initial content)
-- Deploy to Cloudflare Pages
+The `deploy` script in `package.json` runs both steps. On first deploy the Worker boots against an empty D1 database and applies the seed schema (collections and fields) plus structure on its first request. Content from the seed is only applied when the admin chooses it in the setup wizard.
 
-### 5. First Admin Setup
+After deploy, the Worker responds at its `workers.dev` URL: `https://kanwal-academy.<subdomain>.workers.dev`.
 
-After deployment, complete the admin setup:
+### 6. Add public vars for the production domain
 
-1. Visit `https://kanwal-academy.pages.dev/_emdash/setup`
-2. Create your admin account (email + password)
-3. Log in at `https://kanwal-academy.pages.dev/_emdash`
+Edit `wrangler.jsonc` to set the site URL and any public build-time values:
 
-### 6. Configure Content
-
-In the admin panel:
-
-1. **Site Settings** → Update:
-   - Phone, email, address
-   - Social media links
-   - Footer text
-   - Logo images (upload via Media Library)
-
-2. **Courses** → Verify the 3 courses are seeded:
-   - Qur'anic Recitation
-   - Tajweed Proficiency
-   - Memorization Excellence
-
-3. **Pricing Plans** → Verify the 4 plans are seeded:
-   - Plan I ($20)
-   - Plan II ($40)
-   - Plan III ($60)
-   - Plan IV ($80)
-
-4. **Upload Images** via Media Library:
-   - Hero image
-   - Course images
-   - Teacher photos
-   - Logos (header and footer)
-
-## Subsequent Deployments
-
-```bash
-# Pull latest changes
-git pull
-
-# Install any new dependencies
-pnpm install
-
-# Deploy
-pnpm run deploy
+```jsonc
+{
+  "vars": {
+    "EMDASH_SITE_URL": "https://kanwalquranacademy.com",
+    "PUBLIC_TURNSTILE_SITE_KEY": "<your turnstile site key>",
+    "EMDASH_DEMO": "0"
+  }
+}
 ```
 
-## Schema Changes
+Redeploy after editing `vars`: `pnpm wrangler deploy`.
 
-If you've modified `seed/seed.json` to add new fields:
+### 7. Complete setup and register a passkey
 
-```bash
-# Apply schema changes to production
-pnpm run seed
-```
+1. Visit `https://kanwal-academy.<subdomain>.workers.dev/_emdash/admin`
+2. The setup wizard opens. Enter the site title and tagline, then continue.
+3. Enter your email address and optional name, then continue.
+4. Register a passkey when the browser prompts. This becomes the admin account.
+5. Open the dashboard.
 
-⚠️ **Warning**: `pnpm run seed` only adds new fields. It does not delete fields or collections. To remove fields, you must manually delete them in the admin or database.
+**Important**: passkeys are bound to the hostname where they were created. A passkey registered on `workers.dev` will not work on `kanwalquranacademy.com`. Set `EMDASH_SITE_URL` in `vars` before setup, or complete setup on the final production domain, so the passkey is created for the correct address. If you set up on the wrong hostname, visit the correct URL, sign in with a magic link (needs email configured), and register a new passkey there.
 
-## Domain Configuration
+## Configure the custom domain
 
-### Using a Custom Domain
-
-1. In Cloudflare Dashboard:
-   - Go to Workers & Pages → kanwal-academy
-   - Click "Custom domains" → "Set up a custom domain"
-   - Enter your domain (e.g., `kanwalquranacademy.com`)
-   - Follow the DNS instructions
-
-2. Update `wrangler.jsonc`:
+After the Worker is live at its `workers.dev` URL, add the production domain as a Wrangler route in `wrangler.jsonc`:
 
 ```jsonc
 {
   "routes": [
-    {
-      "pattern": "kanwalquranacademy.com/*",
-      "zone_name": "kanwalquranacademy.com"
-    }
+    { "pattern": "www.kanwalquranacademy.com", "custom_domain": true }
   ]
 }
 ```
 
-3. Deploy again: `pnpm run deploy`
-
-### DNS Records
-
-Cloudflare will automatically create the required DNS records. If you need to manually configure:
-
-```
-Type: CNAME
-Name: @ (or your subdomain)
-Target: kanwal-academy.pages.dev
-Proxy: Enabled (orange cloud)
-```
-
-## Environment Variables Reference
-
-### Required
-
-- `EMDASH_ENCRYPTION_KEY` - Encryption key for sessions and sensitive data
-
-### Optional
-
-- `PUBLIC_TURNSTILE_SITE_KEY` - Cloudflare Turnstile site key (form spam protection)
-- `TURNSTILE_SECRET_KEY` - Cloudflare Turnstile secret key
-- `EMAILJS_SERVICE_ID` - EmailJS service ID (lead notifications)
-- `EMAILJS_TEMPLATE_ID` - EmailJS template ID
-- `EMAILJS_PUBLIC_KEY` - EmailJS public key
-- `EMAILJS_PRIVATE_KEY` - EmailJS private key
-
-### Development Only
-
-- `EMDASH_DEMO` - Set to `1` to show demo content (placeholder teachers, sample testimonials)
-
-## Local Development
+The domain must already be an active domain managed by Cloudflare in the same account. Deploy again:
 
 ```bash
-# Start dev server
-pnpm dev
-
-# Visit http://localhost:4322
-# Admin at http://localhost:4322/_emdash
+pnpm wrangler deploy
 ```
+
+Verify both the `workers.dev` address and the custom domain work.
+
+## Production schema sync
+
+The seed file applies its schema and structure only once, on the first request against an empty database. Subsequent deploys against an existing database leave the schema and content alone.
+
+For the initial deployment, the seed creates all collections and fields including:
+
+- `enrolments` collection with the `lead_status` select field (options: `new`, `contacted`, default: `new`)
+- `subscribers` collection with the `subscriber_status` select field (options: `active`, `unsubscribed`, default: `active`)
+- `site_settings` collection with the `owner_email` field
+
+All four plan prices are seeded as `$20`, `$40`, `$82`, `$102`.
+
+If you later add a new field or collection to the seed, the change does not propagate to the existing production database automatically. Evolve the live schema through the admin panel (Content Types) or the CLI:
+
+```bash
+# Authenticate against the live site
+npx emdash login --url https://kanwalquranacademy.com
+
+# Add a field
+npx emdash schema add-field <collection> <field> --type <type> --label "Label" --url https://kanwalquranacademy.com
+
+# List collections to verify
+npx emdash schema list --url https://kanwalquranacademy.com
+```
+
+After any schema change, regenerate types:
+
+```bash
+npx emdash types --url https://kanwalquranacademy.com
+```
+
+Then update `seed/seed.json` to match (or export it with `npx emdash export-seed` from a local copy of the production database) so fresh environments always bootstrap to the same model.
+
+## Verify leads save in production
+
+After deployment, confirm the enrolment path works end to end:
+
+1. Open `https://kanwalquranacademy.com/free-trial` and submit the form with test data.
+2. The form should return: `"Thank you. We will be in touch very soon."`
+3. Query the production database to confirm the row was written:
+
+```bash
+pnpm wrangler d1 execute kanwal-academy --remote --command \
+  "SELECT id, name, email, plan, lead_status, submitted_at FROM ec_enrolments ORDER BY submitted_at DESC LIMIT 5"
+```
+
+4. Check the admin panel at `/_emdash/admin` under Enrolments to see the new entry.
+
+To test the newsletter path, submit the footer newsletter form and query:
+
+```bash
+pnpm wrangler d1 execute kanwal-academy --remote --command \
+  "SELECT id, email, subscriber_status, subscribed_at FROM ec_subscribers ORDER BY subscribed_at DESC LIMIT 5"
+```
+
+## Admin panel
+
+- URL: `/_emdash/admin`
+- Authentication: passkey-first (WebAuthn). No passwords.
+- Passkeys only work on the address where they were created. A passkey registered on `kanwalquranacademy.com` does not work on `workers.dev` or localhost.
+- If you lose all passkeys and email is not configured, you must reset through the database.
+- Magic link fallback requires an email provider to be configured.
+
+## Local development
+
+```bash
+pnpm dev
+```
+
+The dev server runs at `http://localhost:4322`. The admin is at `http://localhost:4322/_emdash/admin`.
+
+Local environment values go in `.env` (gitignored). See `.env.example` for the full list.
 
 The local database is stored in `.wrangler/state/v3/d1/`. To reset:
 
 ```bash
-rm -rf .wrangler/state
-pnpm dev
+pnpm db:reset
 ```
+
+## Subsequent deployments
+
+```bash
+git pull
+pnpm install
+pnpm deploy
+```
+
+`pnpm deploy` runs `astro build && wrangler deploy`.
 
 ## Troubleshooting
 
-### Build Fails
+### Build fails
 
 ```bash
-# Clear cache and rebuild
 rm -rf dist .astro node_modules/.cache
 pnpm install
 pnpm build
 ```
 
-### Seed Doesn't Apply
+### Admin cannot log in
 
-The seed only applies on first deployment when the database is empty. If you need to re-seed:
+1. Check `EMDASH_ENCRYPTION_KEY` is set: `pnpm wrangler secret list`
+2. Remember passkeys are hostname-bound. If you set up on the wrong address, sign in on the correct one with a magic link and register a new passkey.
+3. If all passkeys are lost and email is not configured, you must reset through the D1 database directly. There is no `emdash reset-password` command.
 
-```bash
-# ⚠️ This will delete all content!
-npx wrangler d1 execute kanwal-academy --command "DROP TABLE IF EXISTS _emdash_collections"
-pnpm run deploy
-```
+### Images not loading
 
-### Images Not Loading
+1. Check the R2 bucket exists: `pnpm wrangler r2 bucket list`
+2. Check the binding in `wrangler.jsonc` matches `r2({ binding: "MEDIA" })` in `astro.config.mjs`
+3. Upload images via the Media Library in the admin panel
 
-1. Check R2 bucket is created: `npx wrangler r2 bucket list`
-2. Check binding in `wrangler.jsonc`
-3. Upload images via Media Library in admin
+### Scheduled posts not publishing
 
-### Admin Can't Log In
+Run `pnpm emdash doctor` to check the cron trigger and scheduled handler. Watch runs with `pnpm wrangler tail`.
 
-1. Check `EMDASH_ENCRYPTION_KEY` is set: `npx wrangler secret list`
-2. Try resetting admin password via CLI:
-   ```bash
-   npx emdash reset-password --email your@email.com
-   ```
-
-## Monitoring
-
-### View Logs
+### View logs
 
 ```bash
-npx wrangler pages deployment tail
+pnpm wrangler tail
 ```
 
-### Database Access
+### Database access
 
 ```bash
 # Open D1 console
-npx wrangler d1 execute kanwal-academy --console
+pnpm wrangler d1 execute kanwal-academy --remote --console
 
-# Or query directly
-npx wrangler d1 execute kanwal-academy --command "SELECT * FROM courses"
+# Query directly
+pnpm wrangler d1 execute kanwal-academy --remote --command "SELECT * FROM ec_courses"
 ```
 
-## Security Checklist
+## Security checklist
 
-- [ ] `EMDASH_ENCRYPTION_KEY` is set and unique
-- [ ] Turnstile is enabled for forms (optional but recommended)
-- [ ] Admin password is strong
-- [ ] No sensitive data in repository
+- [ ] `EMDASH_ENCRYPTION_KEY` is set and backed up separately
+- [ ] `EMDASH_SITE_URL` is set to the production domain before setup
+- [ ] Passkey registered on the production domain, not `workers.dev`
+- [ ] Turnstile keys are set (optional but recommended)
+- [ ] No secrets in the repository
 - [ ] `.env` and `.dev.vars` are gitignored
-- [ ] Security headers are configured in `_headers`
+- [ ] Admin has 2FA on the underlying Cloudflare account
 
-## Performance
+## What was verified
 
-The site is optimized for performance:
+| Item | Verified against |
+|---|---|
+| Workers deploy (not Pages) | `package.json` `deploy` script, `src/worker.ts`, `wrangler.jsonc` `main` |
+| Plan prices $20/$40/$82/$102 | `seed/seed.json` content entries |
+| Admin path `/_emdash/admin` | EmDash docs (getting-started, authentication) |
+| Passkey-only auth, domain-bound | EmDash docs (authentication) |
+| `npx emdash secrets generate` | EmDash CLI reference (docs.emdashcms.com/reference/cli) |
+| `PUBLIC_TURNSTILE_SITE_KEY` as public var | `src/components/BookTrial.astro`, `src/components/Newsletter.astro` read from `import.meta.env` |
+| `TURNSTILE_SECRET_KEY` and `EMAILJS_*` as secrets | `src/pages/api/enrol.ts` reads from `hostEnv` (Worker runtime env) |
+| No KV SESSION in wrangler.jsonc | Astro Cloudflare adapter adds SESSION KV automatically (EmDash Cloudflare deploy docs) |
+| Custom domain route format | EmDash Cloudflare deploy docs |
+| Seed only applies on empty DB | EmDash schema evolution docs |
 
-- **Astro SSR**: Server-side rendering on Cloudflare Workers
-- **Image optimization**: Automatic via Cloudflare Images
-- **Font loading**: Self-hosted with `font-display: swap`
-- **Minimal JavaScript**: Progressive enhancement
-- **Cache headers**: Static assets cached at edge
+## What could not be verified
 
-Target Lighthouse scores: 90+ on all metrics.
-
-## Support
-
-- EmDash docs: https://emdash.dev
-- Cloudflare docs: https://developers.cloudflare.com/pages
-- Astro docs: https://docs.astro.build
-
----
-
-**Last updated**: 2026-01-06
+| Item | Reason |
+|---|---|
+| Exact Cloudflare Wrangler version required for custom domain | Docs tested with Wrangler 4.125+ (installed); custom domain behavior depends on Cloudflare account settings |
+| Whether `EMDASH_SITE_URL` can also be set via `siteUrl` in `astro.config.mjs` | Docs mention both; we use `vars` in wrangler which is simpler for per-environment values |

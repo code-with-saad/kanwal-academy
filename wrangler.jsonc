@@ -3,11 +3,14 @@
 	"name": "kanwal-academy",
 	"main": "./src/worker.ts",
 	"compatibility_date": "2026-02-24",
-	"compatibility_flags": ["nodejs_compat"],
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
 	"d1_databases": [
 		{
 			"binding": "DB",
 			"database_name": "kanwal-academy",
+			"database_id": "6d42a150-5f8b-4345-bfef-26c049b533ea"
 		},
 	],
 	"r2_buckets": [
@@ -20,6 +23,17 @@
 	// "worker_loaders": [{ "binding": "LOADER" }],
 	// General maintenance cron trigger
 	"triggers": {
-		"crons": ["* * * * *"],
+		"crons": [
+			"* * * * *"
+		],
 	},
+	"vars": {
+		"EMDASH_SITE_URL": "https://kanwalquranacademy.com",
+		"PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAF2QISS077cASUAx",
+		"EMDASH_DEMO": "0"
+	},
+	"routes": [
+		{ "pattern": "kanwalquranacademy.com", "custom_domain": true },
+		{ "pattern": "www.kanwalquranacademy.com", "custom_domain": true }
+	]
 }
