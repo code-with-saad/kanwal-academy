@@ -269,7 +269,7 @@ const featureCards = [
 						</svg>
 						<span>Students learning from {contact.stats.countries} countries</span>
 					</p>
-					<button type="button" class="hero__cta" data-open-modal data-reveal="up" data-reveal-delay="280">
+					<button type="button" class="hero__cta" data-book-cta data-reveal="up" data-reveal-delay="280">
 						Start your free trial
 						<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 							<path d="M4 10h12m-5-5 5 5-5 5" />
@@ -402,7 +402,7 @@ const featureCards = [
 						your teacher will set the pace from there.
 					</p>
 				</div>
-				<Button modal variant="secondary">Book free trial</Button>
+				<Button book variant="secondary">Book free trial</Button>
 			</div>
 
 			<ol class="journey-list">
@@ -525,7 +525,21 @@ const featureCards = [
 
 	<Section id="book">
 		<Container>
-			<BookTrial contact={contact} />
+			<BookTrial
+				contact={contact}
+				courses={courses.map((c) => ({
+					id: String(c.data.id ?? c.id),
+					slug: c.id,
+					name: String(c.data.name ?? ""),
+				}))}
+				plans={plans.map((p) => ({
+					id: String(p.data.id ?? p.id),
+					slug: p.id,
+					name: String(p.data.name ?? ""),
+				}))}
+				initialPlan={Astro.url.searchParams.get("plan") ?? ""}
+				initialCourse={Astro.url.searchParams.get("course") ?? ""}
+			/>
 		</Container>
 	</Section>
 </Base>

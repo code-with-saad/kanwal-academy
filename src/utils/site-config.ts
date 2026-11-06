@@ -150,6 +150,12 @@ export function phoneHref(phone: string): string {
 	return `tel:${digits}`;
 }
 
+/** wa.me link from any display format of the number ("", when none). */
+export function whatsappHref(phone: string): string {
+	const digits = phone.replace(/[^0-9]/g, "");
+	return digits ? `https://wa.me/${digits}` : "";
+}
+
 export function emailHref(email: string): string {
 	return `mailto:${email}`;
 }

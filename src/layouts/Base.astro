@@ -1,12 +1,11 @@
 ---
 import { Font } from "astro:assets";
-import { getEmDashCollection, getSiteSettingsWithCacheHint } from "emdash";
+import { getSiteSettingsWithCacheHint } from "emdash";
 import { createPublicPageContext } from "emdash/page";
 import { EmDashBodyEnd, EmDashBodyStart, EmDashHead } from "emdash/ui";
-import EnrolmentModal from "../components/EnrolmentModal.astro";
+import ResultModal from "../components/ResultModal.astro";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
-import Newsletter from "../components/Newsletter.astro";
 import { site, type NavItem } from "../config/site";
 import { getSiteContact } from "../utils/site-config";
 import { resolveSiteIdentity } from "../utils/site";
@@ -36,18 +35,14 @@ const {
 	nav,
 } = Astro.props;
 
-const [settingsResult, contactResult, coursesResult, plansResult] = await Promise.all([
+const [settingsResult, contactResult] = await Promise.all([
 	getSiteSettingsWithCacheHint(),
 	getSiteContact(),
-	getEmDashCollection("courses", { status: "published", orderBy: { order: "asc" } }),
-	getEmDashCollection("plans",   { status: "published", orderBy: { order: "asc" } }),
 ]);
 
 if (Astro.cache?.enabled) {
 	Astro.cache.set(settingsResult.cacheHint);
 	Astro.cache.set(contactResult.cacheHint);
-	Astro.cache.set(coursesResult.cacheHint);
-	Astro.cache.set(plansResult.cacheHint);
 }
 
 const { siteTitle, siteTagline, titleSeparator } = resolveSiteIdentity(settingsResult.data);
@@ -59,9 +54,6 @@ const fullTitle = title
 
 const headerItems = nav ?? [...site.nav];
 const headerCta = site.cta;
-
-const modalCourses = coursesResult.entries.map((c) => ({ id: c.id, name: String(c.data.name ?? "") }));
-const modalPlans   = plansResult.entries.map((p)   => ({ id: p.id, name: String(p.data.name ?? "") }));
 
 const pageCtx = createPublicPageContext({
 	Astro,
@@ -148,7 +140,6 @@ const pageCtx = createPublicPageContext({
 			<main id="main">
 				<slot />
 			</main>
-			<Newsletter />
 			<Footer
 				contact={contactResult.data}
 				settingsEdit={contactResult.entry?.edit}
@@ -173,14 +164,34 @@ const pageCtx = createPublicPageContext({
 				</svg>
 			</button>
 		</div>
-		<EnrolmentModal
-			courses={modalCourses}
-			plans={modalPlans}
-			whatsappPhone={contactResult.data.phone}
-		/>
+		<ResultModal whatsappPhone={contactResult.data.phone} />
 		<EmDashBodyEnd page={pageCtx} />
 		<script>
 			import "../scripts/motion";
+		</script>
+		<script>
+			// Global CTA controller: every [data-book-cta] button either brings
+			// the visitor to the inline #book form (home) or navigates there with
+			// the prefill values as query params (other pages and old deep links).
+			document.addEventListener("click", (e) => {
+				const btn = (e.target as Element | null)?.closest<HTMLElement>("[data-book-cta]");
+				if (!btn) return;
+				e.preventDefault();
+				const plan = btn.dataset.prefillPlan ?? "";
+				const course = btn.dataset.prefillCourse ?? "";
+				const book = document.getElementById("book");
+				if (!book) {
+					const params = new URLSearchParams();
+					if (plan) params.set("plan", plan);
+					if (course) params.set("course", course);
+					const qs = params.toString();
+					window.location.href = `/${qs ? `?${qs}` : ""}#book`;
+					return;
+				}
+				document.dispatchEvent(
+					new CustomEvent("book-prefill", { detail: { plan, course } }),
+				);
+			});
 		</script>
 		<script>
 			const goTop = document.querySelector<HTMLButtonElement>("[data-page-top]");

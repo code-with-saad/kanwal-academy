@@ -660,7 +660,7 @@
 			"routable": false,
 			"titleField": "name",
 			"admin": {
-				"listColumns": ["email", "plan", "course", "lead_status", "submitted_at"]
+				"listColumns": ["email", "plan", "course", "lead_status"]
 			},
 			"supports": [],
 			"fields": [
@@ -710,6 +710,44 @@
 					"validation": {
 						"options": ["new", "contacted"]
 					}
+				}
+			]
+		},
+		{
+			"slug": "subscribers",
+			"label": "Subscribers",
+			"labelSingular": "Subscriber",
+			"description": "Email addresses collected through the footer newsletter form. Stored only, no emails are sent from the site.",
+			"icon": "envelope",
+			"group": "Settings",
+			"sortOrder": 100,
+			"routable": false,
+			"titleField": "email",
+			"admin": {
+				"listColumns": ["email", "subscriber_status", "subscribed_at"]
+			},
+			"supports": [],
+			"fields": [
+				{
+					"slug": "email",
+					"label": "Email",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "subscriber_status",
+					"label": "Status",
+					"type": "select",
+					"required": true,
+					"defaultValue": "active",
+					"validation": {
+						"options": ["active", "unsubscribed"]
+					}
+				},
+				{
+					"slug": "subscribed_at",
+					"label": "Subscribed at",
+					"type": "string"
 				}
 			]
 		}
@@ -1098,7 +1136,8 @@
 					"footer_contact_link_label": "Contact",
 					"footer_terms_label": "Terms of Service",
 					"footer_privacy_label": "Privacy Policy",
-					"footer_copyright_label": "All rights reserved."
+					"footer_copyright_label": "All rights reserved.",
+					"owner_email": "hello@kanwalquranacademy.com"
 				}
 			}
 		],

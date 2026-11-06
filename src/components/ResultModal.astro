@@ -1,0 +1,360 @@
+---
+/**
+ * ResultModal
+ *
+ * The form itself lives inline in the #book section. This dialog is only for
+ * the RESULT of a submission:
+ *
+ *   success       thank you + close
+ *   error         message + retry + WhatsApp link
+ *   rate limited  message + close + WhatsApp link
+ *
+ * Any script on the page opens it with:
+ *
+ *   document.dispatchEvent(new CustomEvent("show-result", {
+ *     detail: { state: "success" | "error" | "rate", message?: string },
+ *   }));
+ *
+ * "Retry" fires a `book-retry` event (the inline form listens and resubmits).
+ * Escape closes. Focus is trapped while open and restored to the trigger on
+ * close.
+ */
+
+interface Props {
+	whatsappPhone?: string;
+}
+
+const { whatsappPhone = "" } = Astro.props;
+
+const waHref = whatsappPhone
+	? `https://wa.me/${whatsappPhone.replace(/[^0-9]/g, "")}`
+	: "";
+---
+
+<dialog id="result-modal" class="rm" aria-labelledby="rm-title" aria-modal="true">
+	<div class="rm__inner">
+		<button type="button" class="rm__close" data-rm-close aria-label="Close">
+			<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+				<path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+			</svg>
+		</button>
+
+		<!-- Success -->
+		<div class="rm__panel" data-rm-panel="success" hidden>
+			<svg class="rm__icon" viewBox="0 0 48 48" width="52" height="52" fill="none" aria-hidden="true">
+				<circle cx="24" cy="24" r="22" stroke="var(--green)" stroke-width="2"/>
+				<path d="M14 24l7 7 13-14" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>
+			<h2 class="rm__title" id="rm-title">Request received</h2>
+			<p class="rm__body" data-rm-success-text>
+				Thank you. We will reply within one business day with the next available trial
+				slot. The class is free and no payment is needed.
+			</p>
+			<button type="button" class="rm__btn rm__btn--primary" data-rm-close>Close</button>
+		</div>
+
+		<!-- Error -->
+		<div class="rm__panel" data-rm-panel="error" hidden>
+			<svg class="rm__icon" viewBox="0 0 48 48" width="52" height="52" fill="none" aria-hidden="true">
+				<circle cx="24" cy="24" r="22" stroke="#b3261e" stroke-width="2"/>
+				<path d="M24 14v14m0 6v.5" stroke="#b3261e" stroke-width="2.5" stroke-linecap="round"/>
+			</svg>
+			<h2 class="rm__title">We could not send your request</h2>
+			<p class="rm__body" data-rm-error-text>Please try again.</p>
+			<div class="rm__actions">
+				<button type="button" class="rm__btn rm__btn--primary" data-rm-retry>Try again</button>
+				{
+					waHref && (
+						<a href={waHref} class="rm__btn rm__btn--outline" target="_blank" rel="noopener noreferrer">
+							WhatsApp us
+						</a>
+					)
+				}
+			</div>
+		</div>
+
+		<!-- Rate limited -->
+		<div class="rm__panel" data-rm-panel="rate" hidden>
+			<svg class="rm__icon" viewBox="0 0 48 48" width="52" height="52" fill="none" aria-hidden="true">
+				<circle cx="24" cy="24" r="22" stroke="var(--green-deep)" stroke-width="2"/>
+				<path d="M24 14v11l7 4" stroke="var(--green-deep)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>
+			<h2 class="rm__title">Too many attempts</h2>
+			<p class="rm__body" data-rm-rate-text>
+				Please try again in an hour, or contact us directly.
+			</p>
+			<div class="rm__actions">
+				<button type="button" class="rm__btn rm__btn--primary" data-rm-close>Close</button>
+				{
+					waHref && (
+						<a href={waHref} class="rm__btn rm__btn--outline" target="_blank" rel="noopener noreferrer">
+							WhatsApp us
+						</a>
+					)
+				}
+			</div>
+		</div>
+	</div>
+</dialog>
+
+<script>
+	// ---------------------------------------------------------------------------
+	// Result dialog: opened only with a CustomEvent("show-result").
+	//   detail: { state: "success" | "error" | "rate", message?: string }
+	// Escape closes, focus is trapped while open and restored on close.
+	// ---------------------------------------------------------------------------
+	const dialog = document.getElementById("result-modal") as HTMLDialogElement | null;
+
+	type ResultState = "success" | "error" | "rate";
+	let lastFocus: HTMLElement | null = null;
+
+	const panels = () =>
+		dialog
+			? Array.from(dialog.querySelectorAll<HTMLElement>("[data-rm-panel]"))
+			: [];
+
+	const trapFocus = (e: KeyboardEvent) => {
+		if (e.key !== "Tab" || !dialog) return;
+		const focusable = Array.from(
+			dialog.querySelectorAll<HTMLElement>(
+				'a[href],button:not([disabled]):not([hidden]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])',
+			),
+		).filter((el) => el.offsetParent !== null || el === document.activeElement);
+		if (!focusable.length) return;
+		const first = focusable[0];
+		const last = focusable[focusable.length - 1];
+		if (e.shiftKey) {
+			if (document.activeElement === first) {
+				e.preventDefault();
+				last.focus();
+			}
+		} else if (document.activeElement === last) {
+			e.preventDefault();
+			first.focus();
+		}
+	};
+
+	const open = (state: ResultState, message?: string) => {
+		if (!dialog) return;
+		lastFocus = document.activeElement as HTMLElement | null;
+
+		for (const panel of panels()) {
+			panel.hidden = panel.dataset.rmPanel !== state;
+		}
+		if (message) {
+			const slot = dialog.querySelector<HTMLElement>(`[data-rm-${state === "success" ? "success" : state}-text]`);
+			if (slot) slot.textContent = message;
+		}
+
+		dialog.showModal();
+		dialog.addEventListener("keydown", trapFocus);
+		document.body.setAttribute("data-modal-open", "1");
+
+		const target = dialog.querySelector<HTMLElement>(
+			state === "error" ? "[data-rm-retry]" : "[data-rm-close]",
+		);
+		requestAnimationFrame(() => target?.focus());
+	};
+
+	Object.defineProperty(window, "showResultModal", {
+		value: open,
+	});
+
+	document.addEventListener("show-result", (e) => {
+		const detail = (e as CustomEvent<{ state?: ResultState; message?: string }>).detail ?? {};
+		if (detail.state === "success" || detail.state === "error" || detail.state === "rate") {
+			open(detail.state, detail.message);
+		}
+	});
+
+	if (dialog) {
+		const close = () => {
+			if (!dialog.open) return;
+			dialog.close();
+		};
+		dialog.querySelectorAll<HTMLElement>("[data-rm-close]").forEach((btn) =>
+			btn.addEventListener("click", close),
+		);
+		dialog.addEventListener("click", (e) => {
+			if (e.target === dialog) close();
+		});
+		dialog.addEventListener("cancel", (e) => {
+			e.preventDefault();
+			close();
+		});
+		dialog.addEventListener("close", () => {
+			document.body.removeAttribute("data-modal-open");
+			dialog.removeEventListener("keydown", trapFocus);
+			lastFocus?.focus();
+			lastFocus = null;
+		});
+		dialog.querySelector<HTMLButtonElement>("[data-rm-retry]")?.addEventListener("click", () => {
+			close();
+			document.dispatchEvent(new CustomEvent("book-retry"));
+		});
+	}
+</script>
+
+<style>
+	/* ---- Dialog shell --------------------------------------------------- */
+	.rm {
+		position: fixed;
+		inset: 0;
+		z-index: 200;
+		display: none;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		max-width: 100%;
+		height: 100%;
+		max-height: 100%;
+		margin: 0;
+		padding: 0;
+		border: none;
+		background: transparent;
+		overflow: hidden;
+	}
+
+	.rm[open] {
+		display: flex;
+	}
+
+	.rm::backdrop {
+		background: color-mix(in srgb, var(--ink) 48%, transparent);
+	}
+
+	.rm__inner {
+		position: relative;
+		width: min(480px, calc(100vw - 24px));
+		max-height: calc(100dvh - 24px);
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		background: var(--surface);
+		border: 1px solid var(--line);
+		border-radius: var(--radius-panel);
+		box-shadow: 0 24px 64px -16px rgba(11, 26, 20, 0.28);
+	}
+
+	.rm__close {
+		position: absolute;
+		top: 16px;
+		right: 16px;
+		display: grid;
+		place-items: center;
+		width: 40px;
+		height: 40px;
+		border: 1px solid var(--line);
+		border-radius: 50%;
+		background: transparent;
+		color: var(--ink);
+		cursor: pointer;
+		transition:
+			background-color var(--transition),
+			border-color var(--transition);
+	}
+
+	.rm__close:hover {
+		background: var(--mint-50);
+		border-color: var(--green);
+	}
+
+	.rm__close:focus-visible {
+		outline: 2px solid var(--focus);
+		outline-offset: 2px;
+	}
+
+	/* ---- Panels ---------------------------------------------------------- */
+	.rm__panel {
+		display: grid;
+		justify-items: center;
+		gap: var(--space-md);
+		padding: clamp(28px, 6vw, 40px);
+		text-align: center;
+	}
+
+	.rm__panel[hidden] {
+		display: none;
+	}
+
+	.rm__icon {
+		margin-bottom: var(--space-2xs);
+	}
+
+	.rm__title {
+		margin: 0;
+		font-size: var(--type-h3-size);
+		font-weight: 500;
+		line-height: 1.25;
+	}
+
+	.rm__body {
+		max-width: 38ch;
+		margin: 0;
+		color: var(--ink-muted);
+		line-height: 1.6;
+	}
+
+	.rm__actions {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: var(--space-sm);
+		width: 100%;
+	}
+
+	/* ---- Buttons ---------------------------------------------------------- */
+	.rm__btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		height: 48px;
+		padding: 0 28px;
+		border: 1px solid var(--green);
+		border-radius: var(--radius-button);
+		background: var(--green);
+		color: var(--on-accent);
+		font: inherit;
+		font-size: var(--type-body-size);
+		font-weight: 500;
+		text-decoration: none;
+		cursor: pointer;
+		transition:
+			background-color var(--transition),
+			border-color var(--transition);
+	}
+
+	.rm__btn:hover {
+		background: var(--green-deep);
+		border-color: var(--green-deep);
+	}
+
+	.rm__btn:focus-visible {
+		outline: 2px solid var(--focus);
+		outline-offset: 3px;
+	}
+
+	.rm__btn--outline {
+		background: transparent;
+		border-color: color-mix(in srgb, var(--ink) 20%, transparent);
+		color: var(--green-deep);
+	}
+
+	.rm__btn--outline:hover {
+		background: var(--mint-50);
+		border-color: var(--green);
+	}
+
+	@media (max-width: 420px) {
+		.rm__actions {
+			flex-direction: column;
+		}
+
+		.rm__btn {
+			width: 100%;
+		}
+	}
+
+	:global(body[data-modal-open]) {
+		overflow: hidden;
+	}
+</style>

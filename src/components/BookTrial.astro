@@ -1,26 +1,60 @@
 ---
+/**
+ * BookTrial
+ *
+ * The #book section on the home page. The form is INLINE (two columns:
+ * contact copy on the left, form card on the right). The popup (ResultModal)
+ * is only for the outcome: success, error or rate limited.
+ *
+ * CTAs elsewhere on the site carry data-book-cta (plus optional
+ * data-prefill-plan / data-prefill-course). The global controller in
+ * Base.astro either dispatches a `book-prefill` event (when #book is on this
+ * page) or navigates to /?plan=..&course=..#book. Old deep links keep
+ * working: ?plan / ?course also prefill and focus on load.
+ */
 import Eyebrow from "./Eyebrow.astro";
-import Button from "./Button.astro";
-import { emailHref, phoneHref, type SiteContact } from "../utils/site-config";
+import { emailHref, phoneHref, whatsappHref, type SiteContact } from "../utils/site-config";
+import { env as hostEnv } from "virtual:emdash/env";
+
+export interface BookOption {
+	id: string;
+	slug?: string | null;
+	name: string;
+}
 
 interface Props {
 	contact: SiteContact;
+	courses: BookOption[];
+	plans: BookOption[];
+	/** Values from ?plan / ?course deep links, matched by name, slug or id. */
+	initialPlan?: string;
+	initialCourse?: string;
 }
 
-const { contact } = Astro.props;
+const { contact, courses = [], plans = [], initialPlan = "", initialCourse = "" } = Astro.props;
 
-// Old plan and course deep links (/ ?plan=...#book) still prefill the modal.
-const preselectedPlan = Astro.url.searchParams.get("plan") ?? "";
-const preselectedCourse = Astro.url.searchParams.get("course") ?? "";
+const runtimeEnv = hostEnv as Record<string, unknown> | undefined;
+const buildEnv = import.meta.env as unknown as Record<string, string | undefined>;
+const tsKey = String(
+	runtimeEnv?.PUBLIC_TURNSTILE_SITE_KEY ?? buildEnv.PUBLIC_TURNSTILE_SITE_KEY ?? "",
+).trim();
 
-const modalProps = (): Record<string, string> => ({
-	"data-open-modal": "",
-	...(preselectedPlan ? { "data-prefill-plan": preselectedPlan } : {}),
-	...(preselectedCourse ? { "data-prefill-course": preselectedCourse } : {}),
-});
+const wa = whatsappHref(contact.phone);
+
+/** Match a deep-link / CTA value against an option by name, slug or id. */
+function matches(option: BookOption, value: string): boolean {
+	if (!value) return false;
+	const needle = value.trim().toLowerCase();
+	return (
+		option.name.toLowerCase() === needle ||
+		(option.slug ?? "").toLowerCase() === needle ||
+		option.id.toLowerCase() === needle
+	);
+}
 ---
 
 <div class="book">
+	<!-- Left: heading, text and direct contact -->
 	<div class="book__copy">
 		<Eyebrow>Free trial</Eyebrow>
 		<h2 class="book__title">Book a free trial class</h2>
@@ -33,24 +67,447 @@ const modalProps = (): Record<string, string> => ({
 			<span class="book__contact-label">Reach us directly</span>
 			<a href={phoneHref(contact.phone)}>{contact.phone}</a>
 			<a href={emailHref(contact.email)}>{contact.email}</a>
+			{wa && <a href={wa} target="_blank" rel="noopener noreferrer">WhatsApp</a>}
 			<span>{contact.address}</span>
 		</address>
 
-		<div class="book__actions">
-			<Button variant="primary" {...modalProps()}>Request free trial</Button>
-			<p class="book__note">
-				Lessons run live in a video call. You only need a phone, tablet or laptop with a camera.
-			</p>
-		</div>
+		<p class="book__note">
+			Lessons run live in a video call. You only need a phone, tablet or laptop with a camera.
+		</p>
+	</div>
+
+	<!-- Right: the inline form card -->
+	<div class="book__card">
+		<form class="book__form" id="book-form" novalidate data-book-form>
+			<h3 class="book__form-title">Start your free trial</h3>
+			<p class="book__form-sub">Every student starts with one free trial class.</p>
+
+			<!-- Honeypot -->
+			<div class="book__honeypot" aria-hidden="true">
+				<label for="book-website">Website</label>
+				<input id="book-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+			</div>
+
+			<div class="book__field">
+				<label class="book__label" for="book-name">
+					Your name <span class="book__req" aria-hidden="true">*</span>
+				</label>
+				<input
+					id="book-name"
+					name="name"
+					type="text"
+					class="book__input"
+					autocomplete="name"
+					maxlength="120"
+					required
+					aria-required="true"
+					aria-describedby="book-name-err"
+				/>
+				<span class="book__err" id="book-name-err" role="alert" aria-live="polite" data-err="name"></span>
+			</div>
+
+			<div class="book__field">
+				<label class="book__label" for="book-email">
+					Email address <span class="book__req" aria-hidden="true">*</span>
+				</label>
+				<input
+					id="book-email"
+					name="email"
+					type="email"
+					class="book__input"
+					inputmode="email"
+					autocomplete="email"
+					maxlength="254"
+					required
+					aria-required="true"
+					aria-describedby="book-email-err"
+				/>
+				<span class="book__err" id="book-email-err" role="alert" aria-live="polite" data-err="email"></span>
+			</div>
+
+			<div class="book__field">
+				<label class="book__label" for="book-phone">
+					Phone number <span class="book__req" aria-hidden="true">*</span>
+				</label>
+				<div class="book__phone-wrap">
+					<input
+						id="book-phone"
+						name="phone_local"
+						type="tel"
+						class="book__input book__input--phone"
+						inputmode="tel"
+						autocomplete="tel"
+						required
+						aria-required="true"
+						aria-describedby="book-phone-err"
+					/>
+				</div>
+				<!-- Hidden field that carries the full E.164 number to the server -->
+				<input type="hidden" name="phone" id="book-phone-full" />
+				<span class="book__err" id="book-phone-err" role="alert" aria-live="polite" data-err="phone"></span>
+			</div>
+
+			<div class="book__row">
+				<div class="book__field">
+					<label class="book__label" for="book-course">Course</label>
+					<select id="book-course" name="course" class="book__select">
+						<option value="">Not sure yet</option>
+						{
+							courses.map((c) => (
+								<option
+									value={c.name}
+									data-option-id={c.id}
+									data-option-slug={c.slug ?? ""}
+									selected={matches(c, initialCourse) || undefined}
+								>
+									{c.name}
+								</option>
+							))
+						}
+					</select>
+				</div>
+				<div class="book__field">
+					<label class="book__label" for="book-plan">Plan</label>
+					<select id="book-plan" name="plan" class="book__select">
+						<option value="">Help me choose</option>
+						{
+							plans.map((p) => (
+								<option
+									value={p.name}
+									data-option-id={p.id}
+									data-option-slug={p.slug ?? ""}
+									selected={matches(p, initialPlan) || undefined}
+								>
+									{p.name}
+								</option>
+							))
+						}
+					</select>
+				</div>
+			</div>
+
+			<div class="book__field">
+				<label class="book__label" for="book-message">
+					Message <span class="book__optional">(optional)</span>
+				</label>
+				<textarea
+					id="book-message"
+					name="message"
+					class="book__textarea"
+					rows="3"
+					maxlength="2000"
+					placeholder="Student age, current level, any questions"
+				></textarea>
+			</div>
+
+			{
+				tsKey && (
+					<div
+						class="cf-turnstile book__turnstile"
+						data-sitekey={tsKey}
+						data-theme="auto"
+					/>
+				)
+			}
+
+			<div class="book__foot">
+				<button type="submit" class="book__submit" data-book-submit>
+					<span class="book__spinner" aria-hidden="true"></span>
+					<span data-book-submit-label>Request free trial</span>
+				</button>
+			</div>
+		</form>
 	</div>
 </div>
 
+<script>
+	// ---------------------------------------------------------------------------
+	// Inline free-trial form for the #book section.
+	// Field states: idle, focus (css), invalid (message under the field),
+	// submitting (spinner, button disabled). The popup is only for the result.
+	// ---------------------------------------------------------------------------
+	import intlTelInput from "intl-tel-input";
+	// @ts-ignore
+	import "intl-tel-input/styles";
+
+	const form = document.getElementById("book-form") as HTMLFormElement | null;
+
+	if (form) {
+		const nameInput = form.querySelector<HTMLInputElement>("#book-name")!;
+		const emailInput = form.querySelector<HTMLInputElement>("#book-email")!;
+		const phoneInput = form.querySelector<HTMLInputElement>("#book-phone")!;
+		const phoneFull = form.querySelector<HTMLInputElement>("#book-phone-full")!;
+		const courseSelect = form.querySelector("#book-course") as unknown as HTMLSelectElement;
+		const planSelect = form.querySelector("#book-plan") as unknown as HTMLSelectElement;
+		const messageInput = form.querySelector<HTMLTextAreaElement>("#book-message")!;
+		const honeypot = form.querySelector<HTMLInputElement>("#book-website")!;
+		const submitBtn = form.querySelector<HTMLButtonElement>("[data-book-submit]")!;
+		const submitLabel = form.querySelector<HTMLElement>("[data-book-submit-label]")!;
+		const tsWidget = form.querySelector<HTMLElement>(".cf-turnstile");
+
+		// --- intl-tel-input -------------------------------------------------
+		const iti = intlTelInput(phoneInput, {
+			// Academy is in Karachi, so Pakistan is the default. Users pick
+			// their own country; no third-party geo lookup is performed.
+			initialCountry: "pk",
+			loadUtils: () => import("intl-tel-input/utils"),
+			separateDialCode: true,
+			strictMode: false,
+		});
+
+		// --- Turnstile ------------------------------------------------------
+		if (tsWidget && !document.getElementById("cf-turnstile-script")) {
+			const s = document.createElement("script");
+			s.id = "cf-turnstile-script";
+			s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+			s.async = true;
+			s.defer = true;
+			document.head.appendChild(s);
+		}
+		const turnstileToken = (): string => {
+			const api = (window as unknown as {
+				turnstile?: { getResponse?: (el?: HTMLElement) => string | undefined };
+			}).turnstile;
+			return api?.getResponse?.(tsWidget ?? undefined) ?? "";
+		};
+
+		// --- Inline field errors ---------------------------------------------
+		const setFieldError = (fieldName: string, msg: string) => {
+			const el = form.querySelector<HTMLElement>(`[data-err="${fieldName}"]`);
+			if (!el) return;
+			el.textContent = msg;
+			el.classList.toggle("is-visible", !!msg);
+			const input =
+				fieldName === "phone"
+					? phoneInput
+					: form.querySelector<HTMLElement>(`[name="${fieldName}"]`);
+			input?.setAttribute("aria-invalid", msg ? "true" : "false");
+		};
+
+		const clearErrors = () => {
+			form.querySelectorAll<HTMLElement>("[data-err]").forEach((el) => {
+				el.textContent = "";
+				el.classList.remove("is-visible");
+			});
+			form.querySelectorAll<HTMLElement>("[aria-invalid]").forEach((el) => {
+				el.removeAttribute("aria-invalid");
+			});
+		};
+
+		// --- Prefill + scroll + focus -----------------------------------------
+		const selectByValue = (sel: HTMLSelectElement, value: string) => {
+			if (!value) return false;
+			const needle = value.trim().toLowerCase();
+			for (const opt of Array.from(sel.options)) {
+				if (
+					opt.value.toLowerCase() === needle ||
+					(opt.dataset.optionId ?? "").toLowerCase() === needle ||
+					(opt.dataset.optionSlug ?? "").toLowerCase() === needle
+				) {
+					sel.value = opt.value;
+					return true;
+				}
+			}
+			return false;
+		};
+
+		const focusFirstEmpty = () => {
+			const order = [nameInput, emailInput, phoneInput, courseSelect, planSelect, messageInput];
+			const empty = order.find(
+				(el) => !(el instanceof HTMLSelectElement) && (el as HTMLInputElement).value.trim() === "",
+			);
+			(empty ?? nameInput).focus({ preventScroll: true });
+		};
+
+		const section = document.getElementById("book");
+		const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+		const bringToForm = (plan: string, course: string) => {
+			if (plan) selectByValue(planSelect, plan);
+			if (course) selectByValue(courseSelect, course);
+			section?.scrollIntoView({
+				behavior: prefersReducedMotion ? "auto" : "smooth",
+				block: "start",
+			});
+			window.setTimeout(focusFirstEmpty, prefersReducedMotion ? 0 : 550);
+		};
+
+		document.addEventListener("book-prefill", (e) => {
+			const { plan, course } =
+				(e as CustomEvent<{ plan?: string; course?: string }>).detail ?? {};
+			bringToForm(plan ?? "", course ?? "");
+		});
+
+		// Old deep links: /?plan=..&course=..#book prefill on load.
+		{
+			const params = new URLSearchParams(window.location.search);
+			const plan = params.get("plan") ?? "";
+			const course = params.get("course") ?? "";
+			if (plan || course) {
+				bringToForm(plan, course);
+			}
+		}
+
+		// --- Submit -------------------------------------------------------------
+		let submitting = false;
+
+		const setSubmitting = (busy: boolean) => {
+			submitting = busy;
+			submitBtn.disabled = busy;
+			submitBtn.classList.toggle("is-loading", busy);
+			submitBtn.setAttribute("aria-busy", String(busy));
+			submitLabel.textContent = busy ? "Sending request" : "Request free trial";
+		};
+
+		const validate = (): boolean => {
+			clearErrors();
+			let valid = true;
+
+			if (nameInput.value.trim().length < 2) {
+				setFieldError("name", "Please enter your name.");
+				valid = false;
+			}
+			const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+			if (!emailRe.test(emailInput.value.trim())) {
+				setFieldError("email", "Enter a valid email address.");
+				valid = false;
+			}
+			if (!iti.isValidNumber()) {
+				setFieldError("phone", "Enter a valid phone number with country code.");
+				valid = false;
+			} else {
+				phoneFull.value = iti.getNumber() ?? "";
+			}
+
+			if (!valid) {
+				form.querySelector<HTMLElement>("[aria-invalid='true']")?.focus();
+			}
+			return valid;
+		};
+
+		const showResult = (state: "success" | "error" | "rate", message?: string) => {
+			document.dispatchEvent(
+				new CustomEvent("show-result", { detail: { state, message } }),
+			);
+		};
+
+		const send = async () => {
+			if (submitting) return;
+			if (!validate()) return;
+
+			setSubmitting(true);
+
+			const payload = {
+				type: "enrolment" as const,
+				name: nameInput.value.trim(),
+				email: emailInput.value.trim().toLowerCase(),
+				phone: phoneFull.value || iti.getNumber() || "",
+				course: courseSelect.value,
+				plan: planSelect.value,
+				message: messageInput.value.trim(),
+				website: honeypot.value,
+				turnstileToken: turnstileToken(),
+			};
+
+			try {
+				const res = await fetch("/api/enrol", {
+					method: "POST",
+					headers: { "Content-Type": "application/json", Accept: "application/json" },
+					body: JSON.stringify(payload),
+				});
+				const result = (await res.json().catch(() => ({}))) as {
+					ok?: boolean;
+					message?: string;
+					field?: string;
+				};
+
+				if (res.status === 429) {
+					showResult("rate", result.message);
+				} else if (res.ok && result.ok) {
+					showResult("success", result.message);
+					form.reset();
+					clearErrors();
+					(
+						window as unknown as { turnstile?: { reset?: (el?: HTMLElement) => void } }
+					).turnstile?.reset?.(tsWidget ?? undefined);
+				} else if (!res.ok && result.field) {
+					setFieldError(result.field, result.message ?? "Please check this field.");
+					form
+						.querySelector<HTMLElement>(`[name="${result.field}"], #book-${result.field}`)
+						?.focus();
+				} else {
+					showResult(
+						"error",
+						result.message ??
+							"Something went wrong. Please try again or contact us directly.",
+					);
+				}
+			} catch {
+				showResult("error", "We could not reach the server. Check your connection and try again.");
+			} finally {
+				setSubmitting(false);
+			}
+		};
+
+		form.addEventListener("submit", (e) => {
+			e.preventDefault();
+			void send();
+		});
+
+		// "Try again" in the result dialog resubmits straight away.
+		document.addEventListener("book-retry", () => {
+			void send();
+		});
+	}
+</script>
+
+<style is:global>
+	/* Re-skin intl-tel-input to our tokens */
+	.iti {
+		--iti-hover-color: var(--mint-50);
+		--iti-border-color: var(--line);
+		width: 100%;
+	}
+	.iti__flag-container {
+		border-radius: var(--radius-input) 0 0 var(--radius-input);
+	}
+	.iti__selected-dial-code {
+		font-size: var(--type-small-size);
+	}
+	.iti__dropdown-content {
+		background: var(--surface);
+		border: 1px solid var(--line);
+		border-radius: var(--radius-card);
+		box-shadow: 0 8px 24px -8px rgba(11, 26, 20, 0.16);
+	}
+	.iti__search-input {
+		background: var(--page);
+		color: var(--ink);
+		border-color: var(--line);
+	}
+	.iti__country.iti__highlight {
+		background: var(--mint-50);
+	}
+	.iti--separate-dial-code .iti__selected-flag {
+		border-radius: var(--radius-input) 0 0 var(--radius-input);
+		background: var(--mint-50);
+		border-right: 1px solid var(--line);
+	}
+</style>
+
 <style>
+	/* ---- Layout: two columns, stacks on mobile --------------------------- */
 	.book {
 		display: grid;
-		grid-template-columns: minmax(0, 1fr);
-		gap: var(--space-md);
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+		gap: clamp(24px, 4vw, 56px);
 		align-items: start;
+	}
+
+	@media (max-width: 900px) {
+		.book {
+			grid-template-columns: minmax(0, 1fr);
+		}
 	}
 
 	.book__copy {
@@ -95,16 +552,216 @@ const modalProps = (): Record<string, string> => ({
 		text-decoration: underline;
 	}
 
-	.book__actions {
-		display: grid;
-		justify-items: start;
-		gap: var(--space-md);
-		margin-top: var(--space-sm);
-	}
-
 	.book__note {
 		max-width: 44ch;
 		color: var(--ink-muted);
 		font-size: var(--type-small-size);
+	}
+
+	/* ---- Form card -------------------------------------------------------- */
+	.book__card {
+		padding: clamp(20px, 3vw, 32px);
+		border: 1px solid var(--line);
+		border-radius: var(--radius-card);
+		background: var(--surface);
+		box-shadow: 0 12px 32px -16px rgba(11, 26, 20, 0.25);
+	}
+
+	.book__form {
+		display: grid;
+		gap: var(--space-md);
+	}
+
+	.book__form-title {
+		margin: 0;
+		font-size: var(--type-h3-size);
+		font-weight: 500;
+		line-height: 1.25;
+	}
+
+	.book__form-sub {
+		margin: calc(-1 * var(--space-xs)) 0 0;
+		color: var(--ink-muted);
+		font-size: var(--type-small-size);
+	}
+
+	/* ---- Fields ------------------------------------------------------------ */
+	.book__field {
+		display: grid;
+		gap: 6px;
+	}
+
+	.book__label {
+		font-size: var(--type-small-size);
+		font-weight: 600;
+		color: var(--ink);
+	}
+
+	.book__req {
+		color: #b3261e;
+	}
+
+	.book__optional {
+		font-weight: 400;
+		color: var(--ink-muted);
+	}
+
+	.book__input,
+	.book__select,
+	.book__textarea {
+		width: 100%;
+		min-height: 48px;
+		padding: 11px 14px;
+		border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+		border-radius: var(--radius-input);
+		background: var(--page);
+		color: var(--ink);
+		font: inherit;
+		font-size: var(--type-body-size);
+		transition: border-color var(--transition);
+	}
+
+	.book__input:focus-visible,
+	.book__select:focus-visible,
+	.book__textarea:focus-visible {
+		outline: 2px solid var(--focus);
+		outline-offset: 2px;
+		border-color: var(--green-deep);
+	}
+
+	.book__input[aria-invalid="true"],
+	.book__select[aria-invalid="true"],
+	.book__textarea[aria-invalid="true"] {
+		border-color: #b3261e;
+	}
+
+	.book__input--phone {
+		border-radius: 0 var(--radius-input) var(--radius-input) 0;
+	}
+
+	.book__phone-wrap {
+		position: relative;
+	}
+
+	.book__select {
+		appearance: auto;
+	}
+
+	.book__textarea {
+		min-height: 88px;
+		resize: vertical;
+	}
+
+	.book__row {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: var(--space-md);
+	}
+
+	@media (max-width: 480px) {
+		.book__row {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	/* ---- Invalid message under the field ----------------------------------- */
+	.book__err {
+		display: none;
+		font-size: var(--type-small-size);
+		color: #b3261e;
+		line-height: 1.4;
+	}
+
+	.book__err.is-visible {
+		display: block;
+	}
+
+	:global(html[data-theme="dark"]) .book__err,
+	:global(html[data-theme="dark"]) .book__req {
+		color: #ff9b8a;
+	}
+
+	/* ---- Honeypot ----------------------------------------------------------- */
+	.book__honeypot {
+		position: absolute;
+		left: -9999px;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+	}
+
+	/* ---- Turnstile ----------------------------------------------------------- */
+	.book__turnstile {
+		justify-self: start;
+	}
+
+	/* ---- Submit -------------------------------------------------------------- */
+	.book__foot {
+		display: grid;
+		gap: var(--space-sm);
+	}
+
+	.book__submit {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-xs);
+		height: 48px;
+		padding: 0 28px;
+		border: 1px solid var(--green);
+		border-radius: var(--radius-button);
+		background: var(--green);
+		color: var(--on-accent);
+		font: inherit;
+		font-size: var(--type-body-size);
+		font-weight: 500;
+		cursor: pointer;
+		transition:
+			background-color var(--transition),
+			border-color var(--transition);
+		width: 100%;
+	}
+
+	.book__submit:hover {
+		background: var(--green-deep);
+		border-color: var(--green-deep);
+	}
+
+	.book__submit:focus-visible {
+		outline: 2px solid var(--focus);
+		outline-offset: 3px;
+	}
+
+	.book__submit:disabled {
+		opacity: 0.72;
+		cursor: progress;
+	}
+
+	/* Spinner, never a skeleton loader. */
+	.book__spinner {
+		display: none;
+		width: 16px;
+		height: 16px;
+		border: 2px solid color-mix(in srgb, var(--on-accent) 35%, transparent);
+		border-top-color: var(--on-accent);
+		border-radius: 50%;
+		animation: book-spin 700ms linear infinite;
+	}
+
+	.book__submit.is-loading .book__spinner {
+		display: block;
+	}
+
+	@keyframes book-spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.book__spinner {
+			animation: none;
+		}
 	}
 </style>

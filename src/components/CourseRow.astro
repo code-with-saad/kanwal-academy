@@ -6,7 +6,7 @@ interface Props {
 	title: string;
 	summary?: string;
 	level?: string;
-	/** Opens the enrolment modal with this course preselected. */
+	/** Scrolls to the inline #book form with this course preselected. */
 	prefillCourse?: string;
 	/** Arabic course name, shown at the end of the row. */
 	arabic?: string;
@@ -15,8 +15,8 @@ interface Props {
 const { index, title, summary, level, prefillCourse, arabic } = Astro.props;
 const number = String(index).padStart(2, "0");
 
-const modalAttrs = prefillCourse
-	? { "data-open-modal": "", "data-prefill-course": prefillCourse }
+const bookAttrs = prefillCourse
+	? { "data-book-cta": "", "data-prefill-course": prefillCourse }
 	: {};
 ---
 
@@ -24,7 +24,7 @@ const modalAttrs = prefillCourse
 	<button
 		type="button"
 		class:list={["course-row__link", "lift", arabic && "course-row__link--arabic"]}
-		{...modalAttrs}
+		{...bookAttrs}
 	>
 		<span class="course-row__index" aria-hidden="true">{number}</span>
 		<span class="course-row__body">
