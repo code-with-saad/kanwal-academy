@@ -111,7 +111,9 @@ interface HomePageFields {
 	book_submit_label?: string;
 }
 
-type HomeTextField = keyof HomePageFields;
+type HomeTextField = {
+	[K in keyof HomePageFields]-?: HomePageFields[K] extends string | undefined ? K : never;
+}[keyof HomePageFields];
 
 const [
 	coursesResult,
@@ -141,9 +143,7 @@ if (Astro.cache?.enabled) {
 	Astro.cache.set(plansResult.cacheHint);
 	Astro.cache.set(testimonialsResult.cacheHint);
 	Astro.cache.set(contactResult.cacheHint);
-	// Home page content is NOT cached — it changes frequently via the CMS
-	// and we want edits to appear immediately without waiting for cache expiry.
-	// Astro.cache.set(homeResult.cacheHint);
+	Astro.cache.set(homeResult.cacheHint);
 }
 
 const courses = coursesResult.entries.filter(
