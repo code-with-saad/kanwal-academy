@@ -261,6 +261,9 @@ const rings = [
 		font-size: var(--type-small-size);
 		font-weight: 500;
 		color: var(--ink-muted);
+		max-width: 80%;
+		line-height: 1.2;
+		overflow-wrap: break-word;
 	}
 
 	@media (max-width: 900px) {
@@ -276,21 +279,26 @@ const rings = [
 
 		.ring-cell {
 			width: 100%;
-			max-width: 104px;
+			max-width: 140px;
 			min-width: 0;
 			justify-self: center;
 		}
 
 		.ring-cell__number {
-			font-size: 20px;
+			font-size: 28px;
 		}
 
 		.ring-cell__label {
 			font-size: var(--type-eyebrow-size);
+			max-width: 90px;
+			line-height: 1.2;
+			white-space: normal;
+			overflow-wrap: break-word;
 		}
 	}
 
-	/* Mobile: full bleed, no radius. */
+	/* Mobile: full bleed, no radius. Stack label below the ring so long
+	 * text never gets clipped inside the circle. */
 	@media (max-width: 760px) {
 		.stats-band {
 			padding-block: 48px;
@@ -301,6 +309,49 @@ const rings = [
 			padding-inline: var(--gutter);
 			padding-block: 40px;
 			border-radius: 0;
+		}
+
+		/* Move label below the ring on narrow screens so it can't clip. */
+		.ring-cell {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			width: auto;
+			aspect-ratio: auto;
+			max-width: none;
+			justify-self: center;
+		}
+
+		.ring-cell__ring {
+			width: 100px;
+			height: 100px;
+			flex: none;
+			transform: rotate(-90deg);
+		}
+
+		.ring-cell__text {
+			position: static;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin-top: 6px;
+			gap: 2px;
+		}
+
+		.ring-cell__number {
+			font-size: 24px;
+		}
+
+		.ring-cell__label {
+			font-size: 12px;
+			max-width: 100px;
+			white-space: normal;
+			overflow-wrap: break-word;
+			text-align: center;
+		}
+
+		.stats-band__rings {
+			gap: clamp(12px, 4vw, 24px);
 		}
 	}
 </style>

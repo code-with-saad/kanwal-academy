@@ -3,6 +3,7 @@ import type { EditProxy, ImageValue } from "emdash";
 import { Image } from "emdash/ui";
 import Container from "./Container.astro";
 import Newsletter from "./Newsletter.astro";
+import SocialLinks from "./SocialLinks.astro";
 import { site } from "../config/site";
 import { emailHref, phoneHref, type SiteContact } from "../utils/site-config";
 
@@ -73,6 +74,7 @@ const academyLinks = [
 				<p class="footer__description" {...settingsEdit?.footer_tagline}>
 					{contact.footer.tagline}
 				</p>
+				<SocialLinks links={contact.socialLinks} />
 			</div>
 
 			<nav class="footer__column" aria-labelledby="footer-courses">
