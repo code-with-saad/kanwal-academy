@@ -22,7 +22,7 @@ const {
 	titleBefore = "Experience Qur'anic",
 	titleHighlight = "wisdom",
 	paragraph1 = "Kanwal Quran Academy teaches the Qur'an online in live one to one classes. Your teacher listens to your recitation, corrects it as you read, and sets a weekly plan around your level.",
-	paragraph2 = "Students join from more than five countries, on a phone, tablet or laptop. Every student starts with a free trial class before choosing a plan.",
+	paragraph2 = "",
 	imageSrc = "/images/wisdom.jpg",
 	imageAlt = "A student reciting the Qur'an during a live online lesson",
 	image,
@@ -72,9 +72,11 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 		<p data-reveal="up" data-reveal-delay="80">
 			{paragraph1}
 		</p>
-		<p data-reveal="up" data-reveal-delay="160">
-			{paragraph2}
-		</p>
+		{paragraph2 && (
+			<p data-reveal="up" data-reveal-delay="160">
+				{paragraph2}
+			</p>
+		)}
 		<div class="wisdom__actions" data-reveal="up" data-reveal-delay="240">
 			<Button book variant="primary">Book free trial</Button>
 		</div>
