@@ -299,10 +299,15 @@ button {
 	color: var(--ink);
 }
 
+html[lang="ar"],
 [lang="ar"] {
-	font-family: var(--font-arabic, var(--font-arabic-fallback));
+	font-family: var(--font-arabic-ui, var(--font));
 	direction: rtl;
 	unicode-bidi: plaintext;
+}
+
+.arabic {
+	font-family: var(--font-arabic, var(--font-arabic-fallback));
 }
 
 /* Highlighted word inside a heading: weight 500 in --green-deep. */

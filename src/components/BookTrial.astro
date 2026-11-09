@@ -15,6 +15,7 @@
 import Eyebrow from "./Eyebrow.astro";
 import { emailHref, phoneHref, whatsappHref, type SiteContact } from "../utils/site-config";
 import { env as hostEnv } from "virtual:emdash/env";
+import { useUi } from "../i18n";
 
 export interface BookOption {
 	id: string;
@@ -39,21 +40,27 @@ interface Props {
 	submitLabel?: string;
 }
 
+const { locale, t } = useUi(Astro);
+
 const {
 	contact,
 	courses = [],
 	plans = [],
 	initialPlan = "",
 	initialCourse = "",
-	eyebrow = "Free trial",
-	heading = "Book a free trial class",
-	lead = "Tell us a little about the student and the times that suit you. We will reply with the next available trial slot. The trial class is free and no payment details are needed.",
-	contactLabel = "Reach us directly",
-	note = "Lessons run live in a video call. You only need a phone, tablet or laptop with a camera.",
-	formTitle = "Start your free trial",
-	formSub = "Every student starts with one free trial class.",
-	submitLabel = "Request free trial",
+	eyebrow = t.home.book_eyebrow,
+	heading = t.home.book_heading,
+	lead = t.home.book_lead,
+	contactLabel = t.home.book_contact_label,
+	note = t.home.book_note,
+	formTitle = t.home.book_form_title,
+	formSub = t.home.book_form_sub,
+	submitLabel = t.home.book_submit_label,
 } = Astro.props;
+
+// Client-side strings travel as data, because this component's script is a
+// hoisted module and cannot use define:vars.
+const clientStrings = JSON.stringify({ ...t.feedback, sending: t.form.sending });
 
 const runtimeEnv = hostEnv as Record<string, unknown> | undefined;
 const buildEnv = import.meta.env as unknown as Record<string, string | undefined>;
@@ -99,19 +106,28 @@ function matches(option: BookOption, value: string): boolean {
 
 	<!-- Right: the inline form card -->
 	<div class="book__card">
-		<form class="book__form" id="book-form" novalidate data-book-form>
+		<form
+			class="book__form"
+			id="book-form"
+			novalidate
+			data-book-form
+			data-locale={locale}
+			data-i18n={clientStrings}
+		>
 			<h3 class="book__form-title">{formTitle}</h3>
 			<p class="book__form-sub">{formSub}</p>
 
+			<input type="hidden" name="locale" value={locale} />
+
 			<!-- Honeypot -->
 			<div class="book__honeypot" aria-hidden="true">
-				<label for="book-website">Website</label>
+				<label for="book-website">{t.form.website}</label>
 				<input id="book-website" name="website" type="text" tabindex="-1" autocomplete="off" />
 			</div>
 
 			<div class="book__field">
 				<label class="book__label" for="book-name">
-					Your name <span class="book__req" aria-hidden="true">*</span>
+					{t.form.name} <span class="book__req" aria-hidden="true">*</span>
 				</label>
 				<input
 					id="book-name"
@@ -129,12 +145,13 @@ function matches(option: BookOption, value: string): boolean {
 
 			<div class="book__field">
 				<label class="book__label" for="book-email">
-					Email address <span class="book__req" aria-hidden="true">*</span>
+					{t.form.email} <span class="book__req" aria-hidden="true">*</span>
 				</label>
 				<input
 					id="book-email"
 					name="email"
 					type="email"
+					dir="ltr"
 					class="book__input"
 					inputmode="email"
 					autocomplete="email"
@@ -148,13 +165,14 @@ function matches(option: BookOption, value: string): boolean {
 
 			<div class="book__field">
 				<label class="book__label" for="book-phone">
-					Phone number <span class="book__req" aria-hidden="true">*</span>
+					{t.form.phone} <span class="book__req" aria-hidden="true">*</span>
 				</label>
 				<div class="book__phone-wrap">
 					<input
 						id="book-phone"
 						name="phone_local"
 						type="tel"
+						dir="ltr"
 						class="book__input book__input--phone"
 						inputmode="tel"
 						autocomplete="tel"
@@ -170,9 +188,9 @@ function matches(option: BookOption, value: string): boolean {
 
 			<div class="book__row">
 				<div class="book__field">
-					<label class="book__label" for="book-course">Course</label>
+					<label class="book__label" for="book-course">{t.form.course}</label>
 					<select id="book-course" name="course" class="book__select">
-						<option value="">Not sure yet</option>
+						<option value="">{t.form.courseUnsure}</option>
 						{
 							courses.map((c) => (
 								<option
@@ -188,9 +206,9 @@ function matches(option: BookOption, value: string): boolean {
 					</select>
 				</div>
 				<div class="book__field">
-					<label class="book__label" for="book-plan">Plan</label>
+					<label class="book__label" for="book-plan">{t.form.plan}</label>
 					<select id="book-plan" name="plan" class="book__select">
-						<option value="">Help me choose</option>
+						<option value="">{t.form.planHelp}</option>
 						{
 							plans.map((p) => (
 								<option
@@ -209,7 +227,7 @@ function matches(option: BookOption, value: string): boolean {
 
 			<div class="book__field">
 				<label class="book__label" for="book-message">
-					Message <span class="book__optional">(optional)</span>
+					{t.form.message} <span class="book__optional">{t.form.optional}</span>
 				</label>
 				<textarea
 					id="book-message"
@@ -217,7 +235,7 @@ function matches(option: BookOption, value: string): boolean {
 					class="book__textarea"
 					rows="3"
 					maxlength="2000"
-					placeholder="Student age, current level, any questions"
+					placeholder={t.form.messagePlaceholder}
 				></textarea>
 			</div>
 
@@ -264,8 +282,13 @@ function matches(option: BookOption, value: string): boolean {
 		const honeypot = form.querySelector<HTMLInputElement>("#book-website")!;
 		const submitBtn = form.querySelector<HTMLButtonElement>("[data-book-submit]")!;
 		const submitLabel = form.querySelector<HTMLElement>("[data-book-submit-label]")!;
-		const defaultSubmitLabel = submitLabel.textContent ?? "Request free trial";
+		const defaultSubmitLabel = submitLabel.textContent ?? "";
 		const tsWidget = form.querySelector<HTMLElement>(".cf-turnstile");
+
+		// Localized strings rendered by the server for this locale.
+		const messages = JSON.parse(form.dataset.i18n ?? "{}") as Record<string, string>;
+		const msg = (code: string | undefined, fallback?: string): string =>
+			(code && messages[code]) || fallback || messages.unknown || "Please try again.";
 
 		// --- intl-tel-input -------------------------------------------------
 		const iti = intlTelInput(phoneInput, {
@@ -432,7 +455,7 @@ function matches(option: BookOption, value: string): boolean {
 			submitBtn.disabled = busy;
 			submitBtn.classList.toggle("is-loading", busy);
 			submitBtn.setAttribute("aria-busy", String(busy));
-			submitLabel.textContent = busy ? "Sending request" : defaultSubmitLabel;
+			submitLabel.textContent = busy ? msg("sending") : defaultSubmitLabel;
 		};
 
 		const validate = (): boolean => {
@@ -440,16 +463,16 @@ function matches(option: BookOption, value: string): boolean {
 			let valid = true;
 
 			if (nameInput.value.trim().length < 2) {
-				setFieldError("name", "Please enter your name.");
+				setFieldError("name", msg("invalid_name"));
 				valid = false;
 			}
 			const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 			if (!emailRe.test(emailInput.value.trim())) {
-				setFieldError("email", "Enter a valid email address.");
+				setFieldError("email", msg("invalid_email"));
 				valid = false;
 			}
 			if (!iti.isValidNumber()) {
-				setFieldError("phone", "Enter a valid phone number with country code.");
+				setFieldError("phone", msg("invalid_phone"));
 				valid = false;
 			} else {
 				phoneFull.value = iti.getNumber() ?? "";
@@ -475,6 +498,7 @@ function matches(option: BookOption, value: string): boolean {
 
 			const payload = {
 				type: "enrolment" as const,
+				locale: form.dataset.locale ?? "en",
 				name: nameInput.value.trim(),
 				email: emailInput.value.trim().toLowerCase(),
 				phone: phoneFull.value || iti.getNumber() || "",
@@ -493,33 +517,30 @@ function matches(option: BookOption, value: string): boolean {
 				});
 				const result = (await res.json().catch(() => ({}))) as {
 					ok?: boolean;
+					code?: string;
 					message?: string;
 					field?: string;
 				};
 
 				if (res.status === 429) {
-					showResult("rate", result.message);
+					showResult("rate", msg("rate_limited", result.message));
 				} else if (res.ok && result.ok) {
-					showResult("success", result.message);
+					showResult("success", msg("success_enrolment", result.message));
 					form.reset();
 					clearErrors();
 					(
 						window as unknown as { turnstile?: { reset?: (el?: HTMLElement) => void } }
 					).turnstile?.reset?.(tsWidget ?? undefined);
 				} else if (!res.ok && result.field) {
-					setFieldError(result.field, result.message ?? "Please check this field.");
+					setFieldError(result.field, msg(result.code, result.message));
 					form
 						.querySelector<HTMLElement>(`[name="${result.field}"], #book-${result.field}`)
 						?.focus();
 				} else {
-					showResult(
-						"error",
-						result.message ??
-							"Something went wrong. Please try again or contact us directly.",
-					);
+					showResult("error", msg(result.code ?? "generic_error", result.message));
 				}
 			} catch {
-				showResult("error", "We could not reach the server. Check your connection and try again.");
+				showResult("error", msg("network_error"));
 			} finally {
 				setSubmitting(false);
 			}
@@ -567,7 +588,7 @@ function matches(option: BookOption, value: string): boolean {
 	.iti--separate-dial-code .iti__selected-flag {
 		border-radius: var(--radius-input) 0 0 var(--radius-input);
 		background: var(--mint-50);
-		border-right: 1px solid var(--line);
+		border-inline-end: 1px solid var(--line);
 	}
 </style>
 
@@ -760,7 +781,7 @@ function matches(option: BookOption, value: string): boolean {
 	/* ---- Honeypot ----------------------------------------------------------- */
 	.book__honeypot {
 		position: absolute;
-		left: -9999px;
+		inset-inline-start: -9999px;
 		width: 1px;
 		height: 1px;
 		overflow: hidden;

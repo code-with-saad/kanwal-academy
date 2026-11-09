@@ -24,6 +24,9 @@ interface Props {
 	whatsappPhone?: string;
 }
 
+import { useUi } from "../i18n";
+
+const { t } = useUi(Astro);
 const { whatsappPhone = "" } = Astro.props;
 
 const waHref = whatsappPhone
@@ -33,7 +36,7 @@ const waHref = whatsappPhone
 
 <dialog id="result-modal" class="rm" aria-labelledby="rm-title" aria-modal="true">
 	<div class="rm__inner">
-		<button type="button" class="rm__close" data-rm-close aria-label="Close">
+		<button type="button" class="rm__close" data-rm-close aria-label={t.actions.close}>
 			<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
 				<path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
 			</svg>
@@ -45,12 +48,11 @@ const waHref = whatsappPhone
 				<circle cx="24" cy="24" r="22" stroke="var(--green)" stroke-width="2"/>
 				<path d="M14 24l7 7 13-14" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>
-			<h2 class="rm__title" id="rm-title">Request received</h2>
+			<h2 class="rm__title" id="rm-title">{t.modal.successTitle}</h2>
 			<p class="rm__body" data-rm-success-text>
-				Thank you. We will reply within one business day with the next available trial
-				slot. The class is free and no payment is needed.
+				{t.modal.successBody}
 			</p>
-			<button type="button" class="rm__btn rm__btn--primary" data-rm-close>Close</button>
+			<button type="button" class="rm__btn rm__btn--primary" data-rm-close>{t.actions.close}</button>
 		</div>
 
 		<!-- Error -->
@@ -59,14 +61,14 @@ const waHref = whatsappPhone
 				<circle cx="24" cy="24" r="22" stroke="#b3261e" stroke-width="2"/>
 				<path d="M24 14v14m0 6v.5" stroke="#b3261e" stroke-width="2.5" stroke-linecap="round"/>
 			</svg>
-			<h2 class="rm__title">We could not send your request</h2>
-			<p class="rm__body" data-rm-error-text>Please try again.</p>
+			<h2 class="rm__title">{t.modal.errorTitle}</h2>
+			<p class="rm__body" data-rm-error-text>{t.modal.errorBody}</p>
 			<div class="rm__actions">
-				<button type="button" class="rm__btn rm__btn--primary" data-rm-retry>Try again</button>
+				<button type="button" class="rm__btn rm__btn--primary" data-rm-retry>{t.actions.tryAgain}</button>
 				{
 					waHref && (
 						<a href={waHref} class="rm__btn rm__btn--outline" target="_blank" rel="noopener noreferrer">
-							WhatsApp us
+							{t.modal.whatsapp}
 						</a>
 					)
 				}
@@ -79,16 +81,16 @@ const waHref = whatsappPhone
 				<circle cx="24" cy="24" r="22" stroke="var(--green-deep)" stroke-width="2"/>
 				<path d="M24 14v11l7 4" stroke="var(--green-deep)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>
-			<h2 class="rm__title">Too many attempts</h2>
+			<h2 class="rm__title">{t.modal.rateTitle}</h2>
 			<p class="rm__body" data-rm-rate-text>
-				Please try again in an hour, or contact us directly.
+				{t.modal.rateBody}
 			</p>
 			<div class="rm__actions">
-				<button type="button" class="rm__btn rm__btn--primary" data-rm-close>Close</button>
+				<button type="button" class="rm__btn rm__btn--primary" data-rm-close>{t.actions.close}</button>
 				{
 					waHref && (
 						<a href={waHref} class="rm__btn rm__btn--outline" target="_blank" rel="noopener noreferrer">
-							WhatsApp us
+							{t.modal.whatsapp}
 						</a>
 					)
 				}
@@ -238,7 +240,7 @@ const waHref = whatsappPhone
 	.rm__close {
 		position: absolute;
 		top: 16px;
-		right: 16px;
+		inset-inline-end: 16px;
 		display: grid;
 		place-items: center;
 		width: 40px;

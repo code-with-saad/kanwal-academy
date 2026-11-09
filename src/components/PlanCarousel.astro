@@ -13,6 +13,10 @@ import { heroImage } from "../config/images";
 import type { PlanCardData } from "./PlanCard.astro";
 import { formatUsdPrice } from "../utils/price";
 
+import { localizePath, useUi } from "../i18n";
+
+const { locale, t } = useUi(Astro);
+
 interface Props {
 	plans: PlanCardData[];
 	initialIndex?: number;
@@ -28,7 +32,7 @@ const start = Math.min(Math.max(initialIndex, 0), last);
 		<div class="plan-carousel__media">
 			<ImagePlaceholder
 				src={heroImage.src}
-				label="Open Qur'an on a wooden rehal"
+				label={t.images.planCarousel}
 				alt={heroImage.alt}
 				ratio="16 / 10"
 				eager
@@ -42,25 +46,25 @@ const start = Math.min(Math.max(initialIndex, 0), last);
 						<h2 class="plan-carousel__name" data-plan-name>
 							{plan.name}
 						</h2>
-						{plan.isPopular && <span class="plan-carousel__badge">Most popular</span>}
+						{plan.isPopular && <span class="plan-carousel__badge">{t.home.pricing_popular_label}</span>}
 					</div>
 
 					<p class="plan-carousel__price">
 						<span class="plan-carousel__amount">{formatUsdPrice(plan.price)}</span>
-						<span class="plan-carousel__period">/ month</span>
+						<span class="plan-carousel__period">{t.home.pricing_period_label}</span>
 					</p>
 
 					<dl class="plan-carousel__meta">
 						<div>
-							<dt>Classes each week</dt>
+							<dt>{t.home.pricing_classes_week_label}</dt>
 							<dd>{plan.classesPerWeek}</dd>
 						</div>
 						<div>
-							<dt>Classes each month</dt>
+							<dt>{t.home.pricing_classes_month_label}</dt>
 							<dd>{plan.classesPerMonth}</dd>
 						</div>
 						<div>
-							<dt>Teaching hours each month</dt>
+							<dt>{t.home.pricing_hours_label}</dt>
 							<dd>{plan.hoursPerMonth}</dd>
 						</div>
 					</dl>
@@ -68,13 +72,13 @@ const start = Math.min(Math.max(initialIndex, 0), last);
 					<div class="plan-carousel__cta">
 						<Button
 							href={plan.slug
-								? `/?plan=${encodeURIComponent(plan.slug)}#book`
-								: "/#book"}
+								? localizePath(`/?plan=${encodeURIComponent(plan.slug)}#book`, locale)
+								: localizePath("/#book", locale)}
 							variant="primary"
 						>
-							Select plan
+							{t.home.pricing_select_cta}
 						</Button>
-						<Button href="/#pricing" variant="secondary">See details</Button>
+						<Button href={localizePath("/#pricing", locale)} variant="secondary">{t.actions.seeDetails}</Button>
 					</div>
 				</div>
 			))
@@ -82,7 +86,7 @@ const start = Math.min(Math.max(initialIndex, 0), last);
 	</div>
 
 	<div class="plan-carousel__nav" data-plan-nav>
-		<button type="button" class="plan-carousel__arrow" data-plan-prev aria-label="Previous plan">
+		<button type="button" class="plan-carousel__arrow" data-plan-prev aria-label={t.a11y.previousPlan}>
 			<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false">
 				<path
 					d="M12.5 4.5 7 10l5.5 5.5"
@@ -97,7 +101,7 @@ const start = Math.min(Math.max(initialIndex, 0), last);
 		<p class="plan-carousel__status" data-plan-status role="status">
 			{plans[start] ? `${plans[start].name}, plan ${start + 1} of ${plans.length}` : ""}
 		</p>
-		<button type="button" class="plan-carousel__arrow" data-plan-next aria-label="Next plan">
+		<button type="button" class="plan-carousel__arrow" data-plan-next aria-label={t.a11y.nextPlan}>
 			<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false">
 				<path
 					d="M7.5 4.5 13 10l-5.5 5.5"
@@ -309,6 +313,10 @@ const start = Math.min(Math.max(initialIndex, 0), last);
 		border-color: var(--sage);
 		background: var(--sage);
 		color: var(--bg-dark);
+	}
+
+	:global(html[dir="rtl"]) .plan-carousel__arrow svg {
+		transform: scaleX(-1);
 	}
 
 	.plan-carousel__status {

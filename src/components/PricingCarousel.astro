@@ -7,6 +7,10 @@
 import type { PlanCardData } from "./PlanCard.astro";
 import PlanCard from "./PlanCard.astro";
 
+import { useUi } from "../i18n";
+
+const { t } = useUi(Astro);
+
 interface Props {
 	plans: PlanCardData[];
 	periodLabel?: string;
@@ -35,7 +39,7 @@ const initialIndex = 1; // Plan II (most popular) is the default
 	data-start={initialIndex}
 	role="region"
 	aria-roledescription="carousel"
-	aria-label="Monthly plans"
+	aria-label={t.a11y.monthlyPlans}
 >
 	<div class="pricing-carousel__track">
 		{
@@ -57,13 +61,13 @@ const initialIndex = 1; // Plan II (most popular) is the default
 	</div>
 
 	<div class="pricing-carousel__controls">
-		<button type="button" class="pricing-carousel__btn pricing-carousel__btn--prev" data-prev aria-label="Previous plan">
+		<button type="button" class="pricing-carousel__btn pricing-carousel__btn--prev" data-prev aria-label={t.a11y.previousPlan}>
 			<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 				<path d="M12.5 4.5 7 10l5.5 5.5" />
 			</svg>
 		</button>
 
-		<div class="pricing-carousel__dots" data-dots role="tablist" aria-label="Plan selector">
+		<div class="pricing-carousel__dots" data-dots role="tablist" aria-label={t.a11y.planSelector}>
 			{
 				plans.map((plan, i) => (
 					<button
@@ -79,7 +83,7 @@ const initialIndex = 1; // Plan II (most popular) is the default
 			}
 		</div>
 
-		<button type="button" class="pricing-carousel__btn pricing-carousel__btn--next" data-next aria-label="Next plan">
+		<button type="button" class="pricing-carousel__btn pricing-carousel__btn--next" data-next aria-label={t.a11y.nextPlan}>
 			<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 				<path d="M7.5 4.5 13 10l-5.5 5.5" />
 			</svg>

@@ -1,6 +1,6 @@
 ---
 import { Font } from "astro:assets";
-import { getEmDashCollection, getSiteSettingsWithCacheHint } from "emdash";
+import { getSiteSettingsWithCacheHint, getTranslations } from "emdash";
 import { createPublicPageContext } from "emdash/page";
 import { EmDashBodyEnd, EmDashBodyStart, EmDashHead } from "emdash/ui";
 import ResultModal from "../components/ResultModal.astro";
@@ -9,6 +9,16 @@ import Header from "../components/Header.astro";
 import { site, type NavItem } from "../config/site";
 import { getSiteContact } from "../utils/site-config";
 import { resolveSiteIdentity } from "../utils/site";
+import {
+	LOCALES,
+	LOCALE_HREFLANG,
+	OG_LOCALE,
+	getLocalizedCollection,
+	localizePath,
+	stripLocalePrefix,
+	useUi,
+} from "../i18n";
+import { localizedCta, localizedNav } from "../i18n/nav";
 import "../styles/global.css";
 
 interface Props {
@@ -23,6 +33,10 @@ interface Props {
 	nav?: NavItem[];
 }
 
+const { locale, t, dir } = useUi(Astro);
+const { path: routePath } = stripLocalePrefix(Astro.url.pathname);
+const isHome = routePath === "/";
+
 const {
 	title,
 	pageTitle,
@@ -31,14 +45,14 @@ const {
 	canonical,
 	robots,
 	content,
-	headerTone = Astro.url.pathname === "/" ? "dark" : "light",
+	headerTone = isHome ? "dark" : "light",
 	nav,
 } = Astro.props;
 
 const [settingsResult, contactResult, coursesResult] = await Promise.all([
 	getSiteSettingsWithCacheHint(),
-	getSiteContact(),
-	getEmDashCollection("courses", {
+	getSiteContact(locale),
+	getLocalizedCollection("courses", locale, {
 		status: "published",
 		orderBy: { order: "asc" },
 	}),
@@ -46,7 +60,7 @@ const [settingsResult, contactResult, coursesResult] = await Promise.all([
 
 // Keep the homepage uncached so edits to its CMS entry are visible on the
 // next request. Other routes continue using their query cache hints.
-if (Astro.cache?.enabled && Astro.url.pathname !== "/") {
+if (Astro.cache?.enabled && !isHome) {
 	Astro.cache.set(settingsResult.cacheHint);
 	Astro.cache.set(contactResult.cacheHint);
 	Astro.cache.set(coursesResult.cacheHint);
@@ -54,7 +68,12 @@ if (Astro.cache?.enabled && Astro.url.pathname !== "/") {
 
 const footerCourseNames = coursesResult.entries
 	.filter((c) => c.data.visible !== false)
-	.map((c) => ({ name: String(c.data.name ?? "") }));
+	.map((c) => ({
+		name:
+			coursesResult.fallbackLocale && c.id in t.catalog.courses
+				? t.catalog.courses[c.id as keyof typeof t.catalog.courses].name
+				: String(c.data.name ?? ""),
+	}));
 
 const { siteTitle, siteTagline, titleSeparator } = resolveSiteIdentity(settingsResult.data);
 const fullTitle = title
@@ -63,8 +82,34 @@ const fullTitle = title
 		: `${title} ${titleSeparator} ${siteTitle}`
 	: siteTitle;
 
-const headerItems = nav ?? [...site.nav];
-const headerCta = site.cta;
+const headerItems = localizedNav(nav ?? [...site.nav], t, locale);
+const headerCta = localizedCta(site.cta, t, locale);
+
+const translations = content ? await getTranslations(content.collection, content.id) : null;
+const translatedSlugs = new Map(
+	(translations?.translations ?? [])
+	.filter((translation) => translation.status === "published" && translation.slug)
+		.map((translation) => [translation.locale, translation.slug]),
+);
+
+// CMS translations may use a different slug in each language.
+const pathForLocale = (code: (typeof LOCALES)[number]) =>
+	localizePath(
+		isHome
+			? "/"
+			: content && translatedSlugs.has(code)
+				? `/${translatedSlugs.get(code)}`
+				: stripLocalePrefix(Astro.url.pathname).path,
+		code,
+	);
+const localeAlternates = LOCALES.map((code) => ({
+	hreflang: LOCALE_HREFLANG[code],
+	href: `${Astro.url.origin}${pathForLocale(code)}`,
+}));
+const languagePaths = {
+	en: pathForLocale("en"),
+	ar: pathForLocale("ar"),
+};
 
 const pageCtx = createPublicPageContext({
 	Astro,
@@ -82,7 +127,7 @@ const pageCtx = createPublicPageContext({
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale} dir={dir}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -133,13 +178,36 @@ const pageCtx = createPublicPageContext({
 			})();
 		</script>
 		<title>{fullTitle}</title>
+		{
+			localeAlternates.map((alternate) => (
+				<link rel="alternate" hreflang={alternate.hreflang} href={alternate.href} />
+			))
+		}
+		<link
+			rel="alternate"
+			hreflang="x-default"
+			href={localeAlternates.find((alternate) => alternate.hreflang === "en")?.href}
+		/>
+		<meta property="og:locale" content={OG_LOCALE[locale]} />
+		{
+			localeAlternates
+				.filter((alternate) => alternate.hreflang !== locale)
+				.map((alternate) => (
+					<meta property="og:locale:alternate" content={OG_LOCALE[alternate.hreflang as "en" | "ar"]} />
+				))
+		}
 		<EmDashHead page={pageCtx} />
 		<Font cssVariable="--font-body" preload />
+		<Font cssVariable="--font-arabic-ui" preload={locale === "ar"} />
 		<Font cssVariable="--font-arabic" />
 	</head>
-	<body data-is-home={Astro.url.pathname === "/" ? true : undefined}>
+	<body
+		data-is-home={isHome ? true : undefined}
+		data-locale={locale}
+		data-locale-prefix={locale === "en" ? "" : `/${locale}`}
+	>
 		<EmDashBodyStart page={pageCtx} />
-		<a href="#main" class="skip-link">Skip to content</a>
+		<a href="#main" class="skip-link">{t.a11y.skipToContent}</a>
 		<div class="sheet">
 			<Header
 				items={headerItems}
@@ -149,6 +217,7 @@ const pageCtx = createPublicPageContext({
 				siteName={siteTitle}
 				headerMarkLight={contactResult.data.headerMarkLight}
 				headerMarkDark={contactResult.data.headerMarkDark}
+				languagePaths={languagePaths}
 			/>
 			<main id="main">
 				<slot />
@@ -165,7 +234,7 @@ const pageCtx = createPublicPageContext({
 				type="button"
 				class="page-go-top"
 				data-page-top
-				aria-label="Back to top"
+				aria-label={t.a11y.backToTop}
 				hidden
 			>
 				<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
@@ -201,7 +270,8 @@ const pageCtx = createPublicPageContext({
 					if (plan) params.set("plan", plan);
 					if (course) params.set("course", course);
 					const qs = params.toString();
-					window.location.href = `/${qs ? `?${qs}` : ""}#book`;
+					const prefix = document.body.dataset.localePrefix ?? "";
+					window.location.href = `${prefix}/${qs ? `?${qs}` : ""}#book`;
 					return;
 				}
 				document.dispatchEvent(
@@ -237,7 +307,7 @@ const pageCtx = createPublicPageContext({
 		<style>
 			.page-go-top {
 				position: fixed;
-				right: 16px; /* max(16px, calc((100vw - var(--container)) / 2 + 8px)) */
+				inset-inline-end: 16px; /* max(16px, calc((100vw - var(--container)) / 2 + 8px)) */
 				bottom: 24px;
 				z-index: 40;
 				display: grid;
@@ -278,7 +348,7 @@ const pageCtx = createPublicPageContext({
 
 			@media (max-width: 560px) {
 				.page-go-top {
-					right: 16px;
+					inset-inline-end: 16px;
 					bottom: 16px;
 					width: 44px;
 					height: 44px;

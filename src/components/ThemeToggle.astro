@@ -6,6 +6,9 @@
  *
  * Mint theme: 44px fully round button with a 1px ink-at-20% outline.
  */
+import { useUi } from "../i18n";
+
+const { t } = useUi(Astro);
 ---
 
 <button
@@ -13,7 +16,9 @@
 	class="theme-toggle"
 	data-theme-toggle
 	aria-pressed="false"
-	aria-label="Switch to dark theme"
+	aria-label={t.a11y.switchToDark}
+	data-label-dark={t.a11y.switchToDark}
+	data-label-light={t.a11y.switchToLight}
 >
 	<span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true">
 		<svg viewBox="0 0 24 24" width="20" height="20" focusable="false">
@@ -52,7 +57,12 @@
 		const dark = document.documentElement.getAttribute("data-theme") === "dark";
 		document.querySelectorAll<HTMLButtonElement>(TOGGLE_SELECTOR).forEach((button) => {
 			button.setAttribute("aria-pressed", String(dark));
-			button.setAttribute("aria-label", dark ? "Switch to light theme" : "Switch to dark theme");
+			button.setAttribute(
+				"aria-label",
+				dark
+					? (button.dataset.labelLight ?? "Switch to light theme")
+					: (button.dataset.labelDark ?? "Switch to dark theme"),
+			);
 		});
 	}
 

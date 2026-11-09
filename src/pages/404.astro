@@ -3,20 +3,23 @@ import Base from "../layouts/Base.astro";
 import Button from "../components/Button.astro";
 import Container from "../components/Container.astro";
 import Section from "../components/Section.astro";
+import { localizePath, useUi } from "../i18n";
+
+const { locale, t } = useUi(Astro);
 ---
 
-<Base title="Page not found">
+<Base title={t.notFound.title} robots="noindex, nofollow">
 	<Section>
 		<Container>
 			<div class="not-found">
 				<p class="not-found__code">404</p>
-				<h1>Page not found</h1>
+				<h1>{t.notFound.title}</h1>
 				<p class="not-found__lead">
-					The page you are looking for does not exist or has moved.
+					{t.notFound.lead}
 				</p>
 				<div class="not-found__actions">
-					<Button href="/" variant="primary">Go home</Button>
-					<Button href="/#book" variant="secondary">Contact us</Button>
+					<Button href={localizePath("/", locale)} variant="primary">{t.actions.goHome}</Button>
+					<Button href={localizePath("/#book", locale)} variant="secondary">{t.actions.contactUs}</Button>
 				</div>
 			</div>
 		</Container>

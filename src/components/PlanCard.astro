@@ -13,6 +13,10 @@ export interface PlanCardData {
 	isPopular?: boolean;
 }
 
+import { useUi } from "../i18n";
+
+const { t } = useUi(Astro);
+
 interface Props {
 	plan: PlanCardData;
 	href?: string;
@@ -29,11 +33,11 @@ const {
 	plan,
 	revealDelay,
 	periodLabel = "/ month",
-	classesWeekLabel = "Classes each week",
-	classesMonthLabel = "Classes each month",
-	hoursLabel = "Teaching hours each month",
-	popularLabel = "Most popular",
-	selectCta = "Select plan",
+	classesWeekLabel = t.home.pricing_classes_week_label,
+	classesMonthLabel = t.home.pricing_classes_month_label,
+	hoursLabel = t.home.pricing_hours_label,
+	popularLabel = t.home.pricing_popular_label,
+	selectCta = t.home.pricing_select_cta,
 } = Astro.props;
 
 const priceLabel = formatUsdPrice(plan.price, plan.currencySymbol);
@@ -161,7 +165,7 @@ const period = plan.billingPeriod ?? periodLabel;
 	.plan-card__badge {
 		position: absolute;
 		top: 16px;
-		right: 16px;
+		inset-inline-end: 16px;
 		z-index: 3;
 		display: inline-flex;
 		align-items: center;

@@ -1,4 +1,8 @@
 ---
+import { useUi } from "../i18n";
+
+const { t } = useUi(Astro);
+
 interface Item {
 	number: string;
 	title: string;
@@ -15,20 +19,20 @@ interface Props {
 const defaults: Item[] = [
 	{
 		number: "01",
-		title: "Personalized schedules",
-		text: "You pick the days and times that suit your week, and your teacher keeps that slot for you.",
+		title: t.home.standing_item_1_title,
+		text: t.home.standing_item_1_text,
 		icon: "clock",
 	},
 	{
 		number: "02",
-		title: "Qualified Qur'an teachers",
-		text: "Every class is taught by a teacher with formal Qur'anic training, matched to your course and level.",
+		title: t.home.standing_item_2_title,
+		text: t.home.standing_item_2_text,
 		icon: "book",
 	},
 	{
 		number: "03",
-		title: "Live one on one sessions",
-		text: "Video lessons with direct feedback, so your questions are answered in the moment.",
+		title: t.home.standing_item_3_title,
+		text: t.home.standing_item_3_text,
 		icon: "screens",
 	},
 ];
@@ -36,8 +40,8 @@ const defaults: Item[] = [
 const icons: Item["icon"][] = ["clock", "book", "screens"];
 
 const {
-	eyebrow = "Standing out",
-	heading = "Standing out",
+	eyebrow = t.home.standing_eyebrow,
+	heading = t.home.standing_heading,
 	items = defaults,
 } = Astro.props;
 ---
@@ -151,13 +155,13 @@ const {
 	.standing__tab {
 		position: absolute;
 		top: 0;
-		left: 0;
+		inset-inline-start: 0;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
 		width: 56px;
 		height: 36px;
-		padding-left: 16px;
+		padding-inline-start: 16px;
 		background: var(--mint-100);
 		color: var(--green-deep);
 		font-size: 18px;

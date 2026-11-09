@@ -9,6 +9,10 @@ import { Image } from "emdash/ui";
 import Button from "./Button.astro";
 import ImagePlaceholder from "./ImagePlaceholder.astro";
 
+import { useUi } from "../i18n";
+
+const { t } = useUi(Astro);
+
 interface Props {
 	slug: string;
 	title: string;
@@ -36,9 +40,9 @@ const {
 	image,
 	edit,
 	homeEdit,
-	trialLabel = "Book free trial",
-	detailsLabel = "See details",
-	formatLabel = "Live one on one",
+	trialLabel = t.actions.bookFreeTrial,
+	detailsLabel = t.actions.seeDetails,
+	formatLabel = t.home.courses_format_label,
 } = Astro.props;
 ---
 

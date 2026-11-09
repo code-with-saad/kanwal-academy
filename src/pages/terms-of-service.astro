@@ -3,64 +3,79 @@ import Base from "../layouts/Base.astro";
 import Container from "../components/Container.astro";
 import Section from "../components/Section.astro";
 import { site } from "../config/site";
+import { useUi } from "../i18n";
 
-const updated = "5 November 2026";
+const { locale } = useUi(Astro);
+const isArabic = locale === "ar";
+const updated = isArabic ? "5 نوفمبر 2026" : "5 November 2026";
 ---
 
 <Base
-	title="Terms of Service"
-	description={`The terms that apply when you use the ${site.name} website and lessons.`}
+	title={isArabic ? "شروط الخدمة" : "Terms of Service"}
+	description={
+		isArabic
+			? `الشروط التي تنظم استخدام موقع ${site.name} ودروسه.`
+			: `The terms that apply when you use the ${site.name} website and lessons.`
+	}
 >
 	<Section space="tight">
 		<Container size="narrow">
 			<div class="page-intro">
-				<h1>Terms of Service</h1>
-				<p>Last updated {updated}. Please read these terms before booking a class.</p>
+				<h1>{isArabic ? "شروط الخدمة" : "Terms of Service"}</h1>
+				<p>
+					{isArabic
+						? `آخر تحديث ${updated}. يرجى قراءة هذه الشروط قبل حجز حصة.`
+						: `Last updated ${updated}. Please read these terms before booking a class.`}
+				</p>
 			</div>
 
 			<div class="prose legal">
-				<h2>About these terms</h2>
+				<h2>{isArabic ? "نبذة عن هذه الشروط" : "About these terms"}</h2>
 				<p>
-					These terms apply to the {site.name} website and to lessons booked through it. By
-					using the site or booking a class, you agree to them. If you do not agree, please do
-					not use the site.
+					{isArabic
+						? `تسري هذه الشروط على موقع ${site.name} والدروس التي تُحجز من خلاله. باستخدام الموقع أو حجز حصة، فإنك توافق على هذه الشروط. إذا لم توافق عليها، يرجى عدم استخدام الموقع.`
+						: `These terms apply to the ${site.name} website and to lessons booked through it. By using the site or booking a class, you agree to them. If you do not agree, please do not use the site.`}
 				</p>
 
-				<h2>Lessons and plans</h2>
+				<h2>{isArabic ? "الدروس والخطط" : "Lessons and plans"}</h2>
 				<p>
-					Lessons are taught online, one to one. Plans are billed monthly in US dollars and
-					each plan sets out the number of classes and teaching hours it includes. Every new
-					student may book one free trial class before choosing a plan.
+					{isArabic
+						? "تُقدَّم الدروس عبر الإنترنت بشكل فردي. تُحاسب الخطط شهريًا بالدولار الأمريكي، وتحدد كل خطة عدد الحصص وساعات التدريس المشمولة فيها. يمكن لكل طالب جديد حجز حصة تجريبية مجانية واحدة قبل اختيار الخطة."
+						: "Lessons are taught online, one to one. Plans are billed monthly in US dollars and each plan sets out the number of classes and teaching hours it includes. Every new student may book one free trial class before choosing a plan."}
 				</p>
 				<p>
-					Class times are agreed with your teacher. Please give as much notice as you can if
-					you need to move a class so that the time can be offered to another student.
-				</p>
-
-				<h2>Payments</h2>
-				<p>
-					Online payment is not available on this site yet. When it is added, the payment
-					terms will be shown before you pay. Monthly plan prices are listed on the home page.
+					{isArabic
+						? "يُتفق على مواعيد الحصص مع معلمك. يرجى إبلاغنا مبكرًا قدر الإمكان إذا احتجت إلى تغيير موعد حصة، حتى نتيح الموعد لطالب آخر."
+						: "Class times are agreed with your teacher. Please give as much notice as you can if you need to move a class so that the time can be offered to another student."}
 				</p>
 
-				<h2>Use of the site</h2>
+				<h2>{isArabic ? "المدفوعات" : "Payments"}</h2>
 				<p>
-					Please use the site lawfully and do not attempt to disrupt it, access accounts that
-					are not yours, or copy content for commercial use without permission. Course
-					materials and site text remain the property of {site.name}.
+					{isArabic
+						? "الدفع عبر الإنترنت غير متاح على هذا الموقع حاليًا. عند إضافته، ستُعرض شروط الدفع قبل إتمام أي دفعة. أسعار الخطط الشهرية موضحة في الصفحة الرئيسية."
+						: "Online payment is not available on this site yet. When it is added, the payment terms will be shown before you pay. Monthly plan prices are listed on the home page."}
 				</p>
 
-				<h2>Changes</h2>
+				<h2>{isArabic ? "استخدام الموقع" : "Use of the site"}</h2>
 				<p>
-					We may update these terms as the service grows. The date at the top of this page
-					shows when they last changed. Continued use of the site after a change means you
-					accept the updated terms.
+					{isArabic
+						? `يرجى استخدام الموقع بطريقة قانونية، وعدم محاولة تعطيله أو الوصول إلى حسابات لا تخصك أو نسخ محتواه لأغراض تجارية دون إذن. تظل مواد الدورات ونصوص الموقع ملكًا لـ ${site.name}.`
+						: `Please use the site lawfully and do not attempt to disrupt it, access accounts that are not yours, or copy content for commercial use without permission. Course materials and site text remain the property of ${site.name}.`}
 				</p>
 
-				<h2>Contact</h2>
+				<h2>{isArabic ? "التغييرات" : "Changes"}</h2>
 				<p>
-					Questions about these terms can be sent to <a href={site.emailHref}>{site.email}</a>
-					{" "}or by phone on <a href={site.phoneHref}>{site.phone}</a>.
+					{isArabic
+						? "قد نحدّث هذه الشروط مع تطور الخدمة. يوضح التاريخ أعلى الصفحة آخر موعد لتعديلها. ويعني استمرارك في استخدام الموقع بعد أي تغيير موافقتك على الشروط المحدّثة."
+						: "We may update these terms as the service grows. The date at the top of this page shows when they last changed. Continued use of the site after a change means you accept the updated terms."}
+				</p>
+
+				<h2>{isArabic ? "التواصل" : "Contact"}</h2>
+				<p>
+					{isArabic ? "يمكن إرسال الأسئلة حول هذه الشروط إلى " : "Questions about these terms can be sent to "}
+					<a href={site.emailHref} dir="ltr">{site.email}</a>
+					{isArabic ? " أو الاتصال بنا على " : " or by phone on "}
+					<a href={site.phoneHref} dir="ltr">{site.phone}</a>.
 				</p>
 			</div>
 		</Container>

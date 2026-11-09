@@ -100,6 +100,10 @@ const bookAttrs = prefillCourse
 		color: var(--on-accent);
 	}
 
+	:global(html[dir="rtl"]) .course-row__arrow {
+		transform: scaleX(-1);
+	}
+
 	.course-row__index {
 		align-self: start;
 		margin-top: 4px;

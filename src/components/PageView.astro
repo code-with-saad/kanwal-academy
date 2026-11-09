@@ -4,6 +4,9 @@ import { PortableText } from "emdash/ui";
 import type { Page } from "../../emdash-env";
 import Container from "./Container.astro";
 import Section from "./Section.astro";
+import { useUi } from "../i18n";
+
+const { t } = useUi(Astro);
 
 interface Props {
 	page: ContentEntry<Page>;
@@ -31,7 +34,7 @@ const blocks = page.data.content ?? [];
 			) : (
 				Astro.locals.user && (
 					<p class="page-empty">
-						This page has no content yet. Add some in the editor, then publish.
+						{t.page.empty}
 					</p>
 				)
 			)

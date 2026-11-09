@@ -6,6 +6,7 @@ import Newsletter from "./Newsletter.astro";
 import SocialLinks from "./SocialLinks.astro";
 import { site } from "../config/site";
 import { emailHref, phoneHref, type SiteContact } from "../utils/site-config";
+import { localizePath, useUi } from "../i18n";
 
 interface Props {
 	contact: SiteContact;
@@ -16,22 +17,23 @@ interface Props {
 	logoDark?: ImageValue | null;
 }
 
+const { locale, t } = useUi(Astro);
 const { contact, siteName = site.name, settingsEdit, courseNames, logoLight, logoDark } = Astro.props;
 const year = new Date().getFullYear();
 
 const links = courseNames?.length
-	? courseNames.map((c) => ({ label: c.name, href: c.href ?? "/#courses" }))
+	? courseNames.map((c) => ({ label: c.name, href: localizePath(c.href ?? "/#courses", locale) }))
 	: [
-			{ label: "Qur'anic Recitation", href: "/#courses" },
-			{ label: "Tajweed Proficiency", href: "/#courses" },
-			{ label: "Memorization Excellence", href: "/#courses" },
+			{ label: t.footer.courseRecitation, href: localizePath("/#courses", locale) },
+			{ label: t.footer.courseTajweed, href: localizePath("/#courses", locale) },
+			{ label: t.footer.courseMemorization, href: localizePath("/#courses", locale) },
 		];
 
 const academyLinks = [
-	{ label: "About", href: "/#about" },
-	{ label: contact.footer.pricingLabel, href: "/#pricing", field: "footer_pricing_label" as const },
-	{ label: contact.footer.trialLabel, href: "/#book", field: "footer_trial_label" as const },
-	{ label: contact.footer.contactLinkLabel, href: "/#book", field: "footer_contact_link_label" as const },
+	{ label: t.footer.aboutLabel, href: localizePath("/#about", locale) },
+	{ label: contact.footer.pricingLabel, href: localizePath("/#pricing", locale), field: "footer_pricing_label" as const },
+	{ label: contact.footer.trialLabel, href: localizePath("/#book", locale), field: "footer_trial_label" as const },
+	{ label: contact.footer.contactLinkLabel, href: localizePath("/#book", locale), field: "footer_contact_link_label" as const },
 ];
 ---
 
@@ -39,7 +41,7 @@ const academyLinks = [
 	<Container>
 		<div class="footer__top">
 			<div class="footer__brand">
-				<a href="/" class="footer__logo-link" aria-label={`${siteName}, home`}>
+				<a href={localizePath("/", locale)} class="footer__logo-link" aria-label={`${siteName}, ${t.a11y.home}`}>
 					{logoLight ? (
 						<Image
 							image={logoLight}
@@ -148,7 +150,7 @@ const academyLinks = [
 						const label = isTerms ? contact.footer.termsLabel : contact.footer.privacyLabel;
 						return (
 							<li>
-								<a href={item.href} {...(field ? settingsEdit?.[field] : {})}>{label}</a>
+								<a href={localizePath(item.href, locale)} {...(field ? settingsEdit?.[field] : {})}>{label}</a>
 							</li>
 						);
 					})

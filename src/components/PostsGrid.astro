@@ -5,6 +5,10 @@ import { Image } from "emdash/ui";
 import Button from "./Button.astro";
 import ImagePlaceholder from "./ImagePlaceholder.astro";
 
+import { localizePath, useUi } from "../i18n";
+
+const { locale, t } = useUi(Astro);
+
 interface Props {
 	posts: ContentEntry<Post>[];
 }
@@ -17,7 +21,7 @@ const latest = posts.slice(0, 3);
 	{
 		latest.map((post, index) => (
 			<li class="post-card lift" data-reveal="up" data-reveal-delay={index * 80}>
-				<a class="post-card__image" href={`/blog/${post.id}`} tabindex="-1" aria-hidden="true" data-reveal="image">
+				<a class="post-card__image" href={localizePath(`/blog/${post.id}`, locale)} tabindex="-1" aria-hidden="true" data-reveal="image">
 					{post.data.featured_image ? (
 						<Image
 							image={post.data.featured_image}
@@ -29,10 +33,10 @@ const latest = posts.slice(0, 3);
 				</a>
 				<div class="post-card__body">
 					<h3 class="post-card__title">
-						<a href={`/blog/${post.id}`}>{post.data.title}</a>
+						<a href={localizePath(`/blog/${post.id}`, locale)}>{post.data.title}</a>
 					</h3>
 					{post.data.excerpt && <p class="post-card__excerpt">{post.data.excerpt}</p>}
-					<a class="post-card__more" href={`/blog/${post.id}`}>
+					<a class="post-card__more" href={localizePath(`/blog/${post.id}`, locale)}>
 						Read more
 						<svg
 							viewBox="0 0 16 16"
@@ -56,7 +60,7 @@ const latest = posts.slice(0, 3);
 		))
 	}
 	<li class="posts-grid__action">
-		<Button href="/blog" variant="primary">Read all articles</Button>
+		<Button href={localizePath("/blog", locale)} variant="primary">{t.actions.readAllArticles}</Button>
 	</li>
 </ul>
 

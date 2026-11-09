@@ -4,11 +4,17 @@ import Eyebrow from "./Eyebrow.astro";
 import { Image } from "emdash/ui";
 import ImagePlaceholder from "./ImagePlaceholder.astro";
 import type { ImageValue } from "emdash";
+import { useUi } from "../i18n";
+
+const { t } = useUi(Astro);
+
 
 interface Props {
 	eyebrow?: string;
 	titleBefore?: string;
 	titleHighlight?: string;
+	titleAfter?: string;
+	badgeLabel?: string;
 	paragraph1?: string;
 	paragraph2?: string;
 	imageSrc?: string;
@@ -18,13 +24,15 @@ interface Props {
 }
 
 const {
-	eyebrow = "Why Kanwal",
-	titleBefore = "Experience Qur'anic",
-	titleHighlight = "wisdom",
-	paragraph1 = "Kanwal Quran Academy teaches the Qur'an online in live one to one classes. Your teacher listens to your recitation, corrects it as you read, and sets a weekly plan around your level.",
+	eyebrow = t.home.about_eyebrow,
+	titleBefore = t.home.about_title_before,
+	titleHighlight = t.home.about_title_highlight,
+	titleAfter = t.home.about_title_after,
+	badgeLabel = t.home.about_badge_label,
+	paragraph1 = t.home.about_paragraph_1,
 	paragraph2 = "",
 	imageSrc = "/images/wisdom.jpg",
-	imageAlt = "A student reciting the Qur'an during a live online lesson",
+	imageAlt = t.home.about_image_alt,
 	image,
 	years = "5+",
 } = Astro.props;
@@ -48,7 +56,7 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 				<ImagePlaceholder
 					src={imageSrc}
 					alt={imageAlt}
-					label="Wisdom image (4:5)"
+					label={t.images.wisdomPlaceholder}
 					ratio="4 / 5"
 					class="wisdom__image"
 				/>
@@ -58,7 +66,7 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 			<span class="wisdom__badge-value">
 				<span data-count-to={yearCount} data-count-suffix={yearSuffix}>{years}</span> years
 			</span>
-			<span class="wisdom__badge-label">teaching</span>
+			<span class="wisdom__badge-label">{badgeLabel}</span>
 		</p>
 	</div>
 
@@ -67,7 +75,7 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 			<Eyebrow>{eyebrow}</Eyebrow>
 		</span>
 		<h2 class="wisdom__title" data-reveal-words>
-			{titleBefore} <span class="heading-highlight">{titleHighlight}</span> with us
+			{titleBefore} <span class="heading-highlight">{titleHighlight}</span> {titleAfter}
 		</h2>
 		<p data-reveal="up" data-reveal-delay="80">
 			{paragraph1}
@@ -78,7 +86,7 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 			</p>
 		)}
 		<div class="wisdom__actions" data-reveal="up" data-reveal-delay="240">
-			<Button book variant="primary">Book free trial</Button>
+			<Button book variant="primary">{t.actions.bookFreeTrial}</Button>
 		</div>
 	</div>
 </div>
@@ -93,13 +101,14 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 
 	.wisdom__media {
 		position: relative;
-		padding: 0 20px 20px 0;
+		padding-block-end: 20px;
+		padding-inline-end: 20px;
 	}
 
 	/* Flat mint block, offset behind the frame. */
 	.wisdom__block {
 		position: absolute;
-		right: 0;
+		inset-inline-end: 0;
 		bottom: 0;
 		width: calc(100% - 20px);
 		height: calc(100% - 20px);
@@ -122,7 +131,7 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 
 	.wisdom__badge {
 		position: absolute;
-		left: 20px;
+		inset-inline-start: 20px;
 		bottom: 44px;
 		display: grid;
 		gap: 2px;
@@ -180,7 +189,8 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 	@media (max-width: 560px) {
 		.wisdom__media {
 			width: 100%;
-			padding: 0 14px 14px 0;
+			padding-block-end: 14px;
+			padding-inline-end: 14px;
 		}
 
 		.wisdom__block {
@@ -189,7 +199,7 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 		}
 
 		.wisdom__badge {
-			left: 14px;
+			inset-inline-start: 14px;
 			bottom: 30px;
 			padding: 10px 14px;
 		}

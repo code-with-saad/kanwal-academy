@@ -1,0 +1,274 @@
+/**
+ * Arabic interface copy.
+ *
+ * Mirrors en.ts key for key so the interface remains fully translated.
+ */
+import type { UiDictionary } from "./en";
+
+export const ar: UiDictionary = {
+	nav: {
+		home: "الرئيسية",
+		about: "من نحن",
+		courses: "الدورات",
+		pricing: "الأسعار",
+		contact: "تواصل معنا",
+		teachers: "المعلمون",
+	},
+	actions: {
+		bookFreeTrial: "احجز حصة تجريبية مجانية",
+		selectPlan: "اختر الخطة",
+		seeDetails: "عرض التفاصيل",
+		readMore: "اقرأ المزيد",
+		readAllArticles: "اقرأ جميع المقالات",
+		goHome: "العودة إلى الرئيسية",
+		contactUs: "تواصل معنا",
+		close: "إغلاق",
+		tryAgain: "حاول مرة أخرى",
+	},
+	a11y: {
+		skipToContent: "الانتقال إلى المحتوى",
+		backToTop: "العودة إلى الأعلى",
+		home: "الرئيسية",
+		primaryNav: "التنقل الرئيسي",
+		openMenu: "فتح القائمة",
+		closeMenu: "إغلاق القائمة",
+		languageSwitcher: "اللغة",
+		monthlyPlans: "الخطط الشهرية",
+		reviewers: "المقيّمون",
+		planSelector: "اختيار الخطة",
+		previousPlan: "الخطة السابقة",
+		nextPlan: "الخطة التالية",
+		previousReview: "الرأي السابق",
+		nextReview: "الرأي التالي",
+		switchToDark: "التبديل إلى المظهر الداكن",
+		switchToLight: "التبديل إلى المظهر الفاتح",
+	},
+	stats: {
+		years: "سنوات التدريس",
+		countries: "الدول التي نخدمها",
+		students: "طلاب درسوا معنا",
+		sessions: "الحصص المقدمة",
+		studentsShort: "الطلاب",
+		sessionsShort: "الحصص",
+		countriesShort: "الدول",
+	},
+	footer: {
+		tagline: "تعليم القرآن عبر الإنترنت من كراتشي، باكستان.",
+		exploreLabel: "استكشف",
+		contactLabel: "تواصل",
+		coursesLabel: "الدورات",
+		academyLabel: "الأكاديمية",
+		pricingLabel: "الأسعار",
+		teachersLabel: "المعلمون",
+		trialLabel: "الحصة التجريبية المجانية",
+		contactLinkLabel: "تواصل",
+		termsLabel: "شروط الخدمة",
+		privacyLabel: "سياسة الخصوصية",
+		copyrightLabel: "جميع الحقوق محفوظة.",
+		newsletterHeading: "ابقَ على تواصل",
+		newsletterConsent:
+			"نستخدم بريدك الإلكتروني فقط لإرسال ملاحظات تعليمية من وقت إلى آخر. اقرأ سياسة الخصوصية.",
+		stayInTouch: "ابقَ على تواصل",
+		aboutLabel: "من نحن",
+		courseRecitation: "التلاوة القرآنية",
+		courseTajweed: "إتقان التجويد",
+		courseMemorization: "التميز في الحفظ",
+	},
+	newsletter: {
+		emailLabel: "البريد الإلكتروني",
+		placeholder: "you@example.com",
+		subscribe: "اشترك",
+		subscribing: "جارٍ الاشتراك",
+		invalidEmail: "أدخل عنوان بريد إلكتروني صالحًا.",
+		success: "أصبحت على القائمة. جزاكم الله خيرًا.",
+		error: "تعذر حفظ بريدك الإلكتروني. يرجى المحاولة مرة أخرى.",
+	},
+	form: {
+		name: "اسمك",
+		email: "البريد الإلكتروني",
+		phone: "رقم الهاتف",
+		course: "الدورة",
+		plan: "الخطة",
+		message: "الرسالة",
+		optional: "(اختياري)",
+		website: "الموقع الإلكتروني",
+		courseUnsure: "لست متأكدًا بعد",
+		planHelp: "ساعدني في الاختيار",
+		messagePlaceholder: "عمر الطالب، ومستواه الحالي، وأي أسئلة",
+		sending: "جارٍ إرسال الطلب",
+		required: "مطلوب",
+	},
+	/**
+	 * Form and API feedback. The API returns a stable `code`; the browser maps
+	 * it to one of these strings, so validation messages follow the page
+	 * language without the server having to translate anything.
+	 */
+	feedback: {
+		invalid_name: "يرجى إدخال اسمك.",
+		invalid_email: "أدخل عنوان بريد إلكتروني صالحًا.",
+		invalid_phone: "أدخل رقم هاتف صالحًا مع رمز الدولة.",
+		invalid_phone_short: "رقم الهاتف قصير جدًا.",
+		invalid_phone_long: "رقم الهاتف طويل جدًا.",
+		validation: "يرجى مراجعة البيانات التي أدخلتها والمحاولة مرة أخرى.",
+		parse_error: "تعذر معالجة الطلب.",
+		service_unavailable: "الخدمة غير متاحة. يرجى مراسلتنا مباشرة عبر البريد الإلكتروني.",
+		rate_limited: "محاولات كثيرة جدًا. يرجى المحاولة مرة أخرى بعد ساعة.",
+		turnstile_failed: "فشل التحقق الأمني. يرجى المحاولة مرة أخرى.",
+		save_failed: "تعذر حفظ طلبك. يرجى المحاولة مرة أخرى.",
+		newsletter_save_failed: "تعذر حفظ بريدك الإلكتروني. يرجى المحاولة مرة أخرى.",
+		invalid_type: "نوع الطلب غير صالح.",
+		success_enrolment: "شكرًا لك. سنتواصل معك قريبًا.",
+		success_newsletter: "أصبحت على القائمة. جزاكم الله خيرًا.",
+		generic_error: "حدث خطأ ما. يرجى المحاولة مرة أخرى أو التواصل معنا مباشرة.",
+		network_error: "تعذر الوصول إلى الخادم. تحقق من اتصالك بالإنترنت وحاول مرة أخرى.",
+		unknown: "يرجى المحاولة مرة أخرى.",
+	},
+	modal: {
+		successTitle: "تم استلام الطلب",
+		successBody: "شكرًا لك. سنرد عليك خلال يوم عمل واحد بموعد الحصة التجريبية المتاحة. الحصة مجانية ولا حاجة لأي دفع.",
+		errorTitle: "تعذر إرسال طلبك",
+		errorBody: "يرجى المحاولة مرة أخرى.",
+		rateTitle: "محاولات كثيرة جدًا",
+		rateBody: "يرجى المحاولة مرة أخرى بعد ساعة، أو التواصل معنا مباشرة.",
+		whatsapp: "راسلنا عبر واتساب",
+	},
+	notFound: {
+		title: "الصفحة غير موجودة",
+		lead: "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+	},
+	page: {
+		empty: "لا يوجد محتوى في هذه الصفحة بعد. أضف المحتوى من المحرر ثم انشره.",
+		unavailableTitle: "هذه الصفحة غير متاحة بالعربية بعد",
+		unavailableBody:
+			"نعمل على إعداد نسخة عربية من هذه الصفحة. يمكنك قراءة النسخة الإنجليزية الآن.",
+		englishVersion: "اقرأ النسخة الإنجليزية",
+	},
+	catalog: {
+		address: "كراتشي، باكستان",
+		plans: {
+			"plan-i": "الخطة الأولى",
+			"plan-ii": "الخطة الثانية",
+			"plan-iii": "الخطة الثالثة",
+			"plan-iv": "الخطة الرابعة",
+		},
+		courses: {
+			"quranic-recitation": {
+				name: "التلاوة القرآنية",
+				summary:
+					"حسّن طلاقتك ودقة تلاوتك مع معلم يستمع إليك ويصحح لك مباشرة.",
+				level: "جميع المستويات",
+			},
+			"tajweed-proficiency": {
+				name: "إتقان التجويد",
+				summary:
+					"تعلّم أحكام التجويد وطبّقها بانتظام في تلاوتك اليومية.",
+				level: "متوسط",
+			},
+			"memorization-excellence": {
+				name: "التميز في الحفظ",
+				summary:
+					"اتبع خطة منظمة لحفظ القرآن مع المراجعة المنتظمة والمتابعة الفردية.",
+				level: "متقدم",
+			},
+		},
+	},
+	images: {
+		hero: "مصحف مفتوح على كرسي خشبي منحوت",
+		split1: "طالب يحضر درسًا في القرآن عبر الهاتف",
+		split2: "مصحف مفتوح مع فاصل للصفحات، استعدادًا لتدريبات الحفظ",
+		planCarousel: "مصحف مفتوح على كرسي خشبي",
+		wisdomPlaceholder: "صورة الحكمة (4:5)",
+		courseRecitation: "مصحف مفتوح على كرسي خشبي، استعدادًا لدرس في التلاوة",
+		courseTajweed: "مصحف مفتوح على كرسي خشبي، استعدادًا لدرس في التجويد",
+		courseMemorization: "مصحف مفتوح على كرسي خشبي، استعدادًا لدرس في الحفظ",
+	},
+	home: {
+		home_headline: "اتلُ القرآن مع معلم يعرف اسمك.",
+		home_lead:
+			"دروس فردية في التلاوة والتجويد والحفظ. ابدأ بحصة تجريبية مجانية أينما كنت.",
+		home_reach_text: "طلاب يتعلمون من {countries} دول",
+		home_cta_label: "ابدأ حصتك التجريبية المجانية",
+		feature_card_1_title: "حصة تجريبية مجانية",
+		feature_card_1_text: "تعرف على معلمك أولًا.",
+		feature_card_1_chip: "تجربة مجانية",
+		feature_card_2_title: "خطط تبدأ من {price} شهريًا",
+		feature_card_2_text: "اختر وتيرتك الأسبوعية.",
+		feature_card_3_title: "طلاب في {countries} دول",
+		feature_card_3_text: "انضم إلى عائلات حول العالم.",
+		feature_card_4_title: "تعلم على أي جهاز",
+		feature_card_4_text: "هاتف أو جهاز لوحي أو حاسوب محمول.",
+		courses_journey_heading: "ابدأ رحلتك",
+		courses_journey_intro:
+			"ثلاث دورات، تُقدم كل منها بشكل فردي. اختر المسار الذي يناسب مستواك الحالي، وسيحدد معلمك الوتيرة بعد ذلك.",
+		courses_format_label: "حصص فردية مباشرة",
+		split1_heading_before: "تعلم القرآن بسهولة",
+		split1_heading_highlight: "عبر الإنترنت",
+		split1_paragraph_1:
+			"تُعقد الدروس مباشرة عبر مكالمة فيديو، لذا كل ما تحتاج إليه هو هاتف أو جهاز لوحي أو حاسوب محمول مزود بكاميرا. يشارك معلمك الصفحة التي تقرأ منها ويستمع إليك أثناء التلاوة.",
+		split1_paragraph_2:
+			"يبقى المعلم نفسه معك كل أسبوع، لتتراكم التصحيحات ويستمر التقدم من حصة إلى أخرى.",
+		split1_image_label: "درس عبر الهاتف (4:3)",
+		split2_heading_before: "كيف تحفظ القرآن",
+		split2_heading_highlight: "بثقة",
+		split2_paragraph_1:
+			"ينمو الحفظ بخطوات صغيرة وثابتة. يحدد معلمك هدفًا شهريًا، ويستمع إلى ما حفظته، ويراجع معك قبل الانتقال إلى حفظ جديد.",
+		split2_list_items: "",
+		split2_image_label: "تدريب على الحفظ (4:3)",
+		stats_eyebrow: "خلال السنوات الـ5 الماضية",
+		stats_heading: "نجاحنا",
+		stats_description:
+			"تساعد دوراتنا الثلاث، التلاوة القرآنية وإتقان التجويد والتميز في الحفظ، الطلاب على تعلم القرآن بالوتيرة التي تناسبهم ومن راحة منازلهم.",
+		about_eyebrow: "لماذا كنول",
+		about_title_before: "اختبر",
+		about_title_highlight: "الحكمة القرآنية",
+		about_title_after: "معنا",
+		about_badge_label: "سنوات من التدريس",
+		about_paragraph_1:
+			"تقدم أكاديمية كنول للقرآن دروسًا في القرآن عبر الإنترنت من خلال حصص فردية مباشرة. يستمع معلمك إلى تلاوتك، ويصححها أثناء القراءة، ويضع خطة أسبوعية تناسب مستواك.",
+		about_paragraph_2: "",
+		about_image_alt: "طالب يتلو القرآن خلال درس مباشر عبر الإنترنت",
+		standing_eyebrow: "ما يميزنا",
+		standing_heading: "ما يميزنا",
+		standing_item_1_title: "جداول مخصصة",
+		standing_item_1_text:
+			"تختار الأيام والأوقات التي تناسب أسبوعك، ويحتفظ معلمك بهذا الموعد لك.",
+		standing_item_2_title: "معلمون مؤهلون لتعليم القرآن",
+		standing_item_2_text:
+			"كل حصة يقدمها معلم ذو تدريب قرآني منهجي، يُختار بما يناسب دورتك ومستواك.",
+		standing_item_3_title: "حصص فردية مباشرة",
+		standing_item_3_text:
+			"دروس بالفيديو مع ملاحظات مباشرة، لتحصل على إجابات عن أسئلتك في حينها.",
+		pricing_eyebrow: "الأسعار",
+		pricing_heading: "اختر خطة تناسب أسبوعك.",
+		pricing_intro:
+			"تُدفع قيمة كل خطة شهريًا، وتبدأ بحصة تجريبية مجانية. الأسعار بالدولار الأمريكي.",
+		pricing_period_label: "/ شهريًا",
+		pricing_classes_week_label: "حصص كل أسبوع",
+		pricing_classes_month_label: "حصص كل شهر",
+		pricing_hours_label: "ساعات تعليمية كل شهر",
+		pricing_popular_label: "الأكثر رواجًا",
+		pricing_select_cta: "اختر الخطة",
+		trial_eyebrow: "تجربة مجانية",
+		trial_heading: "كيف تتم الحصة التجريبية المجانية",
+		trial_step_1_title: "احجز حصتك التجريبية المجانية",
+		trial_step_1_body:
+			"اختر خطة وحدد وقتًا يناسبك. الحصة التجريبية مجانية.",
+		trial_step_2_title: "تعرف على معلمك",
+		trial_step_2_body:
+			"نختار لك معلمًا لدورتك ومستواك، ثم نقيّم وضعك الحالي.",
+		trial_step_3_title: "ابدأ خطتك",
+		trial_step_3_body:
+			"يضع معلمك جدولًا أسبوعيًا وفق أهدافك، ويتابع التزامك به.",
+		testimonials_heading: "آراء العملاء",
+		book_eyebrow: "تجربة مجانية",
+		book_heading: "احجز حصة تجريبية مجانية",
+		book_lead:
+			"أخبرنا قليلًا عن الطالب والأوقات التي تناسبك. سنرد عليك بأقرب موعد متاح للحصة التجريبية. الحصة التجريبية مجانية ولا حاجة إلى بيانات الدفع.",
+		book_contact_label: "تواصل معنا مباشرة",
+		book_note:
+			"تُعقد الدروس مباشرة عبر مكالمة فيديو. كل ما تحتاج إليه هو هاتف أو جهاز لوحي أو حاسوب محمول مزود بكاميرا.",
+		book_form_title: "ابدأ حصتك التجريبية المجانية",
+		book_form_sub: "يبدأ كل طالب بحصة تجريبية مجانية واحدة.",
+		book_submit_label: "اطلب حصة تجريبية مجانية",
+	},
+};

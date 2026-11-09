@@ -1,8 +1,11 @@
 ---
 import ThemeToggle from "./ThemeToggle.astro";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
 import { site, type NavItem } from "../config/site";
 import { Image } from "emdash/ui";
 import type { ImageValue } from "emdash";
+import { localizedNav, localizedCta } from "../i18n/nav";
+import { localizePath, stripLocalePrefix, useUi, type Locale } from "../i18n";
 
 interface Props {
 	items?: NavItem[];
@@ -12,33 +15,41 @@ interface Props {
 	siteName?: string;
 	headerMarkLight?: ImageValue | null;
 	headerMarkDark?: ImageValue | null;
+	languagePaths?: Partial<Record<Locale, string>>;
 }
 
+const { locale, t } = useUi(Astro);
 const {
-	items = [...site.nav],
-	cta = site.cta,
+	items = localizedNav([...site.nav], t, locale),
+	cta = localizedCta(site.cta, t, locale),
 	tone = "light",
 	currentPath = Astro.url.pathname,
 	siteName = site.name,
 	headerMarkLight,
 	headerMarkDark,
+	languagePaths,
 } = Astro.props;
 
-const path = currentPath.length > 1 ? currentPath.replace(/\/+$/, "") : "/";
-const isLinkCurrent = (item: NavItem) =>
-	item.href.startsWith("#") ? false : item.href === "/" ? path === "/" : path === item.href;
+const rawPath = stripLocalePrefix(currentPath).path;
+const path = rawPath.length > 1 ? rawPath.replace(/\/+$/, "") : "/";
+const isLinkCurrent = (item: NavItem) => {
+	if (item.href.startsWith("#")) return false;
+	const target = stripLocalePrefix(item.href.split("#")[0] ?? "/").path;
+	return target === "/" ? path === "/" : path === target;
+};
+const homeHref = localizePath("/", locale);
 ---
 
 <header class="site-header" data-header>
 	<div class="header__inner">
-		<a href="/" class="header__brand" aria-label={`${siteName}, home`}>
+		<a href={homeHref} class="header__brand" aria-label={`${siteName}, ${t.a11y.home}`}>
 			{headerMarkLight ? (
 				<Image
 					image={headerMarkLight}
 					alt=""
 					class="header__mark header__mark--on-light"
-					width="44"
-					height="44"
+					width={44}
+					height={44}
 				/>
 			) : (
 				<img
@@ -54,8 +65,8 @@ const isLinkCurrent = (item: NavItem) =>
 					image={headerMarkDark}
 					alt=""
 					class="header__mark header__mark--on-dark"
-					width="44"
-					height="44"
+					width={44}
+					height={44}
 				/>
 			) : (
 				<img
@@ -69,7 +80,7 @@ const isLinkCurrent = (item: NavItem) =>
 			<span class="header__name">{siteName}</span>
 		</a>
 
-		<nav class="header__nav" aria-label="Primary">
+		<nav class="header__nav" aria-label={t.a11y.primaryNav}>
 			{
 				items.map((item) => (
 					<a
@@ -86,6 +97,7 @@ const isLinkCurrent = (item: NavItem) =>
 		</nav>
 
 		<div class="header__end">
+			<LanguageSwitcher paths={languagePaths} />
 			<ThemeToggle />
 			<div class="header__cta-wrap">
 				<button type="button" class="header__cta-btn btn-primary" data-book-cta>
@@ -99,7 +111,9 @@ const isLinkCurrent = (item: NavItem) =>
 				data-menu-toggle
 				aria-expanded="false"
 				aria-controls="site-menu"
-				aria-label="Open menu"
+				aria-label={t.a11y.openMenu}
+				data-label-open={t.a11y.openMenu}
+				data-label-close={t.a11y.closeMenu}
 			>
 				<span class="header__toggle-icon" aria-hidden="true">
 					<span></span>
@@ -114,7 +128,7 @@ const isLinkCurrent = (item: NavItem) =>
 			type="button"
 			class="header__close"
 			data-menu-close
-			aria-label="Close menu"
+			aria-label={t.a11y.closeMenu}
 		>
 			<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
 				<path
@@ -126,7 +140,7 @@ const isLinkCurrent = (item: NavItem) =>
 				/>
 			</svg>
 		</button>
-		<nav class="header__panel-nav" aria-label="Primary">
+		<nav class="header__panel-nav" aria-label={t.a11y.primaryNav}>
 			{
 				items.map((item) => (
 					<a
@@ -142,6 +156,7 @@ const isLinkCurrent = (item: NavItem) =>
 			}
 		</nav>
 		<div class="header__panel-end">
+			<LanguageSwitcher paths={languagePaths} />
 			<ThemeToggle />
 			<button type="button" class="header__cta-btn btn-primary" data-book-cta>
 				{cta.label}
@@ -163,7 +178,12 @@ const isLinkCurrent = (item: NavItem) =>
 			panel.classList.toggle("is-open", open);
 			scrim?.toggleAttribute("hidden", !open);
 			toggle.setAttribute("aria-expanded", String(open));
-			toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+			toggle.setAttribute(
+				"aria-label",
+				open
+					? (toggle.dataset.labelClose ?? "Close menu")
+					: (toggle.dataset.labelOpen ?? "Open menu"),
+			);
 			document.body.toggleAttribute("data-menu-open", open);
 		};
 
@@ -441,7 +461,7 @@ const isLinkCurrent = (item: NavItem) =>
 		gap: var(--space-lg);
 		position: fixed;
 		top: 0;
-		right: 0;
+		inset-inline-end: 0;
 		bottom: 0;
 		width: min(380px, 86vw);
 		padding: calc(var(--header-height) + var(--space-lg)) var(--gutter) var(--space-2xl);
@@ -456,7 +476,7 @@ const isLinkCurrent = (item: NavItem) =>
 	.header__close {
 		position: absolute;
 		top: 12px;
-		right: 16px;
+		inset-inline-end: 16px;
 		display: grid;
 		place-items: center;
 		width: 44px;
@@ -475,6 +495,19 @@ const isLinkCurrent = (item: NavItem) =>
 		to {
 			transform: translateX(0);
 		}
+	}
+
+	@keyframes panel-slide-rtl {
+		from {
+			transform: translateX(-100%);
+		}
+		to {
+			transform: translateX(0);
+		}
+	}
+
+	:global(html[dir="rtl"]) .header__panel.is-open {
+		animation-name: panel-slide-rtl;
 	}
 
 	.header__panel-nav {

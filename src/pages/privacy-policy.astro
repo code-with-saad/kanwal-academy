@@ -3,60 +3,74 @@ import Base from "../layouts/Base.astro";
 import Container from "../components/Container.astro";
 import Section from "../components/Section.astro";
 import { site } from "../config/site";
+import { useUi } from "../i18n";
 
-const updated = "5 November 2026";
+const { locale } = useUi(Astro);
+const isArabic = locale === "ar";
+const updated = isArabic ? "5 نوفمبر 2026" : "5 November 2026";
 ---
 
 <Base
-	title="Privacy Policy"
-	description={`How ${site.name} collects and uses the details you send through this site.`}
+	title={isArabic ? "سياسة الخصوصية" : "Privacy Policy"}
+	description={
+		isArabic
+			? `كيف تجمع ${site.name} البيانات التي ترسلها عبر هذا الموقع وتستخدمها.`
+			: `How ${site.name} collects and uses the details you send through this site.`
+	}
 >
 	<Section space="tight">
 		<Container size="narrow">
 			<div class="page-intro">
-				<h1>Privacy Policy</h1>
-				<p>Last updated {updated}. This page explains what we collect and why.</p>
+				<h1>{isArabic ? "سياسة الخصوصية" : "Privacy Policy"}</h1>
+				<p>
+					{isArabic
+						? `آخر تحديث ${updated}. توضح هذه الصفحة البيانات التي نجمعها وأسباب جمعها.`
+						: `Last updated ${updated}. This page explains what we collect and why.`}
+				</p>
 			</div>
 
 			<div class="prose legal">
-				<h2>What we collect</h2>
+				<h2>{isArabic ? "البيانات التي نجمعها" : "What we collect"}</h2>
 				<p>
-					When you send the free trial form we collect the student name, email address, phone
-					number if you provide one, course and plan preference, time zone or preferred times,
-					and any message you add. If you subscribe to the newsletter, we collect your email
-					address.
+					{isArabic
+						? "عند إرسال نموذج الحصة التجريبية، نجمع اسم الطالب وعنوان البريد الإلكتروني ورقم الهاتف إذا قدمته، واختيار الدورة والخطة والمنطقة الزمنية أو الأوقات المناسبة، وأي رسالة تكتبها. وإذا اشتركت في النشرة البريدية، نجمع عنوان بريدك الإلكتروني."
+						: "When you send the free trial form we collect the student name, email address, phone number if you provide one, course and plan preference, time zone or preferred times, and any message you add. If you subscribe to the newsletter, we collect your email address."}
 				</p>
 
-				<h2>Why we use it</h2>
+				<h2>{isArabic ? "أسباب استخدام البيانات" : "Why we use it"}</h2>
 				<p>
-					We use these details to reply to your trial request, arrange lessons, answer
-					questions and send the newsletter you asked for. We do not sell your details.
+					{isArabic
+						? "نستخدم هذه البيانات للرد على طلب الحصة التجريبية، وترتيب الدروس، والإجابة عن الأسئلة، وإرسال النشرة البريدية التي طلبتها. لا نبيع بياناتك."
+						: "We use these details to reply to your trial request, arrange lessons, answer questions and send the newsletter you asked for. We do not sell your details."}
 				</p>
 
-				<h2>Where it is stored</h2>
+				<h2>{isArabic ? "مكان تخزين البيانات" : "Where it is stored"}</h2>
 				<p>
-					Form submissions are stored in a Cloudflare D1 database and the site is served from
-					Cloudflare. Access is limited to the people who arrange lessons and run the site.
+					{isArabic
+						? "تُخزَّن الطلبات المرسلة عبر النماذج في قاعدة بيانات Cloudflare D1، ويُستضاف الموقع على Cloudflare. ويقتصر الوصول إلى البيانات على الأشخاص الذين يرتبون الدروس ويديرون الموقع."
+						: "Form submissions are stored in a Cloudflare D1 database and the site is served from Cloudflare. Access is limited to the people who arrange lessons and run the site."}
 				</p>
 
-				<h2>Forms and security</h2>
+				<h2>{isArabic ? "النماذج والأمان" : "Forms and security"}</h2>
 				<p>
-					Forms use server-side validation, a hidden spam trap, rate limiting and Cloudflare
-					Turnstile where it is configured. These checks help protect the site and your
-					details.
+					{isArabic
+						? "تستخدم النماذج التحقق من البيانات على الخادم، وحقلًا مخفيًا لمكافحة الرسائل المزعجة، وتحديدًا لمعدل الطلبات، وخدمة Cloudflare Turnstile عند تفعيلها. تساعد هذه الإجراءات على حماية الموقع وبياناتك."
+						: "Forms use server-side validation, a hidden spam trap, rate limiting and Cloudflare Turnstile where it is configured. These checks help protect the site and your details."}
 				</p>
 
-				<h2>Cookies and local storage</h2>
+				<h2>{isArabic ? "ملفات تعريف الارتباط والتخزين المحلي" : "Cookies and local storage"}</h2>
 				<p>
-					The site stores your light or dark theme choice in your browser. It does not use
-					advertising cookies. If analytics are added later, this page will say so.
+					{isArabic
+						? "يحفظ الموقع اختيارك للمظهر الفاتح أو الداكن في متصفحك. ولا يستخدم ملفات تعريف ارتباط للإعلانات. إذا أُضيفت أدوات تحليل مستقبلًا، فسنوضح ذلك في هذه الصفحة."
+						: "The site stores your light or dark theme choice in your browser. It does not use advertising cookies. If analytics are added later, this page will say so."}
 				</p>
 
-				<h2>Your choices</h2>
+				<h2>{isArabic ? "حقوقك وخياراتك" : "Your choices"}</h2>
 				<p>
-					You can ask us to correct or delete the details you have sent. Email{" "}
-					<a href={site.emailHref}>{site.email}</a> or call{" "}
-					<a href={site.phoneHref}>{site.phone}</a>.
+					{isArabic ? "يمكنك طلب تصحيح البيانات التي أرسلتها أو حذفها. راسلنا عبر البريد الإلكتروني " : "You can ask us to correct or delete the details you have sent. Email "}
+					<a href={site.emailHref} dir="ltr">{site.email}</a>
+					{isArabic ? " أو اتصل بنا على " : " or call "}
+					<a href={site.phoneHref} dir="ltr">{site.phone}</a>.
 				</p>
 			</div>
 		</Container>

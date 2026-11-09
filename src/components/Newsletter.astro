@@ -13,6 +13,10 @@
  * success, error. Duplicates are accepted silently.
  */
 import { env as hostEnv } from "virtual:emdash/env";
+import { useUi } from "../i18n";
+
+const { locale, t } = useUi(Astro);
+const clientStrings = JSON.stringify({ ...t.feedback, ...t.newsletter });
 
 const runtimeEnv = hostEnv as Record<string, unknown> | undefined;
 const buildEnv = import.meta.env as unknown as Record<string, string | undefined>;
@@ -21,29 +25,30 @@ const turnstileSiteKey = String(
 ).trim();
 ---
 
-<form class="newsletter" data-newsletter novalidate>
+<form class="newsletter" data-newsletter data-locale={locale} data-i18n={clientStrings} novalidate>
 	<div class="newsletter__row">
-		<label class="visually-hidden" for="newsletter-email">Email address</label>
+		<label class="visually-hidden" for="newsletter-email">{t.newsletter.emailLabel}</label>
 		<input
 			class="newsletter__input"
 			id="newsletter-email"
 			name="email"
 			type="email"
+			dir="ltr"
 			inputmode="email"
 			autocomplete="email"
-			placeholder="you@example.com"
+			placeholder={t.newsletter.placeholder}
 			maxlength="254"
 			required
 			aria-describedby="newsletter-status"
 		/>
 		<button class="newsletter__submit" type="submit" data-submit>
 			<span class="newsletter__spinner" aria-hidden="true"></span>
-			<span class="newsletter__label" data-label>Subscribe</span>
+			<span class="newsletter__label" data-label>{t.newsletter.subscribe}</span>
 		</button>
 	</div>
 
 	<div class="newsletter__honeypot" aria-hidden="true">
-		<label for="newsletter-website">Website</label>
+		<label for="newsletter-website">{t.form.website}</label>
 		<input
 			id="newsletter-website"
 			name="website"
@@ -76,6 +81,10 @@ const turnstileSiteKey = String(
 		const status = form.querySelector<HTMLElement>("[data-status]")!;
 		const turnstile = form.querySelector<HTMLElement>(".cf-turnstile");
 
+		const messages = JSON.parse(form.dataset.i18n ?? "{}") as Record<string, string>;
+		const msg = (code: string | undefined, fallback?: string): string =>
+			(code && messages[code]) || fallback || messages.unknown || "Please try again.";
+
 		if (turnstile && !document.getElementById("cf-turnstile-newsletter")) {
 			const script = document.createElement("script");
 			script.id = "cf-turnstile-newsletter";
@@ -96,7 +105,7 @@ const turnstileSiteKey = String(
 			submit.disabled = busy;
 			submit.classList.toggle("is-loading", busy);
 			submit.setAttribute("aria-busy", String(busy));
-			label.textContent = busy ? "Subscribing" : "Subscribe";
+			label.textContent = busy ? msg("subscribing") : msg("subscribe");
 		};
 
 		const turnstileToken = () => {
@@ -113,7 +122,7 @@ const turnstileSiteKey = String(
 			const email = input.value.trim();
 			const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 			if (!email || !emailRe.test(email)) {
-				setStatus("Enter a valid email address.", "error");
+				setStatus(msg("invalid_email"), "error");
 				input.focus();
 				return;
 			}
@@ -126,6 +135,7 @@ const turnstileSiteKey = String(
 					headers: { "Content-Type": "application/json", Accept: "application/json" },
 					body: JSON.stringify({
 						type: "newsletter",
+						locale: form.dataset.locale ?? "en",
 						email,
 						website: honeypot.value,
 						turnstileToken: turnstileToken(),
@@ -133,11 +143,12 @@ const turnstileSiteKey = String(
 				});
 				const data = (await response.json().catch(() => ({}))) as {
 					ok?: boolean;
+					code?: string;
 					message?: string;
 				};
 
 				if (response.ok && data.ok) {
-					setStatus(data.message ?? "You are on the list. JazakAllah khair.", "success");
+					setStatus(msg("success_newsletter", data.message), "success");
 					form.reset();
 					(
 						window as unknown as {
@@ -145,13 +156,10 @@ const turnstileSiteKey = String(
 						}
 					).turnstile?.reset?.(turnstile ?? undefined);
 				} else {
-					setStatus(
-						data.message ?? "Something went wrong. Please try again.",
-						"error",
-					);
+					setStatus(msg(data.code ?? "generic_error", data.message), "error");
 				}
 			} catch {
-				setStatus("We could not reach the server. Check your connection and try again.", "error");
+				setStatus(msg("network_error"), "error");
 			} finally {
 				setBusy(false);
 			}
@@ -279,7 +287,7 @@ const turnstileSiteKey = String(
 
 	.newsletter__honeypot {
 		position: absolute;
-		left: -9999px;
+		inset-inline-start: -9999px;
 		width: 1px;
 		height: 1px;
 		overflow: hidden;

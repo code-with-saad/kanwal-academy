@@ -1,4 +1,8 @@
 ---
+import { useUi } from "../i18n";
+
+const { t } = useUi(Astro);
+
 interface FeatureCard {
 	title: string;
 	text: string;
@@ -14,7 +18,7 @@ interface Props {
 	defaultChipLabel?: string;
 }
 
-const { cards, defaultChipLabel = "Free Trial" } = Astro.props;
+const { cards, defaultChipLabel = t.home.feature_card_1_chip } = Astro.props;
 ---
 
 <ul class="feature-grid">
@@ -147,6 +151,10 @@ const { cards, defaultChipLabel = "Free Trial" } = Astro.props;
 		transform: translateY(-4px);
 	}
 
+	:global(html[dir="rtl"]) .feature-card__arrow svg {
+		transform: scaleX(-1);
+	}
+
 	/* Top row: icon, optional chip, then arrow. The chip sits beside the icon
 	 * so every card's title row starts at the same offset. */
 	.feature-card__top {
@@ -199,7 +207,7 @@ const { cards, defaultChipLabel = "Free Trial" } = Astro.props;
 	/* Arrow cue in the top row, pushed to the right so the chip and arrow
 	 * share the row with the icon. */
 	.feature-card__arrow {
-		margin-left: auto;
+		margin-inline-start: auto;
 		flex: none;
 		display: grid;
 		place-items: center;
@@ -254,9 +262,9 @@ const { cards, defaultChipLabel = "Free Trial" } = Astro.props;
 
 		.feature-card__arrow {
 			position: absolute;
-			right: 14px;
+			inset-inline-end: 14px;
 			bottom: 14px;
-			margin-left: 0;
+			margin-inline-start: 0;
 		}
 
 		.feature-card__body {

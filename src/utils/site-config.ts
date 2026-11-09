@@ -1,6 +1,7 @@
 import { getEmDashEntry } from "emdash";
 import type { ImageValue } from "emdash";
 import { site } from "../config/site";
+import { DEFAULT_LOCALE, getUi, type Locale, type UiDictionary } from "../i18n";
 
 export interface SocialLink {
 	label: string;
@@ -87,7 +88,7 @@ interface SiteSettingsData {
 	footer_stay_in_touch?: string | null;
 }
 
-const FALLBACK: SiteContact = {
+const fallback = (t: UiDictionary): SiteContact => ({
 	phone: site.phone,
 	whatsappNumber: "923422766346",
 	email: site.email,
@@ -97,38 +98,38 @@ const FALLBACK: SiteContact = {
 	stats: {
 		...site.stats,
 		labels: {
-			years: "Years teaching",
-			countries: "Countries served",
-			students: "Students taught",
-			sessions: "Sessions delivered",
+			years: t.stats.years,
+			countries: t.stats.countries,
+			students: t.stats.students,
+			sessions: t.stats.sessions,
 		},
 	},
 	footer: {
-		tagline: site.tagline,
-		exploreLabel: "Explore",
-		contactLabel: "Contact",
-		coursesLabel: "Courses",
-		academyLabel: "Academy",
-		pricingLabel: "Pricing",
-		teachersLabel: "Teachers",
-		trialLabel: "Free trial",
-		contactLinkLabel: "Contact",
-		termsLabel: "Terms of Service",
-		privacyLabel: "Privacy Policy",
-		copyrightLabel: "All rights reserved.",
-		newsletterHeading: "Stay in touch",
-		newsletterConsent:
-			"We only use your email to send occasional learning notes. Read our Privacy Policy.",
-		stayInTouch: "Stay in touch",
+		tagline: t.footer.tagline,
+		exploreLabel: t.footer.exploreLabel,
+		contactLabel: t.footer.contactLabel,
+		coursesLabel: t.footer.coursesLabel,
+		academyLabel: t.footer.academyLabel,
+		pricingLabel: t.footer.pricingLabel,
+		teachersLabel: t.footer.teachersLabel,
+		trialLabel: t.footer.trialLabel,
+		contactLinkLabel: t.footer.contactLinkLabel,
+		termsLabel: t.footer.termsLabel,
+		privacyLabel: t.footer.privacyLabel,
+		copyrightLabel: t.footer.copyrightLabel,
+		newsletterHeading: t.footer.newsletterHeading,
+		newsletterConsent: t.footer.newsletterConsent,
+		stayInTouch: t.footer.stayInTouch,
 	},
-};
+});
 
 function clean(value: string | null | undefined, fallback: string): string {
 	const trimmed = value?.trim();
 	return trimmed ? trimmed : fallback;
 }
 
-function normalize(data: SiteSettingsData | undefined): SiteContact {
+function normalize(data: SiteSettingsData | undefined, t: UiDictionary): SiteContact {
+	const FALLBACK = fallback(t);
 	const socialLinks = Array.isArray(data?.social_links)
 		? data.social_links
 				.map((link) => ({
@@ -202,8 +203,40 @@ export function emailHref(email: string): string {
  * Falls back to the confirmed values in src/config/site.ts so the shell still
  * renders if the collection has not been seeded yet.
  */
-export async function getSiteContact() {
-	const { entry, cacheHint } = await getEmDashEntry("site_settings", "site");
+export async function getSiteContact(locale: Locale = DEFAULT_LOCALE) {
+	const { entry, cacheHint, fallbackLocale } = await getEmDashEntry("site_settings", "site", {
+		locale,
+	});
 	const data = entry?.data as SiteSettingsData | undefined;
-	return { data: normalize(data), cacheHint, entry };
+	const localizedData =
+		locale !== DEFAULT_LOCALE && fallbackLocale
+			? {
+					...data,
+					address: undefined,
+					years_label: undefined,
+					countries_label: undefined,
+					students_label: undefined,
+					sessions_label: undefined,
+					footer_tagline: undefined,
+					footer_explore_label: undefined,
+					footer_contact_label: undefined,
+					footer_courses_label: undefined,
+					footer_academy_label: undefined,
+					footer_pricing_label: undefined,
+					footer_teachers_label: undefined,
+					footer_trial_label: undefined,
+					footer_contact_link_label: undefined,
+					footer_terms_label: undefined,
+					footer_privacy_label: undefined,
+					footer_copyright_label: undefined,
+					footer_newsletter_heading: undefined,
+					footer_newsletter_consent: undefined,
+					footer_stay_in_touch: undefined,
+				}
+			: data;
+	const contact = normalize(localizedData, getUi(locale));
+	if (locale !== DEFAULT_LOCALE && fallbackLocale) {
+		contact.address = getUi(locale).catalog.address;
+	}
+	return { data: contact, cacheHint, entry, fallbackLocale };
 }

@@ -1,4 +1,8 @@
 ---
+import { useUi } from "../i18n";
+
+const { t } = useUi(Astro);
+
 interface StepItem {
 	title: string;
 	text: string;
@@ -13,18 +17,18 @@ interface Props {
 
 const defaultSteps: StepItem[] = [
 	{
-		title: "Book your free trial",
-		text: "Choose a plan and pick a time that works for you. The trial class is free.",
+		title: t.home.trial_step_1_title,
+		text: t.home.trial_step_1_body,
 		icon: "book-trial",
 	},
 	{
-		title: "Meet your teacher",
-		text: "We match you with a teacher for your course and level, then assess where you are.",
+		title: t.home.trial_step_2_title,
+		text: t.home.trial_step_2_body,
 		icon: "teacher",
 	},
 	{
-		title: "Start your plan",
-		text: "Your teacher builds a weekly schedule around your goals and keeps you accountable.",
+		title: t.home.trial_step_3_title,
+		text: t.home.trial_step_3_body,
 		icon: "calendar-check",
 	},
 ];
@@ -32,8 +36,8 @@ const defaultSteps: StepItem[] = [
 const icons: StepItem["icon"][] = ["book-trial", "teacher", "calendar-check"];
 
 const {
-	eyebrow = "Free trial",
-	heading = "How the free trial works",
+	eyebrow = t.home.trial_eyebrow,
+	heading = t.home.trial_heading,
 	steps = defaultSteps,
 } = Astro.props;
 ---
@@ -163,7 +167,7 @@ const {
 		content: "";
 		position: absolute;
 		top: 24px;
-		left: 100%;
+		inset-inline-end: 100%;
 		width: var(--steps-gap);
 		border-top: 2px dotted var(--green);
 	}
@@ -261,7 +265,7 @@ const {
 		.trial-steps__mobile-step .trial-steps__number {
 			position: relative;
 			top: auto;
-			left: auto;
+			inset-inline-start: auto;
 			transform: none;
 			width: 48px;
 			height: 48px;
@@ -274,7 +278,7 @@ const {
 			width: 0;
 			flex: 1;
 			margin-top: 8px;
-			border-left: 2px dotted var(--green);
+			border-inline-start: 2px dotted var(--green);
 			opacity: 0.4;
 		}
 

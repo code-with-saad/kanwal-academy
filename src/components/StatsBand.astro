@@ -2,6 +2,9 @@
 import Button from "./Button.astro";
 import Container from "./Container.astro";
 import Eyebrow from "./Eyebrow.astro";
+import { useUi } from "../i18n";
+
+const { t } = useUi(Astro);
 
 interface Props {
 	eyebrow?: string;
@@ -16,15 +19,15 @@ interface Props {
 }
 
 const {
-	eyebrow = "Over the past 5 years",
-	heading = "Our success",
-	description = "Our three courses, Qur'anic Recitation, Tajweed Proficiency and Memorization Excellence, help students learn the Qur'an at their own pace and from the comfort of home.",
+	eyebrow = t.home.stats_eyebrow,
+	heading = t.home.stats_heading,
+	description = t.home.stats_description,
 	students,
 	sessions,
 	countries,
-	studentsLabel = "Students",
-	sessionsLabel = "Sessions",
-	countriesLabel = "Countries",
+	studentsLabel = t.stats.studentsShort,
+	sessionsLabel = t.stats.sessionsShort,
+	countriesLabel = t.stats.countriesShort,
 } = Astro.props;
 
 /** Split "99+" into { value: 99, suffix: "+" }. Non-numeric stays static. */
@@ -52,7 +55,7 @@ const rings = [
 					{description}
 				</p>
 				<div class="stats-band__cta">
-					<Button book variant="primary">Book free trial</Button>
+					<Button book variant="primary">{t.actions.bookFreeTrial}</Button>
 				</div>
 			</div>
 

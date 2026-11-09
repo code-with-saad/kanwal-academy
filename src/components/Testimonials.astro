@@ -1,5 +1,7 @@
 ---
-import { Image } from "emdash/ui";
+import { useUi } from "../i18n";
+
+const { t } = useUi(Astro);
 
 interface Review {
   name: string;
@@ -18,7 +20,7 @@ interface Props {
 
 const {
   reviews = [],
-  heading = "Customer Reviews",
+  heading = t.home.testimonials_heading,
 } = Astro.props;
 
 const initials = (name: string) =>
@@ -40,7 +42,7 @@ const initials = (name: string) =>
         <span class="tm-bar" aria-hidden="true"></span>
         <h2 id="tm-title" class="tm-title">{heading}</h2>
 
-        <div class="tm-list" role="tablist" aria-label="Reviewers">
+        <div class="tm-list" role="tablist" aria-label={t.a11y.reviewers}>
           {
             reviews.map((r, i) => (
               <button
@@ -87,10 +89,10 @@ const initials = (name: string) =>
         }
 
         <div class="tm-controls">
-          <button type="button" class="tm-btn" data-prev aria-label="Previous review">
+          <button type="button" class="tm-btn" data-prev aria-label={t.a11y.previousReview}>
             <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M15 18l-6-6 6-6"/></svg>
           </button>
-          <button type="button" class="tm-btn" data-next aria-label="Next review">
+          <button type="button" class="tm-btn" data-next aria-label={t.a11y.nextReview}>
             <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M9 6l6 6-6 6"/></svg>
           </button>
         </div>
@@ -141,7 +143,7 @@ const initials = (name: string) =>
     z-index: 0;
     width: 640px;
     height: 640px;
-    left: -440px;
+    inset-inline-start: -440px;
     top: -90px;
     border-radius: 50%;
     background: linear-gradient(120deg, var(--tm-accent-deep), var(--tm-accent-soft));
@@ -189,7 +191,7 @@ const initials = (name: string) =>
     position: absolute;
     width: 400px;
     height: 400px;
-    left: -250px;
+    inset-inline-start: -250px;
     top: -50px;
     border: 1px solid var(--tm-line);
     border-radius: 50%;
@@ -199,7 +201,7 @@ const initials = (name: string) =>
     --off: 0;
     --dx: 0px;
     position: absolute;
-    left: 0;
+    inset-inline-start: 0;
     top: 50%;
     display: flex;
     align-items: center;
@@ -208,13 +210,17 @@ const initials = (name: string) =>
     border: 0;
     background: none;
     cursor: pointer;
-    text-align: left;
+    text-align: start;
     font: inherit;
     color: var(--tm-text);
     transform: translate(calc(122px + var(--dx)), calc(-50% + var(--off) * 90px));
     transition:
       transform 0.55s cubic-bezier(0.22, 0.8, 0.3, 1),
       opacity 0.4s ease;
+  }
+
+  :global(html[dir="rtl"]) .tm-item {
+    transform: translate(calc(-122px - var(--dx)), calc(-50% + var(--off) * 90px));
   }
 
   .tm-item[data-state="near"] {
@@ -309,7 +315,7 @@ const initials = (name: string) =>
     grid-area: 1 / 1;
     position: relative;
     margin: 0;
-    padding-left: 1.6rem;
+    padding-inline-start: 1.6rem;
     opacity: 0;
     transform: translateY(8px);
     pointer-events: none;
@@ -325,9 +331,9 @@ const initials = (name: string) =>
 
   .tm-mark {
     position: absolute;
-    left: 0;
+    inset-inline-start: 0;
     top: -0.2rem;
-    font-family: Georgia, "Times New Roman", serif;
+    font-family: inherit;
     font-size: 2rem;
     line-height: 1;
     color: var(--tm-text);
@@ -336,8 +342,7 @@ const initials = (name: string) =>
   .tm-quote p {
     margin: 0;
     max-width: 34rem;
-    font-family: "Noto Serif", Georgia, "Times New Roman", serif;
-    font-style: italic;
+    font-family: inherit;
     font-size: 1.05rem;
     line-height: 2;
     color: var(--tm-text);
@@ -394,6 +399,13 @@ const initials = (name: string) =>
     transform-origin: left;
     animation: tm-progress 3s linear forwards;
   }
+  :global(html[dir="rtl"]) .tm-progress-bar {
+    transform-origin: right;
+  }
+
+  :global(html[dir="rtl"]) .tm-btn svg {
+    transform: scaleX(-1);
+  }
   .tm-progress-bar.is-paused {
     animation-play-state: paused;
   }
@@ -415,7 +427,7 @@ const initials = (name: string) =>
     .tm-circle {
       width: 420px;
       height: 420px;
-      left: -260px;
+      inset-inline-start: -260px;
       top: -60px;
     }
     .tm-card {
@@ -433,7 +445,7 @@ const initials = (name: string) =>
       transform: translate(calc(70px + var(--dx)), calc(-50% + var(--off) * 80px));
     }
     .tm-list::before {
-      left: -330px;
+      inset-inline-start: -330px;
     }
   }
 

@@ -2,29 +2,62 @@
 import { decodeSlug, getEmDashEntry, getSeoMeta } from "emdash";
 import Base from "../layouts/Base.astro";
 import PageView from "../components/PageView.astro";
+import Container from "../components/Container.astro";
+import Section from "../components/Section.astro";
+import { localizePath, useUi } from "../i18n";
 
+const { locale, t } = useUi(Astro);
 const slug = decodeSlug(Astro.params.slug);
 if (!slug) return Astro.rewrite("/404");
 
-const { entry: page, cacheHint } = await getEmDashEntry("pages", slug);
+const { entry: page, cacheHint, fallbackLocale } = await getEmDashEntry("pages", slug, {
+	locale,
+});
 if (!page) return Astro.rewrite("/404");
 
 if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
 
+const needsArabicTranslation = locale === "ar" && fallbackLocale === "en";
 const seo = getSeoMeta(page, {
 	siteUrl: Astro.url.origin,
-	path: `/${page.id}`,
+	path: localizePath(`/${page.id}`, locale),
 });
 ---
 
 <Base
-	title={seo.title}
-	pageTitle={page.data.title}
-	description={seo.description}
+	title={needsArabicTranslation ? t.page.unavailableTitle : seo.title}
+	pageTitle={needsArabicTranslation ? t.page.unavailableTitle : page.data.title}
+	description={
+		needsArabicTranslation
+			? t.page.unavailableBody
+			: seo.description
+	}
 	image={seo.ogImage}
-	canonical={seo.canonical}
+	canonical={needsArabicTranslation ? Astro.url.href : seo.canonical}
 	robots={seo.robots}
 	content={{ collection: "pages", id: page.data.id, slug: page.id }}
 >
-	<PageView page={page} />
+	{
+		needsArabicTranslation ? (
+			<Section space="tight">
+				<Container size="narrow">
+					<div class="page-header">
+						<h1>{t.page.unavailableTitle}</h1>
+						<p>{t.page.unavailableBody}</p>
+						<a href={localizePath(`/${page.id}`, "en")}>{t.page.englishVersion}</a>
+					</div>
+				</Container>
+			</Section>
+		) : (
+			<PageView page={page} />
+		)
+	}
 </Base>
+
+<style>
+	.page-header {
+		display: grid;
+		gap: var(--space-lg);
+		max-width: 60ch;
+	}
+</style>

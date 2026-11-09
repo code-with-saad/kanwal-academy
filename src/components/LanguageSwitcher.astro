@@ -1,0 +1,89 @@
+---
+/**
+ * Language switcher.
+ *
+ * Both locales serve the same route set, so switching language only swaps the
+ * /ar prefix. The query string is kept so a plan or course preselection
+ * survives the switch. Each link points at a real, crawlable URL, which also
+ * makes the pair useful to search engines.
+ */
+import { LOCALES, LOCALE_LABELS, alternatePath, useUi, type Locale } from "../i18n";
+
+const { locale, t } = useUi(Astro);
+interface Props {
+	paths?: Partial<Record<Locale, string>>;
+}
+
+const { paths = {} } = Astro.props;
+const search = Astro.url.search;
+
+const shortLabel = (code: (typeof LOCALES)[number]) => (code === "ar" ? "عربي" : "EN");
+---
+
+<nav class="lang-switch" aria-label={t.a11y.languageSwitcher}>
+	{
+		LOCALES.map((code) => (
+			<a
+				href={`${paths[code] ?? alternatePath(Astro.url.pathname, code)}${search}`}
+				hreflang={code}
+				lang={code}
+				class:list={["lang-switch__link", code === locale && "is-active"]}
+				aria-current={code === locale ? "true" : undefined}
+				aria-label={LOCALE_LABELS[code]}
+				title={LOCALE_LABELS[code]}
+			>
+				{shortLabel(code)}
+			</a>
+		))
+	}
+</nav>
+
+<style>
+	.lang-switch {
+		display: inline-flex;
+		align-items: center;
+		gap: 2px;
+		padding: 3px;
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		background: var(--surface);
+	}
+
+	.lang-switch__link {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 40px;
+		height: 32px;
+		padding-inline: 10px;
+		border-radius: 999px;
+		color: var(--ink-muted);
+		font-size: var(--type-small-size);
+		font-weight: 500;
+		line-height: 1;
+		text-decoration: none;
+		transition:
+			background-color var(--transition),
+			color var(--transition);
+	}
+
+	.lang-switch__link:hover {
+		color: var(--green-deep);
+	}
+
+	.lang-switch__link.is-active {
+		background: var(--green);
+		color: var(--on-accent);
+	}
+
+	.lang-switch__link:focus-visible {
+		outline: 2px solid var(--focus);
+		outline-offset: 2px;
+	}
+
+	/* Arabic label in an Arabic UI needs no extra font rule: it inherits the
+	 * page font. In an English UI it uses the Arabic text font via [lang]. */
+	.lang-switch__link[lang="ar"] {
+		font-size: 0.95rem;
+	}
+</style>
