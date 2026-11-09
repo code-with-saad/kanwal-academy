@@ -138,13 +138,9 @@ const [
 	getEmDashEntry("pages", "home"),
 ]);
 
-if (Astro.cache?.enabled) {
-	Astro.cache.set(coursesResult.cacheHint);
-	Astro.cache.set(plansResult.cacheHint);
-	Astro.cache.set(testimonialsResult.cacheHint);
-	Astro.cache.set(contactResult.cacheHint);
-	Astro.cache.set(homeResult.cacheHint);
-}
+// Home content is edited in EmDash and should never be served from a stale
+// route or edge response. The other page routes retain their normal caching.
+Astro.response.headers.set("Cache-Control", "no-store");
 
 const courses = coursesResult.entries.filter(
 	(c) => c.data.visible !== false,

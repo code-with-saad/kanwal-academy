@@ -44,7 +44,9 @@ const [settingsResult, contactResult, coursesResult] = await Promise.all([
 	}),
 ]);
 
-if (Astro.cache?.enabled) {
+// Keep the homepage uncached so edits to its CMS entry are visible on the
+// next request. Other routes continue using their query cache hints.
+if (Astro.cache?.enabled && Astro.url.pathname !== "/") {
 	Astro.cache.set(settingsResult.cacheHint);
 	Astro.cache.set(contactResult.cacheHint);
 	Astro.cache.set(coursesResult.cacheHint);
