@@ -38,20 +38,10 @@
 					"searchable": true
 				},
 				{
-					"slug": "home_eyebrow",
-					"label": "Home hero: small label above the headline",
-					"type": "string"
-				},
-				{
 					"slug": "home_headline",
 					"label": "Home hero: headline",
 					"type": "string",
 					"searchable": true
-				},
-				{
-					"slug": "home_highlight",
-					"label": "Home hero: highlighted phrase",
-					"type": "string"
 				},
 				{
 					"slug": "home_lead",
@@ -62,16 +52,6 @@
 					"slug": "home_image",
 					"label": "Home hero: image",
 					"type": "image"
-				},
-				{
-					"slug": "home_primary_cta",
-					"label": "Home hero: primary button",
-					"type": "string"
-				},
-				{
-					"slug": "home_secondary_cta",
-					"label": "Home hero: secondary button",
-					"type": "string"
 				},
 				{
 					"slug": "home_reach_text",
@@ -129,21 +109,6 @@
 					"type": "string"
 				},
 				{
-					"slug": "courses_eyebrow",
-					"label": "Home courses: eyebrow",
-					"type": "string"
-				},
-				{
-					"slug": "courses_heading",
-					"label": "Home courses: heading",
-					"type": "string"
-				},
-				{
-					"slug": "courses_intro",
-					"label": "Home courses: introduction",
-					"type": "text"
-				},
-				{
 					"slug": "courses_journey_heading",
 					"label": "Home courses: journey heading (above the course list)",
 					"type": "string"
@@ -152,16 +117,6 @@
 					"slug": "courses_journey_intro",
 					"label": "Home courses: journey introduction (above the course list)",
 					"type": "text"
-				},
-				{
-					"slug": "courses_trial_cta",
-					"label": "Home course cards: trial button",
-					"type": "string"
-				},
-				{
-					"slug": "courses_details_cta",
-					"label": "Home course cards: details button",
-					"type": "string"
 				},
 				{
 					"slug": "courses_format_label",
@@ -402,11 +357,6 @@
 					"slug": "trial_step_3_body",
 					"label": "Home free trial: step 3 description",
 					"type": "text"
-				},
-				{
-					"slug": "testimonials_eyebrow",
-					"label": "Home testimonials: eyebrow",
-					"type": "string"
 				},
 				{
 					"slug": "testimonials_heading",
@@ -1555,9 +1505,7 @@
 				"status": "published",
 				"data": {
 					"title": "Home",
-					"home_eyebrow": "Online Qur'an academy",
 					"home_headline": "Recite the Qur'an with a teacher who knows your name.",
-					"home_highlight": "Qur'an",
 					"home_lead": "One-to-one lessons in recitation, tajweed and memorization. Start with a free trial class from wherever you are.",
 					"home_reach_text": "Students learning from {countries} countries",
 					"home_cta_label": "Start your free trial",
@@ -1570,13 +1518,8 @@
 					"feature_card_3_text": "Join families worldwide.",
 					"feature_card_4_title": "Learn on any device",
 					"feature_card_4_text": "Phone, tablet or laptop.",
-					"courses_eyebrow": "Courses",
-					"courses_heading": "Explore our courses",
-					"courses_intro": "Start where you are. Your teacher will meet you there and build the lessons around your level.",
 					"courses_journey_heading": "Start your journey",
 					"courses_journey_intro": "Three courses, each taught one to one. Pick the path that matches where you are and your teacher will set the pace from there.",
-					"courses_trial_cta": "Book free trial",
-					"courses_details_cta": "See details",
 					"courses_format_label": "Live one on one",
 					"split1_heading_before": "Easy Qur'an learning",
 					"split1_heading_highlight": "online",
@@ -1622,7 +1565,6 @@
 					"trial_step_2_body": "We match you with a teacher for your course and level, then assess where you are.",
 					"trial_step_3_title": "Start your plan",
 					"trial_step_3_body": "Your teacher builds a weekly schedule around your goals and keeps you accountable.",
-					"testimonials_eyebrow": "Student voices",
 					"testimonials_heading": "Customer Reviews",
 					"book_eyebrow": "Free trial",
 					"book_heading": "Book a free trial class",

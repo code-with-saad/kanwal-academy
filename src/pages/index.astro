@@ -26,13 +26,9 @@ import { formatUsdPrice } from "../utils/price";
 import type { Page } from "../../emdash-env";
 
 interface HomePageFields {
-	home_eyebrow?: string;
 	home_headline?: string;
-	home_highlight?: string;
 	home_lead?: string;
 	home_image?: ImageValue;
-	home_primary_cta?: string;
-	home_secondary_cta?: string;
 	home_reach_text?: string;
 	home_cta_label?: string;
 	feature_card_1_title?: string;
@@ -44,13 +40,8 @@ interface HomePageFields {
 	feature_card_3_text?: string;
 	feature_card_4_title?: string;
 	feature_card_4_text?: string;
-	courses_eyebrow?: string;
-	courses_heading?: string;
-	courses_intro?: string;
 	courses_journey_heading?: string;
 	courses_journey_intro?: string;
-	courses_trial_cta?: string;
-	courses_details_cta?: string;
 	courses_format_label?: string;
 	split1_heading_before?: string;
 	split1_heading_highlight?: string;
@@ -99,7 +90,6 @@ interface HomePageFields {
 	trial_step_2_body?: string;
 	trial_step_3_title?: string;
 	trial_step_3_body?: string;
-	testimonials_eyebrow?: string;
 	testimonials_heading?: string;
 	book_eyebrow?: string;
 	book_heading?: string;
@@ -158,8 +148,15 @@ const demo = isDemoMode();
 const navItems = [...site.nav];
 
 const homePage = homeResult.entry as ContentEntry<Page & HomePageFields> | null;
-const homeText = (field: HomeTextField, fallback: string) =>
-	homePage?.data[field]?.trim() || fallback;
+// Prefer the CMS value whenever it is present, even an empty string (which
+// means the editor intentionally cleared the field). Only fall back when the
+// field is truly missing (null/undefined), never to hide a CMS value behind a
+// hard-coded default or an empty-string fallback.
+const homeText = (field: HomeTextField, fallback: string): string => {
+	const value = homePage?.data[field];
+	if (value == null) return fallback;
+	return typeof value === "string" ? value.trim() : fallback;
+};
 const homeEdit = homePage?.edit;
 const seo = homePage
 	? getSeoMeta(homePage, {
