@@ -297,8 +297,8 @@ const rings = [
 		}
 	}
 
-	/* Mobile: full bleed, no radius. Stack label below the ring so long
-	 * text never gets clipped inside the circle. */
+	/* Mobile: full bleed, no radius. Keep text inside the rings but
+	 * bump the circle size and shrink the text so long labels still fit. */
 	@media (max-width: 760px) {
 		.stats-band {
 			padding-block: 48px;
@@ -311,47 +311,39 @@ const rings = [
 			border-radius: 0;
 		}
 
-		/* Move label below the ring on narrow screens so it can't clip. */
-		.ring-cell {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			width: auto;
-			aspect-ratio: auto;
-			max-width: none;
-			justify-self: center;
+		.stats-band__rings {
+			gap: clamp(8px, 3vw, 16px);
 		}
 
-		.ring-cell__ring {
-			width: 100px;
-			height: 100px;
-			flex: none;
-			transform: rotate(-90deg);
+		.ring-cell {
+			max-width: 115px;
 		}
 
 		.ring-cell__text {
-			position: static;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			margin-top: 6px;
-			gap: 2px;
+			padding-inline: 10%;
 		}
 
 		.ring-cell__number {
-			font-size: 24px;
+			font-size: 22px;
 		}
 
 		.ring-cell__label {
-			font-size: 12px;
+			font-size: 10px;
+		}
+	}
+
+	/* Tiny screens (360px and below): shrink a bit more so labels never clip. */
+	@media (max-width: 380px) {
+		.ring-cell {
 			max-width: 100px;
-			white-space: normal;
-			overflow-wrap: break-word;
-			text-align: center;
 		}
 
-		.stats-band__rings {
-			gap: clamp(12px, 4vw, 24px);
+		.ring-cell__number {
+			font-size: 19px;
+		}
+
+		.ring-cell__label {
+			font-size: 9px;
 		}
 	}
 </style>
