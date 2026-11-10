@@ -1,0 +1,192 @@
+---
+/**
+ * Mobile bottom navigation (below 768px only).
+ *
+ * Five equal slots: Home, About, Courses, Pricing, Contact. In RTL the order
+ * mirrors naturally and the labels stay inside the bar. The same scroll-spy
+ * that drives the header sets aria-current="location" here via the shared
+ * data-nav-link / data-nav-anchor attributes, so the active state follows the
+ * section in view without a second observer.
+ *
+ * The bar is always visible: hiding it while the keyboard was open proved
+ * unreliable (it could stay hidden until a reload), so it never covers the
+ * focused field is handled by the fixed bar sitting above the keyboard.
+ */
+import { localizePath, useUi } from "../i18n";
+
+const { locale, t } = useUi(Astro);
+
+const items = [
+	{ anchor: "home", label: t.nav.home, href: localizePath("/#home", locale) },
+	{ anchor: "about", label: t.nav.about, href: localizePath("/#about", locale) },
+	{ anchor: "courses", label: t.nav.courses, href: localizePath("/#courses", locale) },
+	{ anchor: "pricing", label: t.nav.pricing, href: localizePath("/#pricing", locale) },
+	{ anchor: "book", label: t.nav.contact, href: localizePath("/#book", locale) },
+];
+---
+
+<nav class="mobile-bar" data-mobile-bar aria-label={t.a11y.primaryNav}>
+	{
+		items.map((item) => (
+			<a
+				href={item.href}
+				class="mobile-bar__item"
+				data-nav-link
+				data-nav-anchor={item.anchor}
+			>
+				<span class="mobile-bar__icon" aria-hidden="true">
+					{item.anchor === "home" && (
+						<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M4 10.5 12 4l8 6.5" />
+							<path d="M6 9.5V20h12V9.5" />
+							<path d="M10 20v-5h4v5" />
+						</svg>
+					)}
+					{item.anchor === "about" && (
+						<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+							<circle cx="12" cy="8" r="3.5" />
+							<path d="M5.5 19c.7-3 3.1-4.75 6.5-4.75S17.8 16 18.5 19" />
+						</svg>
+					)}
+					{item.anchor === "courses" && (
+						<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M12 6.1c-1.9-1.55-4.25-2-7-1.9v13.6c2.75-.1 5.1.35 7 1.9 1.9-1.55 4.25-2 7-1.9V4.2c-2.75-.1-5.1.35-7 1.9z" />
+							<path d="M12 6.1v13.6" />
+						</svg>
+					)}
+					{item.anchor === "pricing" && (
+						<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M3.5 11.5v-6a2 2 0 0 1 2-2h6l9 9-8 8-9-9z" />
+							<circle cx="8" cy="8" r="1.5" />
+						</svg>
+					)}
+					{item.anchor === "book" && (
+						<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M4 7.5A3.5 3.5 0 0 1 7.5 4h9A3.5 3.5 0 0 1 20 7.5v6a3.5 3.5 0 0 1-3.5 3.5H10l-4.5 3v-3A3.5 3.5 0 0 1 4 13.5z" />
+						</svg>
+					)}
+				</span>
+				<span class="mobile-bar__label">{item.label}</span>
+			</a>
+		))
+	}
+</nav>
+
+<style>
+	.mobile-bar {
+		position: fixed;
+		inset-inline: 0;
+		bottom: 0;
+		z-index: 30; /* below the Result modal (200) and the menu overlay (55-60). */
+		display: none;
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		align-items: stretch;
+		background: var(--surface);
+		border-top: 1px solid var(--line);
+		box-shadow: 0 -8px 24px -16px rgba(11, 26, 20, 0.4);
+		padding-bottom: env(safe-area-inset-bottom);
+	}
+
+	@media (max-width: 767px) {
+		.mobile-bar {
+			display: grid;
+		}
+	}
+
+	/* ---- Side item --------------------------------------------------- */
+	.mobile-bar__item {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 4px;
+		min-width: 0;
+		min-height: var(--mobile-bar-height);
+		padding: 8px 2px 6px;
+		color: var(--ink-muted);
+		text-decoration: none;
+		-webkit-tap-highlight-color: transparent;
+		transition: color var(--dur-fast) var(--ease-out);
+	}
+
+	/* Small top indicator, visible only on the active item. */
+	.mobile-bar__item::before {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 50%;
+		width: 18px;
+		height: 2px;
+		border-radius: 999px;
+		background: var(--green);
+		opacity: 0;
+		transform: translateX(-50%);
+		transition: opacity var(--dur-fast) var(--ease-out);
+	}
+
+	.mobile-bar__icon {
+		display: grid;
+		place-items: center;
+		width: 28px;
+		height: 28px;
+		flex: none;
+		border-radius: 999px;
+		color: var(--ink-muted);
+		transition:
+			background-color var(--dur-fast) var(--ease-out),
+			color var(--dur-fast) var(--ease-out);
+	}
+
+	.mobile-bar__label {
+		max-width: 100%;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		font-size: 12px;
+		font-weight: 600;
+		line-height: 1;
+		letter-spacing: -0.01em;
+	}
+
+	:global(html[lang="ar"]) .mobile-bar__label {
+		font-size: 12px;
+		letter-spacing: 0;
+	}
+
+	.mobile-bar__item:hover {
+		color: var(--ink);
+	}
+
+	.mobile-bar__item:focus-visible {
+		outline: 2px solid var(--focus);
+		outline-offset: -3px;
+		border-radius: var(--radius-input);
+	}
+
+	/* Active side item: filled icon, green text, weight 700, top indicator. */
+	.mobile-bar__item[aria-current="location"] {
+		color: var(--green-deep);
+	}
+
+	.mobile-bar__item[aria-current="location"] .mobile-bar__label {
+		font-weight: 700;
+	}
+
+	.mobile-bar__item[aria-current="location"] .mobile-bar__icon {
+		background: var(--green);
+		color: var(--on-accent);
+	}
+
+	.mobile-bar__item[aria-current="location"]::before {
+		opacity: 1;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.mobile-bar__item,
+		.mobile-bar__icon,
+		.mobile-bar__item::before {
+			transition: none;
+		}
+	}
+</style>

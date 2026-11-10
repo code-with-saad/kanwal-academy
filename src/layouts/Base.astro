@@ -6,6 +6,7 @@ import { EmDashBodyEnd, EmDashBodyStart, EmDashHead } from "emdash/ui";
 import ResultModal from "../components/ResultModal.astro";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
+import MobileBar from "../components/MobileBar.astro";
 import { site, type NavItem } from "../config/site";
 import { getSiteContact } from "../utils/site-config";
 import { resolveSiteIdentity } from "../utils/site";
@@ -243,6 +244,7 @@ const pageCtx = createPublicPageContext({
 				logoLight={contactResult.data.logoLight}
 				logoDark={contactResult.data.logoDark}
 			/>
+			<MobileBar />
 			<button
 				type="button"
 				class="page-go-top"
@@ -370,6 +372,13 @@ const pageCtx = createPublicPageContext({
 				.page-go-top svg {
 					width: 18px;
 					height: 18px;
+				}
+			}
+
+			/* Keep the back-to-top button clear of the mobile bottom bar. */
+			@media (max-width: 767px) {
+				.page-go-top {
+					bottom: calc(var(--mobile-bar-height) + env(safe-area-inset-bottom) + 16px);
 				}
 			}
 		</style>

@@ -96,7 +96,6 @@ const homeHref = localizePath("/", locale);
 					</a>
 				))
 			}
-			<span class="header__nav-indicator" data-nav-indicator aria-hidden="true"></span>
 		</nav>
 
 		<div class="header__end">
@@ -235,45 +234,8 @@ const homeHref = localizePath("/", locale);
 	// link that follows the section in view. Reduced motion means instant.
 	const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 	const navLinks = Array.from(
-		document.querySelectorAll<HTMLAnchorElement>("[data-nav-link][data-nav-anchor]"),
+		document.querySelectorAll<HTMLElement>("[data-nav-link][data-nav-anchor]"),
 	);
-	const desktopNav = document.querySelector<HTMLElement>(".header__nav");
-	const desktopLinks = Array.from(
-		document.querySelectorAll<HTMLAnchorElement>(".header__nav [data-nav-link][data-nav-anchor]"),
-	);
-	const indicator = document.querySelector<HTMLElement>("[data-nav-indicator]");
-	const header = document.querySelector<HTMLElement>("[data-header]");
-	const headerHeight = () => header?.offsetHeight ?? 0;
-
-	const moveIndicatorTo = (link?: HTMLAnchorElement) => {
-		if (!desktopNav || !indicator || !link) {
-			indicator?.classList.remove("is-visible");
-			return;
-		}
-		const navRect = desktopNav.getBoundingClientRect();
-		const linkRect = link.getBoundingClientRect();
-		indicator.style.width = `${linkRect.width}px`;
-		indicator.style.transform = `translateX(${linkRect.left - navRect.left}px)`;
-		indicator.classList.add("is-visible");
-	};
-
-	const activeDesktopLink = () => desktopLinks.find((link) => link.hasAttribute("aria-current"));
-
-	if (desktopNav && indicator) {
-		moveIndicatorTo(activeDesktopLink());
-		for (const link of desktopLinks) {
-			link.addEventListener("pointerenter", () => moveIndicatorTo(link));
-			link.addEventListener("focus", () => moveIndicatorTo(link));
-		}
-		desktopNav.addEventListener("pointerleave", () => moveIndicatorTo(activeDesktopLink()));
-		desktopNav.addEventListener("focusout", (event) => {
-			if (!(event.relatedTarget instanceof Node) || !desktopNav.contains(event.relatedTarget)) {
-				moveIndicatorTo(activeDesktopLink());
-			}
-		});
-		window.addEventListener("resize", () => moveIndicatorTo(activeDesktopLink()), { passive: true });
-		document.fonts?.ready.then(() => moveIndicatorTo(activeDesktopLink()));
-	}
 
 	const targetFrom = (href: string) => {
 		const url = new URL(href, window.location.href);
@@ -299,36 +261,72 @@ const homeHref = localizePath("/", locale);
 	}
 
 	if (navLinks.length > 0) {
-		const sections = navLinks
-			.map((link) => document.getElementById(link.dataset.navAnchor ?? ""))
-			.filter((section): section is HTMLElement => section !== null);
+		// Sections map to nav links. Sections without their own nav item inherit
+		// the previous link: standing-out -> about, success -> courses, and the
+		// free-trial steps + testimonials -> pricing.
+		const SECTION_ANCHORS = [
+			["home", "home"],
+			["about", "about"],
+			["standing-out", "about"],
+			["courses", "courses"],
+			["success", "courses"],
+			["how-it-works", "pricing"],
+			["pricing", "pricing"],
+			["testimonials", "pricing"],
+			["book", "book"],
+		] as const;
 
-		const setActive = (id: string) => {
+		const spySections: Array<{ anchor: string; el: HTMLElement }> = [];
+		for (const [id, anchor] of SECTION_ANCHORS) {
+			const el = document.getElementById(id);
+			if (el) spySections.push({ anchor, el });
+		}
+
+		let currentAnchor: string | null = null;
+		const setActive = (anchor: string) => {
 			for (const link of navLinks) {
-				const active = link.dataset.navAnchor === id;
-				if (active) link.setAttribute("aria-current", "location");
+				if (link.dataset.navAnchor === anchor) link.setAttribute("aria-current", "location");
 				else link.removeAttribute("aria-current");
 			}
-			moveIndicatorTo(activeDesktopLink());
 		};
 
-		if (sections.length > 0 && "IntersectionObserver" in window) {
-			const visible = new Set<string>();
-			const observer = new IntersectionObserver(
-				(entries) => {
-					for (const entry of entries) {
-						if (entry.isIntersecting) visible.add(entry.target.id);
-						else visible.delete(entry.target.id);
-					}
-					const first = sections.find((section) => visible.has(section.id));
-					if (first) setActive(first.id);
-				},
-				{
-					rootMargin: `-${headerHeight() + 1}px 0px -55% 0px`,
-					threshold: 0,
-				},
-			);
-			for (const section of sections) observer.observe(section);
+		if (spySections.length > 0) {
+			let scheduledFrame: number | null = null;
+
+			const updateActive = () => {
+				scheduledFrame = null;
+				const triggerLine = window.innerHeight * 0.35;
+				let active: string | null = spySections[0]?.anchor ?? null;
+
+				for (const section of spySections) {
+					if (section.el.getBoundingClientRect().top > triggerLine) break;
+					active = section.anchor;
+				}
+
+				const atPageBottom =
+					window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 1;
+				if (atPageBottom) {
+					active = spySections[spySections.length - 1]?.anchor ?? active;
+				}
+
+				if (active && active !== currentAnchor) {
+					currentAnchor = active;
+					setActive(active);
+				}
+			};
+
+			const scheduleUpdate = () => {
+				if (scheduledFrame !== null) return;
+				scheduledFrame = window.requestAnimationFrame(updateActive);
+			};
+
+			window.addEventListener("scroll", scheduleUpdate, { passive: true });
+			window.addEventListener("resize", scheduleUpdate, { passive: true });
+			window.addEventListener("pageshow", scheduleUpdate);
+			window.addEventListener("hashchange", scheduleUpdate);
+			window.addEventListener("popstate", scheduleUpdate);
+			window.addEventListener("load", scheduleUpdate, { once: true });
+			scheduleUpdate();
 		}
 	}
 </script>
@@ -433,36 +431,25 @@ const homeHref = localizePath("/", locale);
 		position: relative;
 		z-index: 1;
 		transition:
-			color var(--transition);
+			color 180ms var(--ease-out),
+			background-color 180ms var(--ease-out);
 	}
 
-	.header__link:hover,
+	.header__link:hover {
+		color: var(--ink);
+		background: var(--mint-50);
+	}
+
 	.header__link:focus-visible {
-		color: var(--green-deep);
+		color: var(--ink);
+		outline: 2px solid var(--focus);
+		outline-offset: 2px;
 	}
 
 	.header__link[aria-current] {
 		color: var(--green-deep);
-	}
-
-	.header__nav-indicator {
-		position: absolute;
-		left: 0;
-		bottom: 0;
-		width: 0;
-		height: 2px;
-		border-radius: 999px;
-		background: var(--green);
-		opacity: 0;
-		pointer-events: none;
-		transition:
-			transform 240ms var(--ease-out),
-			width 240ms var(--ease-out),
-			opacity 160ms ease;
-	}
-
-	.header__nav-indicator.is-visible {
-		opacity: 1;
+		background: var(--mint-100);
+		font-weight: 600;
 	}
 
 	/* End cluster */
@@ -593,6 +580,8 @@ const homeHref = localizePath("/", locale);
 
 	.header__mobile-link[aria-current] {
 		background: var(--mint-100);
+		color: var(--green-deep);
+		font-weight: 600;
 	}
 
 	.header__panel-end {
@@ -680,10 +669,6 @@ const homeHref = localizePath("/", locale);
 
 	@media (prefers-reduced-motion: reduce) {
 		.site-header {
-			transition: none;
-		}
-
-		.header__nav-indicator {
 			transition: none;
 		}
 

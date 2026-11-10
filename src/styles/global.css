@@ -105,6 +105,7 @@
 	--gutter: 32px;
 	--section-space: clamp(72px, 9vw, 128px);
 	--header-height: 76px;
+	--mobile-bar-height: 56px; /* Mobile bottom bar content height (safe area added separately). */
 
 	/* Corners */
 	--radius-panel: 28px;
@@ -232,6 +233,13 @@ body {
 
 .sheet > main {
 	flex: 1 0 auto;
+}
+
+/* Clear the fixed mobile bottom bar so the footer is never hidden behind it. */
+@media (max-width: 767px) {
+	body {
+		padding-bottom: calc(var(--mobile-bar-height) + env(safe-area-inset-bottom));
+	}
 }
 
 h1,
