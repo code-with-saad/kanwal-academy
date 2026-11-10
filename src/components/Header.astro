@@ -33,10 +33,12 @@ const {
 const rawPath = stripLocalePrefix(currentPath).path;
 const path = rawPath.length > 1 ? rawPath.replace(/\/+$/, "") : "/";
 const isLinkCurrent = (item: NavItem) => {
-	if (item.href.startsWith("#")) return false;
+	if (item.anchor || item.href.includes("#")) return false;
 	const target = stripLocalePrefix(item.href.split("#")[0] ?? "/").path;
 	return target === "/" ? path === "/" : path === target;
 };
+const initialAnchor = path === "/" ? Astro.url.hash.slice(1) || "home" : "";
+const isAnchorCurrent = (item: NavItem) => Boolean(item.anchor && item.anchor === initialAnchor);
 const homeHref = localizePath("/", locale);
 ---
 
@@ -88,12 +90,13 @@ const homeHref = localizePath("/", locale);
 						class="header__link"
 						data-nav-link
 						data-nav-anchor={item.anchor}
-						aria-current={isLinkCurrent(item) ? "page" : undefined}
+						aria-current={isAnchorCurrent(item) ? "location" : isLinkCurrent(item) ? "page" : undefined}
 					>
 						{item.label}
 					</a>
 				))
 			}
+			<span class="header__nav-indicator" data-nav-indicator aria-hidden="true"></span>
 		</nav>
 
 		<div class="header__end">
@@ -150,7 +153,7 @@ const homeHref = localizePath("/", locale);
 						class="header__mobile-link"
 						data-nav-link
 						data-nav-anchor={item.anchor}
-						aria-current={isLinkCurrent(item) ? "page" : undefined}
+						aria-current={isAnchorCurrent(item) ? "location" : isLinkCurrent(item) ? "page" : undefined}
 					>
 						{item.label}
 					</a>
@@ -234,8 +237,43 @@ const homeHref = localizePath("/", locale);
 	const navLinks = Array.from(
 		document.querySelectorAll<HTMLAnchorElement>("[data-nav-link][data-nav-anchor]"),
 	);
+	const desktopNav = document.querySelector<HTMLElement>(".header__nav");
+	const desktopLinks = Array.from(
+		document.querySelectorAll<HTMLAnchorElement>(".header__nav [data-nav-link][data-nav-anchor]"),
+	);
+	const indicator = document.querySelector<HTMLElement>("[data-nav-indicator]");
 	const header = document.querySelector<HTMLElement>("[data-header]");
 	const headerHeight = () => header?.offsetHeight ?? 0;
+
+	const moveIndicatorTo = (link?: HTMLAnchorElement) => {
+		if (!desktopNav || !indicator || !link) {
+			indicator?.classList.remove("is-visible");
+			return;
+		}
+		const navRect = desktopNav.getBoundingClientRect();
+		const linkRect = link.getBoundingClientRect();
+		indicator.style.width = `${linkRect.width}px`;
+		indicator.style.transform = `translateX(${linkRect.left - navRect.left}px)`;
+		indicator.classList.add("is-visible");
+	};
+
+	const activeDesktopLink = () => desktopLinks.find((link) => link.hasAttribute("aria-current"));
+
+	if (desktopNav && indicator) {
+		moveIndicatorTo(activeDesktopLink());
+		for (const link of desktopLinks) {
+			link.addEventListener("pointerenter", () => moveIndicatorTo(link));
+			link.addEventListener("focus", () => moveIndicatorTo(link));
+		}
+		desktopNav.addEventListener("pointerleave", () => moveIndicatorTo(activeDesktopLink()));
+		desktopNav.addEventListener("focusout", (event) => {
+			if (!(event.relatedTarget instanceof Node) || !desktopNav.contains(event.relatedTarget)) {
+				moveIndicatorTo(activeDesktopLink());
+			}
+		});
+		window.addEventListener("resize", () => moveIndicatorTo(activeDesktopLink()), { passive: true });
+		document.fonts?.ready.then(() => moveIndicatorTo(activeDesktopLink()));
+	}
 
 	const targetFrom = (href: string) => {
 		const url = new URL(href, window.location.href);
@@ -269,10 +307,9 @@ const homeHref = localizePath("/", locale);
 			for (const link of navLinks) {
 				const active = link.dataset.navAnchor === id;
 				if (active) link.setAttribute("aria-current", "location");
-				else if (link.getAttribute("aria-current") === "location") {
-					link.removeAttribute("aria-current");
-				}
+				else link.removeAttribute("aria-current");
 			}
+			moveIndicatorTo(activeDesktopLink());
 		};
 
 		if (sections.length > 0 && "IntersectionObserver" in window) {
@@ -376,6 +413,7 @@ const homeHref = localizePath("/", locale);
 	/* Centred desktop nav */
 	.header__nav {
 		display: none;
+		position: relative;
 		align-items: center;
 		justify-content: center;
 		gap: var(--space-2xs);
@@ -392,17 +430,39 @@ const homeHref = localizePath("/", locale);
 		line-height: 1;
 		text-decoration: none;
 		border-radius: var(--radius-button);
+		position: relative;
+		z-index: 1;
 		transition:
-			color var(--transition),
-			background-color var(--transition);
+			color var(--transition);
 	}
 
-	.header__link:hover {
-		color: var(--ink);
+	.header__link:hover,
+	.header__link:focus-visible {
+		color: var(--green-deep);
 	}
 
 	.header__link[aria-current] {
 		color: var(--green-deep);
+	}
+
+	.header__nav-indicator {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 0;
+		height: 2px;
+		border-radius: 999px;
+		background: var(--green);
+		opacity: 0;
+		pointer-events: none;
+		transition:
+			transform 240ms var(--ease-out),
+			width 240ms var(--ease-out),
+			opacity 160ms ease;
+	}
+
+	.header__nav-indicator.is-visible {
+		opacity: 1;
 	}
 
 	/* End cluster */
@@ -620,6 +680,10 @@ const homeHref = localizePath("/", locale);
 
 	@media (prefers-reduced-motion: reduce) {
 		.site-header {
+			transition: none;
+		}
+
+		.header__nav-indicator {
 			transition: none;
 		}
 
