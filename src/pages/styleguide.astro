@@ -10,6 +10,9 @@ import Section from "../components/Section.astro";
 import Step from "../components/Step.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import { site } from "../config/site";
+import { useUi } from "../i18n";
+
+const { locale } = useUi(Astro);
 
 const themeTokens = [
 	{ name: "--page", light: "#FCFEFD", dark: "#0D1612" },
@@ -211,8 +214,9 @@ const steps = [
 				<h2>One family, one scale</h2>
 				<p>
 					Figtree (400, 500, 600, 700) is loaded from this site and used for every piece of
-					Latin text. Amiri is used only for Arabic with <code>lang="ar"</code>. Every
-					component inherits <code>--font</code>. No other font-family is allowed.
+					Latin text. On /ar, IBM Plex Sans Arabic is used for every Arabic UI string, while
+					Amiri is reserved for Qur'anic text. Every component inherits <code>--font</code>.
+					No other font-family is allowed outside the Arabic UI tokens.
 				</p>
 			</div>
 			<ul class="type-scale">
@@ -274,6 +278,63 @@ const steps = [
 			</div>
 		</Container>
 	</Section>
+
+	{
+		locale === "ar" && (
+			<Section space="tight">
+				<Container>
+					<div class="section-head">
+						<Eyebrow>اختيار الخط</Eyebrow>
+						<h2>خط الواجهة العربية: مقارنة</h2>
+						<p>
+							الخط الحالي هو IBM Plex Sans Arabic. البديل هو Cairo. السطور أدناه
+							بالأوزان والأحجام نفسها المستخدمة في الموقع، حتى تختار الأوضح
+							للقراءة.
+						</p>
+					</div>
+					<div class="font-compare">
+						{[
+							{
+								name: "IBM Plex Sans Arabic",
+								note: "الخط الحالي",
+								className: "font-sample--plex",
+							},
+							{
+								name: "Cairo",
+								note: "البديل",
+								className: "font-sample--cairo",
+							},
+						].map((font) => (
+							<article class="font-card">
+								<header class="font-card__head">
+									<span class="font-card__badge">{font.note}</span>
+									<span class="font-card__name" dir="ltr">{font.name}</span>
+								</header>
+								<div
+									class:list={["font-card__sample", font.className]}
+									lang="ar"
+									dir="rtl"
+								>
+									<p class="font-card__h">اتلُ القرآن مع معلم يعرف اسمك.</p>
+									<p class="font-card__body">
+										دروس فردية في التلاوة والتجويد والحفظ. ابدأ بحصة تجريبية
+										مجانية أينما كنت.
+									</p>
+									<p class="font-card__small">
+										حصص كل شهر، والفوترة، وتفاصيل الجدول.
+									</p>
+									<div class="font-card__row">
+										<span class="font-card__pill">تجربة مجانية</span>
+										<span class="font-card__btn">احجز حصة تجريبية</span>
+									</div>
+								</div>
+							</article>
+						))}
+					</div>
+				</Container>
+			</Section>
+		)
+	}
 
 	<Section tone="dark" space="tight">
 		<Container>
@@ -613,6 +674,117 @@ const steps = [
 		.step-grid {
 			grid-template-columns: 1fr;
 			gap: var(--space-lg);
+		}
+	}
+
+	/* Arabic UI font comparison (/styleguide in ar only). */
+	.font-compare {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: var(--space-md);
+	}
+
+	.font-card {
+		display: grid;
+		gap: var(--space-md);
+		padding: var(--space-lg);
+		border: 1px solid var(--line);
+		border-radius: var(--radius-card);
+		background: var(--surface);
+	}
+
+	.font-card__head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-xs);
+		color: var(--ink-muted);
+		font-size: var(--type-small-size);
+	}
+
+	.font-card__badge {
+		display: inline-flex;
+		align-items: center;
+		height: 26px;
+		padding-inline: 10px;
+		border-radius: 999px;
+		background: var(--mint-100);
+		color: var(--green-deep);
+		font-weight: 600;
+	}
+
+	.font-card__name {
+		font-weight: 600;
+		color: var(--ink);
+	}
+
+	.font-card__sample {
+		display: grid;
+		gap: var(--space-sm);
+		direction: rtl;
+		text-align: start;
+	}
+
+	.font-card__h {
+		margin: 0;
+		color: var(--ink);
+		font-size: var(--type-h3-size);
+		font-weight: 700;
+		line-height: 1.45;
+		letter-spacing: 0;
+	}
+
+	.font-card__body {
+		margin: 0;
+		color: var(--ink);
+		font-size: var(--type-body-size);
+		font-weight: 500;
+		line-height: 1.8;
+		letter-spacing: 0;
+	}
+
+	.font-card__small {
+		margin: 0;
+		color: var(--ink-muted);
+		font-size: var(--type-small-size);
+		font-weight: 500;
+		line-height: 1.8;
+		letter-spacing: 0;
+	}
+
+	.font-card__row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-sm);
+	}
+
+	.font-card__pill {
+		display: inline-flex;
+		align-items: center;
+		height: 32px;
+		padding-inline: 14px;
+		border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+		border-radius: 999px;
+		font-size: var(--type-small-size);
+		font-weight: 500;
+	}
+
+	.font-card__btn {
+		display: inline-flex;
+		align-items: center;
+		height: 44px;
+		padding-inline: 20px;
+		border-radius: 999px;
+		background: var(--green);
+		color: var(--on-accent);
+		font-size: var(--type-body-size);
+		font-weight: 500;
+	}
+
+	@media (max-width: 760px) {
+		.font-compare {
+			grid-template-columns: 1fr;
 		}
 	}
 </style>

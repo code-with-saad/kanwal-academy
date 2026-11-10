@@ -93,8 +93,8 @@ function matches(option: BookOption, value: string): boolean {
 
 		<address class="book__contact">
 			<span class="book__contact-label">{contactLabel}</span>
-			<a href={phoneHref(contact.phone)}>{contact.phone}</a>
-			<a href={emailHref(contact.email)}>{contact.email}</a>
+			<a href={phoneHref(contact.phone)}><bdi dir="ltr">{contact.phone}</bdi></a>
+			<a href={emailHref(contact.email)}><bdi dir="ltr">{contact.email}</bdi></a>
 			{wa && <a href={wa} target="_blank" rel="noopener noreferrer">WhatsApp</a>}
 			<span>{contact.address}</span>
 		</address>
@@ -736,8 +736,14 @@ function matches(option: BookOption, value: string): boolean {
 		border-radius: 0 var(--radius-input) var(--radius-input) 0;
 	}
 
+	/* LTR fields (email, phone) stay left-aligned inside the RTL form. */
+	.book__input[dir="ltr"] {
+		text-align: left;
+	}
+
 	.book__phone-wrap {
 		position: relative;
+		direction: ltr;
 	}
 
 	.book__select {

@@ -1,5 +1,6 @@
 ---
 import { formatUsdPrice } from "../utils/price";
+import NumberText from "./NumberText.astro";
 
 export interface PlanCardData {
 	slug?: string;
@@ -32,7 +33,7 @@ interface Props {
 const {
 	plan,
 	revealDelay,
-	periodLabel = "/ month",
+	periodLabel = t.home.pricing_period_label,
 	classesWeekLabel = t.home.pricing_classes_week_label,
 	classesMonthLabel = t.home.pricing_classes_month_label,
 	hoursLabel = t.home.pricing_hours_label,
@@ -64,7 +65,7 @@ const period = plan.billingPeriod ?? periodLabel;
 	<div class="plan-card__body">
 		<h3 class="plan-card__name">{plan.name}</h3>
 		<p class="plan-card__price">
-			<span class="plan-card__amount">{priceLabel}</span>
+			<NumberText class="plan-card__amount" text={priceLabel} />
 			<span class="plan-card__period">{period}</span>
 		</p>
 
@@ -81,7 +82,7 @@ const period = plan.billingPeriod ?? periodLabel;
 					</svg>
 				</span>
 				<span class="plan-card__meta-label">{classesWeekLabel}</span>
-				<span class="plan-card__meta-value">{plan.classesPerWeek}</span>
+				<NumberText class="plan-card__meta-value" text={plan.classesPerWeek} />
 			</li>
 			<li>
 				<span class="plan-card__meta-icon" aria-hidden="true">
@@ -93,7 +94,7 @@ const period = plan.billingPeriod ?? periodLabel;
 					</svg>
 				</span>
 				<span class="plan-card__meta-label">{classesMonthLabel}</span>
-				<span class="plan-card__meta-value">{plan.classesPerMonth}</span>
+				<NumberText class="plan-card__meta-value" text={plan.classesPerMonth} />
 			</li>
 			<li>
 				<span class="plan-card__meta-icon" aria-hidden="true">
@@ -103,7 +104,7 @@ const period = plan.billingPeriod ?? periodLabel;
 					</svg>
 				</span>
 				<span class="plan-card__meta-label">{hoursLabel}</span>
-				<span class="plan-card__meta-value">{plan.hoursPerMonth}</span>
+				<NumberText class="plan-card__meta-value" text={plan.hoursPerMonth} />
 			</li>
 		</ul>
 
@@ -282,6 +283,10 @@ const period = plan.billingPeriod ?? periodLabel;
 
 	.plan-card__cta:hover {
 		background: var(--green-deep);
+	}
+
+	:global(html[dir="rtl"]) .plan-card__cta svg {
+		transform: scaleX(-1);
 	}
 
 	/* Dark theme adjustments for popular card */

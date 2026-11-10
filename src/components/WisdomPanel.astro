@@ -64,7 +64,7 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 		</div>
 		<p class="wisdom__badge" data-reveal="up" data-reveal-delay="200">
 			<span class="wisdom__badge-value">
-				<span data-count-to={yearCount} data-count-suffix={yearSuffix}>{years}</span> years
+				<bdi dir="ltr"><span data-count-to={yearCount} data-count-suffix={yearSuffix}>{years}</span></bdi> {t.stats.yearsShort}
 			</span>
 			<span class="wisdom__badge-label">{badgeLabel}</span>
 		</p>

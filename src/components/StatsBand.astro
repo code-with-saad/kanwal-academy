@@ -3,6 +3,7 @@ import Button from "./Button.astro";
 import Container from "./Container.astro";
 import Eyebrow from "./Eyebrow.astro";
 import { useUi } from "../i18n";
+import { NUMBER_LOCALE, formatNumber, formatNumericText } from "../utils/number";
 
 const { t } = useUi(Astro);
 
@@ -45,7 +46,13 @@ const rings = [
 ];
 ---
 
-<section id="success" class="stats-band" aria-labelledby="success-heading" data-stats-band>
+<section
+	id="success"
+	class="stats-band"
+	aria-labelledby="success-heading"
+	data-stats-band
+	data-number-locale={NUMBER_LOCALE}
+>
 	<Container>
 		<div class="stats-band__panel">
 			<div class="stats-band__copy">
@@ -67,7 +74,7 @@ const rings = [
 								class="ring-cell__ring"
 								viewBox="0 0 100 100"
 								role="img"
-								aria-label={`${ring.stat.raw} ${ring.label}`}
+								aria-label={`${formatNumericText(ring.stat.raw)} ${ring.label}`}
 							>
 								<circle class="ring-cell__track" cx="50" cy="50" r="45" pathLength="100" />
 								<circle
@@ -83,16 +90,16 @@ const rings = [
 								<span class="ring-cell__number">
 									{
 										ring.stat.value !== null ? (
-											<span
-												data-ring-count={String(ring.stat.value)}
-											>{ring.stat.value}</span>
+											<bdi dir="ltr">
+												<span data-ring-count={String(ring.stat.value)}>
+													{formatNumber(ring.stat.value)}
+												</span>
+												{ring.stat.suffix}
+											</bdi>
 										) : (
-											<span>{ring.stat.raw}</span>
+											<bdi dir="ltr">{formatNumericText(ring.stat.raw)}</bdi>
 										)
 									}
-									{ring.stat.suffix && (
-										<span class="ring-cell__suffix">{ring.stat.suffix}</span>
-									)}
 								</span>
 								<span class="ring-cell__label">{ring.label}</span>
 							</span>
@@ -121,6 +128,13 @@ const rings = [
 			const arcs = band.querySelectorAll<SVGCircleElement>("[data-ring-arc]");
 			for (const arc of arcs) arc.classList.add("is-drawing");
 
+			// Same numeral system as the server render, so the count-up stays
+			// in the chosen digit set (Latin or Arabic-Indic).
+			const counterLocale = band.dataset.numberLocale || "en-US";
+			const counterFormat = new Intl.NumberFormat(counterLocale, {
+				maximumFractionDigits: 0,
+			});
+
 			const DURATION = 1600;
 			const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 			for (const el of band.querySelectorAll<HTMLElement>("[data-ring-count]")) {
@@ -129,11 +143,13 @@ const rings = [
 				const start = performance.now();
 				const step = (now: number) => {
 					const progress = Math.min((now - start) / DURATION, 1);
-					el.textContent = String(Math.round(easeOutCubic(progress) * target));
+					el.textContent = counterFormat.format(
+						Math.round(easeOutCubic(progress) * target),
+					);
 					if (progress < 1) requestAnimationFrame(step);
-					else el.textContent = String(target);
+					else el.textContent = counterFormat.format(target);
 				};
-				el.textContent = "0";
+				el.textContent = counterFormat.format(0);
 				requestAnimationFrame(step);
 			}
 		};

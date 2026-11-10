@@ -1,0 +1,30 @@
+---
+/**
+ * NumberText
+ *
+ * Renders a number (or a numeric string such as "5+", "$20" or "[000]+")
+ * inside <bdi dir="ltr">, so it keeps a stable left-to-right order in an RTL
+ * sentence. Digits follow the single NUMERAL_SYSTEM switch in
+ * src/utils/number.ts.
+ *
+ * Use this anywhere a number, price, counter or plus sign is visible.
+ */
+import { formatNumericText } from "../utils/number";
+
+interface Props {
+	/** Visible value. Accepts a number or a pre-formatted string. */
+	text: string | number;
+	/** Optional text before the number, inside the same isolate (for example "$"). */
+	prefix?: string;
+	/** Optional text after the number, inside the same isolate (for example "+"). */
+	suffix?: string;
+	class?: string;
+	/** Accessible label when the visible text alone is ambiguous. */
+	label?: string;
+}
+
+const { text, prefix = "", suffix = "", class: className, label } = Astro.props;
+const rendered = formatNumericText(String(text));
+---
+
+<bdi class={className} dir="ltr" aria-label={label}>{prefix}{rendered}{suffix}</bdi>

@@ -44,16 +44,29 @@ export default defineConfig({
 			fallbacks: ["Arial", "sans-serif"],
 		},
 		{
-			// Arabic interface text. Amiri below stays reserved for Qur'anic
-			// Arabic; a sans is the readable choice for UI copy.
+			// Arabic interface text: IBM Plex Sans Arabic. Arabic and Latin
+			// subsets only, no italic. Amiri below stays reserved for actual
+			// Qur'anic text. Loaded only on /ar (see Base.astro).
 			provider: fontProviders.google(),
-			name: "Noto Sans Arabic",
+			name: "IBM Plex Sans Arabic",
 			cssVariable: "--font-arabic-ui",
-			weights: [400, 500, 600],
+			weights: [400, 500, 600, 700],
 			styles: ["normal"],
-			subsets: ["arabic"],
+			subsets: ["arabic", "latin"],
 			display: "swap",
-			fallbacks: ["Tahoma", "Arial", "sans-serif"],
+			fallbacks: ["Segoe UI", "Tahoma", "Arial", "sans-serif"],
+		},
+		{
+			// Candidate alternate for the /styleguide font comparison only.
+			// Never loaded on public pages.
+			provider: fontProviders.google(),
+			name: "Cairo",
+			cssVariable: "--font-arabic-alt",
+			weights: [400, 500, 600, 700],
+			styles: ["normal"],
+			subsets: ["arabic", "latin"],
+			display: "swap",
+			fallbacks: ["Segoe UI", "Tahoma", "Arial", "sans-serif"],
 		},
 		{
 			provider: fontProviders.google(),

@@ -8,6 +8,8 @@
  * prefers-reduced-motion (the `js-motion` class is not added then).
  */
 
+import { NUMBER_LOCALE } from "../utils/number";
+
 const COUNTER_DURATION = 1400;
 
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
@@ -67,7 +69,7 @@ function startCounter(element: HTMLElement) {
 	const suffix = element.dataset.countSuffix ?? "";
 	const decimals = Number(element.dataset.countDecimals ?? "0");
 	const format = (value: number) =>
-		`${prefix}${value.toLocaleString("en-US", {
+		`${prefix}${value.toLocaleString(NUMBER_LOCALE, {
 			minimumFractionDigits: decimals,
 			maximumFractionDigits: decimals,
 		})}${suffix}`;

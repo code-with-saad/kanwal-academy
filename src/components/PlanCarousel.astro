@@ -9,6 +9,7 @@
  */
 import Button from "./Button.astro";
 import ImagePlaceholder from "./ImagePlaceholder.astro";
+import NumberText from "./NumberText.astro";
 import { heroImage } from "../config/images";
 import type { PlanCardData } from "./PlanCard.astro";
 import { formatUsdPrice } from "../utils/price";
@@ -25,6 +26,12 @@ interface Props {
 const { plans, initialIndex = 0 } = Astro.props;
 const last = Math.max(plans.length - 1, 0);
 const start = Math.min(Math.max(initialIndex, 0), last);
+
+const statusText = (name: string, index: number, total: number) =>
+	t.a11y.planStatus
+		.replace("{name}", name)
+		.replace("{index}", String(index + 1))
+		.replace("{total}", String(total));
 ---
 
 <div class="plan-carousel" data-plan-carousel data-plan-start={start}>
@@ -50,22 +57,22 @@ const start = Math.min(Math.max(initialIndex, 0), last);
 					</div>
 
 					<p class="plan-carousel__price">
-						<span class="plan-carousel__amount">{formatUsdPrice(plan.price)}</span>
+						<NumberText class="plan-carousel__amount" text={formatUsdPrice(plan.price)} />
 						<span class="plan-carousel__period">{t.home.pricing_period_label}</span>
 					</p>
 
 					<dl class="plan-carousel__meta">
 						<div>
 							<dt>{t.home.pricing_classes_week_label}</dt>
-							<dd>{plan.classesPerWeek}</dd>
+							<dd><NumberText text={plan.classesPerWeek} /></dd>
 						</div>
 						<div>
 							<dt>{t.home.pricing_classes_month_label}</dt>
-							<dd>{plan.classesPerMonth}</dd>
+							<dd><NumberText text={plan.classesPerMonth} /></dd>
 						</div>
 						<div>
 							<dt>{t.home.pricing_hours_label}</dt>
-							<dd>{plan.hoursPerMonth}</dd>
+							<dd><NumberText text={plan.hoursPerMonth} /></dd>
 						</div>
 					</dl>
 
@@ -85,7 +92,11 @@ const start = Math.min(Math.max(initialIndex, 0), last);
 		}
 	</div>
 
-	<div class="plan-carousel__nav" data-plan-nav dir={locale === 'ar' ? 'ltr' : undefined}>
+	<div
+		class="plan-carousel__nav"
+		data-plan-nav
+		data-status-template={t.a11y.planStatus}
+	>
 		<button type="button" class="plan-carousel__arrow" data-plan-prev aria-label={t.a11y.previousPlan}>
 			<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false">
 				<path
@@ -99,7 +110,7 @@ const start = Math.min(Math.max(initialIndex, 0), last);
 			</svg>
 		</button>
 		<p class="plan-carousel__status" data-plan-status role="status">
-			{plans[start] ? `${plans[start].name}, plan ${start + 1} of ${plans.length}` : ""}
+			{plans[start] ? statusText(plans[start].name, start, plans.length) : ""}
 		</p>
 		<button type="button" class="plan-carousel__arrow" data-plan-next aria-label={t.a11y.nextPlan}>
 			<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false">
@@ -131,6 +142,9 @@ const start = Math.min(Math.max(initialIndex, 0), last);
 		const prev = root.querySelector<HTMLButtonElement>("[data-plan-prev]");
 		const next = root.querySelector<HTMLButtonElement>("[data-plan-next]");
 		const status = root.querySelector<HTMLElement>("[data-plan-status]");
+		const statusTemplate =
+			root.querySelector<HTMLElement>("[data-plan-nav]")?.dataset.statusTemplate ??
+			"{name}, plan {index} of {total}";
 		const count = panels.length;
 		let index = Number(root.dataset.planStart ?? 0);
 		if (!Number.isFinite(index) || index < 0 || index >= count) index = 0;
@@ -149,7 +163,12 @@ const start = Math.min(Math.max(initialIndex, 0), last);
 				}
 			});
 			const name = panels[index]?.querySelector("[data-plan-name]")?.textContent?.trim();
-			if (status && name) status.textContent = `${name}, plan ${index + 1} of ${count}`;
+			if (status && name) {
+				status.textContent = statusTemplate
+					.replace("{name}", name)
+					.replace("{index}", String(index + 1))
+					.replace("{total}", String(count));
+			}
 		};
 
 		prev?.addEventListener("click", () => {
@@ -313,6 +332,12 @@ const start = Math.min(Math.max(initialIndex, 0), last);
 		border-color: var(--sage);
 		background: var(--sage);
 		color: var(--bg-dark);
+	}
+
+	/* In RTL the nav reverses visually; mirror each chevron so it still
+	 * points towards the direction it moves. */
+	:global(html[dir="rtl"]) .plan-carousel__arrow svg {
+		transform: scaleX(-1);
 	}
 
 	.plan-carousel__status {

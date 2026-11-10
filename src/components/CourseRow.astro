@@ -1,5 +1,6 @@
 ---
 import Chip from "./Chip.astro";
+import NumberText from "./NumberText.astro";
 
 interface Props {
 	index: number;
@@ -26,7 +27,7 @@ const bookAttrs = prefillCourse
 		class:list={["course-row__link", "lift", arabic && "course-row__link--arabic"]}
 		{...bookAttrs}
 	>
-		<span class="course-row__index" aria-hidden="true">{number}</span>
+		<span class="course-row__index" aria-hidden="true"><NumberText text={number} /></span>
 		<span class="course-row__body">
 			<span class="course-row__head">
 				<span class="course-row__title">{title}</span>
@@ -183,6 +184,11 @@ const bookAttrs = prefillCourse
 	.course-row__link:hover .course-row__arrow,
 	.course-row__link:focus-visible .course-row__arrow {
 		transform: translateX(3px);
+	}
+
+	:global(html[dir="rtl"]) .course-row__link:hover .course-row__arrow,
+	:global(html[dir="rtl"]) .course-row__link:focus-visible .course-row__arrow {
+		transform: translateX(-3px);
 	}
 
 	@media (max-width: 620px) {

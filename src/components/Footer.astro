@@ -118,8 +118,8 @@ const academyLinks = [
 				</h2>
 				<address class="footer__address">
 					<span {...settingsEdit?.address}>{contact.address}</span>
-					<a href={phoneHref(contact.phone)} {...settingsEdit?.phone}>{contact.phone}</a>
-					<a href={emailHref(contact.email)} {...settingsEdit?.email}>{contact.email}</a>
+					<a href={phoneHref(contact.phone)} {...settingsEdit?.phone}><bdi dir="ltr">{contact.phone}</bdi></a>
+					<a href={emailHref(contact.email)} {...settingsEdit?.email}><bdi dir="ltr">{contact.email}</bdi></a>
 				</address>
 			</div>
 		</div>
@@ -140,7 +140,7 @@ const academyLinks = [
 
 		<div class="footer__bottom">
 			<p class="footer__copy">
-				&copy; {year} {siteName}. <span {...settingsEdit?.footer_copyright_label}>{contact.footer.copyrightLabel}</span>
+				<bdi dir="ltr">&copy; {year}</bdi> {siteName}. <span {...settingsEdit?.footer_copyright_label}>{contact.footer.copyrightLabel}</span>
 			</p>
 			<ul class="footer__legal">
 				{

@@ -192,6 +192,11 @@ const turnstileSiteKey = String(
 		transition: border-color var(--transition);
 	}
 
+	/* The email field is LTR even though the footer may be RTL. */
+	.newsletter__input[dir="ltr"] {
+		text-align: left;
+	}
+
 	.newsletter__input[aria-invalid="true"] {
 		border-color: #b3261e;
 	}

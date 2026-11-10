@@ -146,6 +146,15 @@ const latest = posts.slice(0, 3);
 		transform: translateX(2px);
 	}
 
+	:global(html[dir="rtl"]) .post-card__more svg {
+		transform: scaleX(-1);
+	}
+
+	:global(html[dir="rtl"]) .post-card__more:hover svg,
+	:global(html[dir="rtl"]) .post-card__more:focus-visible svg {
+		transform: scaleX(-1) translateX(2px);
+	}
+
 	.posts-grid__action {
 		grid-column: 1 / -1;
 		justify-self: center;

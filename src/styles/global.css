@@ -3,9 +3,11 @@
  *
  * One stylesheet for the whole site. Component-specific rules live in the
  * Astro component that owns them. The font pipeline in astro.config.mjs
- * (Figtree, Amiri) exposes --font-body and --font-arabic. Every element
- * inherits --font; Amiri is used only on [lang="ar"] text. This file is the
- * only place that may declare a font-family (enforced by pnpm check:fonts).
+ * (Figtree, IBM Plex Sans Arabic, Amiri) exposes --font-body,
+ * --font-arabic-ui and --font-arabic. Every element inherits --font; the
+ * Arabic UI font is used on html[lang="ar"], and Amiri is reserved for
+ * Qur'anic text. This file is the only place that may declare a
+ * font-family (enforced by pnpm check:fonts).
  */
 
 :root {
@@ -33,8 +35,9 @@
 	--band: var(--mint-100);
 	--surface-2: var(--mint-50);
 
-	/* Typography: one family, one scale. Figtree is served from this site
-	 * (Astro downloads it at build time), Amiri is only for Arabic. */
+	/* Typography: one Latin family, one Arabic UI family, one Qur'anic
+	 * family. All three are served from this site and downloaded at build
+	 * time. --font-arabic-ui is only defined on /ar. */
 	--font: var(--font-body, "Figtree", Arial, sans-serif);
 	--font-arabic-fallback: "Amiri", "Traditional Arabic", serif;
 	--type-display-size: clamp(2.25rem, 5.2vw, 3.5rem); /* 36 to 56 */
@@ -299,15 +302,186 @@ button {
 	color: var(--ink);
 }
 
+/*
+ * Arabic UI text uses IBM Plex Sans Arabic. The variable is only defined on
+ * /ar (Base.astro loads it there), so a short `lang="ar"` fragment on an
+ * English page uses the platform Arabic sans instead of downloading the UI
+ * family. Amiri is never used here; it is reserved for `.arabic` Qur'anic text.
+ */
 html[lang="ar"],
 [lang="ar"] {
-	font-family: var(--font-arabic-ui, var(--font));
+	font-family: var(--font-arabic-ui, "Segoe UI", Tahoma, Arial, sans-serif);
 	direction: rtl;
 	unicode-bidi: plaintext;
 }
 
+/* Arabic UI: heavier body, stronger headings, higher-contrast muted text. */
+html[lang="ar"] :is(h1, h2, h3, h4, h5, h6) {
+	font-weight: 700;
+}
+
+html[lang="ar"] body {
+	font-weight: 500;
+	line-height: var(--type-body-line);
+}
+
+/* Nothing lighter than 400, no italics, no tracking and no uppercase in
+ * Arabic: tracking breaks the joins between letters. */
+html[lang="ar"] :where(body, body *) {
+	letter-spacing: 0 !important;
+	text-transform: none !important;
+	font-style: normal !important;
+}
+
+/* Arabic scale: about 10 to 15 percent larger than the Latin equivalent,
+ * with taller line heights for the marks above and below the letters. */
+html[lang="ar"] {
+	--type-display-size: clamp(2.5rem, 5.6vw, 3.875rem); /* 40 to 62 */
+	--type-display-line: 1.4;
+	--type-display-weight: 700;
+	--type-h2-size: clamp(1.9375rem, 3.9vw, 2.75rem); /* 31 to 44 */
+	--type-h2-line: 1.45;
+	--type-h2-weight: 700;
+	--type-h3-size: clamp(1.375rem, 2.1vw, 1.625rem); /* 22 to 26 */
+	--type-h3-line: 1.5;
+	--type-h3-weight: 600;
+	--type-lead-size: 1.3125rem; /* 21 */
+	--type-lead-line: 1.8;
+	--type-body-size: 1.1875rem; /* 19 */
+	--type-body-line: 1.8;
+	--type-small-size: 1rem; /* 16 */
+	--type-small-line: 1.8;
+	--type-eyebrow-size: 0.9375rem; /* 15 */
+	--type-eyebrow-line: 1.5;
+	--type-eyebrow-tracking: 0;
+	--weight-heading-highlight: 600;
+}
+
+html[lang="ar"] :is(h1, h2, h3, h4, h5, h6) {
+	line-height: 1.45;
+}
+
+html[lang="ar"] :is(p, li, dd, dt, label) {
+	line-height: 1.8;
+}
+
+/* Components that carry their own line-height or size.
+ * The explicit selectors out-specify the scoped component rules. */
+html[lang="ar"] :is(
+	.hero__headline,
+	.course-row__title,
+	.footer__news-heading,
+	.book__form-title,
+	.plan-card__name,
+	.plan-card__amount,
+	.plan-carousel__name,
+	.plan-carousel__amount,
+	.header__name,
+	.tm-name
+) {
+	letter-spacing: 0 !important;
+	line-height: 1.45;
+}
+
+html[lang="ar"] .hero__headline {
+	font-size: clamp(2.5rem, 4.6vw, 3.8125rem); /* 40 to 61 */
+}
+
+html[lang="ar"] .eyebrow {
+	line-height: var(--type-eyebrow-line);
+}
+
+/* Small UI text that is hard-coded in components: lift it for Arabic. */
+html[lang="ar"] .feature-card__chip {
+	height: 30px;
+	padding-inline: 12px;
+	font-size: 0.875rem;
+}
+
+html[lang="ar"] .feature-card__title {
+	font-size: 1.125rem;
+}
+
+html[lang="ar"] .feature-card__text {
+	font-size: 1rem;
+	line-height: 1.75;
+}
+
+html[lang="ar"] .course-pill {
+	font-size: 0.9375rem;
+}
+
+html[lang="ar"] .course-row__level {
+	font-size: 0.875rem;
+}
+
+html[lang="ar"] .plan-card__badge {
+	height: 32px;
+	padding-inline: 14px;
+	font-size: 0.875rem;
+}
+
+html[lang="ar"] .ring-cell__number {
+	font-size: 2rem;
+}
+
+html[lang="ar"] .ring-cell__label {
+	font-size: 0.8125rem;
+	line-height: 1.45;
+}
+
+html[lang="ar"] .trial-steps__card-text,
+html[lang="ar"] .tm-quote p {
+	line-height: 1.85;
+}
+
+html[lang="ar"] .tm-quote p {
+	font-size: 1.25rem;
+}
+
+html[lang="ar"] .tm-title {
+	font-size: 1.25rem;
+}
+
+html[lang="ar"] .tm-item[aria-selected="true"] .tm-name {
+	font-size: 1.35rem;
+	letter-spacing: 0 !important;
+}
+
+html[lang="ar"] .tm-rating {
+	font-size: 0.9rem;
+}
+
+html[lang="ar"] .tm-item[aria-selected="true"] .tm-rating {
+	font-size: 1rem;
+}
+
+/* Muted text on the mint hero needs a little more weight to stay legible. */
+html[lang="ar"] .hero__reach {
+	color: var(--ink);
+	font-weight: 500;
+}
+
+/* The phone field is always LTR, even inside the RTL form. */
+.book__phone-wrap {
+	direction: ltr;
+}
+
+html[lang="ar"]:not([data-theme="dark"]) {
+	--ink-muted: #44564c; /* ~7.7:1 on the page, up from #5a6c63 ~5.5:1 */
+}
+
 .arabic {
 	font-family: var(--font-arabic, var(--font-arabic-fallback));
+}
+
+/* /styleguide comparison samples (font-family only lives in this file). */
+.font-sample--plex {
+	font-family: var(--font-arabic-ui, var(--font-arabic, var(--font-arabic-fallback)));
+}
+
+.font-sample--cairo {
+	font-family: var(--font-arabic-alt, var(--font-arabic, var(--font-arabic-fallback)));
 }
 
 /* Highlighted word inside a heading: weight 500 in --green-deep. */

@@ -43,6 +43,7 @@ export const en = {
 		planSelector: "Plan selector",
 		previousPlan: "Previous plan",
 		nextPlan: "Next plan",
+		planStatus: "{name}, plan {index} of {total}",
 		previousReview: "Previous review",
 		nextReview: "Next review",
 		switchToDark: "Switch to dark theme",
@@ -50,6 +51,7 @@ export const en = {
 	},
 	stats: {
 		years: "Years teaching",
+		yearsShort: "years",
 		countries: "Countries served",
 		students: "Students taught",
 		sessions: "Sessions delivered",

@@ -1,5 +1,6 @@
 ---
 import { useUi } from "../i18n";
+import NumberText from "./NumberText.astro";
 
 const { t } = useUi(Astro);
 
@@ -59,7 +60,7 @@ const {
 					data-reveal="up"
 					data-reveal-delay={200 + i * 120}
 				>
-					<span class="trial-steps__number" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+					<span class="trial-steps__number" aria-hidden="true"><NumberText text={String(i + 1).padStart(2, "0")} /></span>
 
 					<div class="trial-steps__icon" aria-hidden="true">
 						{(step.icon ?? icons[i] ?? "book-trial") === "book-trial" && (
@@ -110,7 +111,7 @@ const {
 					data-reveal-delay={200 + i * 120}
 				>
 					<div class="trial-steps__mobile-rail">
-						<span class="trial-steps__number" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+						<span class="trial-steps__number" aria-hidden="true"><NumberText text={String(i + 1).padStart(2, "0")} /></span>
 						<span class="trial-steps__connector" aria-hidden="true"></span>
 					</div>
 					<div class="trial-steps__mobile-card">

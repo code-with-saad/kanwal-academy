@@ -1,5 +1,6 @@
 ---
 import type { FieldAnnotation } from "emdash";
+import NumberText from "./NumberText.astro";
 
 interface Props {
 	number: number;
@@ -14,7 +15,7 @@ const label = String(number).padStart(2, "0");
 ---
 
 <li class="step" data-reveal="up">
-	<span class="step__number" aria-hidden="true">{label}</span>
+	<span class="step__number" aria-hidden="true"><NumberText text={label} /></span>
 	<h3 class="step__title" {...titleEdit}>{title}</h3>
 	<p class="step__body" {...bodyEdit}>{body}</p>
 </li>

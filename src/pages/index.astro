@@ -23,6 +23,7 @@ import { heroImage } from "../config/images";
 import { getSiteContact } from "../utils/site-config";
 import { isDemoMode } from "../utils/env";
 import { formatUsdPrice } from "../utils/price";
+import { hasDigits, isolateLtr } from "../utils/number";
 import { getLocalizedCollection, localizePath, useUi } from "../i18n";
 import type { Page } from "../../emdash-env";
 
@@ -198,7 +199,8 @@ const toPlanCard = (plan: (typeof plans)[number]) => ({
 	name: getPlanName(plan),
 	price: plan.data.price,
 	currencySymbol: plan.data.currency_symbol ?? "$",
-	billingPeriod: plan.data.billing_period ?? "/ month",
+	// The CMS stores an English "/ month"; Arabic uses the localized label.
+	billingPeriod: locale === "en" ? (plan.data.billing_period ?? "/ month") : undefined,
 	classesPerWeek: plan.data.classes_per_week,
 	classesPerMonth: plan.data.classes_per_month,
 	hoursPerMonth: plan.data.hours_per_month,
@@ -210,10 +212,15 @@ const lowestPlanPrice = plans.length
 	: 20;
 
 // Build the four floating feature cards from CMS values, interpolating dynamic tokens.
+// Numeric tokens are wrapped in an LTR isolate so "5+" and "$20" keep their
+// order inside the Arabic sentence instead of rendering as "+5" and "20$".
 const replaceTokens = (template: string, tokens: Record<string, string | number>) =>
-	template.replace(/\{(\w+)\}/g, (match, key) =>
-		tokens[key] !== undefined ? String(tokens[key]) : match,
-	);
+	template.replace(/\{(\w+)\}/g, (match, key) => {
+		const value = tokens[key];
+		if (value === undefined) return match;
+		const text = String(value);
+		return hasDigits(text) ? isolateLtr(text) : text;
+	});
 
 const featureTokens = {
 	countries: contact.stats.countries,
@@ -914,6 +921,10 @@ const hasTestimonials = testimonials.length > 0 || demo;
 		transform: translateY(-1px);
 	}
 
+	:global(html[dir="rtl"]) .hero__cta svg {
+		transform: scaleX(-1);
+	}
+
 	@media (min-width: 1024px) {
 		.hero__cta {
 			display: none;
@@ -1049,6 +1060,11 @@ const hasTestimonials = testimonials.length > 0 || demo;
 		background: var(--green);
 		color: var(--on-accent);
 		transform: translateX(2px);
+	}
+
+	:global(html[dir="rtl"]) .course-pill:hover,
+	:global(html[dir="rtl"]) .course-pill:focus-visible {
+		transform: translateX(-2px);
 	}
 
 	.course-pill__icon {

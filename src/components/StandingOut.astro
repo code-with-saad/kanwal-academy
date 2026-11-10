@@ -1,5 +1,6 @@
 ---
 import { useUi } from "../i18n";
+import NumberText from "./NumberText.astro";
 
 const { t } = useUi(Astro);
 
@@ -59,7 +60,7 @@ const {
 					data-reveal-delay={120 + index * 100}
 				>
 					<span class="standing__tab" aria-hidden="true">
-						{String(index + 1).padStart(2, "0")}
+						<NumberText text={String(index + 1).padStart(2, "0")} />
 					</span>
 
 					<span class="standing__icon" aria-hidden="true">

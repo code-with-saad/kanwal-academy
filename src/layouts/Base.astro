@@ -198,7 +198,26 @@ const pageCtx = createPublicPageContext({
 		}
 		<EmDashHead page={pageCtx} />
 		<Font cssVariable="--font-body" preload />
-		<Font cssVariable="--font-arabic-ui" preload={locale === "ar"} />
+		{
+			// The Arabic UI font ships only on /ar. Preload just the two
+			// weights used above the fold (body 500, headings 700); the rest
+			// stay font-display: swap. English pages never fetch this family.
+			locale === "ar" && (
+				<Font
+					cssVariable="--font-arabic-ui"
+					preload={[
+						{ weight: 500, subset: "arabic" },
+						{ weight: 700, subset: "arabic" },
+					]}
+				/>
+			)
+		}
+		{
+			// /ar/styleguide only: the Cairo comparison sample.
+			locale === "ar" && routePath === "/styleguide" && (
+				<Font cssVariable="--font-arabic-alt" />
+			)
+		}
 		<Font cssVariable="--font-arabic" />
 	</head>
 	<body

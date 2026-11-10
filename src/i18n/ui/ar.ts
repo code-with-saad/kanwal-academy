@@ -38,6 +38,7 @@ export const ar: UiDictionary = {
 		planSelector: "اختيار الخطة",
 		previousPlan: "الخطة السابقة",
 		nextPlan: "الخطة التالية",
+		planStatus: "{name}، الخطة {index} من {total}",
 		previousReview: "الرأي السابق",
 		nextReview: "الرأي التالي",
 		switchToDark: "التبديل إلى المظهر الداكن",
@@ -45,6 +46,7 @@ export const ar: UiDictionary = {
 	},
 	stats: {
 		years: "سنوات التدريس",
+		yearsShort: "سنوات",
 		countries: "الدول التي نخدمها",
 		students: "طلاب درسوا معنا",
 		sessions: "الحصص المقدمة",
