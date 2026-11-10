@@ -229,7 +229,7 @@ export const ar: UiDictionary = {
 		about_image_alt: "طالب يتلو القرآن خلال درس مباشر عبر الإنترنت",
 		standing_eyebrow: "ما يميزنا",
 		standing_heading: "ما يميزنا",
-		standing_item_1_title: "جداول مخصصة",
+		standing_item_1_title: "جداول زمنية مخصصة",
 		standing_item_1_text:
 			"تختار الأيام والأوقات التي تناسب أسبوعك، ويحتفظ معلمك بهذا الموعد لك.",
 		standing_item_2_title: "معلمون مؤهلون لتعليم القرآن",

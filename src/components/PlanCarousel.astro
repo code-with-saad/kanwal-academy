@@ -85,7 +85,7 @@ const start = Math.min(Math.max(initialIndex, 0), last);
 		}
 	</div>
 
-	<div class="plan-carousel__nav" data-plan-nav>
+	<div class="plan-carousel__nav" data-plan-nav dir={locale === 'ar' ? 'ltr' : undefined}>
 		<button type="button" class="plan-carousel__arrow" data-plan-prev aria-label={t.a11y.previousPlan}>
 			<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false">
 				<path
@@ -313,10 +313,6 @@ const start = Math.min(Math.max(initialIndex, 0), last);
 		border-color: var(--sage);
 		background: var(--sage);
 		color: var(--bg-dark);
-	}
-
-	:global(html[dir="rtl"]) .plan-carousel__arrow svg {
-		transform: scaleX(-1);
 	}
 
 	.plan-carousel__status {

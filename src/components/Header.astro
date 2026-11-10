@@ -97,7 +97,9 @@ const homeHref = localizePath("/", locale);
 		</nav>
 
 		<div class="header__end">
-			<LanguageSwitcher paths={languagePaths} />
+			<div class="header__language header__language--header">
+				<LanguageSwitcher paths={languagePaths} />
+			</div>
 			<ThemeToggle />
 			<div class="header__cta-wrap">
 				<button type="button" class="header__cta-btn btn-primary" data-book-cta>
@@ -156,7 +158,9 @@ const homeHref = localizePath("/", locale);
 			}
 		</nav>
 		<div class="header__panel-end">
-			<LanguageSwitcher paths={languagePaths} />
+			<div class="header__language header__language--panel">
+				<LanguageSwitcher paths={languagePaths} />
+			</div>
 			<ThemeToggle />
 			<button type="button" class="header__cta-btn btn-primary" data-book-cta>
 				{cta.label}
@@ -541,6 +545,10 @@ const homeHref = localizePath("/", locale);
 		border-top: 1px solid var(--line);
 	}
 
+	.header__language--panel {
+		display: none;
+	}
+
 	.header__scrim {
 		position: fixed;
 		inset: 0;
@@ -572,6 +580,16 @@ const homeHref = localizePath("/", locale);
 		}
 	}
 
+	@media (max-width: 1023px) {
+		.header__language--header {
+			display: none;
+		}
+
+		.header__language--panel {
+			display: inline-flex;
+		}
+	}
+
 	@media (min-width: 1024px) {
 		.header__nav {
 			display: flex;
@@ -587,6 +605,10 @@ const homeHref = localizePath("/", locale);
 
 		.header__panel,
 		.header__panel.is-open {
+			display: none;
+		}
+
+		.header__language--panel {
 			display: none;
 		}
 
