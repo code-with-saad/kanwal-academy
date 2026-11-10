@@ -203,7 +203,7 @@ const rings = [
 	}
 
 	.stats-band__copy p {
-		color: var(--ink-muted);
+		color: var(--type-copy-color);
 	}
 
 	.stats-band__cta {
@@ -268,8 +268,8 @@ const rings = [
 	}
 
 	.ring-cell__number {
-		font-size: 30px;
-		font-weight: 600;
+		font-size: clamp(1.375rem, 3vw, var(--type-stat-size));
+		font-weight: var(--type-stat-weight);
 		line-height: 1.1;
 		color: var(--ink);
 		/* Fixed-width digits so the count-up does not jitter. */
@@ -277,9 +277,10 @@ const rings = [
 	}
 
 	.ring-cell__label {
-		font-size: var(--type-small-size);
+		font-size: var(--type-stat-label-size);
 		font-weight: 500;
-		color: var(--ink-muted);
+		line-height: var(--type-small-line);
+		color: var(--type-copy-color);
 	}
 
 	@media (max-width: 900px) {
@@ -307,7 +308,7 @@ const rings = [
 		.ring-cell__label {
 			font-size: var(--type-eyebrow-size);
 			max-width: 90px;
-			line-height: 1.2;
+			line-height: 1.4;
 			white-space: normal;
 			overflow-wrap: break-word;
 		}
@@ -344,7 +345,7 @@ const rings = [
 		}
 
 		.ring-cell__label {
-			font-size: 10px;
+			font-size: var(--type-eyebrow-size);
 		}
 	}
 
@@ -359,7 +360,7 @@ const rings = [
 		}
 
 		.ring-cell__label {
-			font-size: 9px;
+			font-size: var(--type-eyebrow-size);
 		}
 	}
 </style>

@@ -207,9 +207,9 @@ const academyLinks = [
 	.footer__description {
 		max-width: 36ch;
 		margin-top: var(--space-md);
-		color: var(--ink-muted);
+		color: var(--type-copy-color);
 		font-size: var(--type-small-size);
-		line-height: 1.6;
+		line-height: var(--type-small-line);
 	}
 
 	.footer__heading {
@@ -227,7 +227,7 @@ const academyLinks = [
 
 	.footer__links a,
 	.footer__address a {
-		color: var(--ink-muted);
+		color: var(--type-copy-color);
 		font-size: var(--type-small-size);
 		text-decoration: none;
 		transition: color var(--transition);
@@ -241,10 +241,10 @@ const academyLinks = [
 	.footer__address {
 		display: grid;
 		gap: var(--space-xs);
-		color: var(--ink-muted);
+		color: var(--type-copy-color);
 		font-size: var(--type-small-size);
 		font-style: normal;
-		line-height: 1.6;
+		line-height: var(--type-small-line);
 	}
 
 	.footer__news {
@@ -260,21 +260,22 @@ const academyLinks = [
 	.footer__news-copy {
 		display: grid;
 		gap: var(--space-sm);
+		min-width: 0;
 	}
 
 	.footer__news-heading {
 		margin: 0;
 		color: var(--ink);
 		font-size: var(--type-h3-size);
-		font-weight: 500;
-		line-height: 1.25;
+		font-weight: var(--type-card-title-weight);
+		line-height: var(--type-card-title-line);
 	}
 
 	.footer__news-consent {
 		margin: 0;
-		color: var(--ink-muted);
+		color: var(--type-copy-color);
 		font-size: var(--type-small-size);
-		line-height: 1.6;
+		line-height: var(--type-small-line);
 		max-width: 40ch;
 	}
 
@@ -292,6 +293,7 @@ const academyLinks = [
 		justify-self: start;
 		width: 100%;
 		max-width: 480px;
+		min-width: 0;
 	}
 
 	.footer__bottom {
@@ -302,7 +304,7 @@ const academyLinks = [
 		gap: var(--space-md);
 		padding-top: var(--space-lg);
 		border-top: 1px solid var(--line);
-		color: var(--ink-muted);
+		color: var(--type-copy-color);
 		font-size: var(--type-small-size);
 	}
 
@@ -317,7 +319,7 @@ const academyLinks = [
 	}
 
 	.footer__legal a {
-		color: var(--ink-muted);
+		color: var(--type-copy-color);
 		text-decoration: none;
 	}
 
@@ -336,7 +338,7 @@ const academyLinks = [
 		}
 
 		.footer__news {
-			grid-template-columns: 1fr;
+			grid-template-columns: minmax(0, 1fr);
 		}
 	}
 

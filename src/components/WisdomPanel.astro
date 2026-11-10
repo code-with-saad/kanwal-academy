@@ -145,15 +145,15 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 	.wisdom__badge-value {
 		color: var(--ink);
 		font-size: var(--type-h3-size);
-		font-weight: 500;
+		font-weight: var(--type-card-title-weight);
 		line-height: 1.1;
 		letter-spacing: -0.01em;
 	}
 
 	.wisdom__badge-label {
-		color: var(--ink-muted);
+		color: var(--type-copy-color);
 		font-size: var(--type-small-size);
-		line-height: 1.2;
+		line-height: var(--type-small-line);
 	}
 
 	.wisdom__copy {
@@ -168,7 +168,7 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 
 	.wisdom__copy p {
 		max-width: 50ch;
-		color: var(--ink-muted);
+		color: var(--type-copy-color);
 	}
 
 	.wisdom__actions {

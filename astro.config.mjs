@@ -57,18 +57,6 @@ export default defineConfig({
 			fallbacks: ["Segoe UI", "Tahoma", "Arial", "sans-serif"],
 		},
 		{
-			// Candidate alternate for the /styleguide font comparison only.
-			// Never loaded on public pages.
-			provider: fontProviders.google(),
-			name: "Cairo",
-			cssVariable: "--font-arabic-alt",
-			weights: [400, 500, 600, 700],
-			styles: ["normal"],
-			subsets: ["arabic", "latin"],
-			display: "swap",
-			fallbacks: ["Segoe UI", "Tahoma", "Arial", "sans-serif"],
-		},
-		{
 			provider: fontProviders.google(),
 			name: "Amiri",
 			cssVariable: "--font-arabic",

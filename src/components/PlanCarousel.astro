@@ -9,10 +9,10 @@
  */
 import Button from "./Button.astro";
 import ImagePlaceholder from "./ImagePlaceholder.astro";
-import NumberText from "./NumberText.astro";
 import { heroImage } from "../config/images";
 import type { PlanCardData } from "./PlanCard.astro";
 import { formatUsdPrice } from "../utils/price";
+import { formatNumericText } from "../utils/number";
 
 import { localizePath, useUi } from "../i18n";
 
@@ -57,22 +57,22 @@ const statusText = (name: string, index: number, total: number) =>
 					</div>
 
 					<p class="plan-carousel__price">
-						<NumberText class="plan-carousel__amount" text={formatUsdPrice(plan.price)} />
+						<bdi class="plan-carousel__amount" dir="ltr">{formatUsdPrice(plan.price)}</bdi>
 						<span class="plan-carousel__period">{t.home.pricing_period_label}</span>
 					</p>
 
 					<dl class="plan-carousel__meta">
 						<div>
 							<dt>{t.home.pricing_classes_week_label}</dt>
-							<dd><NumberText text={plan.classesPerWeek} /></dd>
+							<dd>{formatNumericText(String(plan.classesPerWeek))}</dd>
 						</div>
 						<div>
 							<dt>{t.home.pricing_classes_month_label}</dt>
-							<dd><NumberText text={plan.classesPerMonth} /></dd>
+							<dd>{formatNumericText(String(plan.classesPerMonth))}</dd>
 						</div>
 						<div>
 							<dt>{t.home.pricing_hours_label}</dt>
-							<dd><NumberText text={plan.hoursPerMonth} /></dd>
+							<dd>{formatNumericText(String(plan.hoursPerMonth))}</dd>
 						</div>
 					</dl>
 
@@ -235,6 +235,8 @@ const statusText = (name: string, index: number, total: number) =>
 
 	.plan-carousel__name {
 		font-size: var(--type-h3-size);
+		font-weight: var(--type-plan-name-weight);
+		line-height: var(--type-h3-line);
 	}
 
 	.plan-carousel__badge {
@@ -259,7 +261,7 @@ const statusText = (name: string, index: number, total: number) =>
 
 	.plan-carousel__amount {
 		font-size: var(--type-display-size);
-		font-weight: 600;
+		font-weight: var(--type-price-weight);
 		line-height: 1;
 		letter-spacing: -0.02em;
 	}
@@ -290,7 +292,7 @@ const statusText = (name: string, index: number, total: number) =>
 
 	.plan-carousel__meta dd {
 		margin: 0;
-		font-weight: 600;
+		font-weight: var(--type-meta-value-weight);
 	}
 
 	.plan-carousel__cta {

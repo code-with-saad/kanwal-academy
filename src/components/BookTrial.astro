@@ -619,7 +619,7 @@ function matches(option: BookOption, value: string): boolean {
 
 	.book__lead {
 		max-width: 46ch;
-		color: var(--ink-muted);
+		color: var(--type-copy-color);
 	}
 
 	.book__contact {
@@ -628,7 +628,7 @@ function matches(option: BookOption, value: string): boolean {
 		margin-top: var(--space-sm);
 		padding-top: var(--space-lg);
 		border-top: 1px solid var(--line);
-		color: var(--ink-muted);
+		color: var(--type-copy-color);
 		font-style: normal;
 	}
 
@@ -651,8 +651,9 @@ function matches(option: BookOption, value: string): boolean {
 
 	.book__note {
 		max-width: 44ch;
-		color: var(--ink-muted);
+		color: var(--type-copy-color);
 		font-size: var(--type-small-size);
+		line-height: var(--type-small-line);
 	}
 
 	/* ---- Form card -------------------------------------------------------- */
@@ -672,14 +673,15 @@ function matches(option: BookOption, value: string): boolean {
 	.book__form-title {
 		margin: 0;
 		font-size: var(--type-h3-size);
-		font-weight: 500;
-		line-height: 1.25;
+		font-weight: var(--type-card-title-weight);
+		line-height: var(--type-card-title-line);
 	}
 
 	.book__form-sub {
 		margin: calc(-1 * var(--space-xs)) 0 0;
-		color: var(--ink-muted);
+		color: var(--type-copy-color);
 		font-size: var(--type-small-size);
+		line-height: var(--type-small-line);
 	}
 
 	/* ---- Fields ------------------------------------------------------------ */
@@ -691,7 +693,7 @@ function matches(option: BookOption, value: string): boolean {
 	.book__label {
 		font-size: var(--type-small-size);
 		font-weight: 600;
-		color: var(--ink);
+		color: var(--type-label-color);
 	}
 
 	.book__req {
@@ -714,7 +716,7 @@ function matches(option: BookOption, value: string): boolean {
 		background: var(--page);
 		color: var(--ink);
 		font: inherit;
-		font-size: var(--type-body-size);
+		font-size: var(--type-input-size);
 		transition: border-color var(--transition);
 	}
 
@@ -817,8 +819,8 @@ function matches(option: BookOption, value: string): boolean {
 		background: var(--green);
 		color: var(--on-accent);
 		font: inherit;
-		font-size: var(--type-body-size);
-		font-weight: 500;
+		font-size: var(--type-button-size);
+		font-weight: var(--type-button-weight);
 		cursor: pointer;
 		transition:
 			background-color var(--transition),

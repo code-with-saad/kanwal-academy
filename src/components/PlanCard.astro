@@ -1,6 +1,6 @@
 ---
 import { formatUsdPrice } from "../utils/price";
-import NumberText from "./NumberText.astro";
+import { formatNumericText } from "../utils/number";
 
 export interface PlanCardData {
 	slug?: string;
@@ -65,7 +65,7 @@ const period = plan.billingPeriod ?? periodLabel;
 	<div class="plan-card__body">
 		<h3 class="plan-card__name">{plan.name}</h3>
 		<p class="plan-card__price">
-			<NumberText class="plan-card__amount" text={priceLabel} />
+			<bdi class="plan-card__amount" dir="ltr">{priceLabel}</bdi>
 			<span class="plan-card__period">{period}</span>
 		</p>
 
@@ -82,7 +82,7 @@ const period = plan.billingPeriod ?? periodLabel;
 					</svg>
 				</span>
 				<span class="plan-card__meta-label">{classesWeekLabel}</span>
-				<NumberText class="plan-card__meta-value" text={plan.classesPerWeek} />
+				<bdi class="plan-card__meta-value" dir="ltr">{formatNumericText(String(plan.classesPerWeek))}</bdi>
 			</li>
 			<li>
 				<span class="plan-card__meta-icon" aria-hidden="true">
@@ -94,7 +94,7 @@ const period = plan.billingPeriod ?? periodLabel;
 					</svg>
 				</span>
 				<span class="plan-card__meta-label">{classesMonthLabel}</span>
-				<NumberText class="plan-card__meta-value" text={plan.classesPerMonth} />
+				<bdi class="plan-card__meta-value" dir="ltr">{formatNumericText(String(plan.classesPerMonth))}</bdi>
 			</li>
 			<li>
 				<span class="plan-card__meta-icon" aria-hidden="true">
@@ -104,7 +104,7 @@ const period = plan.billingPeriod ?? periodLabel;
 					</svg>
 				</span>
 				<span class="plan-card__meta-label">{hoursLabel}</span>
-				<NumberText class="plan-card__meta-value" text={plan.hoursPerMonth} />
+				<bdi class="plan-card__meta-value" dir="ltr">{formatNumericText(String(plan.hoursPerMonth))}</bdi>
 			</li>
 		</ul>
 
@@ -176,7 +176,7 @@ const period = plan.billingPeriod ?? periodLabel;
 		border-radius: 999px;
 		background: var(--green);
 		color: #ffffff;
-		font-size: 12px;
+		font-size: var(--type-eyebrow-size);
 		font-weight: 600;
 		line-height: 1;
 	}
@@ -191,7 +191,8 @@ const period = plan.billingPeriod ?? periodLabel;
 
 	.plan-card__name {
 		font-size: var(--type-h3-size);
-		font-weight: 500;
+		font-weight: var(--type-plan-name-weight);
+		line-height: var(--type-h3-line);
 	}
 
 	.plan-card__price {
@@ -203,13 +204,13 @@ const period = plan.billingPeriod ?? periodLabel;
 
 	.plan-card__amount {
 		font-size: clamp(36px, 4vw, 48px);
-		font-weight: 400;
+		font-weight: var(--type-price-weight);
 		line-height: 1;
 		letter-spacing: -0.02em;
 	}
 
 	.plan-card__period {
-		color: var(--ink-muted);
+		color: var(--type-copy-color);
 		font-size: var(--type-small-size);
 	}
 
@@ -250,12 +251,12 @@ const period = plan.billingPeriod ?? periodLabel;
 	}
 
 	.plan-card__meta-label {
-		color: var(--ink-muted);
+		color: var(--type-copy-color);
 		font-size: var(--type-small-size);
 	}
 
 	.plan-card__meta-value {
-		font-weight: 600;
+		font-weight: var(--type-meta-value-weight);
 		font-size: var(--type-body-size);
 	}
 
@@ -272,8 +273,8 @@ const period = plan.billingPeriod ?? periodLabel;
 		background: var(--green);
 		color: #ffffff;
 		font: inherit;
-		font-size: var(--type-body-size);
-		font-weight: 500;
+		font-size: var(--type-button-size);
+		font-weight: var(--type-button-weight);
 		text-decoration: none;
 		cursor: pointer;
 		transition:

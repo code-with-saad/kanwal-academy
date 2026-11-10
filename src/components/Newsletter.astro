@@ -170,16 +170,20 @@ const turnstileSiteKey = String(
 <style>
 	.newsletter {
 		width: 100%;
+		max-width: 100%;
+		min-width: 0;
 	}
 
 	.newsletter__row {
 		display: flex;
 		gap: var(--space-xs);
 		width: 100%;
+		min-width: 0;
 	}
 
 	.newsletter__input {
-		flex: 1 1 auto;
+		flex: 1 1 0;
+		width: 0;
 		min-width: 0;
 		height: 48px;
 		padding: 0 16px;
@@ -188,7 +192,7 @@ const turnstileSiteKey = String(
 		background: var(--page);
 		color: var(--ink);
 		font: inherit;
-		font-size: var(--type-body-size);
+		font-size: var(--type-input-size);
 		transition: border-color var(--transition);
 	}
 
@@ -220,8 +224,8 @@ const turnstileSiteKey = String(
 		background: var(--green);
 		color: var(--on-accent);
 		font: inherit;
-		font-size: var(--type-body-size);
-		font-weight: 500;
+		font-size: var(--type-button-size);
+		font-weight: var(--type-button-weight);
 		cursor: pointer;
 		transition:
 			background-color var(--transition),
@@ -271,9 +275,9 @@ const turnstileSiteKey = String(
 	.newsletter__status {
 		min-height: 1.25em;
 		margin: var(--space-xs) 0 0;
-		color: var(--ink-muted);
+		color: var(--type-copy-color);
 		font-size: var(--type-small-size);
-		line-height: 1.4;
+		line-height: var(--type-small-line);
 	}
 
 	.newsletter__status.is-success {

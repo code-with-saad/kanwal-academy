@@ -848,18 +848,20 @@ const hasTestimonials = testimonials.length > 0 || demo;
 		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 		gap: clamp(32px, 5vw, 64px);
 		align-items: center;
+		min-width: 0;
 	}
 
 	/* ---- Copy column ---- */
 	.hero__copy {
 		max-width: 580px;
+		min-width: 0;
 	}
 
 	.hero__headline {
-		/* Display size, tightened from the global token for the first fold. */
-		font-size: clamp(36px, 4.2vw, 56px);
-		font-weight: 400;
-		line-height: 1.05;
+		/* Display size from the semantic token; Arabic overrides it. */
+		font-size: var(--type-hero-size);
+		font-weight: var(--type-hero-weight);
+		line-height: var(--type-hero-line);
 		letter-spacing: -0.03em;
 		color: var(--ink);
 		margin: 0;
@@ -871,7 +873,7 @@ const hasTestimonials = testimonials.length > 0 || demo;
 		margin-top: var(--space-md);
 		color: var(--ink);
 		font-size: var(--type-lead-size);
-		line-height: 1.55;
+		line-height: var(--type-lead-line);
 		max-width: 42ch;
 	}
 
@@ -880,7 +882,7 @@ const hasTestimonials = testimonials.length > 0 || demo;
 		align-items: center;
 		gap: var(--space-xs);
 		margin-top: var(--space-md);
-		color: var(--ink-muted);
+		color: var(--type-copy-color);
 		font-size: var(--type-small-size);
 		font-weight: 500;
 	}
@@ -906,8 +908,8 @@ const hasTestimonials = testimonials.length > 0 || demo;
 		font: inherit;
 		background: var(--green);
 		color: var(--on-accent);
-		font-size: var(--type-body-size);
-		font-weight: 500;
+		font-size: var(--type-button-size);
+		font-weight: var(--type-button-weight);
 		line-height: 1;
 		text-decoration: none;
 		white-space: nowrap;
@@ -936,6 +938,7 @@ const hasTestimonials = testimonials.length > 0 || demo;
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
+		min-width: 0;
 	}
 
 	/* White card on mobile containing circle + chips */
@@ -943,6 +946,8 @@ const hasTestimonials = testimonials.length > 0 || demo;
 		display: flex;
 		align-items: center;
 		gap: clamp(16px, 3vw, 32px);
+		min-width: 0;
+		max-width: 100%;
 	}
 
 	/* ---- Quran stage ---- */
@@ -1033,6 +1038,7 @@ const hasTestimonials = testimonials.length > 0 || demo;
 		flex-direction: column;
 		gap: 10px;
 		flex: none;
+		min-width: 0;
 	}
 
 	.course-pill {
@@ -1044,8 +1050,8 @@ const hasTestimonials = testimonials.length > 0 || demo;
 		border-radius: 999px;
 		background: color-mix(in srgb, var(--surface) 85%, var(--mint-100) 15%);
 		color: var(--ink);
-		font-size: var(--type-small-size);
-		font-weight: 500;
+		font-size: var(--type-chip-size);
+		font-weight: var(--type-chip-weight);
 		line-height: 1;
 		text-decoration: none;
 		white-space: nowrap;
@@ -1121,7 +1127,7 @@ const hasTestimonials = testimonials.length > 0 || demo;
 	.section-lead {
 		max-width: 48ch;
 		margin-top: var(--space-md);
-		color: var(--ink-muted);
+		color: var(--type-copy-color);
 	}
 
 	.section-head {
@@ -1159,7 +1165,7 @@ const hasTestimonials = testimonials.length > 0 || demo;
 
 	.journey-head__copy p {
 		max-width: 48ch;
-		color: var(--ink-muted);
+		color: var(--type-copy-color);
 	}
 
 	.journey-list {
@@ -1231,13 +1237,13 @@ const hasTestimonials = testimonials.length > 0 || demo;
 
 		.hero__headline {
 			max-width: 14ch;
-			font-size: clamp(1.75rem, 7vw, 2.5rem);
+			font-size: var(--type-hero-size);
 		}
 
 		.hero__lead {
 			max-width: 42ch;
 			margin-top: var(--space-md);
-			font-size: var(--type-body-size);
+			font-size: var(--type-lead-size);
 		}
 
 		.hero__reach {
@@ -1280,7 +1286,7 @@ const hasTestimonials = testimonials.length > 0 || demo;
 		.course-pill {
 			height: 42px;
 			padding: 0 12px 0 6px;
-			font-size: 13px;
+			font-size: var(--type-chip-size);
 			gap: 10px;
 		}
 
@@ -1356,8 +1362,8 @@ const hasTestimonials = testimonials.length > 0 || demo;
 		}
 
 		.course-pill {
-			height: 38px;
-			font-size: 12px;
+			height: 42px;
+			font-size: var(--type-chip-size);
 			gap: 8px;
 			padding: 0 10px 0 4px;
 		}
@@ -1374,15 +1380,34 @@ const hasTestimonials = testimonials.length > 0 || demo;
 		}
 	}
 
+	/* Very small screens: stack the Quran stage above the course pills so the
+	 * larger Arabic pill text has the full card width. */
+	@media (max-width: 480px) {
+		.hero__visual-card {
+			flex-direction: column;
+			align-items: stretch;
+			gap: 12px;
+		}
+
+		.hero__visual {
+			align-self: center;
+		}
+
+		.hero__chips {
+			flex: none;
+			width: 100%;
+		}
+	}
+
 	@media (max-width: 340px) {
 		.hero__headline {
-			font-size: clamp(1.5rem, 7vw, 2rem);
+			font-size: var(--type-hero-size);
 		}
 
 		.hero__lead {
 			margin-top: var(--space-sm);
-			font-size: var(--type-small-size);
-			line-height: 1.5;
+			font-size: var(--type-lead-size);
+			line-height: var(--type-lead-line);
 		}
 
 		.hero {
