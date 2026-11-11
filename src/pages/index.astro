@@ -326,14 +326,20 @@ const hasTestimonials = testimonials.length > 0 || demo;
 
 <Base
 	title={
-		seo?.title ??
-		(locale === "ar" && homeResult.fallbackLocale
-			? `${t.home.home_headline} | ${site.name}`
-			: undefined)
+		locale === "ar"
+			? "أكاديمية كنول | دروس القرآن الكريم والتجويد عبر الإنترنت"
+			: "Online Quran Classes with Certified Tutors | Kanwal Quran Academy"
 	}
+	titleIsComplete
 	description={
-		seo?.description ??
-		(locale === "ar" && homeResult.fallbackLocale ? t.home.home_lead : undefined)
+		locale === "ar"
+			? "تعلم القرآن الكريم عبر الإنترنت مع معلمين معتمدين. تقدم أكاديمية كنول دورات مخصصة في التلاوة، التجويد، وتحفيظ القرآن. احجز جلستك التجريبية المجانية."
+			: "Learn Quran online with personalized one-on-one sessions. Kanwal Quran Academy offers expert courses in Recitation, Tajweed, and Hifz. Book a free trial today."
+	}
+	keywords={
+		locale === "ar"
+			? "أكاديمية تحفيظ القرآن, تعلم القرآن عن بعد, دروس تجويد, معلم قرآن, أكاديمية كنول"
+			: "online quran academy, learn quran online, online tajweed classes, online hifz program, quran tutor, kanwal quran academy"
 	}
 	image={seo?.ogImage}
 	canonical={seo?.canonical}

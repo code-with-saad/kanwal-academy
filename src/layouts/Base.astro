@@ -24,8 +24,10 @@ import "../styles/global.css";
 
 interface Props {
 	title?: string;
+	titleIsComplete?: boolean;
 	pageTitle?: string | null;
 	description?: string | null;
+	keywords?: string | null;
 	image?: string | null;
 	canonical?: string | null;
 	robots?: string | null;
@@ -40,8 +42,10 @@ const isHome = routePath === "/";
 
 const {
 	title,
+	titleIsComplete = false,
 	pageTitle,
 	description,
+	keywords,
 	image,
 	canonical,
 	robots,
@@ -78,7 +82,7 @@ const footerCourseNames = coursesResult.entries
 
 const { siteTitle, siteTagline, titleSeparator } = resolveSiteIdentity(settingsResult.data);
 const fullTitle = title
-	? title.includes(siteTitle)
+	? titleIsComplete || title.includes(siteTitle)
 		? title
 		: `${title} ${titleSeparator} ${siteTitle}`
 	: siteTitle;
@@ -134,6 +138,10 @@ const pageCtx = createPublicPageContext({
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="theme-color" content="#FCFEFD" media="(prefers-color-scheme: light)" />
 		<meta name="theme-color" content="#0D1612" media="(prefers-color-scheme: dark)" />
+		<meta name="geo.region" content="US-MO" />
+		<meta name="geo.placename" content="Missouri" />
+		<meta name="geo.position" content="38.5739;-92.6038" />
+		<meta name="ICBM" content="38.5739, -92.6038" />
 		<script is:inline>
 			(function () {
 				try {
@@ -179,6 +187,7 @@ const pageCtx = createPublicPageContext({
 			})();
 		</script>
 		<title>{fullTitle}</title>
+		{keywords && <meta name="keywords" content={keywords} />}
 		{
 			localeAlternates.map((alternate) => (
 				<link rel="alternate" hreflang={alternate.hreflang} href={alternate.href} />
