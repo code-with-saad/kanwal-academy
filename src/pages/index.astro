@@ -342,7 +342,11 @@ const hasTestimonials = testimonials.length > 0 || demo;
 			: "online quran academy, learn quran online, online tajweed classes, online hifz program, quran tutor, kanwal quran academy"
 	}
 	image={seo?.ogImage}
-	canonical={seo?.canonical}
+	canonical={
+		locale === "ar"
+			? "https://kanwalquranacademy.com/ar/"
+			: "https://kanwalquranacademy.com/"
+	}
 	robots={seo?.robots}
 	content={
 		homePage ? { collection: "pages", id: homePage.data.id, slug: homePage.id } : undefined
