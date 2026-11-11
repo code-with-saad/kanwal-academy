@@ -7,7 +7,7 @@ import { useUi } from "../i18n";
 
 const { locale } = useUi(Astro);
 const isArabic = locale === "ar";
-const updated = isArabic ? "5 نوفمبر 2026" : "5 November 2026";
+const updated = isArabic ? "11 نوفمبر 2026" : "11 November 2026";
 ---
 
 <Base
@@ -61,8 +61,8 @@ const updated = isArabic ? "5 نوفمبر 2026" : "5 November 2026";
 				<h2>{isArabic ? "ملفات تعريف الارتباط والتخزين المحلي" : "Cookies and local storage"}</h2>
 				<p>
 					{isArabic
-						? "يحفظ الموقع اختيارك للمظهر الفاتح أو الداكن في متصفحك. ولا يستخدم ملفات تعريف ارتباط للإعلانات. إذا أُضيفت أدوات تحليل مستقبلًا، فسنوضح ذلك في هذه الصفحة."
-						: "The site stores your light or dark theme choice in your browser. It does not use advertising cookies. If analytics are added later, this page will say so."}
+						? "يحفظ الموقع اختيارك للمظهر الفاتح أو الداكن في متصفحك. نستخدم Google Analytics لفهم كيفية استخدام الزوار للموقع. قد تستخدم الخدمة ملفات تعريف الارتباط وتقنيات مشابهة لجمع معلومات الاستخدام، مثل الصفحات التي تمت زيارتها ومعلومات المتصفح والجهاز، وتُرسل هذه المعلومات إلى Google لمعالجتها لأغراض التحليل. يمكنك إدارة ملفات تعريف الارتباط من إعدادات المتصفح. لا يستخدم الموقع ملفات تعريف ارتباط للإعلانات."
+						: "The site stores your light or dark theme choice in your browser. We use Google Analytics to understand how visitors use the site. It may use cookies and similar technologies to collect usage information, such as pages visited and browser and device information. This information is sent to Google for analytics processing. You can manage cookies in your browser settings. The site does not use advertising cookies."}
 				</p>
 
 				<h2>{isArabic ? "حقوقك وخياراتك" : "Your choices"}</h2>

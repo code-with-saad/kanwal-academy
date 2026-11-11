@@ -136,6 +136,20 @@ const pageCtx = createPublicPageContext({
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!-- Google tag (gtag.js) -->
+		<script
+			is:inline
+			async
+			src="https://www.googletagmanager.com/gtag/js?id=G-K83ZX1P07K"
+		></script>
+		<script is:inline>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				window.dataLayer.push(arguments);
+			}
+			gtag("js", new Date());
+			gtag("config", "G-K83ZX1P07K");
+		</script>
 		<meta name="theme-color" content="#FCFEFD" media="(prefers-color-scheme: light)" />
 		<meta name="theme-color" content="#0D1612" media="(prefers-color-scheme: dark)" />
 		<meta name="geo.region" content="US-MO" />
