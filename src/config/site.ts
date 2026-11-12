@@ -30,14 +30,14 @@ export const teacherNavItem: NavItem = {
 
 export const site = {
 	name: "Kanwal Quran Academy",
-	tagline: "Online Qur'an education from Karachi, Pakistan.",
+	tagline: "Online Qur'an education for students worldwide.",
 	description:
 		"Learn Qur'anic recitation, tajweed and memorization online with a teacher who knows your name.",
 	phone: "+92 342 2766346",
 	phoneHref: "tel:+923422766346",
 	email: "hello@kanwalquranacademy.com",
 	emailHref: "mailto:hello@kanwalquranacademy.com",
-	address: "Karachi, Pakistan",
+	address: "Missouri, USA",
 	bismillah: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
 	stats: {
 		years: "5+",

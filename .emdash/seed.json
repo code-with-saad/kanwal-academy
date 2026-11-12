@@ -7,7 +7,7 @@
 	},
 	"settings": {
 		"title": "Kanwal Quran Academy",
-		"tagline": "Online Qur'an education from Karachi, Pakistan.",
+		"tagline": "Online Qur'an education for students worldwide.",
 		"seo": {
 			"titleSeparator": "|"
 		}
@@ -1470,7 +1470,7 @@
 					"whatsapp_number": "923422766346",
 					"email": "hello@kanwalquranacademy.com",
 					"owner_email": "hello@kanwalquranacademy.com",
-					"address": "Karachi, Pakistan",
+					"address": "Missouri, USA",
 					"social_links": [],
 					"years": "5+",
 					"countries": "5+",
@@ -1480,7 +1480,7 @@
 					"countries_label": "Countries served",
 					"students_label": "Students taught",
 					"sessions_label": "Sessions delivered",
-					"footer_tagline": "Online Qur'an education from Karachi, Pakistan. Every student starts with a free trial class.",
+					"footer_tagline": "Online Qur'an education for students worldwide. Every student starts with a free trial class.",
 					"footer_explore_label": "Explore",
 					"footer_contact_label": "Contact",
 					"footer_courses_label": "Courses",
@@ -1589,7 +1589,7 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Kanwal Quran Academy is an online Qur'an academy based in Karachi, Pakistan. We teach students in 5+ countries."
+									"text": "Kanwal Quran Academy is an online Qur'an academy serving students in 5+ countries."
 								}
 							]
 						},
@@ -1634,7 +1634,7 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Phone +92 342 2766346. Email hello@kanwalquranacademy.com. We are based in Karachi, Pakistan and teach online."
+									"text": "Phone +92 342 2766346. Email hello@kanwalquranacademy.com. We teach online to students in 5+ countries."
 								}
 							]
 						}

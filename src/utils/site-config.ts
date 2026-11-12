@@ -212,7 +212,6 @@ export async function getSiteContact(locale: Locale = DEFAULT_LOCALE) {
 		locale !== DEFAULT_LOCALE && fallbackLocale
 			? {
 					...data,
-					address: undefined,
 					years_label: undefined,
 					countries_label: undefined,
 					students_label: undefined,
@@ -235,8 +234,5 @@ export async function getSiteContact(locale: Locale = DEFAULT_LOCALE) {
 				}
 			: data;
 	const contact = normalize(localizedData, getUi(locale));
-	if (locale !== DEFAULT_LOCALE && fallbackLocale) {
-		contact.address = getUi(locale).catalog.address;
-	}
 	return { data: contact, cacheHint, entry, fallbackLocale };
 }

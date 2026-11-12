@@ -1,6 +1,6 @@
 # Kanwal Quran Academy
 
-Website for Kanwal Quran Academy, an online Quran academy based in Karachi, Pakistan.
+Website for Kanwal Quran Academy, an online Quran academy serving students worldwide. The public address is managed in EmDash under Site Settings.
 
 Built with Astro (SSR) and the EmDash CMS, deployed on Cloudflare Workers with D1 for the database and R2 for media.
 

@@ -55,7 +55,7 @@ export const ar: UiDictionary = {
 		countriesShort: "الدول",
 	},
 	footer: {
-		tagline: "تعليم القرآن عبر الإنترنت من كراتشي، باكستان.",
+		tagline: "تعليم القرآن عبر الإنترنت للطلاب حول العالم.",
 		exploreLabel: "استكشف",
 		contactLabel: "تواصل",
 		coursesLabel: "الدورات",
@@ -146,7 +146,7 @@ export const ar: UiDictionary = {
 		englishVersion: "اقرأ النسخة الإنجليزية",
 	},
 	catalog: {
-		address: "كراتشي، باكستان",
+		address: "ميزوري، الولايات المتحدة",
 		plans: {
 			"plan-i": "الخطة الأولى",
 			"plan-ii": "الخطة الثانية",

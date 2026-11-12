@@ -60,7 +60,7 @@ export const en = {
 		countriesShort: "Countries",
 	},
 	footer: {
-		tagline: "Online Qur'an education from Karachi, Pakistan.",
+		tagline: "Online Qur'an education for students worldwide.",
 		exploreLabel: "Explore",
 		contactLabel: "Contact",
 		coursesLabel: "Courses",
@@ -152,7 +152,7 @@ export const en = {
 		englishVersion: "Read the English version",
 	},
 	catalog: {
-		address: "Karachi, Pakistan",
+		address: "Missouri, USA",
 		plans: {
 			"plan-i": "Plan I",
 			"plan-ii": "Plan II",

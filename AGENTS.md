@@ -1,6 +1,6 @@
 # Kanwal Quran Academy: website rebuild
 
-Online Quran academy based in Karachi, Pakistan. We are replacing an old, hacked WordPress site with a new site on Astro + EmDash CMS, hosted on Cloudflare.
+Online Quran academy serving students worldwide. We are replacing an old, hacked WordPress site with a new site on Astro + EmDash CMS, hosted on Cloudflare. The official public address is managed through the EmDash Site Settings collection.
 
 Language of this brief: English. Site copy language: English (Urdu may come later, keep layout RTL-ready).
 
@@ -22,7 +22,7 @@ Plans (billed monthly):
 | Plan III | $82 | 4 | 16 | 8 |
 | Plan IV | $102 | 5 | 20 | 10 |
 Every student starts with a free trial class.
-Contact: Karachi, Pakistan. +92 342 2766346. hello@kanwalquranacademy.com
+Contact: Public address comes from EmDash Site Settings (default: Missouri, USA). +92 342 2766346. hello@kanwalquranacademy.com
 Stats: "5+ years", "5+ countries". Student and session counts are UNKNOWN: keep `[000]+` placeholders and flag them in the final report.
 Pages: Home, About, Courses (+ one page per course), Pricing, Teachers, Contact, Free Trial, Blog (optional), Terms of Service, Privacy Policy.
 Payments are NOT in scope yet. "Select plan" opens the trial/enrolment form with the plan preselected.

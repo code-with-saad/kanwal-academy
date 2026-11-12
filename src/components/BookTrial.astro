@@ -292,8 +292,8 @@ function matches(option: BookOption, value: string): boolean {
 
 		// --- intl-tel-input -------------------------------------------------
 		const iti = intlTelInput(phoneInput, {
-			// Academy is in Karachi, so Pakistan is the default. Users pick
-			// their own country; no third-party geo lookup is performed.
+			// The academy's published contact number uses Pakistan's country
+			// code. Users can select their own country; no geo lookup is used.
 			initialCountry: "pk",
 			loadUtils: () => import("intl-tel-input/utils"),
 			separateDialCode: true,
