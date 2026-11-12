@@ -61,7 +61,7 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 					src={imageSrc}
 					alt={imageAlt}
 					label={t.images.wisdomPlaceholder}
-					ratio="1024 / 585"
+					ratio="4 / 5"
 					sizes="(max-width: 560px) calc(100vw - 32px), (max-width: 900px) 440px, 42vw"
 					class="wisdom__image"
 				/>
@@ -123,9 +123,26 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 
 	.wisdom__frame {
 		position: relative;
+		aspect-ratio: 4 / 5;
 		overflow: clip;
 		border-radius: var(--radius-panel);
 		background: var(--mint-50);
+	}
+
+	.wisdom__frame > :global(.wisdom__image) {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+
+	.wisdom__frame > :global(img.wisdom__image) {
+		position: absolute;
+		inset: 0;
+		object-fit: cover;
+	}
+
+	.wisdom__frame > :global(figure.wisdom__image) {
+		aspect-ratio: auto;
 	}
 
 	.wisdom__frame :global(.wisdom__image),
