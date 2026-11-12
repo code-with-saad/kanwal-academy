@@ -34,6 +34,8 @@ interface Props {
 	content?: { collection: string; id: string; slug?: string | null };
 	headerTone?: "dark" | "light";
 	nav?: NavItem[];
+	siteContact?: Awaited<ReturnType<typeof getSiteContact>>;
+	footerCourses?: { name: string }[];
 }
 
 const { locale, t, dir } = useUi(Astro);
@@ -52,30 +54,34 @@ const {
 	content,
 	headerTone = isHome ? "dark" : "light",
 	nav,
+	siteContact: providedContact,
+	footerCourses: providedFooterCourses,
 } = Astro.props;
 
 const [settingsResult, contactResult, coursesResult] = await Promise.all([
 	getSiteSettingsWithCacheHint(),
-	getSiteContact(locale),
-	getLocalizedCollection("courses", locale, {
-		status: "published",
-		orderBy: { order: "asc" },
-	}),
+	providedContact ? Promise.resolve(providedContact) : getSiteContact(locale),
+	providedFooterCourses
+		? Promise.resolve(null)
+		: getLocalizedCollection("courses", locale, {
+				status: "published",
+				orderBy: { order: "asc" },
+			}),
 ]);
 
-// Keep the homepage uncached so edits to its CMS entry are visible on the
-// next request. Other routes continue using their query cache hints.
-if (Astro.cache?.enabled && !isHome) {
+const contact = contactResult.data;
+
+if (Astro.cache?.enabled) {
 	Astro.cache.set(settingsResult.cacheHint);
 	Astro.cache.set(contactResult.cacheHint);
-	Astro.cache.set(coursesResult.cacheHint);
+	if (coursesResult) Astro.cache.set(coursesResult.cacheHint);
 }
 
-const footerCourseNames = coursesResult.entries
+const footerCourseNames = providedFooterCourses ?? coursesResult!.entries
 	.filter((c) => c.data.visible !== false)
 	.map((c) => ({
 		name:
-			coursesResult.fallbackLocale && c.id in t.catalog.courses
+			coursesResult!.fallbackLocale && c.id in t.catalog.courses
 				? t.catalog.courses[c.id as keyof typeof t.catalog.courses].name
 				: String(c.data.name ?? ""),
 	}));
@@ -90,7 +96,9 @@ const fullTitle = title
 const headerItems = localizedNav(nav ?? [...site.nav], t, locale);
 const headerCta = localizedCta(site.cta, t, locale);
 
-const translations = content ? await getTranslations(content.collection, content.id) : null;
+const translations = content && !isHome
+	? await getTranslations(content.collection, content.id)
+	: null;
 const translatedSlugs = new Map(
 	(translations?.translations ?? [])
 	.filter((translation) => translation.status === "published" && translation.slug)
@@ -283,7 +291,7 @@ const pageCtx = createPublicPageContext({
 				</svg>
 			</button>
 		</div>
-		<ResultModal whatsappPhone={contactResult.data.phone} />
+		<ResultModal whatsappPhone={contact.phone} />
 		<EmDashBodyEnd page={pageCtx} />
 		<script>
 			import "../scripts/motion";

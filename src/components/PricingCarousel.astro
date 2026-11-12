@@ -270,19 +270,31 @@ const initialIndex = 1; // Plan II (most popular) is the default
 	}
 
 	.pricing-carousel__dot {
+		display: grid;
+		place-items: center;
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+		border: none;
+		background: transparent;
+		padding: 0;
+		cursor: pointer;
+		transition:
+			transform var(--transition);
+	}
+
+	.pricing-carousel__dot::before {
+		content: "";
 		width: 10px;
 		height: 10px;
 		border-radius: 50%;
-		border: none;
 		background: var(--line);
-		padding: 0;
-		cursor: pointer;
 		transition:
 			background-color var(--transition),
 			transform var(--transition);
 	}
 
-	.pricing-carousel__dot--active {
+	.pricing-carousel__dot--active::before {
 		background: var(--green);
 		transform: scale(1.2);
 	}
