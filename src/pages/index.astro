@@ -21,6 +21,7 @@ import Testimonials from "../components/Testimonials.astro";
 import WisdomPanel from "../components/WisdomPanel.astro";
 import { site } from "../config/site";
 import { heroImage } from "../config/images";
+import { optimizedImages } from "../config/optimized-images";
 import { getSiteContact } from "../utils/site-config";
 import { isDemoMode } from "../utils/env";
 import { formatUsdPrice } from "../utils/price";
@@ -112,6 +113,15 @@ type HomeTextField = {
 }[keyof HomePageFields];
 
 const { locale, t } = useUi(Astro);
+const heroImageSizes = "(max-width: 760px) 25vw, (max-width: 1100px) 24vw, 186px";
+const optimizedHero = optimizedImages[heroImage.src];
+const heroHasResponsiveAvif =
+	optimizedHero !== undefined && optimizedHero.avif.length === optimizedHero.webp.length;
+const heroPreloadVariants = heroHasResponsiveAvif ? optimizedHero?.avif : optimizedHero?.webp;
+const heroPreloadSrcSet = heroPreloadVariants
+	?.map((variant) => `${variant.src} ${variant.width}w`)
+	.join(", ");
+const heroPreloadType = heroHasResponsiveAvif ? "image/avif" : "image/webp";
 
 const [
 	coursesResult,
@@ -365,6 +375,20 @@ const hasTestimonials = testimonials.length > 0 || demo;
 	}
 	nav={navItems}
 >
+	{
+		!homePage?.data.home_image && heroPreloadSrcSet && (
+			<link
+				slot="head"
+				rel="preload"
+				as="image"
+				type={heroPreloadType}
+				href={heroPreloadVariants?.[0]?.src}
+				imagesrcset={heroPreloadSrcSet}
+				imagesizes={heroImageSizes}
+				fetchpriority="high"
+			/>
+		)
+	}
 	<!-- ===== HERO ===== -->
 	<section id="home" class="hero" data-hero>
 		<!-- Gradient background -->
@@ -467,24 +491,24 @@ const hasTestimonials = testimonials.length > 0 || demo;
 											homePage?.data.home_image ? (
 												<Image
 													image={homePage.data.home_image}
-																							alt={homeText("home_image_alt") || homePage.data.home_image.alt || t.images.hero}
+													alt={homeText("home_image_alt") || homePage.data.home_image.alt || t.images.hero}
 													class="quran-stage__image"
-																							width={homePage.data.home_image.width ?? 479}
-																							height={homePage.data.home_image.height ?? 320}
-																							sizes="(max-width: 760px) 25vw, (max-width: 1100px) 24vw, 186px"
-																							priority
-																						/>
-																					) : (
-																						<ResponsiveImage
-																							src={heroImage.src}
-																							alt={homeText("home_image_alt") || t.images.hero}
-																							class="quran-stage__image"
-																							width={479}
-																							height={320}
-																							sizes="(max-width: 760px) 25vw, (max-width: 1100px) 24vw, 186px"
-																							priority
-																						/>
-																					)
+													width={homePage.data.home_image.width ?? 479}
+													height={homePage.data.home_image.height ?? 320}
+													sizes={heroImageSizes}
+													priority
+												/>
+											) : (
+												<ResponsiveImage
+													src={heroImage.src}
+													alt={homeText("home_image_alt") || t.images.hero}
+													class="quran-stage__image"
+													width={479}
+													height={320}
+													sizes={heroImageSizes}
+													priority
+												/>
+											)
 										}
 									</span>
 								</figure>

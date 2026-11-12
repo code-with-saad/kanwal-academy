@@ -103,6 +103,7 @@ export const en = {
 		planHelp: "Help me choose",
 		messagePlaceholder: "Student age, current level, any questions",
 		sending: "Sending request",
+		loadError: "We could not load the form. Please refresh the page or contact us directly.",
 		required: "required",
 	},
 	/**

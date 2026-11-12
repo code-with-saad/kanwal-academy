@@ -54,6 +54,9 @@ export default defineConfig({
 		layout: "constrained",
 		responsiveStyles: true,
 	},
+	build: {
+		inlineStylesheets: "always",
+	},
 	integrations: [
 		react(),
 		emdash({

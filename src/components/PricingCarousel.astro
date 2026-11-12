@@ -95,106 +95,29 @@ const initialIndex = 1; // Plan II (most popular) is the default
 </div>
 
 <script>
-	const root = document.querySelector<HTMLElement>("[data-carousel]");
-	if (!root) throw new Error("Carousel root not found");
-
-	const track = root.querySelector<HTMLElement>(".pricing-carousel__track")!;
-	const slides = Array.from(root.querySelectorAll<HTMLElement>("[data-slide]"));
-	const dots = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-dot]"));
-	const prevBtn = root.querySelector<HTMLButtonElement>("[data-prev]")!;
-	const nextBtn = root.querySelector<HTMLButtonElement>("[data-next]")!;
-	const statusEl = root.querySelector<HTMLElement>("[data-status]")!;
-	const statusTemplate = root.dataset.statusTemplate ?? "{name}, plan {index} of {total}";
-	const total = slides.length;
-
-	const start = Number(root.dataset.start ?? 1);
-	let current = start;
-
-	const isRtl = () => document.documentElement.dir === "rtl";
-
-	// Physical distance from the track's leading edge to the target slide.
-	// Measured with client rects, so the same code works in LTR and RTL
-	// without guessing the sign of scrollLeft.
-	const offsetTo = (index: number) => {
-		const trackRect = track.getBoundingClientRect();
-		const slideRect = slides[index].getBoundingClientRect();
-		return slideRect.left - trackRect.left;
-	};
-
-	const scrollTo = (index: number, behavior: ScrollBehavior = "smooth") => {
-		if (index < 0 || index >= total) return;
-		current = index;
-		track.scrollBy({ left: offsetTo(index), behavior });
-	};
-
-	// Open on Plan II (no animation, no layout shift).
-	const scrollToStart = () => {
-		if (slides[start]) track.scrollLeft += offsetTo(start);
-	};
-	if (slides[start]?.offsetWidth) {
-		scrollToStart();
-	} else {
-		requestAnimationFrame(scrollToStart);
-	}
-
-	const updateUI = () => {
-		const trackRect = track.getBoundingClientRect();
-		const center = trackRect.left + trackRect.width / 2;
-
-		let closest = 0;
-		let closestDist = Infinity;
-		slides.forEach((slide, i) => {
-			const rect = slide.getBoundingClientRect();
-			const slideCenter = rect.left + rect.width / 2;
-			const dist = Math.abs(slideCenter - center);
-			if (dist < closestDist) {
-				closestDist = dist;
-				closest = i;
-			}
-		});
-
-		if (closest !== current) {
-			current = closest;
+	document.querySelectorAll<HTMLElement>("[data-carousel]").forEach((root) => {
+		let loaded = false;
+		const load = () => {
+			if (loaded) return;
+			loaded = true;
+			void import("../scripts/pricing-carousel")
+				.then(({ initPricingCarousel }) => initPricingCarousel(root))
+				.catch((error: unknown) => console.error("Could not initialize the pricing carousel", error));
+			observer?.disconnect();
+		};
+		let observer: IntersectionObserver | undefined;
+		root.addEventListener("focusin", load, { once: true });
+		if (typeof IntersectionObserver === "undefined") load();
+		else {
+			observer = new IntersectionObserver(
+				([entry]) => {
+					if (entry?.isIntersecting) load();
+				},
+				{ rootMargin: "200px" },
+			);
+			observer.observe(root);
 		}
-
-		dots.forEach((dot, i) => {
-			const active = i === current;
-			dot.classList.toggle("pricing-carousel__dot--active", active);
-			dot.setAttribute("aria-selected", String(active));
-		});
-
-		prevBtn.disabled = current === 0;
-		nextBtn.disabled = current === total - 1;
-
-		const planName = slides[current]?.querySelector(".plan-card__name")?.textContent?.trim() ?? "";
-		statusEl.textContent = statusTemplate
-			.replace("{name}", planName)
-			.replace("{index}", String(current + 1))
-			.replace("{total}", String(total));
-	};
-
-	prevBtn.addEventListener("click", () => scrollTo(current - 1));
-	nextBtn.addEventListener("click", () => scrollTo(current + 1));
-
-	dots.forEach((dot, i) => {
-		dot.addEventListener("click", () => scrollTo(i));
 	});
-
-	let scrollTimer: ReturnType<typeof setTimeout>;
-	track.addEventListener("scroll", () => {
-		clearTimeout(scrollTimer);
-		scrollTimer = setTimeout(updateUI, 80);
-	}, { passive: true });
-
-	root.addEventListener("keydown", (e: KeyboardEvent) => {
-		// Arrow keys follow the reading direction: in RTL, Left moves to the
-		// next plan and Right moves back.
-		const step = isRtl() ? -1 : 1;
-		if (e.key === "ArrowLeft") { e.preventDefault(); scrollTo(current - step); }
-		if (e.key === "ArrowRight") { e.preventDefault(); scrollTo(current + step); }
-	});
-
-	updateUI();
 </script>
 
 <style>

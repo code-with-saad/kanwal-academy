@@ -100,101 +100,15 @@ const waHref = whatsappPhone
 </dialog>
 
 <script>
-	// ---------------------------------------------------------------------------
-	// Result dialog: opened only with a CustomEvent("show-result").
-	//   detail: { state: "success" | "error" | "rate", message?: string }
-	// Escape closes, focus is trapped while open and restored on close.
-	// ---------------------------------------------------------------------------
-	const dialog = document.getElementById("result-modal") as HTMLDialogElement | null;
-
 	type ResultState = "success" | "error" | "rate";
-	let lastFocus: HTMLElement | null = null;
-
-	const panels = () =>
-		dialog
-			? Array.from(dialog.querySelectorAll<HTMLElement>("[data-rm-panel]"))
-			: [];
-
-	const trapFocus = (e: KeyboardEvent) => {
-		if (e.key !== "Tab" || !dialog) return;
-		const focusable = Array.from(
-			dialog.querySelectorAll<HTMLElement>(
-				'a[href],button:not([disabled]):not([hidden]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])',
-			),
-		).filter((el) => el.offsetParent !== null || el === document.activeElement);
-		if (!focusable.length) return;
-		const first = focusable[0];
-		const last = focusable[focusable.length - 1];
-		if (e.shiftKey) {
-			if (document.activeElement === first) {
-				e.preventDefault();
-				last.focus();
-			}
-		} else if (document.activeElement === last) {
-			e.preventDefault();
-			first.focus();
-		}
-	};
-
-	const open = (state: ResultState, message?: string) => {
-		if (!dialog) return;
-		lastFocus = document.activeElement as HTMLElement | null;
-
-		for (const panel of panels()) {
-			panel.hidden = panel.dataset.rmPanel !== state;
-		}
-		if (message) {
-			const slot = dialog.querySelector<HTMLElement>(`[data-rm-${state === "success" ? "success" : state}-text]`);
-			if (slot) slot.textContent = message;
-		}
-
-		dialog.showModal();
-		dialog.addEventListener("keydown", trapFocus);
-		document.body.setAttribute("data-modal-open", "1");
-
-		const target = dialog.querySelector<HTMLElement>(
-			state === "error" ? "[data-rm-retry]" : "[data-rm-close]",
-		);
-		requestAnimationFrame(() => target?.focus());
-	};
-
-	Object.defineProperty(window, "showResultModal", {
-		value: open,
+	document.addEventListener("show-result", (event) => {
+		const { state, message } =
+			(event as CustomEvent<{ state?: ResultState; message?: string }>).detail ?? {};
+		if (state !== "success" && state !== "error" && state !== "rate") return;
+		void import("../scripts/result-modal")
+			.then(({ showResultModal }) => showResultModal(state, message))
+			.catch((error: unknown) => console.error("Could not load the result dialog", error));
 	});
-
-	document.addEventListener("show-result", (e) => {
-		const detail = (e as CustomEvent<{ state?: ResultState; message?: string }>).detail ?? {};
-		if (detail.state === "success" || detail.state === "error" || detail.state === "rate") {
-			open(detail.state, detail.message);
-		}
-	});
-
-	if (dialog) {
-		const close = () => {
-			if (!dialog.open) return;
-			dialog.close();
-		};
-		dialog.querySelectorAll<HTMLElement>("[data-rm-close]").forEach((btn) =>
-			btn.addEventListener("click", close),
-		);
-		dialog.addEventListener("click", (e) => {
-			if (e.target === dialog) close();
-		});
-		dialog.addEventListener("cancel", (e) => {
-			e.preventDefault();
-			close();
-		});
-		dialog.addEventListener("close", () => {
-			document.body.removeAttribute("data-modal-open");
-			dialog.removeEventListener("keydown", trapFocus);
-			lastFocus?.focus();
-			lastFocus = null;
-		});
-		dialog.querySelector<HTMLButtonElement>("[data-rm-retry]")?.addEventListener("click", () => {
-			close();
-			document.dispatchEvent(new CustomEvent("book-retry"));
-		});
-	}
 </script>
 
 <style>

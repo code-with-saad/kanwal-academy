@@ -98,6 +98,7 @@ export const ar: UiDictionary = {
 		planHelp: "ساعدني في الاختيار",
 		messagePlaceholder: "عمر الطالب، ومستواه الحالي، وأي أسئلة",
 		sending: "جارٍ إرسال الطلب",
+		loadError: "تعذر تحميل النموذج. يرجى تحديث الصفحة أو التواصل معنا مباشرة.",
 		required: "مطلوب",
 	},
 	/**

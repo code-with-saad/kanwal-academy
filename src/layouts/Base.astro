@@ -3,7 +3,6 @@ import { Font } from "astro:assets";
 import { getSiteSettingsWithCacheHint, getTranslations } from "emdash";
 import { createPublicPageContext } from "emdash/page";
 import { EmDashBodyEnd, EmDashBodyStart, EmDashHead } from "emdash/ui";
-import ResultModal from "../components/ResultModal.astro";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import MobileBar from "../components/MobileBar.astro";
@@ -68,8 +67,6 @@ const [settingsResult, contactResult, coursesResult] = await Promise.all([
 				orderBy: { order: "asc" },
 			}),
 ]);
-
-const contact = contactResult.data;
 
 if (Astro.cache?.enabled) {
 	Astro.cache.set(settingsResult.cacheHint);
@@ -144,19 +141,37 @@ const pageCtx = createPublicPageContext({
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<!-- Google tag (gtag.js) -->
-		<script
-			is:inline
-			async
-			src="https://www.googletagmanager.com/gtag/js?id=G-K83ZX1P07K"
-		></script>
 		<script is:inline>
 			window.dataLayer = window.dataLayer || [];
-			function gtag() {
+			window.gtag = function () {
 				window.dataLayer.push(arguments);
-			}
-			gtag("js", new Date());
-			gtag("config", "G-K83ZX1P07K");
+			};
+			window.addEventListener(
+				"load",
+				function () {
+					var loadAnalytics = function () {
+						if (document.getElementById("google-analytics")) return;
+						var script = document.createElement("script");
+						script.id = "google-analytics";
+						script.async = true;
+						script.src = "https://www.googletagmanager.com/gtag/js?id=G-K83ZX1P07K";
+						document.head.appendChild(script);
+						window.gtag("js", new Date());
+						window.gtag("config", "G-K83ZX1P07K");
+					};
+					var loadOnInteraction = function () {
+						window.clearTimeout(analyticsTimer);
+						loadAnalytics();
+					};
+					var analyticsTimer = window.setTimeout(loadAnalytics, 10000);
+					window.addEventListener("pointerdown", loadOnInteraction, {
+						once: true,
+						passive: true,
+					});
+					window.addEventListener("keydown", loadOnInteraction, { once: true });
+				},
+				{ once: true },
+			);
 		</script>
 		<meta name="theme-color" content="#FCFEFD" media="(prefers-color-scheme: light)" />
 		<meta name="theme-color" content="#0D1612" media="(prefers-color-scheme: dark)" />
@@ -225,7 +240,7 @@ const pageCtx = createPublicPageContext({
 				))
 		}
 		<EmDashHead page={pageCtx} />
-		<Font cssVariable="--font-body" preload />
+		<Font cssVariable="--font-body" preload={[{ weight: 400, subset: "latin" }]} />
 		{
 			// The Arabic UI font ships only on /ar. Preload just the two
 			// weights used above the fold (body 500, headings 700); the rest
@@ -240,7 +255,8 @@ const pageCtx = createPublicPageContext({
 				/>
 			)
 		}
-		<Font cssVariable="--font-arabic" />
+		{locale === "ar" && <Font cssVariable="--font-arabic" />}
+		<slot name="head" />
 	</head>
 	<body
 		data-is-home={isHome ? true : undefined}
@@ -291,7 +307,6 @@ const pageCtx = createPublicPageContext({
 				</svg>
 			</button>
 		</div>
-		<ResultModal whatsappPhone={contact.phone} />
 		<EmDashBodyEnd page={pageCtx} />
 		<script>
 			import "../scripts/motion";

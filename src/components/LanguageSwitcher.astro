@@ -29,7 +29,7 @@ const shortLabel = (code: (typeof LOCALES)[number]) => (code === "ar" ? "عرب�
 				lang={code}
 				class:list={["lang-switch__link", code === locale && "is-active"]}
 				aria-current={code === locale ? "true" : undefined}
-				aria-label={LOCALE_LABELS[code]}
+				aria-label={`${shortLabel(code)}, ${LOCALE_LABELS[code]}`}
 				title={LOCALE_LABELS[code]}
 			>
 				{shortLabel(code)}

@@ -13,6 +13,7 @@
  * working: ?plan / ?course also prefill and focus on load.
  */
 import Eyebrow from "./Eyebrow.astro";
+import ResultModal from "./ResultModal.astro";
 import { emailHref, phoneHref, whatsappHref, type SiteContact } from "../utils/site-config";
 import { env as hostEnv } from "virtual:emdash/env";
 import { useUi } from "../i18n";
@@ -249,6 +250,10 @@ function matches(option: BookOption, value: string): boolean {
 				)
 			}
 
+			<p class="book__init-error" data-book-init-error role="alert" aria-live="assertive" hidden>
+				{t.form.loadError}
+			</p>
+
 			<div class="book__foot">
 				<button type="submit" class="book__submit" data-book-submit>
 					<span class="book__spinner" aria-hidden="true"></span>
@@ -258,6 +263,7 @@ function matches(option: BookOption, value: string): boolean {
 		</form>
 	</div>
 </div>
+<ResultModal whatsappPhone={contact.phone} />
 
 <script>
 	// ---------------------------------------------------------------------------
@@ -265,13 +271,43 @@ function matches(option: BookOption, value: string): boolean {
 	// Field states: idle, focus (css), invalid (message under the field),
 	// submitting (spinner, button disabled). The popup is only for the result.
 	// ---------------------------------------------------------------------------
-	import intlTelInput from "intl-tel-input";
-	// @ts-ignore
-	import "intl-tel-input/styles";
-
 	const form = document.getElementById("book-form") as HTMLFormElement | null;
 
 	if (form) {
+		let initialized = false;
+		let initPromise: Promise<void> | undefined;
+		let pendingPrefill: { plan?: string; course?: string } | undefined;
+		const tsWidget = form.querySelector<HTMLElement>(".cf-turnstile");
+
+		const loadTurnstile = () => {
+			if (!tsWidget || document.getElementById("cf-turnstile-script")) return;
+
+			const script = document.createElement("script");
+			script.id = "cf-turnstile-script";
+			script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+			script.async = true;
+			script.defer = true;
+			script.addEventListener(
+				"error",
+				() => {
+					script.remove();
+					const message = form.querySelector<HTMLElement>("[data-book-init-error]");
+					if (message) message.hidden = false;
+					console.error("Could not load Cloudflare Turnstile");
+				},
+				{ once: true },
+			);
+			document.head.appendChild(script);
+		};
+
+		form.addEventListener("input", loadTurnstile);
+		form.addEventListener("change", loadTurnstile);
+
+		const initialize = async () => {
+			const { default: intlTelInput } = await import("intl-tel-input");
+			// @ts-ignore
+			await import("intl-tel-input/styles");
+
 		const nameInput = form.querySelector<HTMLInputElement>("#book-name")!;
 		const emailInput = form.querySelector<HTMLInputElement>("#book-email")!;
 		const phoneInput = form.querySelector<HTMLInputElement>("#book-phone")!;
@@ -283,7 +319,6 @@ function matches(option: BookOption, value: string): boolean {
 		const submitBtn = form.querySelector<HTMLButtonElement>("[data-book-submit]")!;
 		const submitLabel = form.querySelector<HTMLElement>("[data-book-submit-label]")!;
 		const defaultSubmitLabel = submitLabel.textContent ?? "";
-		const tsWidget = form.querySelector<HTMLElement>(".cf-turnstile");
 
 		// Localized strings rendered by the server for this locale.
 		const messages = JSON.parse(form.dataset.i18n ?? "{}") as Record<string, string>;
@@ -355,14 +390,6 @@ function matches(option: BookOption, value: string): boolean {
 		});
 
 		// --- Turnstile ------------------------------------------------------
-		if (tsWidget && !document.getElementById("cf-turnstile-script")) {
-			const s = document.createElement("script");
-			s.id = "cf-turnstile-script";
-			s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
-			s.async = true;
-			s.defer = true;
-			document.head.appendChild(s);
-		}
 		const turnstileToken = (): string => {
 			const api = (window as unknown as {
 				turnstile?: { getResponse?: (el?: HTMLElement) => string | undefined };
@@ -555,6 +582,51 @@ function matches(option: BookOption, value: string): boolean {
 		document.addEventListener("book-retry", () => {
 			void send();
 		});
+			initialized = true;
+		};
+
+		const load = () => (initPromise ??= initialize());
+		const showLoadError = (error: unknown) => {
+			console.error("Could not initialize the enrolment form", error);
+			const message = form.querySelector<HTMLElement>("[data-book-init-error]");
+			if (message) message.hidden = false;
+		};
+
+		form.addEventListener(
+			"submit",
+			(event) => {
+				if (initialized) return;
+				event.preventDefault();
+				void load().then(() => form.requestSubmit()).catch(showLoadError);
+			},
+			{ capture: true },
+		);
+		form.addEventListener("focusin", () => void load().catch(showLoadError), { once: true });
+		document.addEventListener("book-prefill", (event) => {
+			if (initialized) return;
+			pendingPrefill = (event as CustomEvent<{ plan?: string; course?: string }>).detail ?? {};
+			void load()
+				.then(() => {
+					const detail = pendingPrefill;
+					pendingPrefill = undefined;
+					if (detail) document.dispatchEvent(new CustomEvent("book-prefill", { detail }));
+				})
+				.catch(showLoadError);
+		});
+
+		if (typeof IntersectionObserver === "undefined") {
+			void load().catch(showLoadError);
+		} else {
+			const observer = new IntersectionObserver(
+				([entry]) => {
+					if (!entry?.isIntersecting) return;
+					observer.disconnect();
+					void load().catch(showLoadError);
+				},
+				{ rootMargin: "500px" },
+			);
+			observer.observe(form);
+		}
 	}
 </script>
 
@@ -652,6 +724,13 @@ function matches(option: BookOption, value: string): boolean {
 	.book__note {
 		max-width: 44ch;
 		color: var(--type-copy-color);
+		font-size: var(--type-small-size);
+		line-height: var(--type-small-line);
+	}
+
+	.book__init-error {
+		margin: 0;
+		color: #b3261e;
 		font-size: var(--type-small-size);
 		line-height: var(--type-small-line);
 	}

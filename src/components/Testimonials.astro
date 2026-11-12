@@ -476,64 +476,28 @@ const initials = (name: string) =>
 
 
 <script>
-  document.querySelectorAll<HTMLElement>("[data-testimonial]").forEach((root) => {
-    const items = Array.from(root.querySelectorAll<HTMLElement>(".tm-item"));
-    const quotes = Array.from(root.querySelectorAll<HTMLElement>(".tm-quote"));
-    const progress = root.querySelector<HTMLElement>("[data-progress]");
-    const n = items.length;
-    if (!n) return;
-
-    let active = 0;
-
-    function restartProgress() {
-      if (!progress) return;
-      progress.style.animation = "none";
-      void progress.offsetWidth;
-      progress.style.animation = "";
+  const root = document.querySelector<HTMLElement>("[data-testimonial]");
+  if (root) {
+    let loaded = false;
+    let observer: IntersectionObserver | undefined;
+    const load = () => {
+      if (loaded) return;
+      loaded = true;
+      void import("../scripts/testimonials")
+        .then(({ initTestimonials }) => initTestimonials(root))
+        .catch((error: unknown) => console.error("Could not initialize testimonials", error));
+      observer?.disconnect();
+    };
+    root.addEventListener("focusin", load, { once: true });
+    if (typeof IntersectionObserver === "undefined") load();
+    else {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry?.isIntersecting) load();
+        },
+        { rootMargin: "200px" },
+      );
+      observer.observe(root);
     }
-
-    function render() {
-      items.forEach((el, i) => {
-        let off = (((i - active) % n) + n) % n;
-        if (off > n / 2) off -= n;
-        el.style.setProperty("--off", String(off));
-        el.dataset.state = off === 0 ? "active" : Math.abs(off) === 1 ? "near" : "far";
-        el.setAttribute("aria-selected", String(off === 0));
-        el.tabIndex = off === 0 ? 0 : -1;
-      });
-      quotes.forEach((q, i) => (q.dataset.active = String(i === active)));
-      restartProgress();
-    }
-
-    function go(i: number) {
-      active = ((i % n) + n) % n;
-      render();
-    }
-
-    // The progress bar is the timer: when one run ends, show the next review.
-    if (progress && n > 1) {
-      progress.addEventListener("animationend", () => go(active + 1));
-    } else if (progress) {
-      progress.parentElement?.setAttribute("hidden", "");
-    }
-
-    items.forEach((el, i) => el.addEventListener("click", () => go(i)));
-
-    root.querySelector("[data-prev]")?.addEventListener("click", () => go(active - 1));
-    root.querySelector("[data-next]")?.addEventListener("click", () => go(active + 1));
-
-    root.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowDown" || e.key === "ArrowRight") go(active + 1);
-      else if (e.key === "ArrowUp" || e.key === "ArrowLeft") go(active - 1);
-      else return;
-      items[active].focus();
-    });
-
-    // Hover pauses the bar, and so pauses autoplay too.
-    const card = root.querySelector<HTMLElement>(".tm-card");
-    card?.addEventListener("mouseenter", () => progress?.classList.add("is-paused"));
-    card?.addEventListener("mouseleave", () => progress?.classList.remove("is-paused"));
-
-    render();
-  });
+  }
 </script>
