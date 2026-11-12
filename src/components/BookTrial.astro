@@ -8,9 +8,8 @@
  *
  * CTAs elsewhere on the site carry data-book-cta (plus optional
  * data-prefill-plan / data-prefill-course). The global controller in
- * Base.astro either dispatches a `book-prefill` event (when #book is on this
- * page) or navigates to /?plan=..&course=..#book. Old deep links keep
- * working: ?plan / ?course also prefill and focus on load.
+ * Base.astro handles prefill and scrolling immediately on this page, or
+ * navigates there with query params from other pages. Deep links also prefill.
  */
 import Eyebrow from "./Eyebrow.astro";
 import ResultModal from "./ResultModal.astro";
@@ -276,7 +275,6 @@ function matches(option: BookOption, value: string): boolean {
 	if (form) {
 		let initialized = false;
 		let initPromise: Promise<void> | undefined;
-		let pendingPrefill: { plan?: string; course?: string } | undefined;
 		const tsWidget = form.querySelector<HTMLElement>(".cf-turnstile");
 
 		const loadTurnstile = () => {
@@ -458,12 +456,6 @@ function matches(option: BookOption, value: string): boolean {
 			window.setTimeout(focusFirstEmpty, prefersReducedMotion ? 0 : 550);
 		};
 
-		document.addEventListener("book-prefill", (e) => {
-			const { plan, course } =
-				(e as CustomEvent<{ plan?: string; course?: string }>).detail ?? {};
-			bringToForm(plan ?? "", course ?? "");
-		});
-
 		// Old deep links: /?plan=..&course=..#book prefill on load.
 		{
 			const params = new URLSearchParams(window.location.search);
@@ -602,18 +594,6 @@ function matches(option: BookOption, value: string): boolean {
 			{ capture: true },
 		);
 		form.addEventListener("focusin", () => void load().catch(showLoadError), { once: true });
-		document.addEventListener("book-prefill", (event) => {
-			if (initialized) return;
-			pendingPrefill = (event as CustomEvent<{ plan?: string; course?: string }>).detail ?? {};
-			void load()
-				.then(() => {
-					const detail = pendingPrefill;
-					pendingPrefill = undefined;
-					if (detail) document.dispatchEvent(new CustomEvent("book-prefill", { detail }));
-				})
-				.catch(showLoadError);
-		});
-
 		if (typeof IntersectionObserver === "undefined") {
 			void load().catch(showLoadError);
 		} else {

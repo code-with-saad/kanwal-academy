@@ -313,7 +313,9 @@ const pageCtx = createPublicPageContext({
 			// the visitor to the inline #book form (home) or navigates there with
 			// the prefill values as query params (other pages and old deep links).
 			document.addEventListener("click", (e) => {
-				const btn = (e.target as Element | null)?.closest<HTMLElement>("[data-book-cta]");
+				const target = e.target;
+				if (!(target instanceof Element)) return;
+				const btn = target.closest<HTMLElement>("[data-book-cta]");
 				if (!btn) return;
 				e.preventDefault();
 				const plan = btn.dataset.prefillPlan ?? "";
@@ -328,8 +330,35 @@ const pageCtx = createPublicPageContext({
 					window.location.href = `${prefix}/${qs ? `?${qs}` : ""}#book`;
 					return;
 				}
-				document.dispatchEvent(
-					new CustomEvent("book-prefill", { detail: { plan, course } }),
+
+				const selectOption = (field: string, value: string) => {
+					if (!value) return;
+					const select = book.querySelector(field) as HTMLSelectElement | null;
+					if (!select) return;
+					const option = Array.from(select.options).find((item) => {
+						const needle = value.trim().toLowerCase();
+						return (
+							item.value.toLowerCase() === needle ||
+							(item.dataset.optionId ?? "").toLowerCase() === needle ||
+							(item.dataset.optionSlug ?? "").toLowerCase() === needle
+						);
+					});
+					if (option) select.value = option.value;
+				};
+
+				selectOption("#book-plan", plan);
+				selectOption("#book-course", course);
+				const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+				book.scrollIntoView({
+					behavior: reducedMotion ? "auto" : "smooth",
+					block: "start",
+				});
+				window.setTimeout(
+					() =>
+						(book.querySelector("#book-name") as HTMLInputElement | null)?.focus({
+							preventScroll: true,
+						}),
+					reducedMotion ? 0 : 550,
 				);
 			});
 		</script>
