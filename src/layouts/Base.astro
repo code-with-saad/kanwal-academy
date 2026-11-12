@@ -31,7 +31,6 @@ interface Props {
 	canonical?: string | null;
 	robots?: string | null;
 	content?: { collection: string; id: string; slug?: string | null };
-	headerTone?: "dark" | "light";
 	nav?: NavItem[];
 	siteContact?: Awaited<ReturnType<typeof getSiteContact>>;
 	footerCourses?: { name: string }[];
@@ -51,7 +50,6 @@ const {
 	canonical,
 	robots,
 	content,
-	headerTone = isHome ? "dark" : "light",
 	nav,
 	siteContact: providedContact,
 	footerCourses: providedFooterCourses,
@@ -269,7 +267,6 @@ const pageCtx = createPublicPageContext({
 			<Header
 				items={headerItems}
 				cta={headerCta}
-				tone={headerTone}
 				currentPath={Astro.url.pathname}
 				siteName={siteTitle}
 				headerMarkLight={contactResult.data.headerMarkLight}

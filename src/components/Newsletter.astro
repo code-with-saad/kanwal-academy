@@ -16,7 +16,7 @@ import { env as hostEnv } from "virtual:emdash/env";
 import { useUi } from "../i18n";
 
 const { locale, t } = useUi(Astro);
-const clientStrings = JSON.stringify({ ...t.feedback, ...t.newsletter });
+const clientStrings = JSON.stringify({ ...t.feedback, ...t.form, ...t.newsletter });
 
 const runtimeEnv = hostEnv as Record<string, unknown> | undefined;
 const buildEnv = import.meta.env as unknown as Record<string, string | undefined>;
@@ -85,21 +85,33 @@ const turnstileSiteKey = String(
 		const msg = (code: string | undefined, fallback?: string): string =>
 			(code && messages[code]) || fallback || messages.unknown || "Please try again.";
 
-		if (turnstile && !document.getElementById("cf-turnstile-newsletter")) {
-			const script = document.createElement("script");
-			script.id = "cf-turnstile-newsletter";
-			script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
-			script.async = true;
-			script.defer = true;
-			document.head.appendChild(script);
-		}
-
 		const setStatus = (message: string, tone: "" | "success" | "error") => {
 			status.textContent = message;
 			status.classList.toggle("is-success", tone === "success");
 			status.classList.toggle("is-error", tone === "error");
 			input.setAttribute("aria-invalid", tone === "error" && message ? "true" : "false");
 		};
+
+		const loadTurnstile = () => {
+			if (!turnstile || document.getElementById("cf-turnstile-newsletter")) return;
+			const script = document.createElement("script");
+			script.id = "cf-turnstile-newsletter";
+			script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+			script.async = true;
+			script.defer = true;
+			script.addEventListener(
+				"error",
+				() => {
+					script.remove();
+					setStatus(msg("loadError", "Could not load the security check. Please try again."), "error");
+					console.error("Could not load Cloudflare Turnstile for the newsletter form");
+				},
+				{ once: true },
+			);
+			document.head.appendChild(script);
+		};
+
+		form.addEventListener("focusin", loadTurnstile, { once: true });
 
 		const setBusy = (busy: boolean) => {
 			submit.disabled = busy;
@@ -124,6 +136,11 @@ const turnstileSiteKey = String(
 			if (!email || !emailRe.test(email)) {
 				setStatus(msg("invalid_email"), "error");
 				input.focus();
+				return;
+			}
+			if (turnstile && !(window as unknown as { turnstile?: unknown }).turnstile) {
+				loadTurnstile();
+				setStatus(msg("loadError", "Please wait for the security check to load, then try again."), "error");
 				return;
 			}
 

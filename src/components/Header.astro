@@ -11,7 +11,6 @@ import { localizePath, stripLocalePrefix, useUi, type Locale } from "../i18n";
 interface Props {
 	items?: NavItem[];
 	cta?: NavItem;
-	tone?: "dark" | "light";
 	currentPath?: string;
 	siteName?: string;
 	headerMarkLight?: ImageValue | null;
@@ -23,7 +22,6 @@ const { locale, t } = useUi(Astro);
 const {
 	items = localizedNav([...site.nav], t, locale),
 	cta = localizedCta(site.cta, t, locale),
-	tone = "light",
 	currentPath = Astro.url.pathname,
 	siteName = site.name,
 	headerMarkLight,
@@ -397,15 +395,15 @@ const homeHref = localizePath("/", locale);
 	}
 
 	/* Theme-based logo visibility only — the pill always has a solid surface. */
-	.header__mark--on-dark {
+	:global(.header__mark--on-dark) {
 		display: none;
 	}
 
-	:global(html[data-theme="dark"]) .header__mark--on-light {
+	:global(html[data-theme="dark"] .header__mark--on-light) {
 		display: none;
 	}
 
-	:global(html[data-theme="dark"]) .header__mark--on-dark {
+	:global(html[data-theme="dark"] .header__mark--on-dark) {
 		display: block;
 	}
 

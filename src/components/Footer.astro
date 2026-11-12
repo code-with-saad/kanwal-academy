@@ -213,15 +213,15 @@ const academyLinks = [
 		object-fit: contain;
 	}
 
-	.footer__logo--on-dark {
+	:global(.footer__logo--on-dark) {
 		display: none;
 	}
 
-	:global(html[data-theme="dark"]) .footer__logo--on-light {
+	:global(html[data-theme="dark"] .footer__logo--on-light) {
 		display: none;
 	}
 
-	:global(html[data-theme="dark"]) .footer__logo--on-dark {
+	:global(html[data-theme="dark"] .footer__logo--on-dark) {
 		display: block;
 	}
 

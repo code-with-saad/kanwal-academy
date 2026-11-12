@@ -38,9 +38,7 @@ const displaySizes = new Map([
 	["/images/kanwal-mark-on-light.png", "About 38x44 CSS px in the header"],
 	["/images/section-memorize.jpg", "Fluid 4:3 panel, up to about 480x360 CSS px"],
 	["/images/section-phone.png", "Fluid 4:3 panel, up to about 480x360 CSS px"],
-	["/images/wisdom.jpg", "Fluid 4:5 panel, up to about 480x600 CSS px"],
-	["/mocks/heroMock_desktop.png", "Not referenced by the site"],
-	["/mocks/heroMock_mobile.png", "Not referenced by the site"],
+	["/images/wisdom.jpg", "Landscape panel, up to about 440x251 CSS px"],
 ]);
 const maxBytes = new Map([
 	["/images/hero-quran.png", 120 * 1024],
@@ -139,7 +137,7 @@ const sourceFiles = (await listImages(publicRoot))
 		const sourceUrl = publicUrl(filePath);
 		return (
 			!filePath.startsWith(`${outputRoot}${path.sep}`) &&
-			(sourceUrl.startsWith("/images/") || sourceUrl.startsWith("/mocks/"))
+			sourceUrl.startsWith("/images/")
 		);
 	})
 	.sort();
@@ -150,7 +148,7 @@ for (const entry of await readdir(outputRoot, { withFileTypes: true })) {
 	if (
 		entry.isFile() &&
 		/\.(?:avif|webp)$/.test(entry.name) &&
-		[...sourceNames].some((name) => entry.name.startsWith(`${name}-`))
+		![...sourceNames].some((name) => entry.name.startsWith(`${name}-`))
 	) {
 		await unlink(path.join(outputRoot, entry.name));
 	}

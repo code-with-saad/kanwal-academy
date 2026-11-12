@@ -12,7 +12,6 @@ interface Item {
 }
 
 interface Props {
-	eyebrow?: string;
 	heading?: string;
 	items?: Item[];
 }
@@ -41,7 +40,6 @@ const defaults: Item[] = [
 const icons: Item["icon"][] = ["clock", "book", "screens"];
 
 const {
-	eyebrow = t.home.standing_eyebrow,
 	heading = t.home.standing_heading,
 	items = defaults,
 } = Astro.props;

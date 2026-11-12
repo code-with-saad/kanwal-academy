@@ -1,24 +1,11 @@
 ---
 import ResponsiveImage from "./ResponsiveImage.astro";
 
-/**
- * A fixed-ratio image slot with a clearly labelled placeholder.
- *
- * Pass `src` when the file is expected in /public (for example
- * /images/hero-quran.png). While the file is missing, or if it ever fails to
- * load, a labelled placeholder box is shown instead of a broken image. Once
- * the real file is added to public/ and the site is redeployed, the image
- * appears without any code change.
- */
 interface Props {
 	src?: string;
-	/** Short label shown inside the placeholder box. */
 	label: string;
-	/** Alt text for the real image. Falls back to the label. */
 	alt?: string;
-	/** CSS aspect-ratio value, for example "16 / 10". */
 	ratio?: string;
-	/** Load eagerly for above-the-fold images. */
 	eager?: boolean;
 	sizes?: string;
 	class?: string;
@@ -89,7 +76,6 @@ const altText = alt || label;
 </noscript>
 
 <script>
-	// Swap to the labelled placeholder when the image file is missing or fails.
 	const images = document.querySelectorAll<HTMLImageElement>(".img-ph img");
 	for (const img of images) {
 		const box = img.closest(".img-ph")?.querySelector<HTMLElement>("[data-img-ph-box]");
@@ -112,7 +98,7 @@ const altText = alt || label;
 		overflow: clip;
 	}
 
-	.img-ph__img {
+	:global(.img-ph__img) {
 		position: absolute;
 		inset: 0;
 		width: 100%;
