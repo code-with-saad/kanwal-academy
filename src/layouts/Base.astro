@@ -82,7 +82,7 @@ const footerCourseNames = providedFooterCourses ?? coursesResult!.entries
 	}));
 
 const { siteTitle, siteTagline, titleSeparator } = resolveSiteIdentity(settingsResult.data);
-const localizedSiteName = locale === "ar" ? contactResult.data.arabicSiteName : siteTitle;
+const localizedSiteName = contactResult.data.brandName;
 const fullTitle = title
 	? titleIsComplete || title.includes(siteTitle)
 		? title

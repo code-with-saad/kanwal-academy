@@ -9,7 +9,7 @@ export interface SocialLink {
 }
 
 export interface SiteContact {
-	arabicSiteName: string;
+	brandName: string;
 	phone: string;
 	whatsappNumber: string;
 	email: string;
@@ -53,7 +53,7 @@ export interface SiteContact {
 }
 
 interface SiteSettingsData {
-	arabic_site_name?: string | null;
+	brand_name?: string | null;
 	phone?: string | null;
 	whatsapp_number?: string | null;
 	email?: string | null;
@@ -90,8 +90,8 @@ interface SiteSettingsData {
 	footer_stay_in_touch?: string | null;
 }
 
-const fallback = (t: UiDictionary): SiteContact => ({
-	arabicSiteName: "أكاديمية كنول",
+const fallback = (t: UiDictionary, locale: Locale): SiteContact => ({
+	brandName: locale === "ar" ? "أكاديمية كنول" : site.name,
 	phone: site.phone,
 	whatsappNumber: "923422766346",
 	email: site.email,
@@ -131,8 +131,8 @@ function clean(value: string | null | undefined, fallback: string): string {
 	return trimmed ? trimmed : fallback;
 }
 
-function normalize(data: SiteSettingsData | undefined, t: UiDictionary): SiteContact {
-	const FALLBACK = fallback(t);
+function normalize(data: SiteSettingsData | undefined, t: UiDictionary, locale: Locale): SiteContact {
+	const FALLBACK = fallback(t, locale);
 	const socialLinks = Array.isArray(data?.social_links)
 		? data.social_links
 				.map((link) => ({
@@ -143,7 +143,7 @@ function normalize(data: SiteSettingsData | undefined, t: UiDictionary): SiteCon
 		: [];
 
 	return {
-		arabicSiteName: clean(data?.arabic_site_name, FALLBACK.arabicSiteName),
+		brandName: clean(data?.brand_name, FALLBACK.brandName),
 		phone: clean(data?.phone, FALLBACK.phone),
 		whatsappNumber: clean(data?.whatsapp_number, FALLBACK.whatsappNumber),
 		email: clean(data?.email, FALLBACK.email),
@@ -216,6 +216,7 @@ export async function getSiteContact(locale: Locale = DEFAULT_LOCALE) {
 		locale !== DEFAULT_LOCALE && fallbackLocale
 			? {
 					...data,
+					brand_name: undefined,
 					years_label: undefined,
 					countries_label: undefined,
 					students_label: undefined,
@@ -237,6 +238,6 @@ export async function getSiteContact(locale: Locale = DEFAULT_LOCALE) {
 					footer_stay_in_touch: undefined,
 				}
 			: data;
-	const contact = normalize(localizedData, getUi(locale));
+	const contact = normalize(localizedData, getUi(locale), locale);
 	return { data: contact, cacheHint, entry, fallbackLocale };
 }

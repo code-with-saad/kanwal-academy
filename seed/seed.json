@@ -873,8 +873,8 @@
 					"type": "image"
 				},
 				{
-					"slug": "arabic_site_name",
-					"label": "Arabic brand name (shown beside the logo on Arabic pages)",
+					"slug": "brand_name",
+					"label": "Brand name (translate this field for Arabic pages)",
 					"type": "string"
 				},
 				{
@@ -1493,7 +1493,7 @@
 					"owner_email": "hello@kanwalquranacademy.com",
 					"address": "Missouri, USA",
 					"social_links": [],
-					"arabic_site_name": "أكاديمية كنول",
+					"brand_name": "Kanwal Quran Academy",
 					"years": "5+",
 					"countries": "5+",
 					"students": "[000]+",
