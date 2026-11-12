@@ -265,11 +265,8 @@ function matches(option: BookOption, value: string): boolean {
 <ResultModal whatsappPhone={contact.phone} />
 
 <script>
-	// ---------------------------------------------------------------------------
-	// Inline free-trial form for the #book section.
-	// Field states: idle, focus (css), invalid (message under the field),
-	// submitting (spinner, button disabled). The popup is only for the result.
-	// ---------------------------------------------------------------------------
+	import "intl-tel-input/styles";
+
 	const form = document.getElementById("book-form") as HTMLFormElement | null;
 
 	if (form) {
@@ -303,8 +300,6 @@ function matches(option: BookOption, value: string): boolean {
 
 		const initialize = async () => {
 			const { default: intlTelInput } = await import("intl-tel-input");
-			// @ts-ignore
-			await import("intl-tel-input/styles");
 
 		const nameInput = form.querySelector<HTMLInputElement>("#book-name")!;
 		const emailInput = form.querySelector<HTMLInputElement>("#book-email")!;
@@ -333,13 +328,6 @@ function matches(option: BookOption, value: string): boolean {
 			strictMode: false,
 		});
 
-		// --- Phone digit limit by country ------------------------------------
-		// Derived from libphonenumber through intl-tel-input's own utils, so
-		// every country in the picker gets the right cap. The field holds the
-		// national number (separateDialCode keeps the dial code outside it),
-		// so the cap is the national length plus, where the country uses one,
-		// a single leading trunk prefix (the "0" people dial at home, as in
-		// Pakistan: 0301 2345678 is 11 digits, while +92 301 2345678 is 10).
 		let nationalMaxDigits = 10;
 		let hasTrunkPrefix = false;
 
