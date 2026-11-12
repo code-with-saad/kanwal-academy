@@ -2,6 +2,7 @@
 import { getEmDashCollection, getEmDashEntry, getSeoMeta } from "emdash";
 import type { ContentEntry, ImageValue } from "emdash";
 import { Image } from "emdash/ui";
+import ResponsiveImage from "../components/ResponsiveImage.astro";
 import Base from "../layouts/Base.astro";
 import BookTrial from "../components/BookTrial.astro";
 import Button from "../components/Button.astro";
@@ -31,6 +32,7 @@ interface HomePageFields {
 	home_headline?: string;
 	home_lead?: string;
 	home_image?: ImageValue;
+	home_image_alt?: string;
 	home_reach_text?: string;
 	home_cta_label?: string;
 	feature_card_1_title?: string;
@@ -50,12 +52,14 @@ interface HomePageFields {
 	split1_paragraph_1?: string;
 	split1_paragraph_2?: string;
 	split1_image?: ImageValue;
+	split1_image_alt?: string;
 	split1_image_label?: string;
 	split2_heading_before?: string;
 	split2_heading_highlight?: string;
 	split2_paragraph_1?: string;
 	split2_list_items?: string;
 	split2_image?: ImageValue;
+	split2_image_alt?: string;
 	split2_image_label?: string;
 	stats_eyebrow?: string;
 	stats_heading?: string;
@@ -463,13 +467,24 @@ const hasTestimonials = testimonials.length > 0 || demo;
 											homePage?.data.home_image ? (
 												<Image
 													image={homePage.data.home_image}
-													alt={t.images.hero}
+																							alt={homeText("home_image_alt") || homePage.data.home_image.alt || t.images.hero}
 													class="quran-stage__image"
-													priority
-												/>
-											) : (
-												<img src={heroImage.src} alt={t.images.hero} class="quran-stage__image" />
-											)
+																							width={homePage.data.home_image.width ?? 479}
+																							height={homePage.data.home_image.height ?? 320}
+																							sizes="(max-width: 760px) 25vw, (max-width: 1100px) 24vw, 186px"
+																							priority
+																						/>
+																					) : (
+																						<ResponsiveImage
+																							src={heroImage.src}
+																							alt={homeText("home_image_alt") || t.images.hero}
+																							class="quran-stage__image"
+																							width={479}
+																							height={320}
+																							sizes="(max-width: 760px) 25vw, (max-width: 1100px) 24vw, 186px"
+																							priority
+																						/>
+																					)
 										}
 									</span>
 								</figure>
@@ -596,7 +611,7 @@ const hasTestimonials = testimonials.length > 0 || demo;
 					]}
 					image={homePage?.data.split1_image}
 					imageSrc="/images/section-phone.png"
-					imageAlt={t.images.split1}
+					imageAlt={homeText("split1_image_alt") || t.images.split1}
 					imageLabel={homeText("split1_image_label")}
 					imageRatio="4 / 3"
 					buttonLabel={t.actions.bookFreeTrial}
@@ -610,7 +625,7 @@ const hasTestimonials = testimonials.length > 0 || demo;
 					]}
 					image={homePage?.data.split2_image}
 					imageSrc="/images/section-memorize.jpg"
-					imageAlt={t.images.split2}
+					imageAlt={homeText("split2_image_alt") || t.images.split2}
 					imageLabel={homeText("split2_image_label")}
 					imageRatio="4 / 3"
 					list={split2List}
@@ -702,7 +717,7 @@ const hasTestimonials = testimonials.length > 0 || demo;
 							rating: testimonial.data.rating ?? "5.0",
 							text: testimonial.data.quote,
 							relation: testimonial.data.relation,
-							avatarSrc: testimonial.data.avatar?.src,
+							avatar: testimonial.data.avatar,
 							avatarAlt: testimonial.data.avatar?.alt,
 						}))
 					: undefined

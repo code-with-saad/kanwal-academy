@@ -52,8 +52,12 @@ const {
 			image ? (
 				<Image
 					image={image}
-					alt={image.alt ?? imageAlt ?? `An open Qur'an on a wooden rehal for the ${title} course`}
+					alt={image.alt || imageAlt || `An open Qur'an on a wooden rehal for the ${title} course`}
 					class="course-card__image"
+					width={image.width ?? 800}
+					height={image.height ?? 500}
+					sizes="(max-width: 560px) calc(100vw - 32px), (max-width: 900px) 45vw, 30vw"
+					loading="lazy"
 				/>
 			) : (
 				<ImagePlaceholder
@@ -61,6 +65,7 @@ const {
 					label={title}
 					alt={imageAlt ?? `An open Qur'an on a wooden rehal for the ${title} course`}
 					ratio="16 / 10"
+					sizes="(max-width: 560px) calc(100vw - 32px), (max-width: 900px) 45vw, 30vw"
 				/>
 			)
 		}

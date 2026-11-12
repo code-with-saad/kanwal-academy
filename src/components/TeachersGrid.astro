@@ -41,9 +41,20 @@ const cards = shown.length > 0 ? shown : demoCards;
 			>
 				<div class="teacher-card__photo" data-reveal="image">
 					{card.photo ? (
-						<Image image={card.photo} alt={card.photo.alt || card.name} />
+						<Image
+							image={card.photo}
+							alt={card.photo.alt || card.name}
+							width={card.photo.width ?? 800}
+							height={card.photo.height ?? 1000}
+							sizes="(max-width: 560px) calc(100vw - 32px), (max-width: 900px) 45vw, 30vw"
+							loading="lazy"
+						/>
 					) : (
-						<ImagePlaceholder label="Teacher photo placeholder" ratio="4 / 5" />
+						<ImagePlaceholder
+							label="Teacher photo placeholder"
+							ratio="4 / 5"
+							sizes="(max-width: 560px) calc(100vw - 32px), (max-width: 900px) 45vw, 30vw"
+						/>
 					)}
 				</div>
 				<div class="teacher-card__meta">

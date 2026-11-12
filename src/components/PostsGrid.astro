@@ -26,9 +26,17 @@ const latest = posts.slice(0, 3);
 						<Image
 							image={post.data.featured_image}
 							alt={post.data.featured_image.alt || post.data.title}
+							width={post.data.featured_image.width ?? 800}
+							height={post.data.featured_image.height ?? 500}
+							sizes="(max-width: 560px) calc(100vw - 32px), (max-width: 860px) 45vw, 30vw"
+							loading="lazy"
 						/>
 					) : (
-						<ImagePlaceholder label="Article image" ratio="16 / 10" />
+						<ImagePlaceholder
+							label="Article image"
+							ratio="16 / 10"
+							sizes="(max-width: 560px) calc(100vw - 32px), (max-width: 860px) 45vw, 30vw"
+						/>
 					)}
 				</a>
 				<div class="post-card__body">

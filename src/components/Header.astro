@@ -4,6 +4,7 @@ import LanguageSwitcher from "./LanguageSwitcher.astro";
 import { site, type NavItem } from "../config/site";
 import { Image } from "emdash/ui";
 import type { ImageValue } from "emdash";
+import ResponsiveImage from "./ResponsiveImage.astro";
 import { localizedNav, localizedCta } from "../i18n/nav";
 import { localizePath, stripLocalePrefix, useUi, type Locale } from "../i18n";
 
@@ -52,14 +53,18 @@ const homeHref = localizePath("/", locale);
 					class="header__mark header__mark--on-light"
 					width={44}
 					height={44}
+					sizes="44px"
+					loading="eager"
 				/>
 			) : (
-				<img
+				<ResponsiveImage
 					class="header__mark header__mark--on-light"
 					src="/images/kanwal-mark-on-light.png"
 					alt=""
-					width="592"
-					height="688"
+					width={38}
+					height={44}
+					sizes="44px"
+					loading="eager"
 				/>
 			)}
 			{headerMarkDark ? (
@@ -69,14 +74,18 @@ const homeHref = localizePath("/", locale);
 					class="header__mark header__mark--on-dark"
 					width={44}
 					height={44}
+					sizes="44px"
+					loading="eager"
 				/>
 			) : (
-				<img
+				<ResponsiveImage
 					class="header__mark header__mark--on-dark"
 					src="/images/kanwal-mark-on-dark.png"
 					alt=""
-					width="592"
-					height="688"
+					width={38}
+					height={44}
+					sizes="44px"
+					loading="eager"
 				/>
 			)}
 			<span class="header__name">{siteName}</span>

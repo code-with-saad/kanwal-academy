@@ -1,6 +1,7 @@
 ---
 import type { EditProxy, ImageValue } from "emdash";
 import { Image } from "emdash/ui";
+import ResponsiveImage from "./ResponsiveImage.astro";
 import Container from "./Container.astro";
 import Newsletter from "./Newsletter.astro";
 import SocialLinks from "./SocialLinks.astro";
@@ -20,6 +21,14 @@ interface Props {
 const { locale, t } = useUi(Astro);
 const { contact, siteName = site.name, settingsEdit, courseNames, logoLight, logoDark } = Astro.props;
 const year = new Date().getFullYear();
+const logoSize = (logo?: ImageValue | null) => {
+	const sourceWidth = logo?.width ?? 1668;
+	const sourceHeight = logo?.height ?? 712;
+	const width = Math.min(260, sourceWidth);
+	return { width, height: Math.round((sourceHeight / sourceWidth) * width) };
+};
+const lightLogoSize = logoSize(logoLight);
+const darkLogoSize = logoSize(logoDark);
 
 const links = courseNames?.length
 	? courseNames.map((c) => ({ label: c.name, href: localizePath(c.href ?? "/#courses", locale) }))
@@ -47,14 +56,20 @@ const academyLinks = [
 							image={logoLight}
 							alt={siteName}
 							class="footer__logo footer__logo--on-light"
+							width={lightLogoSize.width}
+							height={lightLogoSize.height}
+							sizes="260px"
+							loading="lazy"
 						/>
 					) : (
-						<img
+						<ResponsiveImage
 							class="footer__logo footer__logo--on-light"
 							src="/images/kanwal-logo-on-light.png"
 							alt={siteName}
-							width="1668"
-							height="712"
+							width={260}
+							height={111}
+							sizes="260px"
+							loading="lazy"
 						/>
 					)}
 					{logoDark ? (
@@ -62,14 +77,20 @@ const academyLinks = [
 							image={logoDark}
 							alt={siteName}
 							class="footer__logo footer__logo--on-dark"
+							width={darkLogoSize.width}
+							height={darkLogoSize.height}
+							sizes="260px"
+							loading="lazy"
 						/>
 					) : (
-						<img
+						<ResponsiveImage
 							class="footer__logo footer__logo--on-dark"
 							src="/images/kanwal-logo-on-dark.png"
 							alt={siteName}
-							width="1668"
-							height="712"
+							width={260}
+							height={111}
+							sizes="260px"
+							loading="lazy"
 						/>
 					)}
 				</a>

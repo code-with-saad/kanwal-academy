@@ -188,6 +188,7 @@ export const ar: UiDictionary = {
 		home_headline: "اتلُ القرآن مع معلم يعرف اسمك.",
 		home_lead:
 			"دروس فردية في التلاوة والتجويد والحفظ. ابدأ بحصة تجريبية مجانية أينما كنت.",
+		home_image_alt: "مصحف مفتوح على كرسي خشبي منحوت",
 		home_reach_text: "طلاب يتعلمون من {countries} دول",
 		home_cta_label: "ابدأ حصتك التجريبية المجانية",
 		feature_card_1_title: "حصة تجريبية مجانية",
@@ -210,12 +211,14 @@ export const ar: UiDictionary = {
 		split1_paragraph_2:
 			"يبقى المعلم نفسه معك كل أسبوع، لتتراكم التصحيحات ويستمر التقدم من حصة إلى أخرى.",
 		split1_image_label: "درس عبر الهاتف (4:3)",
+		split1_image_alt: "طالب يحضر درسًا في القرآن عبر الهاتف",
 		split2_heading_before: "كيف تحفظ القرآن",
 		split2_heading_highlight: "بثقة",
 		split2_paragraph_1:
 			"ينمو الحفظ بخطوات صغيرة وثابتة. يحدد معلمك هدفًا شهريًا، ويستمع إلى ما حفظته، ويراجع معك قبل الانتقال إلى حفظ جديد.",
 		split2_list_items: "",
 		split2_image_label: "تدريب على الحفظ (4:3)",
+		split2_image_alt: "مصحف مفتوح مع فاصل للصفحات، استعدادًا لتدريبات الحفظ",
 		stats_eyebrow: "خلال السنوات الـ5 الماضية",
 		stats_heading: "نجاحنا",
 		stats_description:

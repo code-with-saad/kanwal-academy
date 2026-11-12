@@ -75,8 +75,12 @@ const {
 			{image ? (
 				<Image
 					image={image}
-					alt={image.alt || imageAlt}
+					alt={imageAlt || image.alt || ""}
 					class="feature-split__image"
+					width={image.width ?? 800}
+					height={image.height ?? 600}
+					sizes="(max-width: 560px) calc(100vw - 32px), (max-width: 900px) 480px, 42vw"
+					loading="lazy"
 				/>
 			) : (
 				<ImagePlaceholder
@@ -84,6 +88,7 @@ const {
 					alt={imageAlt}
 					label={imageLabel}
 					ratio={imageRatio}
+					sizes="(max-width: 560px) calc(100vw - 32px), (max-width: 900px) 480px, 42vw"
 					class="feature-split__image"
 				/>
 			)}

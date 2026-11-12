@@ -1,5 +1,7 @@
 ---
 import { useUi } from "../i18n";
+import { Image } from "emdash/ui";
+import type { ImageValue } from "emdash";
 
 const { t } = useUi(Astro);
 
@@ -9,7 +11,7 @@ interface Review {
   rating: string;
   text: string;
   relation?: string;
-  avatarSrc?: string;
+  avatar?: ImageValue;
   avatarAlt?: string;
 }
 
@@ -53,8 +55,15 @@ const initials = (name: string) =>
                 aria-selected={i === 0 ? "true" : "false"}
               >
                 <span class="tm-avatar">
-                  {r.avatarSrc ? (
-                    <img src={r.avatarSrc} alt={r.avatarAlt ?? r.name} loading="lazy" />
+                  {r.avatar ? (
+                    <Image
+                      image={r.avatar}
+                      alt={r.avatarAlt || r.avatar.alt || r.name}
+                      width={r.avatar.width ?? 56}
+                      height={r.avatar.height ?? 56}
+                      sizes="56px"
+                      loading="lazy"
+                    />
                   ) : (
                     <span>{initials(r.name)}</span>
                   )}
@@ -258,6 +267,11 @@ const initials = (name: string) =>
     height: 100%;
     object-fit: cover;
     filter: grayscale(1);
+  }
+  .tm-avatar :global(picture) {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
   .tm-item[aria-selected="true"] .tm-avatar {
     transform: scale(1);

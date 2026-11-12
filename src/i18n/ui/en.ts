@@ -194,6 +194,7 @@ export const en = {
 		home_headline: "Recite the Qur'an with a teacher who knows your name.",
 		home_lead:
 			"One-to-one lessons in recitation, tajweed and memorization. Start with a free trial class from wherever you are.",
+		home_image_alt: "An open Qur'an resting on a carved wooden rehal",
 		home_reach_text: "Students learning from {countries} countries",
 		home_cta_label: "Start your free trial",
 		feature_card_1_title: "Free trial class",
@@ -216,12 +217,14 @@ export const en = {
 		split1_paragraph_2:
 			"The same teacher stays with you each week, so corrections and progress carry over from class to class.",
 		split1_image_label: "Lesson on a phone (4:3)",
+		split1_image_alt: "A student joining a Qur'an lesson on a phone",
 		split2_heading_before: "How to memorize the Qur'an",
 		split2_heading_highlight: "with confidence",
 		split2_paragraph_1:
 			"Memorization grows in small, steady steps. Your teacher sets a monthly target, listens to what you have learned, and revises with you before adding new lines.",
 		split2_list_items: "",
 		split2_image_label: "Memorization practice (4:3)",
+		split2_image_alt: "An open Qur'an with a page marker, ready for memorization practice",
 		stats_eyebrow: "Over the past 5 years",
 		stats_heading: "Our success",
 		stats_description:

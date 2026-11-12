@@ -14,7 +14,8 @@
     "deploy": "astro build && wrangler deploy",
     "typecheck": "astro check",
     "db:reset": "node scripts/reset-db.mjs",
-    "check:fonts": "node scripts/check-fonts.mjs"
+    "check:fonts": "node scripts/check-fonts.mjs",
+    "images:optimize": "node scripts/optimize-images.mjs"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.3.1",

@@ -54,6 +54,11 @@
 					"type": "image"
 				},
 				{
+					"slug": "home_image_alt",
+					"label": "Home hero: image description (alt text)",
+					"type": "text"
+				},
+				{
 					"slug": "home_reach_text",
 					"label": "Home hero: reach line (for example 'Students learning from 5+ countries')",
 					"type": "string"
@@ -149,6 +154,11 @@
 					"type": "image"
 				},
 				{
+					"slug": "split1_image_alt",
+					"label": "Feature split 1: image description (alt text)",
+					"type": "text"
+				},
+				{
 					"slug": "split1_image_label",
 					"label": "Feature split 1: image label",
 					"type": "string"
@@ -157,6 +167,11 @@
 					"slug": "split2_image",
 					"label": "Feature split 2: image",
 					"type": "image"
+				},
+				{
+					"slug": "split2_image_alt",
+					"label": "Feature split 2: image description (alt text)",
+					"type": "text"
 				},
 				{
 					"slug": "split2_image_label",
@@ -1508,6 +1523,7 @@
 					"title": "Home",
 					"home_headline": "Recite the Qur'an with a teacher who knows your name.",
 					"home_lead": "One-to-one lessons in recitation, tajweed and memorization. Start with a free trial class from wherever you are.",
+					"home_image_alt": "An open Qur'an resting on a carved wooden rehal",
 					"home_reach_text": "Students learning from {countries} countries",
 					"home_cta_label": "Start your free trial",
 					"feature_card_1_title": "Free trial class",
@@ -1527,11 +1543,13 @@
 					"split1_paragraph_1": "Lessons run live in a video call, so you only need a phone, tablet or laptop with a camera. Your teacher shares the page you are reading and listens while you recite.",
 					"split1_paragraph_2": "The same teacher stays with you each week, so corrections and progress carry over from class to class.",
 					"split1_image_label": "Lesson on a phone (4:3)",
+					"split1_image_alt": "A student joining a Qur'an lesson on a phone",
 					"split2_heading_before": "How to memorize the Qur'an",
 					"split2_heading_highlight": "with confidence",
 					"split2_paragraph_1": "Memorization grows in small, steady steps. Your teacher sets a monthly target, listens to what you have learned, and revises with you before adding new lines.",
 					"split2_list_items": "Set your intention\nCreate a quiet space\nListen and repeat\nRevise daily\nBreak it into small parts\nChoose one surah at a time",
 					"split2_image_label": "Memorization practice (4:3)",
+					"split2_image_alt": "An open Qur'an with a page marker, ready for memorization practice",
 					"stats_eyebrow": "Over the past 5 years",
 					"stats_heading": "Our success",
 					"stats_description": "Our three courses, Qur'anic Recitation, Tajweed Proficiency and Memorization Excellence, help students learn the Qur'an at their own pace and from the comfort of home.",

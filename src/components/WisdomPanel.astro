@@ -49,8 +49,12 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 			{image ? (
 				<Image
 					image={image}
-					alt={image.alt || imageAlt}
+					alt={imageAlt || image.alt || ""}
 					class="wisdom__image"
+					width={image.width ?? 800}
+					height={image.height ?? 1000}
+					sizes="(max-width: 560px) calc(100vw - 32px), (max-width: 900px) 440px, 42vw"
+					loading="lazy"
 				/>
 			) : (
 				<ImagePlaceholder
@@ -58,6 +62,7 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 					alt={imageAlt}
 					label={t.images.wisdomPlaceholder}
 					ratio="4 / 5"
+					sizes="(max-width: 560px) calc(100vw - 32px), (max-width: 900px) 440px, 42vw"
 					class="wisdom__image"
 				/>
 			)}

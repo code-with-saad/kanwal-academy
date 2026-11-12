@@ -1,4 +1,6 @@
 ---
+import ResponsiveImage from "./ResponsiveImage.astro";
+
 /**
  * A fixed-ratio image slot with a clearly labelled placeholder.
  *
@@ -18,6 +20,7 @@ interface Props {
 	ratio?: string;
 	/** Load eagerly for above-the-fold images. */
 	eager?: boolean;
+	sizes?: string;
 	class?: string;
 }
 
@@ -27,6 +30,7 @@ const {
 	alt = "",
 	ratio = "16 / 10",
 	eager = false,
+	sizes = "(max-width: 560px) calc(100vw - 32px), 480px",
 	class: className,
 } = Astro.props;
 
@@ -36,13 +40,13 @@ const altText = alt || label;
 <figure class:list={["img-ph", className]} style={`--img-ph-ratio: ${ratio}`}>
 	{
 		src && (
-			<img
-				class="img-ph__img"
-				data-img-ph-img
+			<ResponsiveImage
 				src={src}
 				alt={altText}
+				class="img-ph__img"
 				loading={eager ? "eager" : "lazy"}
-				decoding="async"
+				priority={eager}
+				sizes={sizes}
 			/>
 		)
 	}
@@ -75,7 +79,7 @@ const altText = alt || label;
 
 <noscript>
 	<style>
-		.img-ph [data-img-ph-img] {
+		.img-ph img {
 			display: none;
 		}
 		.img-ph [data-img-ph-box][hidden] {
@@ -86,7 +90,7 @@ const altText = alt || label;
 
 <script>
 	// Swap to the labelled placeholder when the image file is missing or fails.
-	const images = document.querySelectorAll<HTMLImageElement>("[data-img-ph-img]");
+	const images = document.querySelectorAll<HTMLImageElement>(".img-ph img");
 	for (const img of images) {
 		const box = img.closest(".img-ph")?.querySelector<HTMLElement>("[data-img-ph-box]");
 		if (!box) continue;
