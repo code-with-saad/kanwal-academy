@@ -82,6 +82,7 @@ const footerCourseNames = providedFooterCourses ?? coursesResult!.entries
 	}));
 
 const { siteTitle, siteTagline, titleSeparator } = resolveSiteIdentity(settingsResult.data);
+const localizedSiteName = locale === "ar" ? contactResult.data.arabicSiteName : siteTitle;
 const fullTitle = title
 	? titleIsComplete || title.includes(siteTitle)
 		? title
@@ -268,7 +269,7 @@ const pageCtx = createPublicPageContext({
 				items={headerItems}
 				cta={headerCta}
 				currentPath={Astro.url.pathname}
-				siteName={siteTitle}
+				siteName={localizedSiteName}
 				headerMarkLight={contactResult.data.headerMarkLight}
 				headerMarkDark={contactResult.data.headerMarkDark}
 				languagePaths={languagePaths}
@@ -279,7 +280,7 @@ const pageCtx = createPublicPageContext({
 			<Footer
 				contact={contactResult.data}
 				settingsEdit={contactResult.entry?.edit}
-				siteName={siteTitle}
+				siteName={localizedSiteName}
 				courseNames={footerCourseNames}
 				logoLight={contactResult.data.logoLight}
 				logoDark={contactResult.data.logoDark}

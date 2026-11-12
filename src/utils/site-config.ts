@@ -9,6 +9,7 @@ export interface SocialLink {
 }
 
 export interface SiteContact {
+	arabicSiteName: string;
 	phone: string;
 	whatsappNumber: string;
 	email: string;
@@ -52,6 +53,7 @@ export interface SiteContact {
 }
 
 interface SiteSettingsData {
+	arabic_site_name?: string | null;
 	phone?: string | null;
 	whatsapp_number?: string | null;
 	email?: string | null;
@@ -89,6 +91,7 @@ interface SiteSettingsData {
 }
 
 const fallback = (t: UiDictionary): SiteContact => ({
+	arabicSiteName: "أكاديمية كنول",
 	phone: site.phone,
 	whatsappNumber: "923422766346",
 	email: site.email,
@@ -140,6 +143,7 @@ function normalize(data: SiteSettingsData | undefined, t: UiDictionary): SiteCon
 		: [];
 
 	return {
+		arabicSiteName: clean(data?.arabic_site_name, FALLBACK.arabicSiteName),
 		phone: clean(data?.phone, FALLBACK.phone),
 		whatsappNumber: clean(data?.whatsapp_number, FALLBACK.whatsappNumber),
 		email: clean(data?.email, FALLBACK.email),

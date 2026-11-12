@@ -40,9 +40,11 @@ Editors manage the site from `/_emdash/admin`. The seed creates these collection
 | Teachers | Teacher profiles and photos |
 | Testimonials | Real reviews, hidden until consent is marked |
 | FAQs | Questions and answers used on the contact and free trial pages |
-| Site settings | Contact details, social links and headline numbers |
+| Site settings | Contact details, social links, headline numbers and Arabic brand name |
 
 EmDash requires lowercase snake_case field slugs, so the admin labels are written in plain English while the stored fields use names such as `classes_per_week`, `consent_given` and `social_links`. The home page reads courses, plans, testimonials and site settings directly from these collections. There is one Site settings entry; edit the entry with the slug `site`.
+
+The `arabic_site_name` field in the Site settings entry controls the brand name beside the logo on `/ar`; the global site title remains unchanged. On an existing EmDash database, add the field once with `npx emdash schema add-field site_settings arabic_site_name --type string --label "Arabic brand name (shown beside the logo on Arabic pages)"`, then edit the `site` entry in the admin.
 
 ## Commands
 
