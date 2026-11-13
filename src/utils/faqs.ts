@@ -3,6 +3,7 @@ import type { Locale } from "../i18n";
 
 export interface FaqItem {
 	id: string;
+	slug: string;
 	question: string;
 	answer: string;
 }
@@ -21,6 +22,9 @@ export async function getFaqs(locale: Locale, limit?: number) {
 		.filter((entry) => entry.data.visible !== false)
 		.map((entry) => ({
 			id: entry.id,
+			// EmDash returns a slug on each entry; the public ContentEntry type
+			// only names id/data, so read it defensively and fall back to id.
+			slug: (entry as typeof entry & { slug?: string }).slug ?? entry.id,
 			question: String(entry.data.question ?? ""),
 			answer: String(entry.data.answer ?? ""),
 		}))
@@ -30,5 +34,18 @@ export async function getFaqs(locale: Locale, limit?: number) {
 		items: typeof limit === "number" ? items.slice(0, limit) : items,
 		cacheHint: result.cacheHint,
 		fallbackLocale: result.fallbackLocale,
+	};
+}
+
+/** FAQPage schema for the FAQs actually rendered on the page. */
+export function faqPageJsonLd(items: FaqItem[]) {
+	return {
+		"@context": "https://schema.org",
+		"@type": "FAQPage",
+		mainEntity: items.map((item) => ({
+			"@type": "Question",
+			name: item.question,
+			acceptedAnswer: { "@type": "Answer", text: item.answer },
+		})),
 	};
 }

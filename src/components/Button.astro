@@ -10,6 +10,8 @@ interface Props {
 	edit?: Partial<FieldAnnotation>;
 	/** Scrolls to the inline #book form and prefills it, instead of navigating. */
 	book?: boolean;
+	/** Opens the link in a new tab (external destinations such as WhatsApp). */
+	external?: boolean;
 	prefillPlan?: string;
 	prefillCourse?: string;
 }
@@ -22,6 +24,7 @@ const {
 	class: className,
 	edit,
 	book,
+	external,
 	prefillPlan,
 	prefillCourse,
 } = Astro.props;
@@ -42,7 +45,12 @@ const bookAttrs = book
 			<slot />
 		</button>
 	) : href ? (
-		<a {href} class:list={classes} {...edit}>
+		<a
+			{href}
+			class:list={classes}
+			{...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+			{...edit}
+		>
 			<slot />
 		</a>
 	) : (
