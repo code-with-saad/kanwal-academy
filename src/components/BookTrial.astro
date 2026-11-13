@@ -226,22 +226,6 @@ function matches(option: BookOption, value: string): boolean {
 			</div>
 
 			<div class="book__field">
-				<label class="book__label" for="book-preferred-time">
-					{t.form.preferredTime} <span class="book__optional">{t.form.optional}</span>
-				</label>
-				<input
-					id="book-preferred-time"
-					name="preferred_time"
-					type="text"
-					class="book__input"
-					maxlength="120"
-					placeholder={t.form.preferredTimePlaceholder}
-					aria-describedby="book-preferred-time-help"
-				/>
-				<span class="book__help" id="book-preferred-time-help">{t.form.preferredTimeHelp}</span>
-			</div>
-
-			<div class="book__field">
 				<label class="book__label" for="book-message">
 					{t.form.message} <span class="book__optional">{t.form.optional}</span>
 				</label>
@@ -324,7 +308,6 @@ function matches(option: BookOption, value: string): boolean {
 		const courseSelect = form.querySelector("#book-course") as unknown as HTMLSelectElement;
 		const planSelect = form.querySelector("#book-plan") as unknown as HTMLSelectElement;
 		const messageInput = form.querySelector<HTMLTextAreaElement>("#book-message")!;
-		const preferredTimeInput = form.querySelector<HTMLInputElement>("#book-preferred-time")!;
 		const honeypot = form.querySelector<HTMLInputElement>("#book-website")!;
 		const submitBtn = form.querySelector<HTMLButtonElement>("[data-book-submit]")!;
 		const submitLabel = form.querySelector<HTMLElement>("[data-book-submit-label]")!;
@@ -529,7 +512,6 @@ function matches(option: BookOption, value: string): boolean {
 				course: courseSelect.value,
 				plan: planSelect.value,
 				message: messageInput.value.trim(),
-				preferredTime: preferredTimeInput.value.trim(),
 				website: honeypot.value,
 				turnstileToken: turnstileToken(),
 			};
@@ -768,12 +750,6 @@ function matches(option: BookOption, value: string): boolean {
 	.book__optional {
 		font-weight: 400;
 		color: var(--ink-muted);
-	}
-
-	.book__help {
-		font-size: var(--type-small-size);
-		color: var(--ink-muted);
-		line-height: 1.4;
 	}
 
 	.book__input,
