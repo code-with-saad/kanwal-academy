@@ -11,6 +11,7 @@ import Chip from "../components/Chip.astro";
 import Container from "../components/Container.astro";
 import CtaPanel from "../components/CtaPanel.astro";
 import Eyebrow from "../components/Eyebrow.astro";
+import ImagePlaceholder from "../components/ImagePlaceholder.astro";
 import Section from "../components/Section.astro";
 import StandingOut from "../components/StandingOut.astro";
 import StatsBand from "../components/StatsBand.astro";
@@ -102,21 +103,73 @@ const standingItems = [
 			</Container>
 		</Section>
 
-		<!-- Our story: why the academy exists, distinct from the Home copy. -->
+		<!-- Philosophy: the academy's guiding idea, distinct from the Home copy. -->
 		<Section id="about">
 			<Container>
 				<WisdomPanel
-					eyebrow={copy.storyEyebrow}
-					titleBefore={copy.storyHeading}
-					titleHighlight=""
-					titleAfter=""
-					paragraph1={copy.storyParagraph1}
-					paragraph2={copy.storyParagraph2}
+					eyebrow={copy.philosophyEyebrow}
+					titleBefore={copy.philosophyBefore}
+					titleHighlight={copy.philosophyHighlight}
+					titleAfter={copy.philosophyAfter}
+					paragraph1={copy.philosophyText}
 					image={homePage?.data.about_image}
 					imageAlt={homeText("about_image_alt")}
 					years={contact.stats.years}
 					imageMaxHeight={420}
 				/>
+			</Container>
+		</Section>
+
+		<!-- Founder narrative: photo left, story right. -->
+		<Section id="founder" tone="sand">
+			<Container>
+				<div class="founder">
+					<div class="founder__media">
+						<ImagePlaceholder
+							label={copy.founderImageLabel}
+							alt={copy.founderImageAlt}
+							ratio="4 / 5"
+							sizes="(max-width: 900px) calc(100vw - 32px), 420px"
+							class="founder__image"
+						/>
+					</div>
+					<div class="founder__copy">
+						<Eyebrow>{copy.founderEyebrow}</Eyebrow>
+						<h2>{copy.founderHeading}</h2>
+						{copy.founderParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+					</div>
+				</div>
+			</Container>
+		</Section>
+
+		<!-- Credentials: a framed gallery, never a carousel. -->
+		<Section id="credentials" space="tight">
+			<Container>
+				<div class="creds">
+					<div class="creds__head">
+						<Eyebrow>{copy.credentialsEyebrow}</Eyebrow>
+						<h2>{copy.credentialsHeading}</h2>
+						<p class="creds__lead">{copy.credentialsLead}</p>
+					</div>
+					<ul class="creds__grid">
+						{
+							copy.credentials.map((item) => (
+								<li class="creds__item" data-reveal="up">
+									<div class="creds__frame">
+										<ImagePlaceholder
+											label={item.frameLabel}
+											ratio="4 / 3"
+											sizes="(max-width: 900px) calc(100vw - 32px), 360px"
+											class="creds__scan"
+										/>
+									</div>
+									<h3>{item.title}</h3>
+									<p class="creds__issuer">{item.issuer}</p>
+								</li>
+							))
+						}
+					</ul>
+				</div>
 			</Container>
 		</Section>
 
@@ -201,6 +254,24 @@ const standingItems = [
 			sessionsLabel={contact.stats.labels.sessions}
 			countriesLabel={contact.stats.labels.countries}
 		/>
+
+		<!-- Trust note: the operating company behind the platform. -->
+		<Section space="tight">
+			<Container>
+				<div class="trust">
+					<span class="trust__icon" aria-hidden="true">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" />
+							<path d="M9 12l2 2 4-4" />
+						</svg>
+					</span>
+					<div class="trust__copy">
+						<h2>{copy.trustHeading}</h2>
+						<p>{copy.trustText}</p>
+					</div>
+				</div>
+			</Container>
+		</Section>
 
 		<CtaPanel
 			heading={copy.ctaHeading}
@@ -379,6 +450,137 @@ const standingItems = [
 		line-height: var(--type-small-line);
 	}
 
+	/* ---------- Founder ---------- */
+	.founder {
+		display: grid;
+		grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+		align-items: center;
+		gap: clamp(32px, 6vw, 80px);
+	}
+
+	.founder__image {
+		border: 1px solid var(--line);
+		border-radius: var(--radius-panel);
+	}
+
+	.founder__copy {
+		display: grid;
+		justify-items: start;
+		gap: var(--space-md);
+	}
+
+	.founder__copy h2 {
+		max-width: 20ch;
+	}
+
+	.founder__copy p {
+		max-width: 62ch;
+		color: var(--type-copy-color);
+	}
+
+	/* ---------- Credentials gallery ---------- */
+	.creds {
+		display: grid;
+		gap: clamp(28px, 4vw, 48px);
+	}
+
+	.creds__head {
+		display: grid;
+		justify-items: start;
+		gap: var(--space-md);
+		max-width: 60ch;
+	}
+
+	.creds__lead {
+		color: var(--type-copy-color);
+	}
+
+	.creds__grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: clamp(16px, 2.5vw, 28px);
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.creds__item {
+		display: grid;
+		align-content: start;
+		gap: var(--space-sm);
+		padding: 16px 16px 20px;
+		border: 1px solid var(--line);
+		border-radius: 20px;
+		background: var(--surface);
+		box-shadow: 0 10px 28px -18px rgba(11, 26, 20, 0.18);
+	}
+
+	/* Inner mat + frame so scans read as a gallery, not a carousel. */
+	.creds__frame {
+		padding: 10px;
+		border: 1px solid var(--line);
+		border-radius: 12px;
+		background: var(--mint-50);
+	}
+
+	.creds__scan {
+		border-radius: 8px;
+	}
+
+	.creds__item h3 {
+		font-size: 1.05rem;
+		font-weight: 600;
+	}
+
+	.creds__issuer {
+		color: var(--type-copy-color);
+		font-size: var(--type-small-size);
+		line-height: var(--type-small-line);
+	}
+
+	/* ---------- Trust note ---------- */
+	.trust {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		align-items: start;
+		gap: var(--space-lg);
+		padding: clamp(24px, 4vw, 36px);
+		border: 1px solid var(--line);
+		border-radius: var(--radius-panel);
+		background: var(--mint-50);
+	}
+
+	.trust__icon {
+		display: grid;
+		place-items: center;
+		width: 56px;
+		height: 56px;
+		border: 1px solid var(--line);
+		border-radius: 50%;
+		background: var(--surface);
+		color: var(--green-deep);
+	}
+
+	.trust__icon svg {
+		width: 28px;
+		height: 28px;
+	}
+
+	.trust__copy {
+		display: grid;
+		gap: var(--space-sm);
+	}
+
+	.trust__copy h2 {
+		font-size: var(--type-h3-size);
+		font-weight: var(--type-card-title-weight);
+	}
+
+	.trust__copy p {
+		max-width: 70ch;
+		color: var(--type-copy-color);
+	}
+
 	/* ---------- Responsive ---------- */
 	@media (max-width: 900px) {
 		.about-hero {
@@ -388,6 +590,19 @@ const standingItems = [
 
 		.about-hero__art svg {
 			width: min(100%, 300px);
+		}
+
+		.founder {
+			grid-template-columns: 1fr;
+			gap: var(--space-xl);
+		}
+
+		.founder__media {
+			width: min(100%, 420px);
+		}
+
+		.creds__grid {
+			grid-template-columns: 1fr;
 		}
 
 		.approach__steps {
@@ -401,6 +616,10 @@ const standingItems = [
 
 	@media (max-width: 560px) {
 		.approach__steps {
+			grid-template-columns: 1fr;
+		}
+
+		.trust {
 			grid-template-columns: 1fr;
 		}
 	}
