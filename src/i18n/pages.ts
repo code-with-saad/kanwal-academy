@@ -12,7 +12,9 @@ export interface PageCopy {
 		title: string;
 		description: string;
 		eyebrow: string;
-		heading: string;
+		headingBefore: string;
+		headingHighlight: string;
+		headingAfter: string;
 		lead: string;
 		philosophyEyebrow: string;
 		philosophyBefore: string;
@@ -21,16 +23,29 @@ export interface PageCopy {
 		philosophyText: string;
 		founderEyebrow: string;
 		founderHeading: string;
+		founderName: string;
+		founderRole: string;
+		founderCredential: string;
+		founderMilestones: Array<{ label: string; title: string; text: string }>;
 		founderParagraphs: string[];
-		founderImageLabel: string;
 		founderImageAlt: string;
+		heroImageAlt: string;
+		heroSince: string;
 		credentialsEyebrow: string;
 		credentialsHeading: string;
 		credentialsLead: string;
-		credentialsScanLabel: string;
-		credentials: Array<{ title: string; issuer: string; frameLabel: string }>;
+		credentials: Array<{
+			title: string;
+			issuer: string;
+			motif: "book" | "pen" | "teacher";
+		}>;
+		trustEyebrow: string;
 		trustHeading: string;
-		trustText: string;
+		trustIntro: string;
+		trustOperator: string;
+		trustOperatorName: string;
+		trustOperatorPlace: string;
+		trustChips: string[];
 		badgeOneToOne: string;
 		approachEyebrow: string;
 		approachHeading: string;
@@ -89,7 +104,9 @@ const en: PageCopy = {
 		description:
 			"How Kanwal Quran Academy teaches Qur'anic recitation, tajweed and memorization online, one to one, with a free trial class to begin.",
 		eyebrow: "About us",
-		heading: "A teacher who knows your name",
+		headingBefore: "Where ",
+		headingHighlight: "young hearts",
+		headingAfter: " meet the Quran.",
 		lead: "One teacher, one student, one lesson at a time.",
 		philosophyEyebrow: "Our philosophy",
 		philosophyBefore: "A journey rooted in",
@@ -99,6 +116,31 @@ const en: PageCopy = {
 			"At the heart of Kanwal Quran Academy is a simple, enduring philosophy: learning the Quran should be a journey of love, carried one patient lesson at a time. We bridge the gap between traditional Islamic scholarship and the modern needs of families around the world.",
 		founderEyebrow: "Our founder",
 		founderHeading: "Meet Kanwal Awais",
+		founderName: "Kanwal Awais",
+		founderRole: "Founder & Lead Teacher",
+		founderCredential: "Hafiz-e-Quran",
+		founderMilestones: [
+			{
+				label: "2017",
+				title: "First students",
+				text: "Kanwal begins teaching young children to read the Quran.",
+			},
+			{
+				label: "UAE",
+				title: "Formal scholarship",
+				text: "Arabic and Islamic studies at the Mohammed bin Rashid Center.",
+			},
+			{
+				label: "Online",
+				title: "A digital classroom",
+				text: "One-to-one lessons reach students across the Emirates.",
+			},
+			{
+				label: "Global",
+				title: "Worldwide families",
+				text: "A curriculum for diaspora families in the US, UK and beyond.",
+			},
+		],
 		founderParagraphs: [
 			"Kanwal's dedication to Quranic education began deeply and personally. As a Hafiz-e-Quran, she experienced firsthand the discipline, spiritual connection, and patience required to carry the words of Allah in her heart. In 2017, she translated that personal devotion into a teaching career, taking on her first students and guiding young children through their foundational steps in reading the Quran.",
 			"When she relocated to the United Arab Emirates, Kanwal sought to elevate her own linguistic and spiritual knowledge. She pursued formal Arabic studies at the Mohammed bin Rashid Center for Islamic Culture. Immersed in the multicultural landscape of the UAE, she began conducting one-on-one, in-person classes, specializing in creating a comfortable, nurturing environment for young girls and children.",
@@ -106,34 +148,44 @@ const en: PageCopy = {
 			"After three years of refining her online teaching methodology, Kanwal recognized a growing, unfulfilled need. Diaspora families in the United States, the United Kingdom, and globally were struggling to find qualified, patient, and female-led Quran instruction for their children. She expanded her reach internationally, building a curriculum that respects traditional Tajweed and Hifz principles while seamlessly adapting to the schedules and cultural contexts of students living in the West.",
 			"Today, Kanwal Quran Academy stands as a testament to that journey: a globally accessible, deeply authentic institution dedicated to nurturing the next generation's love for the Holy Quran.",
 		],
-		founderImageLabel: "Founder photograph coming soon",
-		founderImageAlt: "Portrait of the founder, Kanwal Awais",
+		founderImageAlt: "Hands holding an open Quran on a study desk",
+		heroImageAlt: "An open Quran on a wooden stand in soft window light",
+		heroSince: "Teaching since 2017",
 		credentialsEyebrow: "Verified scholarship",
 		credentialsHeading: "Qualifications and certifications",
 		credentialsLead:
 			"Parents trust us because our foundation is built on verified, traditional scholarship.",
-		credentialsScanLabel: "Certificate scan coming soon",
 		credentials: [
 			{
 				title: "Hifz-e-Quran certification",
 				issuer: "Issuing authority to be confirmed",
-				frameLabel: "Certificate scan coming soon",
+				motif: "book",
 			},
 			{
 				title: "Arabic language and Islamic studies",
 				issuer: "Mohammed bin Rashid Center for Islamic Culture, UAE",
-				frameLabel: "Certificate scan coming soon",
+				motif: "pen",
 			},
 			{
 				title: "Teaching experience",
 				issuer:
 					"Active educator since 2017, with specialized experience in early childhood Quranic literacy.",
-				frameLabel: "Teaching since 2017",
+				motif: "teacher",
 			},
 		],
+		trustEyebrow: "Infrastructure",
 		trustHeading: "Engineered for global reliability",
-		trustText:
-			"While our teaching is rooted in tradition, our infrastructure is built for the modern world. Kanwal Quran Academy is proudly backed and operated by Cheeltech LLC (Missouri, USA), ensuring enterprise-grade platform stability and uninterrupted learning for our students worldwide.",
+		trustIntro:
+			"While our teaching is rooted in tradition, our infrastructure is built for the modern world.",
+		trustOperator:
+			"Kanwal Quran Academy is proudly backed and operated by Cheeltech LLC (Missouri, USA), ensuring enterprise-grade platform stability, secure international payment processing, and uninterrupted learning for our students worldwide.",
+		trustOperatorName: "Cheeltech LLC",
+		trustOperatorPlace: "Missouri, USA",
+		trustChips: [
+			"Enterprise-grade stability",
+			"Secure international payments",
+			"Uninterrupted learning",
+		],
 		badgeOneToOne: "1-to-1 live",
 		approachEyebrow: "Our approach",
 		approachHeading: "How a class works",
@@ -226,7 +278,9 @@ const ar: PageCopy = {
 		description:
 			"كيف تعلّم أكاديمية كنول التلاوة والتجويد والحفظ عبر الإنترنت بحصص فردية، مع حصة تجريبية مجانية للبداية.",
 		eyebrow: "من نحن",
-		heading: "معلم يعرف اسمك",
+		headingBefore: "حيث تلتقي ",
+		headingHighlight: "القلوب الصغيرة",
+		headingAfter: " بالقرآن.",
 		lead: "معلم واحد، وطالب واحد، ودرس واحد في كل مرة.",
 		philosophyEyebrow: "فلسفتنا",
 		philosophyBefore: "رحلة جذورها",
@@ -236,6 +290,31 @@ const ar: PageCopy = {
 			"في قلب أكاديمية كنول فلسفة بسيطة وراسخة: تعلّم القرآن رحلة محبة تُبنى درسًا صبورًا بعد درس. ونحن نصل بين العلم الإسلامي الأصيل واحتياجات العائلات الحديثة حول العالم.",
 		founderEyebrow: "مؤسِّستنا",
 		founderHeading: "تعرّفوا على كنول أويس",
+		founderName: "كنول أويس",
+		founderRole: "المؤسِّسة والمعلّمة الأولى",
+		founderCredential: "حافظة للقرآن الكريم",
+		founderMilestones: [
+			{
+				label: "2017",
+				title: "أوائل الطلاب",
+				text: "تبدأ كنول بتعليم الأطفال الصغار قراءة القرآن.",
+			},
+			{
+				label: "الإمارات",
+				title: "علم رسمي",
+				text: "دراسة العربية والعلوم الإسلامية في مركز محمد بن راشد.",
+			},
+			{
+				label: "عبر الإنترنت",
+				title: "فصل رقمي",
+				text: "حصص فردية تصل إلى طلاب في أنحاء الإمارات.",
+			},
+			{
+				label: "عالميًا",
+				title: "عائلات حول العالم",
+				text: "منهج للعائلات المغتربة في الولايات المتحدة والمملكة المتحدة وما بعدهما.",
+			},
+		],
 		founderParagraphs: [
 			"بدأ تفاني كنول في تعليم القرآن عميقًا وشخصيًا. بصفتها حافظة للقرآن الكريم، عاشت بنفسها الانضباط والصلة الروحية والصبر اللازم لحمل كلمات الله في قلبها. وفي عام 2017 حوّلت ذلك التفاني الشخصي إلى مسيرة تعليمية، فاستقبلت أوائل طلابها وقادت الأطفال الصغار في خطواتهم الأولى لقراءة القرآن.",
 			"وعندما انتقلت إلى الإمارات العربية المتحدة، سعت كنول إلى صقل معرفتها اللغوية والروحية. فدرست العربية دراسة رسمية في مركز محمد بن راشد للثقافة الإسلامية. وفي خضم المشهد الثقافي المتنوع في الإمارات، بدأت بتقديم حصص فردية حضورية، متخصصة في تهيئة بيئة مريحة وحاضنة للفتيات الصغيرات والأطفال.",
@@ -243,33 +322,43 @@ const ar: PageCopy = {
 			"وبعد ثلاث سنوات من صقل منهجيتها في التعليم عبر الإنترنت، أدركت كنول حاجة متنامية غير ملبّاة. فالعائلات المغتربة في الولايات المتحدة والمملكة المتحدة وحول العالم كانت تكافح للعثور على تعليم قرآني مؤهل وصبور تقوده معلمات لأطفالهن. فوسّعت نطاقها دوليًا، وبنت منهجًا يحترم مبادئ التجويد والحفظ الأصيلة ويتكيف بسلاسة مع جداول الطلاب وسياقاتهم الثقافية في الغرب.",
 			"واليوم تقف أكاديمية كنول للقرآن شاهدًا على تلك الرحلة: مؤسسة أصيلة ومتاحة عالميًا، مكرّسة لتنمية حب الجيل القادم للقرآن الكريم.",
 		],
-		founderImageLabel: "صورة المؤسِّسة قريبًا",
-		founderImageAlt: "صورة المؤسِّسة كنول أويس",
+		founderImageAlt: "يدان تمسكان مصحفًا مفتوحًا على مكتب دراسة",
+		heroImageAlt: "مصحف مفتوح على حامل خشبي في ضوء نافذة ناعم",
+		heroSince: "التعليم منذ 2017",
 		credentialsEyebrow: "علم موثّق",
 		credentialsHeading: "المؤهلات والشهادات",
 		credentialsLead: "يثق بنا أولياء الأمور لأن أساسنا مبني على علم تقليدي موثّق.",
-		credentialsScanLabel: "صورة الشهادة قريبًا",
 		credentials: [
 			{
 				title: "شهادة حفظ القرآن",
 				issuer: "الجهة المانحة ستُحدَّد لاحقًا",
-				frameLabel: "صورة الشهادة قريبًا",
+				motif: "book",
 			},
 			{
 				title: "اللغة العربية والدراسات الإسلامية",
 				issuer: "مركز محمد بن راشد للثقافة الإسلامية، الإمارات",
-				frameLabel: "صورة الشهادة قريبًا",
+				motif: "pen",
 			},
 			{
 				title: "الخبرة التعليمية",
 				issuer:
 					"معلّمة نشطة منذ 2017، بخبرة متخصصة في محو الأمية القرآنية لدى الأطفال الصغار.",
-				frameLabel: "التعليم منذ 2017",
+				motif: "teacher",
 			},
 		],
+		trustEyebrow: "البنية التحتية",
 		trustHeading: "بنية موثوقة عالميًا",
-		trustText:
-			"بينما يتجذر تعليمنا في الأصالة، فإن بنيتنا التحتية مبنية للعالم الحديث. تفخر أكاديمية كنول للقرآن بدعم وتشغيل شركة Cheeltech LLC (ميزوري، الولايات المتحدة)، بما يضمن استقرار المنصة على مستوى المؤسسات وتعلّمًا متواصلًا لطلابنا حول العالم.",
+		trustIntro:
+			"بينما يتجذر تعليمنا في الأصالة، فإن بنيتنا التحتية مبنية للعالم الحديث.",
+		trustOperator:
+			"تفخر أكاديمية كنول للقرآن بدعم وتشغيل شركة Cheeltech LLC (ميزوري، الولايات المتحدة)، بما يضمن استقرار المنصة على مستوى المؤسسات، ومعالجة مدفوعات دولية آمنة، وتعلّمًا متواصلًا لطلابنا حول العالم.",
+		trustOperatorName: "Cheeltech LLC",
+		trustOperatorPlace: "ميزوري، الولايات المتحدة",
+		trustChips: [
+			"استقرار على مستوى المؤسسات",
+			"مدفوعات دولية آمنة",
+			"تعلّم دون انقطاع",
+		],
 		badgeOneToOne: "فردي مباشر",
 		approachEyebrow: "منهجنا",
 		approachHeading: "كيف تسير الحصة",

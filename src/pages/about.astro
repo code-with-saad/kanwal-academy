@@ -1,17 +1,12 @@
 ---
-/**
- * About page. Own hero (split copy + geometric art), a distinct "our story"
- * panel, the standing-out cards, a "how a class works" approach section and
- * the stats band, closed by the dark CTA. Section rhythm uses --section-gap
- * (96px desktop / 56px mobile) and alternates white / mint / white / dark.
- */
+import { Font } from "astro:assets";
 import { getEmDashEntry } from "emdash";
 import Base from "../layouts/Base.astro";
 import Chip from "../components/Chip.astro";
 import Container from "../components/Container.astro";
 import CtaPanel from "../components/CtaPanel.astro";
 import Eyebrow from "../components/Eyebrow.astro";
-import ImagePlaceholder from "../components/ImagePlaceholder.astro";
+import ResponsiveImage from "../components/ResponsiveImage.astro";
 import Section from "../components/Section.astro";
 import StandingOut from "../components/StandingOut.astro";
 import StatsBand from "../components/StatsBand.astro";
@@ -69,15 +64,32 @@ const standingItems = [
 	description={copy.description}
 	breadcrumbs={[{ name: t.nav.about, path: "/about" }]}
 	hideNewsletter
+	overlayHeader
 >
-	<div class="about">
-		<!-- Hero: copy left, geometric art right, three reassurance badges. -->
-		<Section space="tight" class="about-hero-section">
+	<!-- Serif display face ships on this page only; Amiri carries the
+	     Arabic brand watermark in the hero. -->
+	<Font slot="head" cssVariable="--font-display" preload={[{ weight: 600, subset: "latin" }]} />
+	<Font slot="head" cssVariable="--font-arabic" />
+
+	<div class="about about-editorial">
+		<!-- Hero: mint panel, copy left, arch-framed photograph right. -->
+		<section class="about-hero" aria-labelledby="about-hero-title">
+			<svg class="about-hero__texture" aria-hidden="true" focusable="false">
+				<defs>
+					<pattern id="about-hero-pattern" width="72" height="72" patternUnits="userSpaceOnUse">
+						<path d="M36 8L44 28L64 36L44 44L36 64L28 44L8 36L28 28Z" fill="none" stroke="currentColor" stroke-width="1" />
+					</pattern>
+				</defs>
+				<rect width="100%" height="100%" fill="url(#about-hero-pattern)" />
+			</svg>
+			<span class="about-hero__watermark arabic" lang="ar" dir="rtl" aria-hidden="true">كنول</span>
 			<Container>
-				<div class="about-hero">
+				<div class="about-hero__grid">
 					<div class="about-hero__copy">
 						<Eyebrow>{copy.eyebrow}</Eyebrow>
-						<h1>{copy.heading}</h1>
+						<h1 id="about-hero-title">
+							{copy.headingBefore}<span class="heading-highlight about-hero__highlight">{copy.headingHighlight}<svg class="about-hero__underline" viewBox="0 0 220 14" preserveAspectRatio="none" aria-hidden="true"><path d="M4 10C60 3 150 3 216 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" /></svg></span>{copy.headingAfter}
+						</h1>
 						<p class="about-hero__lead">{copy.lead}</p>
 						<div class="about-hero__badges">
 							<Chip>{contact.stats.years} {t.stats.yearsShort}</Chip>
@@ -86,22 +98,40 @@ const standingItems = [
 						</div>
 					</div>
 
-					<div class="about-hero__art" aria-hidden="true">
-						<svg viewBox="0 0 440 440" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<circle cx="220" cy="220" r="190" fill="var(--mint-100)" />
-							<circle cx="220" cy="220" r="160" stroke="var(--line)" stroke-width="1.5" />
-							<circle cx="220" cy="220" r="120" stroke="var(--green)" stroke-width="1.5" stroke-dasharray="3 9" opacity="0.45" />
-							<path d="M130 130H310V310H130Z M220 93L347 220L220 347L93 220Z" stroke="var(--green-deep)" stroke-width="2" stroke-linejoin="round" />
-							<circle cx="220" cy="60" r="5" fill="var(--green)" opacity="0.5" />
-							<circle cx="380" cy="220" r="5" fill="var(--green)" opacity="0.5" />
-							<circle cx="220" cy="380" r="5" fill="var(--green)" opacity="0.5" />
-							<circle cx="60" cy="220" r="5" fill="var(--green)" opacity="0.5" />
-							<circle cx="220" cy="220" r="5" fill="var(--green-deep)" />
+					<div class="about-hero__media">
+						<svg class="about-hero__orbit" viewBox="0 0 400 520" aria-hidden="true" focusable="false">
+							<circle cx="200" cy="260" r="248" fill="none" stroke="var(--green-deep)" stroke-width="1" stroke-dasharray="2 10" opacity="0.35" />
 						</svg>
+						<span class="about-hero__arch-back" aria-hidden="true"></span>
+						<div class="about-hero__arch">
+							<ResponsiveImage
+								src="/images/about-hero-quran.png"
+								alt={copy.heroImageAlt}
+								sizes="(max-width: 900px) 82vw, 400px"
+								priority
+								class="about-hero__image"
+							/>
+						</div>
+						<span class="about-hero__star about-hero__star--a" aria-hidden="true">
+							<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z" /></svg>
+						</span>
+						<span class="about-hero__star about-hero__star--b" aria-hidden="true">
+							<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z" /></svg>
+						</span>
+						<p class="about-hero__since">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
+								<path d="M12 4l2.2 5.8L20 12l-5.8 2.2L12 20l-2.2-5.8L4 12l5.8-2.2z" />
+							</svg>
+							{copy.heroSince}
+						</p>
 					</div>
 				</div>
 			</Container>
-		</Section>
+			<svg class="about-hero__wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+				<path d="M0 38C220 82 470 0 720 28C970 56 1210 6 1440 42" fill="none" stroke="var(--mint-100)" stroke-width="2" opacity="0.8" />
+				<path d="M0 90V44C220 88 470 6 720 34C970 62 1210 12 1440 48V90Z" fill="var(--page)" />
+			</svg>
+		</section>
 
 		<!-- Philosophy: the academy's guiding idea, distinct from the Home copy. -->
 		<Section id="about">
@@ -120,29 +150,52 @@ const standingItems = [
 			</Container>
 		</Section>
 
-		<!-- Founder narrative: photo left, story right. -->
+		<!-- Founder narrative: arch portrait + name plate, editorial story,
+		     then a milestone timeline. -->
 		<Section id="founder" tone="sand">
 			<Container>
 				<div class="founder">
 					<div class="founder__media">
-						<ImagePlaceholder
-							label={copy.founderImageLabel}
-							alt={copy.founderImageAlt}
-							ratio="4 / 5"
-							sizes="(max-width: 900px) calc(100vw - 32px), 420px"
-							class="founder__image"
-						/>
+						<span class="founder__arch-back" aria-hidden="true"></span>
+						<div class="founder__frame">
+							<ResponsiveImage
+								src="/images/about-founder-hands.png"
+								alt={copy.founderImageAlt}
+								sizes="(max-width: 900px) calc(100vw - 40px), 420px"
+								class="founder__image"
+							/>
+						</div>
+						<div class="founder__plate">
+							<strong>{copy.founderName}</strong>
+							<span>{copy.founderRole}</span>
+							<span class="founder__chip">{copy.founderCredential}</span>
+						</div>
 					</div>
 					<div class="founder__copy">
 						<Eyebrow>{copy.founderEyebrow}</Eyebrow>
 						<h2>{copy.founderHeading}</h2>
-						{copy.founderParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+						<p class="founder__lead">{copy.founderParagraphs[0]}</p>
+						{copy.founderParagraphs.slice(1, 4).map((paragraph) => <p>{paragraph}</p>)}
+						<p class="founder__closing">{copy.founderParagraphs[4]}</p>
 					</div>
 				</div>
+
+				<ol class="founder__timeline">
+					{
+						copy.founderMilestones.map((milestone, i) => (
+							<li class="founder__milestone" data-reveal="up" data-reveal-delay={i * 100}>
+								<span class="founder__milestone-dot" aria-hidden="true"></span>
+								<span class="founder__milestone-label">{milestone.label}</span>
+								<h3>{milestone.title}</h3>
+								<p>{milestone.text}</p>
+							</li>
+						))
+					}
+				</ol>
 			</Container>
 		</Section>
 
-		<!-- Credentials: a framed gallery, never a carousel. -->
+		<!-- Credentials: a framed gallery of vector plates, never a carousel. -->
 		<Section id="credentials" space="tight">
 			<Container>
 				<div class="creds">
@@ -156,12 +209,46 @@ const standingItems = [
 							copy.credentials.map((item) => (
 								<li class="creds__item" data-reveal="up">
 									<div class="creds__frame">
-										<ImagePlaceholder
-											label={item.frameLabel}
-											ratio="4 / 3"
-											sizes="(max-width: 900px) calc(100vw - 32px), 360px"
-											class="creds__scan"
-										/>
+										<svg class="creds__plate" viewBox="0 0 240 180" role="img" aria-label={item.title}>
+											<rect width="240" height="180" rx="8" fill="var(--surface)" />
+											<rect x="10" y="10" width="220" height="160" rx="6" fill="none" stroke="var(--green-deep)" stroke-width="1" opacity="0.3" />
+											<g stroke="var(--green-deep)" stroke-width="1" fill="none" opacity="0.45">
+												<path d="M24 18l2 4 4 2-4 2-2 4-2-4-4-2 4-2z" />
+												<path d="M216 18l2 4 4 2-4 2-2 4-2-4-4-2 4-2z" />
+												<path d="M24 150l2 4 4 2-4 2-2 4-2-4-4-2 4-2z" />
+												<path d="M216 150l2 4 4 2-4 2-2 4-2-4-4-2 4-2z" />
+											</g>
+											<g transform="translate(120 84)" stroke="var(--green-deep)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+												{item.motif === "book" && (
+													<>
+														<path d="M-34-14c10-6 22-6 34 0 12-6 24-6 34 0v34c-10-6-22-6-34 0-12-6-24-6-34 0z" />
+														<path d="M0-14v34" />
+														<path d="M-24-4c8-3 16-3 24 0M-24 6c8-3 16-3 24 0M24-4c-8-3-16-3-24 0M24 6c-8-3-16-3-24 0" opacity="0.5" />
+													</>
+												)}
+												{item.motif === "pen" && (
+													<>
+														<path d="M0-32L15-8L0 28L-15-8Z" />
+														<circle cx="0" cy="-6" r="4" />
+														<path d="M0-2v30" />
+														<path d="M-26 34h52" opacity="0.5" />
+													</>
+												)}
+												{item.motif === "teacher" && (
+													<>
+														<circle cx="-13" cy="-16" r="9" />
+														<path d="M-30 16c0-10 7-16 17-16s17 6 17 16" />
+														<circle cx="17" cy="-8" r="7" />
+														<path d="M4 16c0-8 6-13 13-13s13 5 13 13" />
+														<path d="M-30 26h60" opacity="0.5" />
+													</>
+												)}
+											</g>
+											<g stroke="var(--green-deep)" stroke-width="1" opacity="0.4">
+												<path d="M70 148h100" />
+												<circle cx="120" cy="148" r="3" fill="var(--green-deep)" stroke="none" />
+											</g>
+										</svg>
 									</div>
 									<h3>{item.title}</h3>
 									<p class="creds__issuer">{item.issuer}</p>
@@ -180,7 +267,7 @@ const standingItems = [
 			</Container>
 		</Section>
 
-		<!-- Our approach (white block between the two mint blocks). -->
+		<!-- Our approach: a numbered journey plus a single values panel. -->
 		<Section id="how-it-works" space="tight">
 			<Container>
 				<div class="approach">
@@ -193,35 +280,37 @@ const standingItems = [
 						{
 							copy.approachSteps.map((step, i) => (
 								<li class="approach__step" data-reveal="up" data-reveal-delay={120 + i * 100}>
-									<span class="approach__num" aria-hidden="true">{i + 1}</span>
-									<span class="approach__icon" aria-hidden="true">
-										<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-											{i === 0 && (
-												<>
-													<path d="M4 6c3-1.5 6-1.5 8 0 2-1.5 5-1.5 8 0v12c-3-1.5-6-1.5-8 0-2-1.5-5-1.5-8 0z" />
-													<path d="M12 6v12" />
-												</>
-											)}
-											{i === 1 && (
-												<>
-													<path d="M4 5h16v10H9l-5 4z" />
-													<path d="M9 10l2 2 4-4" />
-												</>
-											)}
-											{i === 2 && (
-												<>
-													<rect x="6" y="4" width="12" height="16" rx="2" />
-													<path d="M9 9h6M9 13h4" />
-												</>
-											)}
-											{i === 3 && (
-												<>
-													<path d="M20 12a8 8 0 1 1-2.34-5.66" />
-													<path d="M20 4v4h-4" />
-												</>
-											)}
-										</svg>
-									</span>
+									<div class="approach__top">
+										<span class="approach__num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+										<span class="approach__icon" aria-hidden="true">
+											<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+												{i === 0 && (
+													<>
+														<path d="M4 6c3-1.5 6-1.5 8 0 2-1.5 5-1.5 8 0v12c-3-1.5-6-1.5-8 0-2-1.5-5-1.5-8 0z" />
+														<path d="M12 6v12" />
+													</>
+												)}
+												{i === 1 && (
+													<>
+														<path d="M4 5h16v10H9l-5 4z" />
+														<path d="M9 10l2 2 4-4" />
+													</>
+												)}
+												{i === 2 && (
+													<>
+														<rect x="6" y="4" width="12" height="16" rx="2" />
+														<path d="M9 9h6M9 13h4" />
+													</>
+												)}
+												{i === 3 && (
+													<>
+														<path d="M20 12a8 8 0 1 1-2.34-5.66" />
+														<path d="M20 4v4h-4" />
+													</>
+												)}
+											</svg>
+										</span>
+									</div>
 									<h3>{step.title}</h3>
 									<p>{step.text}</p>
 								</li>
@@ -231,10 +320,34 @@ const standingItems = [
 
 					<ul class="approach__values">
 						{
-							copy.values.map((value) => (
+							copy.values.map((value, i) => (
 								<li class="approach__value" data-reveal="up">
-									<h3>{value.title}</h3>
-									<p>{value.text}</p>
+									<span class="approach__value-icon" aria-hidden="true">
+										<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+											{i === 0 && (
+												<>
+													<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z" />
+												</>
+											)}
+											{i === 1 && (
+												<>
+													<circle cx="12" cy="12" r="8" />
+													<circle cx="12" cy="12" r="3.5" />
+													<path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+												</>
+											)}
+											{i === 2 && (
+												<>
+													<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" />
+													<path d="M9 12l2 2 4-4" />
+												</>
+											)}
+										</svg>
+									</span>
+									<div class="approach__value-copy">
+										<h3>{value.title}</h3>
+										<p>{value.text}</p>
+									</div>
 								</li>
 							))
 						}
@@ -255,21 +368,35 @@ const standingItems = [
 			countriesLabel={contact.stats.labels.countries}
 		/>
 
-		<!-- Trust note: the operating company behind the platform. -->
-		<Section space="tight">
+		<!-- Infrastructure: a designed dark band, operator card + assurance chips. -->
+		<Section tone="dark" space="tight" class="about-trust-section">
 			<Container>
-				<div class="trust">
-					<span class="trust__icon" aria-hidden="true">
-						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-							<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" />
-							<path d="M9 12l2 2 4-4" />
-						</svg>
-					</span>
-					<div class="trust__copy">
+				<div class="trust-band">
+					<div class="trust-band__copy">
+						<span class="trust-band__eyebrow">{copy.trustEyebrow}</span>
 						<h2>{copy.trustHeading}</h2>
-						<p>{copy.trustText}</p>
+						<p>{copy.trustIntro}</p>
+					</div>
+					<div class="trust-band__operator">
+						<div class="trust-band__op-head">
+							<span class="trust-band__op-icon" aria-hidden="true">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+									<path d="M4 21V5l8-3 8 3v16" />
+									<path d="M2 21h20" />
+									<path d="M9 9h2M13 9h2M9 13h2M13 13h2M9 17h2M13 17h2" />
+								</svg>
+							</span>
+							<div class="trust-band__op-id">
+								<strong>{copy.trustOperatorName}</strong>
+								<span>{copy.trustOperatorPlace}</span>
+							</div>
+						</div>
+						<ul class="trust-band__chips">
+							{copy.trustChips.map((chip) => <li>{chip}</li>)}
+						</ul>
 					</div>
 				</div>
+				<p class="trust-band__note">{copy.trustOperator}</p>
 			</Container>
 		</Section>
 
@@ -296,13 +423,42 @@ const standingItems = [
 		padding-block: var(--section-gap);
 	}
 
-	/* Hero keeps a tighter bottom edge so the story sits close beneath it. */
-	.about :global(.about-hero-section) {
-		padding-block-end: clamp(48px, 6vw, 72px);
+	/* ---------- Hero: full-viewport mint panel, header floats over it ---------- */
+	.about-hero {
+		position: relative;
+		overflow: clip;
+		display: grid;
+		align-items: center;
+		min-height: 100svh;
+		padding-top: calc(var(--header-height) + 12px + 24px);
+		padding-bottom: calc(clamp(48px, 7vw, 88px) + 40px);
+		background: var(--mint-300);
 	}
 
-	/* ---------- Hero split ---------- */
-	.about-hero {
+	.about-hero__texture {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		color: var(--ink);
+		opacity: 0.06;
+		pointer-events: none;
+	}
+
+	/* Oversized Arabic brand word, flat ink at 5%: depth without gradients. */
+	.about-hero__watermark {
+		position: absolute;
+		top: 6%;
+		inset-inline-start: -2%;
+		color: color-mix(in srgb, var(--ink) 5%, transparent);
+		font-size: clamp(140px, 22vw, 320px);
+		line-height: 1;
+		pointer-events: none;
+		user-select: none;
+	}
+
+	.about-hero__grid {
+		position: relative;
 		display: grid;
 		grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
 		align-items: center;
@@ -316,11 +472,25 @@ const standingItems = [
 	}
 
 	.about-hero__copy h1 {
-		max-width: 16ch;
-		font-size: var(--type-display-size);
-		line-height: var(--type-display-line);
-		font-weight: var(--type-display-weight);
-		letter-spacing: -0.03em;
+		max-width: 18ch;
+		font-size: clamp(2.5rem, 5.6vw, 4rem);
+		line-height: 1.08;
+	}
+
+	.about-hero__highlight {
+		position: relative;
+		white-space: nowrap;
+	}
+
+	/* Hand-drawn curve under the highlighted words. */
+	.about-hero__underline {
+		position: absolute;
+		inset-inline: 0;
+		bottom: -0.18em;
+		width: 100%;
+		height: 0.22em;
+		color: var(--green-deep);
+		opacity: 0.35;
 	}
 
 	.about-hero__lead {
@@ -337,130 +507,174 @@ const standingItems = [
 		margin-top: var(--space-sm);
 	}
 
-	.about-hero__art {
-		display: grid;
-		place-items: center;
-	}
-
-	.about-hero__art svg {
-		display: block;
-		width: min(100%, 420px);
-		height: auto;
-	}
-
-	/* ---------- Approach ---------- */
-	.approach {
-		display: grid;
-		gap: clamp(28px, 4vw, 48px);
-	}
-
-	.approach__head {
-		display: grid;
-		justify-items: start;
-		gap: var(--space-md);
-	}
-
-	.approach__steps {
-		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-		gap: clamp(16px, 2.5vw, 24px);
-		margin: 0;
-		padding: 0;
-		list-style: none;
-	}
-
-	.approach__step {
+	.about-hero__media {
 		position: relative;
-		display: grid;
-		align-content: start;
-		gap: var(--space-sm);
-		padding: 28px 22px 24px;
-		border: 1px solid var(--line);
-		border-radius: 20px;
-		background: var(--surface);
-		box-shadow: 0 10px 28px -18px rgba(11, 26, 20, 0.18);
+		justify-self: center;
+		width: min(100%, clamp(280px, 26vw, 380px));
 	}
 
-	/* Faint oversized corner numeral instead of a numbered tab. */
-	.approach__num {
+	.about-hero__orbit {
 		position: absolute;
-		top: 14px;
-		inset-inline-end: 18px;
-		color: color-mix(in srgb, var(--ink) 10%, transparent);
-		font-size: 40px;
-		font-weight: 600;
-		font-variant-numeric: tabular-nums;
-		line-height: 1;
+		top: -14%;
+		inset-inline-start: -16%;
+		width: 132%;
+		height: 128%;
+		pointer-events: none;
 	}
 
-	.approach__icon {
-		display: grid;
-		place-items: center;
-		width: 56px;
-		height: 56px;
-		border: 1px solid var(--line);
-		border-radius: 50%;
-		background: var(--mint-50);
+	/* Offset flat arch behind the photograph: depth without gradients. */
+	.about-hero__arch-back {
+		position: absolute;
+		inset: 0;
+		translate: 18px 18px;
+		border-radius: 999px 999px 24px 24px;
+		background: var(--mint-100);
+	}
+
+	.about-hero__arch {
+		position: relative;
+		overflow: clip;
+		aspect-ratio: 3 / 4;
+		border-radius: 999px 999px 24px 24px;
+		background: var(--surface);
+		box-shadow: 0 18px 44px -22px rgba(11, 26, 20, 0.35);
+	}
+
+	.about-hero__image {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.about-hero__star {
+		position: absolute;
 		color: var(--green-deep);
+		opacity: 0.5;
 	}
 
-	.approach__icon svg {
-		width: 30px;
-		height: 30px;
+	.about-hero__star svg {
+		display: block;
+		width: 100%;
+		height: 100%;
 	}
 
-	.approach__step h3 {
-		font-size: var(--type-h3-size);
-		font-weight: var(--type-card-title-weight);
+	.about-hero__star--a {
+		top: -14px;
+		inset-inline-end: -10px;
+		width: 26px;
+		height: 26px;
 	}
 
-	.approach__step p {
-		color: var(--type-copy-color);
-		font-size: var(--type-small-size);
-		line-height: var(--type-small-line);
+	.about-hero__star--b {
+		bottom: 22%;
+		inset-inline-start: -34px;
+		width: 18px;
+		height: 18px;
 	}
 
-	.approach__values {
-		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: clamp(16px, 2.5vw, 24px);
+	.about-hero__since {
+		position: absolute;
+		inset-inline-start: -24px;
+		bottom: 24px;
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
 		margin: 0;
-		padding: 0;
-		list-style: none;
-	}
-
-	.approach__value {
-		display: grid;
-		gap: 6px;
-		padding: 20px 22px;
+		padding: 10px 16px;
 		border: 1px solid var(--line);
-		border-radius: 20px;
-		background: var(--mint-50);
+		border-radius: 999px;
+		background: var(--surface);
+		box-shadow: 0 12px 32px -16px rgba(11, 26, 20, 0.25);
+		color: var(--green-deep);
+		font-size: var(--type-small-size);
+		font-weight: 600;
 	}
 
-	.approach__value h3 {
-		color: var(--green-deep);
+	.about-hero__since svg {
+		width: 18px;
+		height: 18px;
+	}
+
+	/* Organic curve into the next section instead of a straight edge. */
+	.about-hero__wave {
+		position: absolute;
+		inset-inline: 0;
+		bottom: -1px;
+		width: 100%;
+		height: clamp(48px, 7vw, 88px);
+		pointer-events: none;
+	}
+
+	/* ---------- Founder: arch portrait, name plate, editorial story ---------- */
+	.founder {
+		display: grid;
+		grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+		align-items: center;
+		gap: clamp(32px, 6vw, 80px);
+		padding-bottom: 28px;
+	}
+
+	.founder__media {
+		position: relative;
+	}
+
+	.founder__arch-back {
+		position: absolute;
+		inset: 0;
+		translate: 16px 16px;
+		border-radius: 999px 999px 24px 24px;
+		background: var(--mint-100);
+	}
+
+	.founder__frame {
+		position: relative;
+		overflow: clip;
+		aspect-ratio: 4 / 5;
+		border: 1px solid var(--line);
+		border-radius: 999px 999px 24px 24px;
+		background: var(--surface);
+		box-shadow: 0 18px 44px -22px rgba(11, 26, 20, 0.28);
+	}
+
+	.founder__image {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.founder__plate {
+		position: absolute;
+		bottom: -20px;
+		inset-inline-start: -20px;
+		display: grid;
+		gap: 2px;
+		padding: 14px 18px;
+		border: 1px solid var(--line);
+		border-radius: 16px;
+		background: var(--surface);
+		box-shadow: 0 12px 32px -16px rgba(11, 26, 20, 0.25);
+	}
+
+	.founder__plate strong {
 		font-size: 1.05rem;
 		font-weight: 600;
 	}
 
-	.approach__value p {
+	.founder__plate > span {
 		color: var(--type-copy-color);
 		font-size: var(--type-small-size);
-		line-height: var(--type-small-line);
 	}
 
-	/* ---------- Founder ---------- */
-	.founder {
-		display: grid;
-		grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-		align-items: center;
-		gap: clamp(32px, 6vw, 80px);
-	}
-
-	.founder__image {
-		border: 1px solid var(--line);
-		border-radius: var(--radius-panel);
+	.founder__chip {
+		justify-self: start;
+		margin-top: 6px;
+		padding: 4px 10px;
+		border-radius: 999px;
+		background: var(--mint-100);
+		color: var(--green-deep);
+		font-size: 12px;
+		font-weight: 600;
 	}
 
 	.founder__copy {
@@ -473,9 +687,83 @@ const standingItems = [
 		max-width: 20ch;
 	}
 
+	.founder__lead {
+		max-width: 62ch;
+		color: var(--ink);
+		font-size: 1.2rem;
+		line-height: 1.55;
+	}
+
 	.founder__copy p {
 		max-width: 62ch;
 		color: var(--type-copy-color);
+	}
+
+	.founder__closing {
+		margin-top: 4px;
+		padding: 18px 22px;
+		border-inline-start: 3px solid var(--green);
+		border-radius: 16px;
+		background: var(--mint-50);
+		color: var(--ink);
+		font-size: 1.15rem;
+		line-height: 1.5;
+	}
+
+	/* Milestone timeline: the story at a glance. */
+	.founder__timeline {
+		position: relative;
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: clamp(16px, 2.5vw, 28px);
+		margin: clamp(40px, 6vw, 64px) 0 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.founder__timeline::before {
+		content: "";
+		position: absolute;
+		top: 7px;
+		inset-inline: 8px;
+		border-top: 1px dashed var(--line);
+	}
+
+	.founder__milestone {
+		position: relative;
+		padding-top: 28px;
+	}
+
+	.founder__milestone-dot {
+		position: absolute;
+		top: 0;
+		inset-inline-start: 0;
+		width: 15px;
+		height: 15px;
+		border: 3px solid var(--surface);
+		border-radius: 50%;
+		background: var(--green);
+	}
+
+	.founder__milestone-label {
+		display: block;
+		color: var(--green-deep);
+		font-size: 22px;
+		font-weight: 600;
+		line-height: 1;
+	}
+
+	.founder__milestone h3 {
+		margin-top: 8px;
+		font-size: 1.05rem;
+		font-weight: 600;
+	}
+
+	.founder__milestone p {
+		margin-top: 4px;
+		color: var(--type-copy-color);
+		font-size: var(--type-small-size);
+		line-height: var(--type-small-line);
 	}
 
 	/* ---------- Credentials gallery ---------- */
@@ -515,7 +803,7 @@ const standingItems = [
 		box-shadow: 0 10px 28px -18px rgba(11, 26, 20, 0.18);
 	}
 
-	/* Inner mat + frame so scans read as a gallery, not a carousel. */
+	/* Inner mat + frame so the plates read as a gallery, not a carousel. */
 	.creds__frame {
 		padding: 10px;
 		border: 1px solid var(--line);
@@ -523,7 +811,10 @@ const standingItems = [
 		background: var(--mint-50);
 	}
 
-	.creds__scan {
+	.creds__plate {
+		display: block;
+		width: 100%;
+		height: auto;
 		border-radius: 8px;
 	}
 
@@ -538,58 +829,286 @@ const standingItems = [
 		line-height: var(--type-small-line);
 	}
 
-	/* ---------- Trust note ---------- */
-	.trust {
+	/* ---------- Approach: numbered journey + one values panel ---------- */
+	.approach {
+		display: grid;
+		gap: clamp(28px, 4vw, 48px);
+	}
+
+	.approach__head {
+		display: grid;
+		justify-items: start;
+		gap: var(--space-md);
+	}
+
+	.approach__steps {
+		position: relative;
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: clamp(16px, 2.5vw, 24px);
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	/* Dashed connector visible in the gaps between the four cards. */
+	.approach__steps::before {
+		content: "";
+		position: absolute;
+		top: 52px;
+		inset-inline: 24px;
+		border-top: 1px dashed var(--line);
+	}
+
+	.approach__step {
+		position: relative;
+		display: grid;
+		align-content: start;
+		gap: var(--space-sm);
+		padding: 24px 22px;
+		border: 1px solid var(--line);
+		border-top: 3px solid var(--mint-300);
+		border-radius: 20px;
+		background: var(--surface);
+		box-shadow: 0 10px 28px -18px rgba(11, 26, 20, 0.18);
+		transition: translate var(--dur-fast) var(--ease);
+	}
+
+	.approach__step:hover {
+		translate: 0 -4px;
+	}
+
+	.approach__top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-sm);
+	}
+
+	.approach__num {
+		color: var(--green-deep);
+		font-size: 30px;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+		line-height: 1;
+	}
+
+	.approach__icon {
+		display: grid;
+		place-items: center;
+		width: 48px;
+		height: 48px;
+		border: 1px solid var(--line);
+		border-radius: 50%;
+		background: var(--mint-50);
+		color: var(--green-deep);
+	}
+
+	.approach__icon svg {
+		width: 26px;
+		height: 26px;
+	}
+
+	.approach__step h3 {
+		font-size: var(--type-h3-size);
+		font-weight: var(--type-card-title-weight);
+	}
+
+	.approach__step p {
+		color: var(--type-copy-color);
+		font-size: var(--type-small-size);
+		line-height: var(--type-small-line);
+	}
+
+	/* Values: one cohesive panel with dividers, not three loose boxes. */
+	.approach__values {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		margin: 0;
+		padding: 0;
+		border: 1px solid var(--line);
+		border-radius: var(--radius-panel);
+		background: var(--mint-100);
+		list-style: none;
+		overflow: clip;
+	}
+
+	.approach__value {
 		display: grid;
 		grid-template-columns: auto minmax(0, 1fr);
 		align-items: start;
-		gap: var(--space-lg);
-		padding: clamp(24px, 4vw, 36px);
-		border: 1px solid var(--line);
-		border-radius: var(--radius-panel);
-		background: var(--mint-50);
+		gap: 14px;
+		padding: 24px 26px;
 	}
 
-	.trust__icon {
+	.approach__value + .approach__value {
+		border-inline-start: 1px solid var(--line);
+	}
+
+	.approach__value-icon {
 		display: grid;
 		place-items: center;
-		width: 56px;
-		height: 56px;
+		width: 44px;
+		height: 44px;
 		border: 1px solid var(--line);
 		border-radius: 50%;
 		background: var(--surface);
 		color: var(--green-deep);
 	}
 
-	.trust__icon svg {
-		width: 28px;
-		height: 28px;
+	.approach__value-icon svg {
+		width: 22px;
+		height: 22px;
 	}
 
-	.trust__copy {
+	.approach__value-copy {
 		display: grid;
-		gap: var(--space-sm);
+		gap: 6px;
 	}
 
-	.trust__copy h2 {
-		font-size: var(--type-h3-size);
-		font-weight: var(--type-card-title-weight);
+	.approach__value h3 {
+		color: var(--green-deep);
+		font-size: 1.05rem;
+		font-weight: 600;
 	}
 
-	.trust__copy p {
-		max-width: 70ch;
+	.approach__value p {
 		color: var(--type-copy-color);
+		font-size: var(--type-small-size);
+		line-height: var(--type-small-line);
+	}
+
+	/* ---------- Infrastructure dark band ---------- */
+	.trust-band {
+		display: grid;
+		grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+		align-items: center;
+		gap: clamp(28px, 5vw, 64px);
+	}
+
+	.trust-band__copy {
+		display: grid;
+		justify-items: start;
+		gap: var(--space-md);
+	}
+
+	.trust-band__eyebrow {
+		color: var(--accent);
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+	}
+
+	.trust-band__copy p {
+		max-width: 46ch;
+		color: var(--ink-muted);
+	}
+
+	.trust-band__operator {
+		display: grid;
+		gap: var(--space-md);
+		padding: clamp(20px, 3vw, 28px);
+		border: 1px solid var(--line);
+		border-radius: var(--radius-panel);
+		background: color-mix(in srgb, var(--ink) 6%, transparent);
+	}
+
+	.trust-band__op-head {
+		display: flex;
+		align-items: center;
+		gap: 14px;
+	}
+
+	.trust-band__op-icon {
+		display: grid;
+		place-items: center;
+		width: 48px;
+		height: 48px;
+		border: 1px solid var(--line);
+		border-radius: 50%;
+		color: var(--accent);
+	}
+
+	.trust-band__op-icon svg {
+		width: 24px;
+		height: 24px;
+	}
+
+	.trust-band__op-id {
+		display: grid;
+		gap: 2px;
+	}
+
+	.trust-band__op-id strong {
+		font-size: 1.05rem;
+		font-weight: 600;
+	}
+
+	.trust-band__op-id span {
+		color: var(--ink-muted);
+		font-size: var(--type-small-size);
+	}
+
+	.trust-band__chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.trust-band__chips li {
+		padding: 6px 12px;
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		color: var(--ink-muted);
+		font-size: var(--type-small-size);
+	}
+
+	.trust-band__note {
+		margin-top: clamp(24px, 4vw, 36px);
+		padding-top: clamp(20px, 3vw, 28px);
+		border-top: 1px solid var(--line);
+		max-width: 90ch;
+		color: var(--ink-muted);
+		font-size: var(--type-small-size);
+		line-height: var(--type-small-line);
 	}
 
 	/* ---------- Responsive ---------- */
 	@media (max-width: 900px) {
 		.about-hero {
+			min-height: auto;
+			padding-top: calc(var(--header-height) + 12px + 16px);
+		}
+
+		.about-hero__grid {
 			grid-template-columns: 1fr;
 			gap: var(--space-xl);
 		}
 
-		.about-hero__art svg {
+		.about-hero__media {
 			width: min(100%, 300px);
+		}
+
+		.about-hero__arch-back {
+			translate: 12px 12px;
+		}
+
+		.about-hero__since {
+			inset-inline-start: 0;
+		}
+
+		.about-hero__star--b {
+			inset-inline-start: -16px;
+		}
+
+		.about-hero__watermark {
+			top: auto;
+			bottom: 10%;
+			font-size: 46vw;
 		}
 
 		.founder {
@@ -598,7 +1117,20 @@ const standingItems = [
 		}
 
 		.founder__media {
-			width: min(100%, 420px);
+			width: min(100%, 380px);
+		}
+
+		.founder__plate {
+			bottom: -16px;
+			inset-inline-start: 0;
+		}
+
+		.founder__timeline {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+
+		.founder__timeline::before {
+			display: none;
 		}
 
 		.creds__grid {
@@ -609,7 +1141,20 @@ const standingItems = [
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 
+		.approach__steps::before {
+			display: none;
+		}
+
 		.approach__values {
+			grid-template-columns: 1fr;
+		}
+
+		.approach__value + .approach__value {
+			border-inline-start: none;
+			border-top: 1px solid var(--line);
+		}
+
+		.trust-band {
 			grid-template-columns: 1fr;
 		}
 	}
@@ -619,8 +1164,21 @@ const standingItems = [
 			grid-template-columns: 1fr;
 		}
 
-		.trust {
+		.founder__timeline {
 			grid-template-columns: 1fr;
+		}
+	}
+
+	/* Mirror the offset arches in RTL (translate is physical). */
+	:global([dir="rtl"]) .about-hero__arch-back,
+	:global([dir="rtl"]) .founder__arch-back {
+		translate: -18px 18px;
+	}
+
+	@media (max-width: 900px) {
+		:global([dir="rtl"]) .about-hero__arch-back,
+		:global([dir="rtl"]) .founder__arch-back {
+			translate: -12px 12px;
 		}
 	}
 </style>

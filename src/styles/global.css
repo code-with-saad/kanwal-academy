@@ -39,6 +39,7 @@
 	 * family. All three are served from this site and downloaded at build
 	 * time. --font-arabic-ui is only defined on /ar. */
 	--font: var(--font-body, "Figtree", Arial, sans-serif);
+	--font-display-serif: var(--font-display, "Playfair Display", Georgia, serif);
 	--font-arabic-fallback: "Amiri", "Traditional Arabic", serif;
 	--type-display-size: clamp(2.25rem, 5.2vw, 3.5rem); /* 36 to 56 */
 	--type-display-line: 1.05;
@@ -437,6 +438,38 @@ html[lang="ar"]:not([data-theme="dark"]) {
 .heading-highlight {
 	font-weight: var(--weight-heading-highlight);
 	color: var(--green-deep);
+}
+
+/* About is the editorial page: a serif display face on its headings only.
+ * Every other page keeps the grotesque. Arabic keeps the Arabic UI family
+ * because Playfair Display ships no Arabic glyphs. */
+.about-editorial h1,
+.about-editorial h2 {
+	font-family: var(--font-display-serif);
+	font-weight: 600;
+	letter-spacing: -0.015em;
+}
+
+html[lang="ar"] .about-editorial h1,
+html[lang="ar"] .about-editorial h2 {
+	font-family: var(--font-arabic-ui, "Segoe UI", Tahoma, Arial, sans-serif);
+	font-weight: 700;
+	letter-spacing: 0;
+}
+
+/* The journey numerals share the editorial display face. */
+.about-editorial .approach__num {
+	font-family: var(--font-display-serif);
+}
+
+/* The founder closing line reads as an editorial pull-line. */
+.about-editorial .founder__closing {
+	font-family: var(--font-display-serif);
+}
+
+/* Milestone years share the editorial display face. */
+.about-editorial .founder__milestone-label {
+	font-family: var(--font-display-serif);
 }
 
 /* ---- Motion system --------------------------------------------------

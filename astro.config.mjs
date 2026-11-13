@@ -102,6 +102,19 @@ export default defineConfig({
 			display: "swap",
 			fallbacks: ["Traditional Arabic", "serif"],
 		},
+		{
+			// Editorial display face for the About page headings only. The
+			// <Font> tag lives in about.astro's head slot, so no other page
+			// downloads this family.
+			provider: fontProviders.google(),
+			name: "Playfair Display",
+			cssVariable: "--font-display",
+			weights: [500, 600],
+			styles: ["normal"],
+			subsets: ["latin"],
+			display: "swap",
+			fallbacks: ["Georgia", "serif"],
+		},
 	],
 	devToolbar: { enabled: false },
 });

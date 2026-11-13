@@ -39,6 +39,8 @@ interface Props {
 	footerCourses?: { name: string }[];
 	/** Hide the footer newsletter (About has its own closing CTA). */
 	hideNewsletter?: boolean;
+	/** Float the pill header over a full-bleed hero (Home does this by default). */
+	overlayHeader?: boolean;
 }
 
 const { locale, t, dir } = useUi(Astro);
@@ -60,6 +62,7 @@ const {
 	siteContact: providedContact,
 	footerCourses: providedFooterCourses,
 	hideNewsletter = false,
+	overlayHeader = false,
 } = Astro.props;
 
 const [settingsResult, contactResult, coursesResult] = await Promise.all([
@@ -320,6 +323,7 @@ const breadcrumbJsonLd = {
 	</head>
 	<body
 		data-is-home={isHome ? true : undefined}
+		data-overlay-header={overlayHeader ? true : undefined}
 		data-locale={locale}
 		data-locale-prefix={locale === "en" ? "" : `/${locale}`}
 	>
@@ -474,8 +478,9 @@ const breadcrumbJsonLd = {
 				z-index: 40;
 				display: grid;
 				place-items: center;
-				width: 48px;
-				height: 48px;
+				/* Same footprint as the WhatsApp fab below it. */
+				width: 56px;
+				height: 56px;
 				padding: 0;
 				border: 1px solid var(--line);
 				border-radius: 50%;
@@ -510,13 +515,13 @@ const breadcrumbJsonLd = {
 
 			@media (max-width: 560px) {
 				.page-go-top {
-					width: 44px;
-					height: 44px;
+					width: 52px;
+					height: 52px;
 				}
 
 				.page-go-top svg {
-					width: 18px;
-					height: 18px;
+					width: 22px;
+					height: 22px;
 				}
 			}
 
