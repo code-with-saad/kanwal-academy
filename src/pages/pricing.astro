@@ -10,13 +10,14 @@ import CtaPanel from "../components/CtaPanel.astro";
 import Eyebrow from "../components/Eyebrow.astro";
 import FaqAccordion from "../components/FaqAccordion.astro";
 import HowItWorks from "../components/HowItWorks.astro";
+import JsonLd from "../components/JsonLd.astro";
 import PageHeader from "../components/PageHeader.astro";
 import PlanGrid from "../components/PlanGrid.astro";
 import Section from "../components/Section.astro";
 import { getLocalizedCollection, localizePath, useUi } from "../i18n";
 import { getPageCopy } from "../i18n/pages";
 import { toPlanCard } from "../utils/catalog";
-import { getFaqs } from "../utils/faqs";
+import { getFaqs, faqPageJsonLd, type FaqItem } from "../utils/faqs";
 import { makeHomeText } from "../utils/home-copy";
 
 const { locale, t } = useUi(Astro);
@@ -28,7 +29,7 @@ const [homeResult, plansResult, faqs] = await Promise.all([
 		status: "published",
 		orderBy: { order: "asc" },
 	}),
-	getFaqs(locale, 4),
+	getFaqs(locale),
 ]);
 if (Astro.cache?.enabled) {
 	Astro.cache.set(homeResult.cacheHint);
@@ -47,6 +48,13 @@ const homeText = makeHomeText(
 const plans = plansResult.entries
 	.filter((plan) => plan.data.visible !== false)
 	.map((plan) => toPlanCard(plan, plansResult.fallbackLocale, t, locale));
+
+// Keep the short FAQ about plans and payment, not the general parent questions.
+const planFaqSlugs = ["card-for-trial", "cancel-or-pause", "free-trial", "class-length"];
+const planFaqs = planFaqSlugs
+	.map((slug) => faqs.items.find((item) => item.slug === slug))
+	.filter((item): item is FaqItem => item !== undefined);
+const pricingFaqs = planFaqs.length > 0 ? planFaqs : faqs.items.slice(0, 4);
 
 const howItWorksSteps = [
 	{
@@ -113,7 +121,8 @@ const howItWorksSteps = [
 	<Section id="faq" space="tight">
 		<Container size="narrow">
 			<h2 class="pricing-faq__heading">{copy.faqHeading}</h2>
-			<FaqAccordion items={faqs.items} />
+			<FaqAccordion items={pricingFaqs} />
+			{pricingFaqs.length > 0 && <JsonLd data={faqPageJsonLd(pricingFaqs)} />}
 		</Container>
 	</Section>
 

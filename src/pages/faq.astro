@@ -3,11 +3,12 @@ import Base from "../layouts/Base.astro";
 import Container from "../components/Container.astro";
 import CtaPanel from "../components/CtaPanel.astro";
 import FaqAccordion from "../components/FaqAccordion.astro";
+import JsonLd from "../components/JsonLd.astro";
 import PageHeader from "../components/PageHeader.astro";
 import Section from "../components/Section.astro";
 import { localizePath, useUi } from "../i18n";
 import { getPageCopy } from "../i18n/pages";
-import { getFaqs } from "../utils/faqs";
+import { getFaqs, faqPageJsonLd } from "../utils/faqs";
 
 const { locale, t } = useUi(Astro);
 const copy = getPageCopy(locale).faq;
@@ -25,6 +26,7 @@ if (Astro.cache?.enabled) Astro.cache.set(faqs.cacheHint);
 		<Container size="narrow">
 			<PageHeader eyebrow={copy.eyebrow} heading={copy.heading} lead={copy.lead} />
 			<FaqAccordion items={faqs.items} />
+			{faqs.items.length > 0 && <JsonLd data={faqPageJsonLd(faqs.items)} />}
 		</Container>
 	</Section>
 
