@@ -4,7 +4,8 @@
  *
  * Native <details>/<summary> so it works without JavaScript and keeps the
  * keyboard and screen reader behaviour the browser already implements. The
- * marker is replaced with a plus that turns into a close cross when open.
+ * first item starts open so visitors immediately see an answer. The marker
+ * is a plus whose vertical stroke folds away into a minus when open.
  */
 import type { FaqItem } from "../utils/faqs";
 
@@ -17,14 +18,15 @@ const { items } = Astro.props;
 
 <ul class="faq">
 	{
-		items.map((item) => (
+		items.map((item, index) => (
 			<li class="faq__item">
-				<details class="faq__details">
+				<details class="faq__details" open={index === 0}>
 					<summary class="faq__summary">
 						<h3 class="faq__question">{item.question}</h3>
 						<span class="faq__icon" aria-hidden="true">
 							<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-								<path d="M10 4v12M4 10h12" />
+								<path class="faq__icon-v" d="M10 4v12" />
+								<path d="M4 10h12" />
 							</svg>
 						</span>
 					</summary>
@@ -55,7 +57,7 @@ const { items } = Astro.props;
 		align-items: center;
 		justify-content: space-between;
 		gap: var(--space-md);
-		padding: 18px 24px;
+		padding: 22px 28px;
 		cursor: pointer;
 		list-style: none;
 		transition: background-color var(--transition);
@@ -76,47 +78,79 @@ const { items } = Astro.props;
 	}
 
 	.faq__question {
-		font-size: var(--type-body-size);
-		font-weight: 600;
-		line-height: 1.4;
+		font-size: 18px;
+		font-weight: 500;
+		line-height: 1.45;
 	}
 
 	.faq__icon {
 		display: grid;
 		place-items: center;
 		flex: none;
-		width: 28px;
-		height: 28px;
+		width: 32px;
+		height: 32px;
 		border-radius: 50%;
 		background: var(--mint-100);
 		color: var(--green-deep);
-		transition: transform var(--transition);
 	}
 
-	.faq__details[open] .faq__icon {
-		transform: rotate(45deg);
+	/* Plus folds into a minus: the vertical stroke shrinks away. */
+	.faq__icon path {
+		transform-box: fill-box;
+		transform-origin: center;
+		transition:
+			transform var(--transition),
+			opacity var(--transition);
+	}
+
+	.faq__details[open] .faq__icon-v {
+		transform: scaleY(0);
+		opacity: 0;
 	}
 
 	.faq__answer {
-		padding: 0 24px 20px;
+		padding: 0 28px 24px;
 		max-width: 68ch;
 		color: var(--type-copy-color);
 	}
 
+	.faq__details[open] .faq__answer {
+		animation: faq-answer-in 240ms ease-out;
+	}
+
+	@keyframes faq-answer-in {
+		from {
+			opacity: 0;
+			transform: translateY(-4px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
 	@media (max-width: 560px) {
 		.faq__summary {
-			padding: 16px 18px;
+			padding: 18px 20px;
+		}
+
+		.faq__question {
+			font-size: 17px;
 		}
 
 		.faq__answer {
-			padding: 0 18px 18px;
+			padding: 0 20px 20px;
 		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
 		.faq__summary,
-		.faq__icon {
+		.faq__icon path {
 			transition: none;
+		}
+
+		.faq__details[open] .faq__answer {
+			animation: none;
 		}
 	}
 </style>
