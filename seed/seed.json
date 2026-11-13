@@ -17,12 +17,18 @@
 			"slug": "pages",
 			"label": "Pages",
 			"labelSingular": "Page",
-			"description": "Standard pages such as About, Terms of Service and Privacy Policy. The Home entry also sets the home hero copy, floating feature cards, Standing Out items, How it works steps, the stats band, the About panel, course section headings, pricing labels, the Book trial form copy, and the testimonials heading.",
+			"description": "Standard pages such as About, Terms of Service, Privacy Policy and Refund Policy. The Home entry also sets the home hero copy, floating feature cards, Standing Out items, How it works steps, the stats band, the About panel, course section headings, pricing labels, the Book trial form copy, and the testimonials heading.",
 			"icon": "file-text",
 			"group": "Content",
 			"sortOrder": 10,
 			"urlPattern": "/{slug}",
-			"supports": ["drafts", "revisions", "preview", "search", "seo"],
+			"supports": [
+				"drafts",
+				"revisions",
+				"preview",
+				"search",
+				"seo"
+			],
 			"fields": [
 				{
 					"slug": "title",
@@ -33,7 +39,7 @@
 				},
 				{
 					"slug": "content",
-					"label": "Page content (used on About, Terms and Privacy)",
+					"label": "Page content (used on Terms, Privacy and Refund)",
 					"type": "portableText",
 					"searchable": true
 				},
@@ -429,7 +435,14 @@
 			"group": "Content",
 			"sortOrder": 20,
 			"urlPattern": "/blog/{slug}",
-			"supports": ["drafts", "revisions", "preview", "scheduling", "search", "seo"],
+			"supports": [
+				"drafts",
+				"revisions",
+				"preview",
+				"scheduling",
+				"search",
+				"seo"
+			],
 			"fields": [
 				{
 					"slug": "title",
@@ -468,9 +481,19 @@
 			"urlPattern": "/courses/{slug}",
 			"titleField": "name",
 			"admin": {
-				"listColumns": ["level", "order", "visible"]
+				"listColumns": [
+					"level",
+					"order",
+					"visible"
+				]
 			},
-			"supports": ["drafts", "revisions", "preview", "search", "seo"],
+			"supports": [
+				"drafts",
+				"revisions",
+				"preview",
+				"search",
+				"seo"
+			],
 			"fields": [
 				{
 					"slug": "name",
@@ -499,7 +522,12 @@
 					"type": "select",
 					"required": true,
 					"validation": {
-						"options": ["All levels", "Beginner", "Intermediate", "Advanced"]
+						"options": [
+							"All levels",
+							"Beginner",
+							"Intermediate",
+							"Advanced"
+						]
 					}
 				},
 				{
@@ -539,9 +567,18 @@
 			"routable": false,
 			"titleField": "name",
 			"admin": {
-				"listColumns": ["price", "classes_per_week", "is_popular", "visible"]
+				"listColumns": [
+					"price",
+					"classes_per_week",
+					"is_popular",
+					"visible"
+				]
 			},
-			"supports": ["drafts", "revisions", "preview"],
+			"supports": [
+				"drafts",
+				"revisions",
+				"preview"
+			],
 			"fields": [
 				{
 					"slug": "name",
@@ -618,9 +655,18 @@
 			"routable": false,
 			"titleField": "name",
 			"admin": {
-				"listColumns": ["role", "order", "visible"]
+				"listColumns": [
+					"role",
+					"order",
+					"visible"
+				]
 			},
-			"supports": ["drafts", "revisions", "preview", "seo"],
+			"supports": [
+				"drafts",
+				"revisions",
+				"preview",
+				"seo"
+			],
 			"fields": [
 				{
 					"slug": "name",
@@ -677,9 +723,17 @@
 			"routable": false,
 			"titleField": "author",
 			"admin": {
-				"listColumns": ["country", "consent_given", "visible"]
+				"listColumns": [
+					"country",
+					"consent_given",
+					"visible"
+				]
 			},
-			"supports": ["drafts", "revisions", "preview"],
+			"supports": [
+				"drafts",
+				"revisions",
+				"preview"
+			],
 			"fields": [
 				{
 					"slug": "quote",
@@ -748,9 +802,17 @@
 			"routable": false,
 			"titleField": "question",
 			"admin": {
-				"listColumns": ["order", "visible"]
+				"listColumns": [
+					"order",
+					"visible"
+				]
 			},
-			"supports": ["drafts", "revisions", "preview", "search"],
+			"supports": [
+				"drafts",
+				"revisions",
+				"preview",
+				"search"
+			],
 			"fields": [
 				{
 					"slug": "question",
@@ -793,7 +855,11 @@
 			"routable": false,
 			"titleField": "email",
 			"admin": {
-				"listColumns": ["phone", "address", "owner_email"]
+				"listColumns": [
+					"phone",
+					"address",
+					"owner_email"
+				]
 			},
 			"supports": [],
 			"fields": [
@@ -977,6 +1043,11 @@
 					"type": "string"
 				},
 				{
+					"slug": "footer_refund_label",
+					"label": "Footer refund policy link",
+					"type": "string"
+				},
+				{
 					"slug": "footer_copyright_label",
 					"label": "Footer copyright text",
 					"type": "string"
@@ -1009,7 +1080,12 @@
 			"routable": false,
 			"titleField": "name",
 			"admin": {
-				"listColumns": ["email", "plan", "course", "lead_status"]
+				"listColumns": [
+					"email",
+					"plan",
+					"course",
+					"lead_status"
+				]
 			},
 			"supports": [],
 			"fields": [
@@ -1057,7 +1133,10 @@
 					"required": true,
 					"defaultValue": "new",
 					"validation": {
-						"options": ["new", "contacted"]
+						"options": [
+							"new",
+							"contacted"
+						]
 					}
 				}
 			]
@@ -1073,7 +1152,10 @@
 			"routable": false,
 			"titleField": "email",
 			"admin": {
-				"listColumns": ["subscriber_status", "subscribed_at"]
+				"listColumns": [
+					"subscriber_status",
+					"subscribed_at"
+				]
 			},
 			"supports": [],
 			"fields": [
@@ -1090,7 +1172,10 @@
 					"required": true,
 					"defaultValue": "active",
 					"validation": {
-						"options": ["active", "unsubscribed"]
+						"options": [
+							"active",
+							"unsubscribed"
+						]
 					}
 				},
 				{
@@ -1172,7 +1257,12 @@
 						{
 							"_type": "block",
 							"style": "h2",
-							"children": [{ "_type": "span", "text": "What you will work on" }]
+							"children": [
+								{
+									"_type": "span",
+									"text": "What you will work on"
+								}
+							]
 						},
 						{
 							"_type": "block",
@@ -1197,7 +1287,12 @@
 						{
 							"_type": "block",
 							"style": "h2",
-							"children": [{ "_type": "span", "text": "Who it is for" }]
+							"children": [
+								{
+									"_type": "span",
+									"text": "Who it is for"
+								}
+							]
 						},
 						{
 							"_type": "block",
@@ -1237,7 +1332,12 @@
 						{
 							"_type": "block",
 							"style": "h2",
-							"children": [{ "_type": "span", "text": "What you will work on" }]
+							"children": [
+								{
+									"_type": "span",
+									"text": "What you will work on"
+								}
+							]
 						},
 						{
 							"_type": "block",
@@ -1262,7 +1362,12 @@
 						{
 							"_type": "block",
 							"style": "h2",
-							"children": [{ "_type": "span", "text": "Who it is for" }]
+							"children": [
+								{
+									"_type": "span",
+									"text": "Who it is for"
+								}
+							]
 						},
 						{
 							"_type": "block",
@@ -1302,7 +1407,12 @@
 						{
 							"_type": "block",
 							"style": "h2",
-							"children": [{ "_type": "span", "text": "What you will work on" }]
+							"children": [
+								{
+									"_type": "span",
+									"text": "What you will work on"
+								}
+							]
 						},
 						{
 							"_type": "block",
@@ -1327,7 +1437,12 @@
 						{
 							"_type": "block",
 							"style": "h2",
-							"children": [{ "_type": "span", "text": "Who it is for" }]
+							"children": [
+								{
+									"_type": "span",
+									"text": "Who it is for"
+								}
+							]
 						},
 						{
 							"_type": "block",
@@ -1479,6 +1594,84 @@
 					"order": 6,
 					"visible": true
 				}
+			},
+			{
+				"id": "faq-free-trial-ar",
+				"slug": "free-trial",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-free-trial",
+				"data": {
+					"question": "هل الحصة التجريبية مجانية فعلاً؟",
+					"answer": "نعم. يبدأ كل طالب بحصة تجريبية مجانية واحدة. يمكنك لقاء المعلم وطرح الأسئلة وتجربة الدرس قبل اختيار الخطة.",
+					"order": 1,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-class-length-ar",
+				"slug": "class-length",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-class-length",
+				"data": {
+					"question": "كم مدة كل حصة؟",
+					"answer": "مدة الحصة 30 دقيقة. تُحسب الساعات الشهرية لكل خطة على أساس أربع حصص في الأسبوع، لذا تمنحك خطة بحصة واحدة أسبوعيًا ساعتين تعليميتين شهريًا.",
+					"order": 2,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-choose-course-ar",
+				"slug": "choose-a-course",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-choose-course",
+				"data": {
+					"question": "أي دورة أختار؟",
+					"answer": "اختر التلاوة القرآنية إذا كنت مبتدئًا أو ترغب في تحسين الطلاقة. اختر إتقان التجويد إذا كنت تقرأ بالفعل وتريد تحسين تلاوتك. اختر التميز في الحفظ إذا كنت مستعدًا لخطة حفظ منظمة. يمكن لمعلمك تعديل الدورة بعد الحصة التجريبية.",
+					"order": 3,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-children-ar",
+				"slug": "children-and-adults",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-children",
+				"data": {
+					"question": "هل تعلّمون الأطفال والكبار؟",
+					"answer": "نعم. نعلّم الأطفال والكبار، والدروس فردية. أخبرنا بعمر الطالب وخبرته عند حجز الحصة التجريبية لنختار المعلم المناسب.",
+					"order": 4,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-booking-ar",
+				"slug": "booking-a-time",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-booking",
+				"data": {
+					"question": "كيف أحجز موعدًا؟",
+					"answer": "استخدم نموذج الحصة التجريبية أو تواصل معنا هاتفيًا أو عبر البريد الإلكتروني. أخبرنا بمنطقتك الزمنية والأيام التي تناسبك، وسنؤكد لك موعدًا.",
+					"order": 5,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-after-plan-ar",
+				"slug": "after-choosing-a-plan",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-after-plan",
+				"data": {
+					"question": "ماذا يحدث بعد اختيار الخطة؟",
+					"answer": "اختر خطة وأكمل نموذج التسجيل. نؤكد جدولك ونختار لك معلمًا ونبدأ أول شهر مدفوع بعد الحصة التجريبية.",
+					"order": 6,
+					"visible": true
+				}
 			}
 		],
 		"site_settings": [
@@ -1513,6 +1706,7 @@
 					"footer_contact_link_label": "Contact",
 					"footer_terms_label": "Terms of Service",
 					"footer_privacy_label": "Privacy Policy",
+					"footer_refund_label": "Refund Policy",
 					"footer_copyright_label": "All rights reserved.",
 					"footer_newsletter_heading": "Stay in touch",
 					"footer_newsletter_consent": "We only use your email to send occasional learning notes. Read our Privacy Policy.",
@@ -1621,7 +1815,12 @@
 						{
 							"_type": "block",
 							"style": "h2",
-							"children": [{ "_type": "span", "text": "What we teach" }]
+							"children": [
+								{
+									"_type": "span",
+									"text": "What we teach"
+								}
+							]
 						},
 						{
 							"_type": "block",
@@ -1636,7 +1835,12 @@
 						{
 							"_type": "block",
 							"style": "h2",
-							"children": [{ "_type": "span", "text": "How we teach" }]
+							"children": [
+								{
+									"_type": "span",
+									"text": "How we teach"
+								}
+							]
 						},
 						{
 							"_type": "block",
@@ -1651,7 +1855,12 @@
 						{
 							"_type": "block",
 							"style": "h2",
-							"children": [{ "_type": "span", "text": "Get in touch" }]
+							"children": [
+								{
+									"_type": "span",
+									"text": "Get in touch"
+								}
+							]
 						},
 						{
 							"_type": "block",
@@ -1679,14 +1888,9 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "These terms explain how Kanwal Quran Academy provides online Qur'an classes. By using this website or enrolling in a class, you agree to them."
+									"text": "This page is a placeholder. Replace it with the academy's reviewed Terms of Service before launch."
 								}
 							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "The free trial" }]
 						},
 						{
 							"_type": "block",
@@ -1694,97 +1898,7 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Every new student can book one free trial class. The trial is for assessment and introduction. It does not create an obligation to enrol."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "Plans and fees" }]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Plans are billed monthly in US dollars. The price, number of classes and teaching hours for each plan are shown on the Pricing page. Fees are due before the first class of each month."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "Scheduling and attendance" }]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Class times are agreed with your teacher. Contact us as early as possible if you need to change a class so that we can arrange another time."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "Conduct" }]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Students and guardians are expected to treat teachers and other students with respect. We may end a course if behaviour makes lessons unsafe or unworkable."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "Ending a plan" }]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Contact us before the next billing date if you want to pause or end a plan. We will confirm the end date with you."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "Changes to these terms" }]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "We may update these terms. The current version will always be on this page."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "Contact" }]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Questions about these terms can be sent to hello@kanwalquranacademy.com or +92 342 2766346."
+									"text": "Questions can be sent to hello@kanwalquranacademy.com."
 								}
 							]
 						}
@@ -1804,14 +1918,9 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "This policy explains what information Kanwal Quran Academy collects and how we use it."
+									"text": "This page is a placeholder. Replace it with the academy's reviewed Privacy Policy before launch."
 								}
 							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "What we collect" }]
 						},
 						{
 							"_type": "block",
@@ -1819,14 +1928,9 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "When you contact us or enrol, we may collect your name, email address, phone number, country, time zone and details about the course you want."
+									"text": "We collect the details you send through the free trial form and the newsletter form."
 								}
 							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "How we use it" }]
 						},
 						{
 							"_type": "block",
@@ -1834,14 +1938,29 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "We use this information to reply to your enquiry, arrange a trial class, match you with a teacher and manage your enrolment."
+									"text": "Questions can be sent to hello@kanwalquranacademy.com."
 								}
 							]
-						},
+						}
+					]
+				}
+			},
+			{
+				"id": "page-refund",
+				"slug": "refund-policy",
+				"status": "published",
+				"data": {
+					"title": "Refund Policy",
+					"content": [
 						{
 							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "Payments" }]
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "This page is a placeholder. Replace it with the academy's reviewed Refund Policy before launch."
+								}
+							]
 						},
 						{
 							"_type": "block",
@@ -1849,14 +1968,31 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Payments are not processed on this website yet. If this changes, payment details will be handled by a payment provider and not stored by us."
+									"text": "Questions about payments or refunds can be sent to hello@kanwalquranacademy.com."
 								}
 							]
-						},
+						}
+					]
+				}
+			},
+			{
+				"id": "page-terms-ar",
+				"slug": "terms-of-service",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "page-terms",
+				"data": {
+					"title": "شروط الخدمة",
+					"content": [
 						{
 							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "Who we share it with" }]
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "هذه الصفحة نص مؤقت. استبدلها بشروط الخدمة المعتمدة من الأكاديمية قبل الإطلاق."
+								}
+							]
 						},
 						{
 							"_type": "block",
@@ -1864,14 +2000,31 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "We do not sell your information. We share it only with the teacher assigned to you and with service providers that host the site or help us communicate."
+									"text": "يمكن إرسال الأسئلة إلى hello@kanwalquranacademy.com."
 								}
 							]
-						},
+						}
+					]
+				}
+			},
+			{
+				"id": "page-privacy-ar",
+				"slug": "privacy-policy",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "page-privacy",
+				"data": {
+					"title": "سياسة الخصوصية",
+					"content": [
 						{
 							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "Cookies" }]
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "هذه الصفحة نص مؤقت. استبدلها بسياسة الخصوصية المعتمدة من الأكاديمية قبل الإطلاق."
+								}
+							]
 						},
 						{
 							"_type": "block",
@@ -1879,14 +2032,9 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "This site uses only the cookies needed to run the site and the admin panel. We do not use advertising cookies."
+									"text": "نجمع البيانات التي ترسلها عبر نموذج الحصة التجريبية والنشرة البريدية."
 								}
 							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "Your choices" }]
 						},
 						{
 							"_type": "block",
@@ -1894,14 +2042,31 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "You can ask us to correct or delete your information by emailing hello@kanwalquranacademy.com."
+									"text": "يمكن إرسال الأسئلة إلى hello@kanwalquranacademy.com."
 								}
 							]
-						},
+						}
+					]
+				}
+			},
+			{
+				"id": "page-refund-ar",
+				"slug": "refund-policy",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "page-refund",
+				"data": {
+					"title": "سياسة الاسترداد",
+					"content": [
 						{
 							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "Contact" }]
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "هذه الصفحة نص مؤقت. استبدلها بسياسة الاسترداد المعتمدة من الأكاديمية قبل الإطلاق."
+								}
+							]
 						},
 						{
 							"_type": "block",
@@ -1909,7 +2074,7 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Questions about this policy can be sent to hello@kanwalquranacademy.com or +92 342 2766346."
+									"text": "يمكن إرسال الأسئلة حول المدفوعات أو المبالغ المستردة إلى hello@kanwalquranacademy.com."
 								}
 							]
 						}
