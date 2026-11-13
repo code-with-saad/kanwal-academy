@@ -1,0 +1,43 @@
+---
+/**
+ * Page heading block: eyebrow, one h1 and an optional lead paragraph.
+ * Every page renders exactly one of these (the Home hero has its own h1).
+ */
+import Eyebrow from "./Eyebrow.astro";
+
+interface Props {
+	eyebrow?: string;
+	heading: string;
+	lead?: string;
+}
+
+const { eyebrow, heading, lead } = Astro.props;
+---
+
+<header class="page-header">
+	{eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
+	<h1>{heading}</h1>
+	{lead && <p class="page-header__lead">{lead}</p>}
+</header>
+
+<style>
+	.page-header {
+		display: grid;
+		gap: var(--space-md);
+		max-width: 60ch;
+		margin-bottom: var(--space-2xl);
+	}
+
+	.page-header h1 {
+		font-size: var(--type-display-size);
+		line-height: var(--type-display-line);
+		font-weight: var(--type-display-weight);
+	}
+
+	.page-header__lead {
+		color: var(--type-copy-color);
+		font-size: var(--type-lead-size);
+		line-height: var(--type-lead-line);
+		max-width: 54ch;
+	}
+</style>

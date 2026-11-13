@@ -1,18 +1,7 @@
 ---
 import { formatUsdPrice } from "../utils/price";
 import { formatNumericText } from "../utils/number";
-
-export interface PlanCardData {
-	slug?: string;
-	name: string;
-	price: number | string;
-	currencySymbol?: string;
-	billingPeriod?: string;
-	classesPerWeek: number;
-	classesPerMonth: number;
-	hoursPerMonth: number;
-	isPopular?: boolean;
-}
+import type { PlanCardData } from "../utils/catalog";
 
 import { useUi } from "../i18n";
 
@@ -112,7 +101,7 @@ const period = plan.billingPeriod ?? periodLabel;
 			class="plan-card__cta"
 			type="button"
 			data-book-cta
-			data-prefill-plan={plan.name}
+			data-prefill-plan={plan.slug ?? plan.name}
 		>
 			{selectCta}
 			<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

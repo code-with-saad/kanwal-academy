@@ -1,0 +1,122 @@
+---
+/**
+ * FAQ accordion.
+ *
+ * Native <details>/<summary> so it works without JavaScript and keeps the
+ * keyboard and screen reader behaviour the browser already implements. The
+ * marker is replaced with a plus that turns into a close cross when open.
+ */
+import type { FaqItem } from "../utils/faqs";
+
+interface Props {
+	items: FaqItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="faq">
+	{
+		items.map((item) => (
+			<li class="faq__item">
+				<details class="faq__details">
+					<summary class="faq__summary">
+						<h3 class="faq__question">{item.question}</h3>
+						<span class="faq__icon" aria-hidden="true">
+							<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+								<path d="M10 4v12M4 10h12" />
+							</svg>
+						</span>
+					</summary>
+					<div class="faq__answer">
+						<p>{item.answer}</p>
+					</div>
+				</details>
+			</li>
+		))
+	}
+</ul>
+
+<style>
+	.faq {
+		display: grid;
+		border: 1px solid var(--line);
+		border-radius: var(--radius-card);
+		background: var(--surface-2);
+		overflow: hidden;
+	}
+
+	.faq__item + .faq__item {
+		border-top: 1px solid var(--line);
+	}
+
+	.faq__summary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-md);
+		padding: 18px 24px;
+		cursor: pointer;
+		list-style: none;
+		transition: background-color var(--transition);
+	}
+
+	.faq__summary::-webkit-details-marker {
+		display: none;
+	}
+
+	.faq__summary:hover {
+		background: var(--mint-100);
+	}
+
+	.faq__summary:focus-visible {
+		outline: 2px solid var(--focus);
+		outline-offset: -3px;
+		border-radius: var(--radius-input);
+	}
+
+	.faq__question {
+		font-size: var(--type-body-size);
+		font-weight: 600;
+		line-height: 1.4;
+	}
+
+	.faq__icon {
+		display: grid;
+		place-items: center;
+		flex: none;
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		background: var(--mint-100);
+		color: var(--green-deep);
+		transition: transform var(--transition);
+	}
+
+	.faq__details[open] .faq__icon {
+		transform: rotate(45deg);
+	}
+
+	.faq__answer {
+		padding: 0 24px 20px;
+		max-width: 68ch;
+		color: var(--type-copy-color);
+	}
+
+	@media (max-width: 560px) {
+		.faq__summary {
+			padding: 16px 18px;
+		}
+
+		.faq__answer {
+			padding: 0 18px 18px;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.faq__summary,
+		.faq__icon {
+			transition: none;
+		}
+	}
+</style>

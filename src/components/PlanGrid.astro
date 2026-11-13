@@ -1,0 +1,88 @@
+---
+/**
+ * Plan cards: a 4 column grid on desktop and the scroll-snap carousel on
+ * mobile. The labels come from the Home page CMS entry so both pricing
+ * surfaces use the same copy.
+ */
+import PlanCard from "./PlanCard.astro";
+import PricingCarousel from "./PricingCarousel.astro";
+import type { PlanCardData } from "../utils/catalog";
+
+interface Props {
+	plans: PlanCardData[];
+	periodLabel?: string;
+	classesWeekLabel?: string;
+	classesMonthLabel?: string;
+	hoursLabel?: string;
+	popularLabel?: string;
+	selectCta?: string;
+}
+
+const {
+	plans,
+	periodLabel,
+	classesWeekLabel,
+	classesMonthLabel,
+	hoursLabel,
+	popularLabel,
+	selectCta,
+} = Astro.props;
+---
+
+<div class="plan-grid">
+	{
+		plans.map((plan, index) => (
+			<PlanCard
+				plan={plan}
+				revealDelay={index * 80}
+				periodLabel={periodLabel}
+				classesWeekLabel={classesWeekLabel}
+				classesMonthLabel={classesMonthLabel}
+				hoursLabel={hoursLabel}
+				popularLabel={popularLabel}
+				selectCta={selectCta}
+			/>
+		))
+	}
+</div>
+
+<div class="plan-carousel-mobile">
+	<PricingCarousel
+		plans={plans}
+		periodLabel={periodLabel}
+		classesWeekLabel={classesWeekLabel}
+		classesMonthLabel={classesMonthLabel}
+		hoursLabel={hoursLabel}
+		popularLabel={popularLabel}
+		selectCta={selectCta}
+	/>
+</div>
+
+<style>
+	.plan-grid {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: var(--space-md);
+		align-items: stretch;
+	}
+
+	.plan-carousel-mobile {
+		display: none;
+	}
+
+	@media (max-width: 1100px) {
+		.plan-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (max-width: 760px) {
+		.plan-grid {
+			display: none;
+		}
+
+		.plan-carousel-mobile {
+			display: block;
+		}
+	}
+</style>

@@ -1,0 +1,72 @@
+---
+/**
+ * Closing call to action panel used at the bottom of the static pages.
+ * One primary action, plus an optional secondary link.
+ */
+import Button from "./Button.astro";
+import Container from "./Container.astro";
+import Section from "./Section.astro";
+
+interface Props {
+	heading: string;
+	text?: string;
+	primaryHref: string;
+	primaryLabel: string;
+	secondaryHref?: string;
+	secondaryLabel?: string;
+}
+
+const { heading, text, primaryHref, primaryLabel, secondaryHref, secondaryLabel } = Astro.props;
+---
+
+<Section space="tight">
+	<Container>
+		<div class="cta-panel tone-dark">
+			<div class="cta-panel__copy">
+				<h2>{heading}</h2>
+				{text && <p>{text}</p>}
+			</div>
+			<div class="cta-panel__actions">
+				<Button href={primaryHref} variant="primary">{primaryLabel}</Button>
+				{
+					secondaryHref && secondaryLabel && (
+						<Button href={secondaryHref} variant="secondary">{secondaryLabel}</Button>
+					)
+				}
+			</div>
+		</div>
+	</Container>
+</Section>
+
+<style>
+	.cta-panel {
+		display: grid;
+		gap: var(--space-lg);
+		padding: clamp(24px, 4vw, 40px);
+		border-radius: var(--radius-panel);
+		background: var(--deep);
+	}
+
+	.cta-panel__copy {
+		display: grid;
+		gap: var(--space-sm);
+		max-width: 52ch;
+	}
+
+	.cta-panel__copy p {
+		color: var(--ink-muted);
+	}
+
+	.cta-panel__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-sm);
+	}
+
+	@media (min-width: 900px) {
+		.cta-panel {
+			grid-template-columns: minmax(0, 1fr) auto;
+			align-items: center;
+		}
+	}
+</style>

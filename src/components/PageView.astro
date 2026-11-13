@@ -1,4 +1,9 @@
 ---
+/**
+ * Generic renderer for entries in the pages collection (legal pages and any
+ * other CMS page). The body is Portable Text, so editors can paste the final
+ * copy in the admin without touching code.
+ */
 import type { ContentEntry } from "emdash";
 import { PortableText } from "emdash/ui";
 import type { Page } from "../../emdash-env";
@@ -6,29 +11,55 @@ import Container from "./Container.astro";
 import Section from "./Section.astro";
 import { useUi } from "../i18n";
 
-const { t } = useUi(Astro);
-
 interface Props {
 	page: ContentEntry<Page>;
 	/** The heading shown above the page content. Defaults to the page title. */
 	heading?: string;
+	/** Shown as "Last updated <date>" under the heading when provided. */
+	lastUpdated?: Date | string | null;
+	/** True when the requested locale fell back to English. */
+	fallback?: boolean;
 }
 
-const { page, heading } = Astro.props;
+const { t, locale } = useUi(Astro);
+const { page, heading, lastUpdated, fallback = false } = Astro.props;
+
 const title = heading ?? page.data.title;
 const titleEdit = heading === undefined ? page.edit.title : {};
 const blocks = page.data.content ?? [];
+
+const updatedDate = lastUpdated ? new Date(lastUpdated) : null;
+const updatedLabel =
+	updatedDate && !Number.isNaN(updatedDate.getTime())
+		? new Intl.DateTimeFormat(locale, {
+				year: "numeric",
+				month: "long",
+				day: "numeric",
+			}).format(updatedDate)
+		: null;
+
+// A fallback page renders English text inside an Arabic document. Marking the
+// region keeps screen readers and spell checkers on the right language.
+const contentLang = fallback ? "en" : undefined;
+const contentDir = fallback ? "ltr" : undefined;
 ---
 
 <Section space="tight">
 	<Container size="narrow">
-		<header class="page-header">
+		<header class="page-header" lang={contentLang} dir={contentDir}>
 			<h1 {...titleEdit}>{title}</h1>
+			{updatedLabel && (
+				<p class="page-updated">
+					{t.page.lastUpdated} <time datetime={updatedDate?.toISOString()}>{updatedLabel}</time>
+				</p>
+			)}
 		</header>
+
+		{fallback && <p class="page-notice">{t.page.fallbackNotice}</p>}
 
 		{
 			blocks.length > 0 ? (
-				<div class="prose" {...page.edit.content}>
+				<div class="prose" lang={contentLang} dir={contentDir} {...page.edit.content}>
 					<PortableText value={blocks} />
 				</div>
 			) : (
@@ -44,12 +75,29 @@ const blocks = page.data.content ?? [];
 
 <style>
 	.page-header {
+		display: grid;
+		gap: var(--space-sm);
 		margin-bottom: var(--space-xl);
 	}
 
 	.page-header h1 {
 		max-width: 20ch;
 		font-size: var(--type-h2-size);
+	}
+
+	.page-updated {
+		color: var(--ink-muted);
+		font-size: var(--type-small-size);
+	}
+
+	.page-notice {
+		margin-bottom: var(--space-lg);
+		padding: var(--space-md) var(--space-lg);
+		border: 1px solid var(--line);
+		border-radius: var(--radius-input);
+		background: var(--mint-50);
+		color: var(--type-copy-color);
+		font-size: var(--type-small-size);
 	}
 
 	.page-empty {
