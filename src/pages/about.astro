@@ -1,6 +1,144 @@
 ---
-// Single-page site: this route returns once the full page is restored.
-import { getLocale, localizePath } from "../i18n";
+/**
+ * About page. Renders the same full sections as the Home page (About panel,
+ * Standing out, stats, free trial steps) with a page-specific h1 and CTA.
+ */
+import { getEmDashEntry } from "emdash";
+import Base from "../layouts/Base.astro";
+import Container from "../components/Container.astro";
+import CtaPanel from "../components/CtaPanel.astro";
+import HowItWorks from "../components/HowItWorks.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Section from "../components/Section.astro";
+import StandingOut from "../components/StandingOut.astro";
+import StatsBand from "../components/StatsBand.astro";
+import WisdomPanel from "../components/WisdomPanel.astro";
+import { localizePath, useUi } from "../i18n";
+import { getPageCopy } from "../i18n/pages";
+import { makeHomeText } from "../utils/home-copy";
+import { getSiteContact } from "../utils/site-config";
 
-return Astro.redirect(localizePath("/#about", getLocale(Astro)), 301);
+const { locale, t } = useUi(Astro);
+const copy = getPageCopy(locale).about;
+
+const [homeResult, contactResult] = await Promise.all([
+	getEmDashEntry("pages", "home", { locale }),
+	getSiteContact(locale),
+]);
+if (Astro.cache?.enabled) {
+	Astro.cache.set(homeResult.cacheHint);
+	Astro.cache.set(contactResult.cacheHint);
+}
+
+const homePage = homeResult.entry;
+const homeText = makeHomeText(
+	homePage?.data as Record<string, unknown> | undefined,
+	homeResult.fallbackLocale,
+	locale,
+	t,
+);
+const contact = contactResult.data;
+
+const standingItems = [
+	{
+		number: "01",
+		title: homeText("standing_item_1_title"),
+		text: homeText("standing_item_1_text"),
+		icon: "clock" as const,
+	},
+	{
+		number: "02",
+		title: homeText("standing_item_2_title"),
+		text: homeText("standing_item_2_text"),
+		icon: "book" as const,
+	},
+	{
+		number: "03",
+		title: homeText("standing_item_3_title"),
+		text: homeText("standing_item_3_text"),
+		icon: "screens" as const,
+	},
+];
+
+const howItWorksSteps = [
+	{
+		title: homeText("trial_step_1_title"),
+		text: homeText("trial_step_1_body"),
+		icon: "book-trial" as const,
+	},
+	{
+		title: homeText("trial_step_2_title"),
+		text: homeText("trial_step_2_body"),
+		icon: "teacher" as const,
+	},
+	{
+		title: homeText("trial_step_3_title"),
+		text: homeText("trial_step_3_body"),
+		icon: "calendar-check" as const,
+	},
+];
 ---
+
+<Base
+	title={copy.title}
+	description={copy.description}
+	breadcrumbs={[{ name: t.nav.about, path: "/about" }]}
+>
+	<Section space="tight">
+		<Container>
+			<PageHeader eyebrow={copy.eyebrow} heading={copy.heading} lead={copy.lead} />
+		</Container>
+	</Section>
+
+	<Section id="about">
+		<Container>
+			<WisdomPanel
+				eyebrow={homeText("about_eyebrow")}
+				titleBefore={homeText("about_title_before")}
+				titleHighlight={homeText("about_title_highlight")}
+				paragraph1={homeText("about_paragraph_1")}
+				paragraph2={homeText("about_paragraph_2")}
+				image={homePage?.data.about_image}
+				imageAlt={homeText("about_image_alt")}
+				years={contact.stats.years}
+			/>
+		</Container>
+	</Section>
+
+	<Section id="standing-out" space="tight">
+		<Container>
+			<StandingOut heading={homeText("standing_heading")} items={standingItems} />
+		</Container>
+	</Section>
+
+	<StatsBand
+		eyebrow={homeText("stats_eyebrow")}
+		heading={homeText("stats_heading")}
+		description={homeText("stats_description")}
+		students={contact.stats.students}
+		sessions={contact.stats.sessions}
+		countries={contact.stats.countries}
+		studentsLabel={contact.stats.labels.students}
+		sessionsLabel={contact.stats.labels.sessions}
+		countriesLabel={contact.stats.labels.countries}
+	/>
+
+	<Section id="how-it-works" space="tight">
+		<Container>
+			<HowItWorks
+				eyebrow={homeText("trial_eyebrow")}
+				heading={homeText("trial_heading")}
+				steps={howItWorksSteps}
+			/>
+		</Container>
+	</Section>
+
+	<CtaPanel
+		heading={copy.ctaHeading}
+		text={copy.ctaText}
+		primaryHref={localizePath("/contact-us#book", locale)}
+		primaryLabel={t.actions.bookFreeTrial}
+		secondaryHref={localizePath("/pricing", locale)}
+		secondaryLabel={t.actions.seePlans}
+	/>
+</Base>

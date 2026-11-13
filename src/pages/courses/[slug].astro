@@ -1,6 +1,0 @@
----
-// Single-page site: this route returns once the full page is restored.
-import { getLocale, localizePath } from "../../i18n";
-
-return Astro.redirect(localizePath("/#courses", getLocale(Astro)), 301);
----

@@ -1,0 +1,72 @@
+---
+import Base from "../layouts/Base.astro";
+import BookTrial from "../components/BookTrial.astro";
+import Container from "../components/Container.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Section from "../components/Section.astro";
+import { getSiteContact } from "../utils/site-config";
+import { getLocalizedCollection, useUi } from "../i18n";
+import { getPageCopy } from "../i18n/pages";
+import { getCourseCopy, getPlanName } from "../utils/catalog";
+
+const { locale, t } = useUi(Astro);
+const copy = getPageCopy(locale).contact;
+
+const [contactResult, coursesResult, plansResult] = await Promise.all([
+	getSiteContact(locale),
+	getLocalizedCollection("courses", locale, {
+		status: "published",
+		orderBy: { order: "asc" },
+	}),
+	getLocalizedCollection("plans", locale, {
+		status: "published",
+		orderBy: { order: "asc" },
+	}),
+]);
+if (Astro.cache?.enabled) {
+	Astro.cache.set(contactResult.cacheHint);
+	Astro.cache.set(coursesResult.cacheHint);
+	Astro.cache.set(plansResult.cacheHint);
+}
+
+const courses = coursesResult.entries
+	.filter((course) => course.data.visible !== false)
+	.map((course) => ({
+		id: String(course.data.id ?? course.id),
+		slug: course.id,
+		name: getCourseCopy(course, coursesResult.fallbackLocale, t).name,
+	}));
+
+const plans = plansResult.entries
+	.filter((plan) => plan.data.visible !== false)
+	.map((plan) => ({
+		id: String(plan.data.id ?? plan.id),
+		slug: plan.id,
+		name: getPlanName(plan, plansResult.fallbackLocale, t),
+	}));
+---
+
+<Base
+	title={copy.title}
+	description={copy.description}
+	breadcrumbs={[{ name: t.nav.contact, path: "/contact-us" }]}
+	siteContact={contactResult}
+>
+	<Section space="tight">
+		<Container>
+			<PageHeader eyebrow={copy.eyebrow} heading={copy.heading} lead={copy.lead} />
+		</Container>
+	</Section>
+
+	<Section id="book" space="tight">
+		<Container>
+			<BookTrial
+				contact={contactResult.data}
+				{courses}
+				{plans}
+				initialPlan={Astro.url.searchParams.get("plan") ?? ""}
+				initialCourse={Astro.url.searchParams.get("course") ?? ""}
+			/>
+		</Container>
+	</Section>
+</Base>
