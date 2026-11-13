@@ -13,6 +13,7 @@ import FaqAccordion from "../components/FaqAccordion.astro";
 import FeatureCards from "../components/FeatureCards.astro";
 import FeatureSplit from "../components/FeatureSplit.astro";
 import HowItWorks from "../components/HowItWorks.astro";
+import JsonLd from "../components/JsonLd.astro";
 import PlanCard from "../components/PlanCard.astro";
 import PricingCarousel from "../components/PricingCarousel.astro";
 import Section from "../components/Section.astro";
@@ -23,13 +24,13 @@ import WisdomPanel from "../components/WisdomPanel.astro";
 import { site } from "../config/site";
 import { heroImage } from "../config/images";
 import { optimizedImages } from "../config/optimized-images";
-import { getSiteContact } from "../utils/site-config";
+import { getSiteContact, whatsappHref } from "../utils/site-config";
 import { isDemoMode } from "../utils/env";
 import { formatUsdPrice } from "../utils/price";
 import { hasDigits, isolateLtr } from "../utils/number";
 import { getLocalizedCollection, localizePath, useUi } from "../i18n";
 import { getPageCopy } from "../i18n/pages";
-import { getFaqs } from "../utils/faqs";
+import { getFaqs, faqPageJsonLd } from "../utils/faqs";
 import type { Page } from "../../emdash-env";
 
 interface HomePageFields {
@@ -176,6 +177,7 @@ const contact = contactResult.data;
 const demo = isDemoMode();
 const navItems = [...site.nav];
 const faqCopy = getPageCopy(locale).faq;
+const faqWaHref = whatsappHref(contact.whatsappNumber || contact.phone);
 
 const getCourseCopy = (course: (typeof courses)[number]) => {
 	if (coursesResult.fallbackLocale && course.id in t.catalog.courses) {
@@ -768,13 +770,27 @@ const hasTestimonials = testimonials.length > 0 || demo;
 	<!-- ===== FAQ ===== -->
 	<Section id="faq" space="tight">
 		<Container>
-			<div class="faq-head">
-				<h2>{faqCopy.heading}</h2>
-				<Button href={localizePath("/faq", locale)} variant="secondary">
-					{t.actions.viewAllFaqs}
-				</Button>
+			<div class="faq-layout">
+				<div class="faq-intro">
+					<h2>{faqCopy.heading}</h2>
+					<p class="section-lead">{faqCopy.lead}</p>
+					<Button href={localizePath("/faq", locale)} variant="secondary">
+						{t.actions.viewAllFaqs}
+					</Button>
+				</div>
+				<div class="faq-main">
+					<FaqAccordion items={faqs.items} />
+					{faqWaHref && (
+						<div class="faq-more">
+							<p>{faqCopy.moreText}</p>
+							<Button href={faqWaHref} variant="primary" external>
+								{t.actions.whatsappUs}
+							</Button>
+						</div>
+					)}
+				</div>
 			</div>
-			<FaqAccordion items={faqs.items} />
+			{faqs.items.length > 0 && <JsonLd data={faqPageJsonLd(faqs.items)} />}
 		</Container>
 	</Section>
 
@@ -1215,13 +1231,34 @@ const hasTestimonials = testimonials.length > 0 || demo;
 		color: var(--type-copy-color);
 	}
 
-	.faq-head {
+	.faq-layout {
+		display: grid;
+		grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
+		align-items: start;
+		gap: clamp(32px, 5vw, 72px);
+	}
+
+	.faq-intro .section-lead {
+		margin-bottom: var(--space-lg);
+	}
+
+	.faq-more {
 		display: flex;
 		flex-wrap: wrap;
-		align-items: flex-end;
+		align-items: center;
 		justify-content: space-between;
 		gap: var(--space-md);
-		margin-bottom: var(--space-lg);
+		margin-top: var(--space-lg);
+	}
+
+	.faq-more p {
+		color: var(--type-copy-color);
+	}
+
+	@media (max-width: 900px) {
+		.faq-layout {
+			grid-template-columns: 1fr;
+		}
 	}
 
 	.section-head {
