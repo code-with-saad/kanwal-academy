@@ -49,6 +49,7 @@ const EnrolmentSchema = z.object({
 	course: z.string().max(120).optional().default(""),
 	plan: z.string().max(120).optional().default(""),
 	message: z.string().max(2000).optional().default(""),
+	preferredTime: z.string().max(120).optional().default(""),
 	turnstileToken: z.string().max(2048).optional().default(""),
 	website: z.string().optional().default(""), // honeypot
 });
@@ -266,6 +267,7 @@ async function sendOwnerEmail(opts: {
 		course: string;
 		plan: string;
 		message: string;
+		preferredTime: string;
 		time: string;
 	};
 }): Promise<void> {
@@ -282,6 +284,7 @@ async function sendOwnerEmail(opts: {
 			course: lead.course,
 			plan: lead.plan,
 			message: lead.message,
+			preferred_time: lead.preferredTime,
 			time: lead.time,
 			to_email: toEmail,
 			reply_to: lead.email,
@@ -415,10 +418,16 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 		return json({ ok: false, message: "Invalid request type." }, 400);
 	}
 
-	const { name, email, phone, course, plan, message } = parsed.data;
+	const { name, email, phone, course, plan, message, preferredTime } = parsed.data;
+
+	// The preferred time/timezone has no dedicated column, so it is appended
+	// to the stored message and also sent as its own owner-email field.
+	const fullMessage = preferredTime
+		? `${message}${message ? "\n" : ""}Preferred time: ${preferredTime}`
+		: message;
 
 	try {
-		await saveEnrolment(db, { name, email, phone, course, plan, message });
+		await saveEnrolment(db, { name, email, phone, course, plan, message: fullMessage });
 	} catch {
 		return json(
 			{ ok: false, message: "Could not save your request. Please try again." },
@@ -462,7 +471,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 						phone,
 						course: oneLine(course),
 						plan: oneLine(plan),
-						message: oneLine(message),
+						message: oneLine(fullMessage),
+						preferredTime: oneLine(preferredTime),
 						time: new Date().toUTCString(),
 					},
 				});
