@@ -1,0 +1,17 @@
+# URLs that must return 410 Gone, one path per line.
+#
+# Rules:
+#   - One path per line, starting with a slash. No domain and no query string.
+#   - Lines starting with # and blank lines are ignored.
+#   - A line ending in /* matches every path below that prefix.
+#   - Never add a URL here that should redirect. 410 is permanent removal.
+#
+# The list below covers the old WordPress entry points that were previously
+# redirected to the home page. Replace or extend it with the spam URLs from the
+# old site before launch (the client will supply the final list).
+/wp-admin
+/wp-admin/*
+/wp-login.php
+/xmlrpc.php
+/wp-content/*
+/wp-includes/*

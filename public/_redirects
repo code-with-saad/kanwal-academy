@@ -1,18 +1,14 @@
-# Common WordPress URL patterns redirecting to the single-page anchors
-/about-us /#about 301
-/about-us/ /#about 301
-/contact-us /#book 301
-/contact-us/ /#book 301
-/courses /#courses 301
-/courses/ /#courses 301
-/pricing /#pricing 301
-/pricing/ /#pricing 301
-/teachers /#teachers 301
-/teachers/ /#teachers 301
-/free-trial /#book 301
-/free-trial/ /#book 301
+# Cloudflare Pages format, kept in sync with src/config/route-rules.ts.
+# The site itself runs on Workers, where src/middleware.ts applies these rules
+# (including the 410 list in src/data/gone-urls.txt). This file is only used by
+# Pages-based previews, so it must never redirect removed URLs to the home page.
+/teachers /about 301
+/teachers/ /about 301
+/contact /contact-us 301
+/contact/ /contact-us 301
+/free-trial /contact-us 301
+/free-trial/ /contact-us 301
+/our-story /about 301
+/our-story/ /about 301
 /blog / 301
 /blog/ / 301
-/wp-admin / 301
-/wp-login.php / 301
-/xmlrpc.php / 301

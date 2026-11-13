@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+# Private areas are never indexed.
+Disallow: /api/
+Disallow: /_emdash/
+
 Sitemap: https://kanwalquranacademy.com/sitemap.xml
