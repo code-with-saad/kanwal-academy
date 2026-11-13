@@ -16,10 +16,12 @@ interface Props {
 	courseNames?: Array<{ name: string; href?: string }>;
 	logoLight?: ImageValue | null;
 	logoDark?: ImageValue | null;
+	/** Pages with their own closing CTA (About) can drop the newsletter. */
+	showNewsletter?: boolean;
 }
 
 const { locale, t } = useUi(Astro);
-const { contact, siteName = site.name, settingsEdit, courseNames, logoLight, logoDark } = Astro.props;
+const { contact, siteName = site.name, settingsEdit, courseNames, logoLight, logoDark, showNewsletter = true } = Astro.props;
 const year = new Date().getFullYear();
 const logoSize = (logo?: ImageValue | null) => {
 	const sourceWidth = logo?.width ?? 1668;
@@ -146,19 +148,21 @@ const academyLinks = [
 			</div>
 		</div>
 
-		<div class="footer__news">
-			<div class="footer__news-copy">
-				<h2 class="footer__news-heading" {...settingsEdit?.footer_stay_in_touch}>
-					{contact.footer.stayInTouch}
-				</h2>
-				<p class="footer__news-consent">
-					{contact.footer.newsletterConsent}
-				</p>
+		{showNewsletter && (
+			<div class="footer__news">
+				<div class="footer__news-copy">
+					<h2 class="footer__news-heading" {...settingsEdit?.footer_stay_in_touch}>
+						{contact.footer.stayInTouch}
+					</h2>
+					<p class="footer__news-consent">
+						{contact.footer.newsletterConsent}
+					</p>
+				</div>
+				<div class="footer__news-form">
+					<Newsletter />
+				</div>
 			</div>
-			<div class="footer__news-form">
-				<Newsletter />
-			</div>
-		</div>
+		)}
 
 		<div class="footer__bottom">
 			<p class="footer__copy">

@@ -37,6 +37,8 @@ interface Props {
 	nav?: NavItem[];
 	siteContact?: Awaited<ReturnType<typeof getSiteContact>>;
 	footerCourses?: { name: string }[];
+	/** Hide the footer newsletter (About has its own closing CTA). */
+	hideNewsletter?: boolean;
 }
 
 const { locale, t, dir } = useUi(Astro);
@@ -57,6 +59,7 @@ const {
 	nav,
 	siteContact: providedContact,
 	footerCourses: providedFooterCourses,
+	hideNewsletter = false,
 } = Astro.props;
 
 const [settingsResult, contactResult, coursesResult] = await Promise.all([
@@ -96,8 +99,9 @@ const fullTitle = title
 const headerItems = localizedNav(nav ?? [...site.nav], t, locale);
 const headerCta = localizedCta(site.cta, t, locale);
 
-// Floating WhatsApp button: the academy's best contact channel. Bottom-left
-// so it never collides with the back-to-top button (bottom-right).
+// Floating WhatsApp button: the academy's best contact channel. Bottom-right
+// and always visible; the back-to-top button stacks just above it so the two
+// floating actions read as one column instead of opposing corners.
 const whatsappFabHref = whatsappHref(
 	contactResult.data.whatsappNumber || contactResult.data.phone,
 );
@@ -341,6 +345,7 @@ const breadcrumbJsonLd = {
 				courseNames={footerCourseNames}
 				logoLight={contactResult.data.logoLight}
 				logoDark={contactResult.data.logoDark}
+				showNewsletter={!hideNewsletter}
 			/>
 			<MobileBar />
 			<button
@@ -464,7 +469,8 @@ const breadcrumbJsonLd = {
 			.page-go-top {
 				position: fixed;
 				inset-inline-end: 16px; /* max(16px, calc((100vw - var(--container)) / 2 + 8px)) */
-				bottom: 24px;
+				/* One gap above the 56px WhatsApp fab: 24 + 56 + 12. */
+				bottom: 92px;
 				z-index: 40;
 				display: grid;
 				place-items: center;
@@ -504,8 +510,6 @@ const breadcrumbJsonLd = {
 
 			@media (max-width: 560px) {
 				.page-go-top {
-					inset-inline-end: 16px;
-					bottom: 16px;
 					width: 44px;
 					height: 44px;
 				}
@@ -516,17 +520,18 @@ const breadcrumbJsonLd = {
 				}
 			}
 
-			/* Keep the back-to-top button clear of the mobile bottom bar. */
+			/* Clear of the mobile bottom bar and stacked above the WhatsApp fab. */
 			@media (max-width: 767px) {
 				.page-go-top {
-					bottom: calc(var(--mobile-bar-height) + env(safe-area-inset-bottom) + 16px);
+					bottom: calc(var(--mobile-bar-height) + env(safe-area-inset-bottom) + 16px + 52px + 12px);
 				}
 			}
 
-			/* Floating WhatsApp button: bottom-left, clear of the mobile bar. */
+			/* Floating WhatsApp button: bottom-right, always visible; the
+			 * back-to-top button stacks above it. */
 			.whatsapp-fab {
 				position: fixed;
-				inset-inline-start: 16px;
+				inset-inline-end: 16px;
 				bottom: 24px;
 				z-index: 40;
 				display: grid;
