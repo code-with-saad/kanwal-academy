@@ -105,6 +105,7 @@ const howItWorksSteps = [
 			/>
 
 			<p class="billing-note">{copy.note}</p>
+			<p class="cancel-note">{copy.cancelNote}</p>
 		</Container>
 	</Section>
 
@@ -158,6 +159,13 @@ const howItWorksSteps = [
 		color: var(--type-copy-color);
 		font-size: var(--type-small-size);
 		line-height: var(--type-small-line);
+	}
+
+	.cancel-note {
+		margin-top: var(--space-sm);
+		color: var(--green-deep);
+		font-size: var(--type-small-size);
+		font-weight: 600;
 	}
 
 	.pricing-faq__heading {

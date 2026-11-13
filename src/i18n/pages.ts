@@ -38,6 +38,7 @@ export interface PageCopy {
 		heading: string;
 		lead: string;
 		note: string;
+		cancelNote: string;
 		faqHeading: string;
 		ctaHeading: string;
 		ctaText: string;
@@ -94,6 +95,7 @@ const en: PageCopy = {
 		heading: "Plans that fit your week",
 		lead: "Every plan is billed monthly and starts with a free trial class. Prices are in US dollars.",
 		note: "All plans are billed monthly in US dollars and include one free trial class before the first payment.",
+		cancelNote: "Cancel anytime.",
 		faqHeading: "Questions about plans",
 		ctaHeading: "Ready to start?",
 		ctaText: "Book a free trial class and choose a plan after you meet your teacher.",
@@ -152,6 +154,7 @@ const ar: PageCopy = {
 		heading: "خطط تناسب أسبوعك",
 		lead: "تُدفع قيمة كل خطة شهريًا، وتبدأ بحصة تجريبية مجانية. الأسعار بالدولار الأمريكي.",
 		note: "تُدفع جميع الخطط شهريًا بالدولار الأمريكي، وتشمل حصة تجريبية مجانية قبل أول دفعة.",
+		cancelNote: "يمكنك الإلغاء في أي وقت.",
 		faqHeading: "أسئلة عن الخطط",
 		ctaHeading: "جاهز للبدء؟",
 		ctaText: "احجز حصة تجريبية واختر خطتك بعد لقاء معلمك.",

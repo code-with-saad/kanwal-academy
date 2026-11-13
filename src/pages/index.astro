@@ -177,6 +177,7 @@ const contact = contactResult.data;
 const demo = isDemoMode();
 const navItems = [...site.nav];
 const faqCopy = getPageCopy(locale).faq;
+const pricingCopy = getPageCopy(locale).pricing;
 const faqWaHref = whatsappHref(contact.whatsappNumber || contact.phone);
 
 const getCourseCopy = (course: (typeof courses)[number]) => {
@@ -330,23 +331,6 @@ const split2List = homeText("split2_list_items")
 	.map((line) => line.trim())
 	.filter(Boolean);
 
-// Course pills for the hero header area
-type CoursePill = {
-	href: string;
-	label: string;
-	icon: "book" | "waves" | "bookmark" | "headset";
-};
-const coursePills: CoursePill[] = courses.slice(0, 3).map((c, i) => ({
-	href: localizePath("/#courses", locale),
-	label: getCourseCopy(c).name,
-	icon: (["book", "waves", "bookmark"] as const)[i] ?? "book",
-}));
-coursePills.push({
-	href: localizePath("/#book", locale),
-	label: homeText("courses_format_label"),
-	icon: "headset" as const,
-});
-
 // The testimonials section is only rendered when it has content.
 const hasTestimonials = testimonials.length > 0 || demo;
 ---
@@ -466,10 +450,10 @@ const hasTestimonials = testimonials.length > 0 || demo;
 					</button>
 				</div>
 
-				<!-- Right: Visual + Chips -->
+				<!-- Right: Visual -->
 				<div class="hero__visual-group">
-					<!-- Desktop: circle + chips side by side -->
-					<!-- Mobile: white card containing both -->
+					<!-- Desktop: circle stage -->
+					<!-- Mobile: white card containing the stage -->
 					<div class="hero__visual-card">
 						<div class="hero__visual">
 							<div class="quran-stage">
@@ -523,41 +507,6 @@ const hasTestimonials = testimonials.length > 0 || demo;
 								</figure>
 							</div>
 						</div>
-
-						<!-- Course pill chips -->
-						<div class="hero__chips">
-							{
-								coursePills.map((pill) => (
-									<a href={pill.href} class="course-pill">
-										<span class="course-pill__icon" aria-hidden="true">
-											{pill.icon === "book" && (
-												<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-													<path d="M12 6.1c-1.9-1.55-4.25-2-7-1.9v13.6c2.75-.1 5.1.35 7 1.9 1.9-1.55 4.25-2 7-1.9V4.2c-2.75-.1-5.1.35-7 1.9zm0 0v13.6" />
-												</svg>
-											)}
-											{pill.icon === "waves" && (
-												<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-													<path d="M5.25 10.5v3M8.5 8.25v7.5M12 6.25v11.5M15.5 8.25v7.5M18.75 10.5v3" />
-												</svg>
-											)}
-											{pill.icon === "bookmark" && (
-												<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-													<path d="M7.25 4.5h9.5v15l-4.75-3.5-4.75 3.5z" />
-												</svg>
-											)}
-											{pill.icon === "headset" && (
-												<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-													<path d="M6.25 15.75v-2.25a5.75 5.75 0 0 1 11.5 0v2.25" />
-													<rect x="4.75" y="15" width="3.75" height="5.25" rx="1.7" />
-													<rect x="15.5" y="15" width="3.75" height="5.25" rx="1.7" />
-												</svg>
-											)}
-										</span>
-										<span class="course-pill__label">{pill.label}</span>
-									</a>
-								))
-							}
-						</div>
 					</div>
 				</div>
 			</div>
@@ -592,7 +541,7 @@ const hasTestimonials = testimonials.length > 0 || demo;
 				imageAlt={homeText("about_image_alt")}
 				years={contact.stats.years}
 				ctaHref={localizePath("/about", locale)}
-				ctaLabel={t.actions.learnMore}
+				ctaLabel={t.actions.aboutAcademy}
 			/>
 		</Container>
 	</Section>
@@ -618,7 +567,7 @@ const hasTestimonials = testimonials.length > 0 || demo;
 					</p>
 				</div>
 				<Button href={localizePath("/courses", locale)} variant="secondary">
-					{t.actions.learnMore}
+					{t.actions.seeCourses}
 				</Button>
 			</div>
 
@@ -710,7 +659,7 @@ const hasTestimonials = testimonials.length > 0 || demo;
 					</p>
 				</div>
 				<Button href={localizePath("/pricing", locale)} variant="secondary">
-					{t.actions.learnMore}
+					{t.actions.seePlans}
 				</Button>
 			</div>
 
@@ -743,6 +692,8 @@ const hasTestimonials = testimonials.length > 0 || demo;
 					selectCta={homeText("pricing_select_cta")}
 				/>
 			</div>
+
+			<p class="cancel-note">{pricingCopy.cancelNote}</p>
 		</Container>
 	</Section>
 
@@ -1135,82 +1086,6 @@ const hasTestimonials = testimonials.length > 0 || demo;
 		filter: drop-shadow(0 8px 20px rgba(11, 26, 20, 0.15));
 	}
 
-	/* ---- Course pill chips ---- */
-	.hero__chips {
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-		flex: none;
-		min-width: 0;
-	}
-
-	.course-pill {
-		display: inline-flex;
-		align-items: center;
-		gap: 12px;
-		height: 48px;
-		padding: 0 16px 0 8px;
-		border-radius: 999px;
-		background: color-mix(in srgb, var(--surface) 85%, var(--mint-100) 15%);
-		color: var(--ink);
-		font-size: var(--type-chip-size);
-		font-weight: var(--type-chip-weight);
-		line-height: 1;
-		text-decoration: none;
-		white-space: nowrap;
-		transition:
-			background-color var(--transition),
-			color var(--transition),
-			transform var(--transition);
-	}
-
-	.course-pill:hover,
-	.course-pill:focus-visible {
-		background: var(--green);
-		color: var(--on-accent);
-		transform: translateX(2px);
-	}
-
-	:global(html[dir="rtl"]) .course-pill:hover,
-	:global(html[dir="rtl"]) .course-pill:focus-visible {
-		transform: translateX(-2px);
-	}
-
-	.course-pill__icon {
-		display: grid;
-		place-items: center;
-		width: 36px;
-		height: 36px;
-		flex: none;
-		border-radius: 50%;
-		background: var(--mint-100);
-		color: var(--green-deep);
-		transition:
-			background-color var(--transition),
-			color var(--transition);
-	}
-
-	.course-pill:hover .course-pill__icon,
-	.course-pill:focus-visible .course-pill__icon {
-		background: color-mix(in srgb, var(--on-accent) 20%, var(--green));
-		color: var(--on-accent);
-	}
-
-	:global(html[data-theme="dark"]) .course-pill {
-		background: var(--surface);
-	}
-
-	:global(html[data-theme="dark"]) .course-pill__icon {
-		background: var(--mint-100);
-		color: var(--green);
-	}
-
-	:global(html[data-theme="dark"]) .course-pill:hover .course-pill__icon,
-	:global(html[data-theme="dark"]) .course-pill:focus-visible .course-pill__icon {
-		background: var(--green);
-		color: var(--on-accent);
-	}
-
 	/* ================================================================
 	 * FLOATING FEATURE CARDS
 	 * ================================================================ */
@@ -1320,8 +1195,8 @@ const hasTestimonials = testimonials.length > 0 || demo;
 
 	.study-stack {
 		display: grid;
-		gap: clamp(56px, 8vw, 104px);
-		margin-top: clamp(56px, 8vw, 104px);
+		gap: clamp(40px, 6vw, 64px);
+		margin-top: clamp(40px, 6vw, 64px);
 	}
 
 	.plan-grid {
@@ -1334,6 +1209,13 @@ const hasTestimonials = testimonials.length > 0 || demo;
 	/* Carousel only on mobile */
 	.plan-carousel-mobile {
 		display: none;
+	}
+
+	.cancel-note {
+		margin-top: var(--space-lg);
+		color: var(--green-deep);
+		font-size: var(--type-small-size);
+		font-weight: 600;
 	}
 
 	/* Remove steps styles - now handled by HowItWorks component */
@@ -1424,43 +1306,21 @@ const hasTestimonials = testimonials.length > 0 || demo;
 			flex: none;
 		}
 
-		.hero__chips {
-			flex: 1;
-			gap: 8px;
-		}
-
-		.course-pill {
-			height: 42px;
-			padding: 0 12px 0 6px;
-			font-size: var(--type-chip-size);
-			gap: 10px;
-		}
-
-		.course-pill__icon {
-			width: 32px;
-			height: 32px;
-		}
-
-		.course-pill__icon svg {
-			width: 16px;
-			height: 16px;
-		}
-
 		/* Feature cards overlap */
 		.hero-cards {
 			margin-top: -40px;
 		}
 
 		:global(body[data-is-home] .section--space-normal:not(.hero)) {
-			padding-block: 48px;
+			padding-block: 56px;
 		}
 
 		:global(body[data-is-home] section.section--space-normal.section--after-hero) {
-			padding-top: calc(48px + 40px);
+			padding-top: calc(56px + 40px);
 		}
 
 		:global(body[data-is-home] .section--space-tight) {
-			padding-block: 36px;
+			padding-block: 40px;
 		}
 
 		.steps {
@@ -1506,18 +1366,6 @@ const hasTestimonials = testimonials.length > 0 || demo;
 		.hero__visual {
 			width: 110px;
 		}
-
-		.course-pill {
-			height: 42px;
-			font-size: var(--type-chip-size);
-			gap: 8px;
-			padding: 0 10px 0 4px;
-		}
-
-		.course-pill__icon {
-			width: 28px;
-			height: 28px;
-		}
 	}
 
 	@media (max-width: 420px) {
@@ -1526,8 +1374,7 @@ const hasTestimonials = testimonials.length > 0 || demo;
 		}
 	}
 
-	/* Very small screens: stack the Quran stage above the course pills so the
-	 * larger Arabic pill text has the full card width. */
+	/* Very small screens: center the Quran stage in the card. */
 	@media (max-width: 480px) {
 		.hero__visual-card {
 			flex-direction: column;
@@ -1537,11 +1384,6 @@ const hasTestimonials = testimonials.length > 0 || demo;
 
 		.hero__visual {
 			align-self: center;
-		}
-
-		.hero__chips {
-			flex: none;
-			width: 100%;
 		}
 	}
 
@@ -1579,15 +1421,6 @@ const hasTestimonials = testimonials.length > 0 || demo;
 
 		.hero__cta {
 			transition: none;
-		}
-
-		.course-pill {
-			transition: none;
-		}
-
-		.course-pill:hover,
-		.course-pill:focus-visible {
-			transform: none;
 		}
 	}
 </style>

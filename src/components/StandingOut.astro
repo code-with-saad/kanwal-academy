@@ -74,7 +74,7 @@ const {
 						>
 							{(item.icon ?? icons[index] ?? "clock") === "clock" && (
 								<>
-									<circle cx="24" cy="24" r="18" />
+									<path d="M8 8H40V40H8Z M24 1.4L46.6 24L24 46.6L1.4 24Z" />
 									<circle cx="24" cy="24" r="14" />
 									<path class="standing__hand standing__hand--hour" d="M24 24V16" />
 									<path class="standing__hand standing__hand--minute" d="M24 24h8" />
@@ -83,7 +83,7 @@ const {
 							)}
 							{(item.icon ?? icons[index] ?? "clock") === "book" && (
 								<>
-									<circle cx="24" cy="24" r="18" />
+									<path d="M8 8H40V40H8Z M24 1.4L46.6 24L24 46.6L1.4 24Z" />
 									<path d="M24 14c-3.7-2.5-8.4-3.2-13.5-3v26c5.1-.2 9.8.5 13.5 3 3.7-2.5 8.4-3.2 13.5-3v-26c-5.1-.2-9.8.5-13.5 3Z" />
 									<path d="M24 14v22" />
 									<path class="standing__ribbon" d="M24 15v10l3-2.5 3 2.5v-10" />
@@ -91,10 +91,10 @@ const {
 							)}
 							{(item.icon ?? icons[index] ?? "clock") === "screens" && (
 								<>
-									<circle cx="24" cy="24" r="18" />
-									<rect x="7" y="14" width="13" height="16" rx="2.5" />
-									<rect x="28" y="14" width="13" height="16" rx="2.5" />
-									<path d="M20 22h8" />
+									<path d="M8 8H40V40H8Z M24 1.4L46.6 24L24 46.6L1.4 24Z" />
+									<rect x="9" y="15" width="12" height="14" rx="2.5" />
+									<rect x="27" y="15" width="12" height="14" rx="2.5" />
+									<path d="M21 22h6" />
 									<circle class="standing__pulse" cx="24" cy="22" r="1.5" fill="currentColor" stroke="none" />
 								</>
 							)}
@@ -170,7 +170,7 @@ const {
 		border-radius: 0 0 16px 0;
 	}
 
-	/* 96px outlined ring icon circle */
+	/* 96px icon badge: eight-pointed star (Islamic geometric motif) */
 	.standing__icon {
 		display: grid;
 		place-items: center;

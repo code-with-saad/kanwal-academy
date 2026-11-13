@@ -263,18 +263,18 @@ const main = async () => {
 				check(`FAQPage schema ${label}`, html.includes('"@type":"FAQPage"'));
 			}
 
-			// Home page: full sections, three Learn more buttons, FAQ, form.
+			// Home page: full sections, three specific section CTAs, FAQ, form.
 			if (path === "/") {
 				const learnLinks = [
 					...html.matchAll(
-						/<a\b[^>]*href="([^"]+)"[^>]*>(?:(?!<\/a>)[\s\S])*?(?:Learn more|اعرف المزيد)(?:(?!<\/a>)[\s\S])*?<\/a>/g,
+						/<a\b[^>]*href="([^"]+)"[^>]*>(?:(?!<\/a>)[\s\S])*?(?:About the academy|See courses|See plans|عن الأكاديمية|عرض الدورات|عرض الخطط)(?:(?!<\/a>)[\s\S])*?<\/a>/g,
 					),
 				].map((match) => decode(match[1]));
 				const learnRoutes = learnLinks.map(routeOf);
 				for (const target of ["/about", "/courses", "/pricing"]) {
-					check(`home learn more ${target} ${label}`, learnRoutes.includes(target), learnRoutes.join(","));
+					check(`home section CTA ${target} ${label}`, learnRoutes.includes(target), learnRoutes.join(","));
 				}
-				check(`home three learn buttons ${label}`, learnLinks.length === 3, `${learnLinks.length}`);
+				check(`home three section CTAs ${label}`, learnLinks.length === 3, `${learnLinks.length}`);
 				check(`home no contact teaser ${label}`, !learnRoutes.includes("/contact-us"));
 				check(`home about panel ${label}`, /class="wisdom"/.test(html));
 				check(`home standing out ${label}`, /id="standing-out"/.test(html));
