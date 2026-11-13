@@ -1,0 +1,57 @@
+---
+/**
+ * Organic wave divider between two sections. The fill must match the
+ * surface the wave curves INTO, so the seam reads as one continuous
+ * shape. `flip` mirrors it for a top edge, where the fill is the colour
+ * of the section above.
+ */
+interface Props {
+	flip?: boolean;
+	fill?: string;
+	line?: string;
+	class?: string;
+}
+
+const {
+	flip = false,
+	fill = "var(--page)",
+	line = "var(--mint-100)",
+	class: className,
+} = Astro.props;
+---
+
+<svg
+	class:list={["curve", flip && "curve--flip", className]}
+	viewBox="0 0 1440 90"
+	preserveAspectRatio="none"
+	aria-hidden="true"
+>
+	<path
+		d="M0 38C220 82 470 0 720 28C970 56 1210 6 1440 42"
+		fill="none"
+		stroke={line}
+		stroke-width="2"
+		opacity="0.8"
+	/>
+	<path
+		d="M0 90V44C220 88 470 6 720 34C970 62 1210 12 1440 48V90Z"
+		fill={fill}
+	/>
+</svg>
+
+<style>
+	.curve {
+		position: absolute;
+		inset-inline: 0;
+		bottom: -1px;
+		width: 100%;
+		height: clamp(40px, 6vw, 72px);
+		pointer-events: none;
+	}
+
+	.curve--flip {
+		bottom: auto;
+		top: -1px;
+		transform: scaleY(-1);
+	}
+</style>

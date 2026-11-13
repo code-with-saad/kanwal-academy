@@ -5,6 +5,7 @@ import Base from "../layouts/Base.astro";
 import Chip from "../components/Chip.astro";
 import Container from "../components/Container.astro";
 import CtaPanel from "../components/CtaPanel.astro";
+import Curve from "../components/Curve.astro";
 import Eyebrow from "../components/Eyebrow.astro";
 import ResponsiveImage from "../components/ResponsiveImage.astro";
 import Section from "../components/Section.astro";
@@ -134,7 +135,7 @@ const standingItems = [
 		</section>
 
 		<!-- Philosophy: the academy's guiding idea, distinct from the Home copy. -->
-		<Section id="about">
+		<Section id="about" class="section--curve">
 			<Container>
 				<WisdomPanel
 					eyebrow={copy.philosophyEyebrow}
@@ -148,11 +149,12 @@ const standingItems = [
 					imageMaxHeight={420}
 				/>
 			</Container>
+			<Curve fill="var(--mint-100)" line="var(--mint-300)" />
 		</Section>
 
 		<!-- Founder narrative: arch portrait + name plate, editorial story,
 		     then a milestone timeline. -->
-		<Section id="founder" tone="sand">
+		<Section id="founder" tone="sand" class="section--curve">
 			<Container>
 				<div class="founder">
 					<div class="founder__media">
@@ -193,6 +195,7 @@ const standingItems = [
 					}
 				</ol>
 			</Container>
+			<Curve fill="var(--page)" line="var(--mint-300)" />
 		</Section>
 
 		<!-- Credentials: a framed gallery of vector plates, never a carousel. -->
@@ -206,8 +209,9 @@ const standingItems = [
 					</div>
 					<ul class="creds__grid">
 						{
-							copy.credentials.map((item) => (
+							copy.credentials.map((item, i) => (
 								<li class="creds__item" data-reveal="up">
+									<span class="creds__num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
 									<div class="creds__frame">
 										<svg class="creds__plate" viewBox="0 0 240 180" role="img" aria-label={item.title}>
 											<rect width="240" height="180" rx="8" fill="var(--surface)" />
@@ -263,7 +267,7 @@ const standingItems = [
 		<!-- Standing out (mint block). -->
 		<Section id="standing-out" space="tight">
 			<Container>
-				<StandingOut heading={homeText("standing_heading")} items={standingItems} compact />
+				<StandingOut heading={homeText("standing_heading")} items={standingItems} compact numerals />
 			</Container>
 		</Section>
 
@@ -274,6 +278,7 @@ const standingItems = [
 					<div class="approach__head">
 						<Eyebrow>{copy.approachEyebrow}</Eyebrow>
 						<h2>{copy.approachHeading}</h2>
+						<p class="approach__lead">{copy.approachLead}</p>
 					</div>
 
 					<ol class="approach__steps">
@@ -370,8 +375,17 @@ const standingItems = [
 
 		<!-- Infrastructure: a designed dark band, operator card + assurance chips. -->
 		<Section tone="dark" space="tight" class="about-trust-section">
+			<Curve flip fill="var(--page)" line="var(--mint-300)" />
 			<Container>
 				<div class="trust-band">
+					<svg class="trust-band__texture" aria-hidden="true" focusable="false">
+						<defs>
+							<pattern id="trust-pattern" width="72" height="72" patternUnits="userSpaceOnUse">
+								<path d="M36 4l9 23 23 9-23 9-9 23-9-23-23-9 23-9z" fill="none" stroke="currentColor" stroke-width="1" />
+							</pattern>
+						</defs>
+						<rect width="100%" height="100%" fill="url(#trust-pattern)" />
+					</svg>
 					<div class="trust-band__copy">
 						<span class="trust-band__eyebrow">{copy.trustEyebrow}</span>
 						<h2>{copy.trustHeading}</h2>
@@ -1075,6 +1089,137 @@ const standingItems = [
 		color: var(--ink-muted);
 		font-size: var(--type-small-size);
 		line-height: var(--type-small-line);
+	}
+
+	/* ---------- Editorial upgrades: one shared section language ---------- */
+	/* Curve dividers need a positioned, clipped section. */
+	.about :global(.section--curve),
+	.about :global(.about-trust-section) {
+		position: relative;
+		overflow: clip;
+	}
+
+	/* A thin orbit accent peeks above each designed panel. */
+	.about :global(.wisdom),
+	.about :global(.standing--compact),
+	.about :global(.stats-band__panel),
+	.about .creds {
+		position: relative;
+	}
+
+	.about :global(.wisdom)::before,
+	.about :global(.standing--compact)::before,
+	.about :global(.stats-band__panel)::before,
+	.about .creds::before {
+		content: "";
+		position: absolute;
+		top: -20px;
+		inset-inline-end: 0;
+		width: 96px;
+		height: 96px;
+		border: 1px solid var(--line);
+		border-radius: 50%;
+		pointer-events: none;
+	}
+
+	/* Philosophy: a designed mint panel with an arch portrait. */
+	.about :global(.wisdom) {
+		padding: clamp(24px, 4vw, 40px);
+		border: 1px solid var(--line);
+		border-radius: var(--radius-panel);
+		background: var(--mint-50);
+	}
+
+	.about :global(.wisdom .wisdom__block),
+	.about :global(.wisdom .wisdom__frame),
+	.about :global(.wisdom .wisdom__frame .wisdom__image) {
+		border-radius: 999px 999px 24px 24px;
+	}
+
+	.about :global(.wisdom .wisdom__badge) {
+		border-radius: 999px;
+		background: var(--mint-300);
+	}
+
+	/* Credentials: hanging serif numeral + hover lift. */
+	.creds__item {
+		position: relative;
+		transition: translate var(--dur-fast) var(--ease);
+	}
+
+	.creds__item:hover {
+		translate: 0 -4px;
+	}
+
+	.creds__num {
+		position: absolute;
+		top: -14px;
+		inset-inline-start: 18px;
+		display: grid;
+		place-items: center;
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		background: var(--green-deep);
+		color: var(--surface);
+		font-size: 1rem;
+		font-weight: 600;
+		box-shadow: 0 8px 20px -10px rgba(11, 26, 20, 0.4);
+	}
+
+	/* Standing out: arch icon medallions on the mint panel. */
+	.about :global(.standing.standing--compact .standing__icon) {
+		border-radius: 999px 999px 12px 12px;
+	}
+
+	/* Approach: arch medallions + a lead line under the heading. */
+	.approach__lead {
+		max-width: 60ch;
+		color: var(--type-copy-color);
+	}
+
+	.approach__icon,
+	.approach__value-icon {
+		border-radius: 999px 999px 12px 12px;
+	}
+
+	/* Stats: a dashed orbit around each ring. */
+	.about :global(.stats-band .ring-cell)::before {
+		content: "";
+		position: absolute;
+		inset: -10px;
+		border: 1px dashed color-mix(in srgb, var(--green) 35%, transparent);
+		border-radius: 50%;
+		pointer-events: none;
+	}
+
+	.about :global(.stats-band__panel) {
+		border: 1px solid var(--line);
+	}
+
+	/* Infrastructure: geometric texture, arch operator medallion, mint chips. */
+	.trust-band {
+		position: relative;
+	}
+
+	.trust-band__texture {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		color: var(--accent);
+		opacity: 0.05;
+		pointer-events: none;
+	}
+
+	.trust-band__op-icon {
+		border-radius: 999px 999px 12px 12px;
+		background: color-mix(in srgb, var(--accent) 12%, transparent);
+	}
+
+	.trust-band__chips li {
+		border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+		color: var(--ink);
 	}
 
 	/* ---------- Responsive ---------- */

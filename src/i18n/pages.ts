@@ -49,6 +49,7 @@ export interface PageCopy {
 		badgeOneToOne: string;
 		approachEyebrow: string;
 		approachHeading: string;
+		approachLead: string;
 		approachSteps: Array<{ title: string; text: string }>;
 		values: Array<{ title: string; text: string }>;
 		teachHeading: string;
@@ -189,6 +190,8 @@ const en: PageCopy = {
 		badgeOneToOne: "1-to-1 live",
 		approachEyebrow: "Our approach",
 		approachHeading: "How a class works",
+		approachLead:
+			"Four steps, one promise: a qualified teacher, a plan that fits your life, and progress you can actually see.",
 		approachSteps: [
 			{
 				title: "You recite",
@@ -362,6 +365,8 @@ const ar: PageCopy = {
 		badgeOneToOne: "فردي مباشر",
 		approachEyebrow: "منهجنا",
 		approachHeading: "كيف تسير الحصة",
+		approachLead:
+			"أربع خطوات ووعد واحد: معلم مؤهل، وخطة تناسب حياتك، وتقدم يمكنك رؤيته فعلاً।",
 		approachSteps: [
 			{
 				title: "أنت تتلو",

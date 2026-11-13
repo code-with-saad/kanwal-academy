@@ -458,7 +458,12 @@ html[lang="ar"] .about-editorial h2 {
 }
 
 /* The journey numerals share the editorial display face. */
-.about-editorial .approach__num {
+.about-editorial .approach__num,
+.about-editorial .creds__num,
+.about-editorial .standing__num,
+.about-editorial .ring-cell__number,
+.about-editorial .wisdom__badge-value,
+.about-editorial .trust-band__op-id strong {
 	font-family: var(--font-display-serif);
 }
 
@@ -470,6 +475,33 @@ html[lang="ar"] .about-editorial h2 {
 /* Milestone years share the editorial display face. */
 .about-editorial .founder__milestone-label {
 	font-family: var(--font-display-serif);
+}
+
+/* Philosophy opens with a serif drop cap, mirrored in RTL. */
+.about-editorial .wisdom__copy p:first-of-type::first-letter {
+	font-family: var(--font-display-serif);
+	font-size: 3.4em;
+	font-weight: 600;
+	line-height: 0.8;
+	float: left;
+	padding-inline-end: 10px;
+	color: var(--green-deep);
+}
+
+[dir="rtl"] .about-editorial .wisdom__copy p:first-of-type::first-letter {
+	float: right;
+}
+
+html[lang="ar"] .about-editorial .approach__num,
+html[lang="ar"] .about-editorial .creds__num,
+html[lang="ar"] .about-editorial .standing__num,
+html[lang="ar"] .about-editorial .ring-cell__number,
+html[lang="ar"] .about-editorial .wisdom__badge-value,
+html[lang="ar"] .about-editorial .trust-band__op-id strong,
+html[lang="ar"] .about-editorial .founder__closing,
+html[lang="ar"] .about-editorial .founder__milestone-label,
+html[lang="ar"] .about-editorial .wisdom__copy p:first-of-type::first-letter {
+	font-family: var(--font-arabic-ui, "Segoe UI", Tahoma, Arial, sans-serif);
 }
 
 /* ---- Motion system --------------------------------------------------

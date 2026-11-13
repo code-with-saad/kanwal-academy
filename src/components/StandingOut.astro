@@ -16,6 +16,8 @@ interface Props {
 	items?: Item[];
 	/** About-page variant: no number tabs, smaller icon badges. */
 	compact?: boolean;
+	/** About-page variant: serif index numeral in the corner of each card. */
+	numerals?: boolean;
 }
 
 const defaults: Item[] = [
@@ -45,6 +47,7 @@ const {
 	heading = t.home.standing_heading,
 	items = defaults,
 	compact = false,
+	numerals = false,
 } = Astro.props;
 ---
 
@@ -63,6 +66,12 @@ const {
 					{!compact && (
 						<span class="standing__tab" aria-hidden="true">
 							<NumberText text={String(index + 1).padStart(2, "0")} />
+						</span>
+					)}
+
+					{numerals && (
+						<span class="standing__num" aria-hidden="true">
+							<NumberText text={item.number} />
 						</span>
 					)}
 
@@ -158,6 +167,17 @@ const {
 	/* Compact (About) variant: drop the number tab, tighten the icon badge. */
 	.standing--compact .standing__item {
 		padding-top: 28px;
+	}
+
+	/* Serif index numeral, About only. */
+	.standing__num {
+		position: absolute;
+		top: 16px;
+		inset-inline-end: 20px;
+		color: var(--green-deep);
+		font-size: 1.5rem;
+		font-weight: 600;
+		line-height: 1;
 	}
 
 	.standing--compact .standing__icon {
