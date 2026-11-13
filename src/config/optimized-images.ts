@@ -12,6 +12,75 @@ export interface OptimizedImage {
 }
 
 export const optimizedImages: Record<string, OptimizedImage> = {
+  "/images/about-founder-hands.png": {
+    "width": 1024,
+    "height": 1280,
+    "webp": [
+      {
+        "src": "/images/optimized/about-founder-hands-96.webp",
+        "width": 96,
+        "bytes": 2228
+      },
+      {
+        "src": "/images/optimized/about-founder-hands-160.webp",
+        "width": 160,
+        "bytes": 4488
+      },
+      {
+        "src": "/images/optimized/about-founder-hands-320.webp",
+        "width": 320,
+        "bytes": 11404
+      },
+      {
+        "src": "/images/optimized/about-founder-hands-480.webp",
+        "width": 480,
+        "bytes": 20458
+      },
+      {
+        "src": "/images/optimized/about-founder-hands-800.webp",
+        "width": 800,
+        "bytes": 42384
+      },
+      {
+        "src": "/images/optimized/about-founder-hands-1024.webp",
+        "width": 1024,
+        "bytes": 58810
+      }
+    ],
+    "avif": []
+  },
+  "/images/about-hero-quran.png": {
+    "width": 768,
+    "height": 1024,
+    "webp": [
+      {
+        "src": "/images/optimized/about-hero-quran-96.webp",
+        "width": 96,
+        "bytes": 1644
+      },
+      {
+        "src": "/images/optimized/about-hero-quran-160.webp",
+        "width": 160,
+        "bytes": 3646
+      },
+      {
+        "src": "/images/optimized/about-hero-quran-320.webp",
+        "width": 320,
+        "bytes": 10876
+      },
+      {
+        "src": "/images/optimized/about-hero-quran-480.webp",
+        "width": 480,
+        "bytes": 20232
+      },
+      {
+        "src": "/images/optimized/about-hero-quran-768.webp",
+        "width": 768,
+        "bytes": 38262
+      }
+    ],
+    "avif": []
+  },
   "/images/course-memorization.jpg": {
     "width": 612,
     "height": 405,

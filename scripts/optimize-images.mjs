@@ -13,6 +13,8 @@ const manifestPath = path.join(root, "src", "config", "optimized-images.ts");
 const referenced = new Set([
 	"/apple-touch-icon.png",
 	"/favicon.png",
+	"/images/about-founder-hands.png",
+	"/images/about-hero-quran.png",
 	"/images/course-memorization.jpg",
 	"/images/course-recitation.jpg",
 	"/images/course-tajweed.jpg",
@@ -28,6 +30,8 @@ const referenced = new Set([
 const displaySizes = new Map([
 	["/apple-touch-icon.png", "180x180 device icon"],
 	["/favicon.png", "192x192 browser icon"],
+	["/images/about-founder-hands.png", "Founder portrait, up to about 420x525 CSS px"],
+	["/images/about-hero-quran.png", "Arch hero panel, up to about 420x560 CSS px"],
 	["/images/course-memorization.jpg", "Course card, up to 380x238 CSS px"],
 	["/images/course-recitation.jpg", "Course card, up to 380x238 CSS px"],
 	["/images/course-tajweed.jpg", "Course card, up to 380x238 CSS px"],
@@ -42,6 +46,8 @@ const displaySizes = new Map([
 ]);
 const maxBytes = new Map([
 	["/images/hero-quran.png", 120 * 1024],
+	["/images/about-hero-quran.png", 200 * 1024],
+	["/images/about-founder-hands.png", 220 * 1024],
 ]);
 const maxOtherBytes = 150 * 1024;
 const widths = [96, 160, 320, 480, 800, 1200, 1600];
