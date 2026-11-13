@@ -239,9 +239,9 @@ const main = async () => {
 			}
 
 			// FAQ accordion.
-			const details = html.match(/<details\b/g) ?? [];
+			const details = html.match(/<details\b[^>]*>/g) ?? [];
 			if (path === "/faq") {
-				check(`FAQ count 6 ${label}`, details.length === 6, `${details.length}`);
+				check(`FAQ count 11 ${label}`, details.length === 11, `${details.length}`);
 			}
 			if (path === "/pricing") {
 				check(`pricing FAQ count 4 ${label}`, details.length === 4, `${details.length}`);
@@ -259,6 +259,8 @@ const main = async () => {
 					`FAQ questions are headings ${label}`,
 					summaries.every((summary) => /<h3\b/.test(summary)),
 				);
+				check(`FAQ first item open ${label}`, /\bopen\b/.test(details[0]), details[0]);
+				check(`FAQPage schema ${label}`, html.includes('"@type":"FAQPage"'));
 			}
 
 			// Home page: full sections, three Learn more buttons, FAQ, form.
@@ -287,6 +289,11 @@ const main = async () => {
 				check(`home pricing cards ${label}`, /class="plan-grid"/.test(html));
 				check(`home form ${label}`, /id="book"/.test(html));
 				check(`home FAQ section ${label}`, /id="faq"/.test(html));
+				check(`home FAQ two-column ${label}`, /class="faq-layout"/.test(html));
+				check(
+					`home FAQ WhatsApp line ${label}`,
+					/class="faq-more"/.test(html) && /href="https:\/\/wa\.me\/923422766346"[^>]*target="_blank"/.test(html),
+				);
 				check(`home no scroll-spy ${label}`, !/data-nav-anchor/.test(html));
 			}
 
