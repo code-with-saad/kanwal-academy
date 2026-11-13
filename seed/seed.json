@@ -1530,13 +1530,68 @@
 		],
 		"faqs": [
 			{
+				"id": "faq-female-teachers",
+				"slug": "female-teachers",
+				"status": "published",
+				"data": {
+					"question": "Are there female teachers for girls and kids?",
+					"answer": "Yes. Female teachers are available for girls and children. Tell us your preference when you book the free trial and we will match the right teacher.",
+					"order": 1,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-time-zones",
+				"slug": "time-zones",
+				"status": "published",
+				"data": {
+					"question": "Which time zones do you cover?",
+					"answer": "We teach students worldwide and schedule classes around your time zone. Tell us your country and the times that suit you when you book the trial, and we will confirm a slot that works for you.",
+					"order": 2,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-cancel-pause",
+				"slug": "cancel-or-pause",
+				"status": "published",
+				"data": {
+					"question": "Can I cancel or pause anytime?",
+					"answer": "Yes. Plans are billed monthly with no long-term contract. Contact us on WhatsApp or by email before your next billing month and we will pause or cancel your plan.",
+					"order": 3,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-technical",
+				"slug": "what-you-need",
+				"status": "published",
+				"data": {
+					"question": "What do I need technically?",
+					"answer": "A phone, tablet or computer with a stable internet connection, a microphone and a camera. Classes are one to one online, and we send you everything you need to join before the first class.",
+					"order": 4,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-trial-card",
+				"slug": "card-for-trial",
+				"status": "published",
+				"data": {
+					"question": "Is a card required for the trial?",
+					"answer": "No. The trial class is free and you do not need a card to book it. You only choose a plan after the trial, if you decide to continue.",
+					"order": 5,
+					"visible": true
+				}
+			},
+			{
 				"id": "faq-free-trial",
 				"slug": "free-trial",
 				"status": "published",
 				"data": {
 					"question": "Is the trial class really free?",
 					"answer": "Yes. Every student starts with one free trial class. You can meet the teacher, ask questions and try the lesson before choosing a plan.",
-					"order": 1,
+					"order": 6,
 					"visible": true
 				}
 			},
@@ -1547,7 +1602,7 @@
 				"data": {
 					"question": "How long is each class?",
 					"answer": "Classes are 30 minutes. The monthly hours for each plan are based on four classes in a week, so a plan with one class each week gives two teaching hours each month.",
-					"order": 2,
+					"order": 7,
 					"visible": true
 				}
 			},
@@ -1558,7 +1613,7 @@
 				"data": {
 					"question": "Which course should I choose?",
 					"answer": "Choose Qur'anic Recitation if you are starting out or want to improve fluency. Choose Tajweed Proficiency if you can already read and want to refine your recitation. Choose Memorization Excellence if you are ready for a structured hifz plan. Your teacher can adjust the course after the trial class.",
-					"order": 3,
+					"order": 8,
 					"visible": true
 				}
 			},
@@ -1569,7 +1624,7 @@
 				"data": {
 					"question": "Do you teach children and adults?",
 					"answer": "Yes. We teach children and adults, and lessons are one to one. Tell us the student's age and experience when you book the trial so we can match the right teacher.",
-					"order": 4,
+					"order": 9,
 					"visible": true
 				}
 			},
@@ -1580,7 +1635,7 @@
 				"data": {
 					"question": "How do I book a time?",
 					"answer": "Use the free trial form or contact us by phone or email. Tell us your time zone and the days that suit you, and we will confirm a slot.",
-					"order": 5,
+					"order": 10,
 					"visible": true
 				}
 			},
@@ -1591,7 +1646,72 @@
 				"data": {
 					"question": "What happens after I choose a plan?",
 					"answer": "Select a plan and complete the enrolment form. We confirm your schedule, match you with a teacher and start your first paid month after the free trial.",
-					"order": 6,
+					"order": 11,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-female-teachers-ar",
+				"slug": "female-teachers",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-female-teachers",
+				"data": {
+					"question": "هل توجد معلمات للبنات والأطفال؟",
+					"answer": "نعم. تتوفر معلمات للبنات والأطفال. أخبرينا بتفضيلك عند حجز الحصة التجريبية وسنختار المعلمة المناسبة.",
+					"order": 1,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-time-zones-ar",
+				"slug": "time-zones",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-time-zones",
+				"data": {
+					"question": "ما المناطق الزمنية التي تغطونها؟",
+					"answer": "نعلّم طلابًا حول العالم ونرتب الحصص حسب منطقتك الزمنية. أخبرنا ببلدك والأوقات التي تناسبك عند حجز الحصة التجريبية، وسنؤكد لك موعدًا مناسبًا.",
+					"order": 2,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-cancel-pause-ar",
+				"slug": "cancel-or-pause",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-cancel-pause",
+				"data": {
+					"question": "هل يمكنني الإلغاء أو الإيقاف في أي وقت؟",
+					"answer": "نعم. تُدفع الخطط شهريًا دون عقد طويل الأمد. تواصل معنا عبر واتساب أو البريد الإلكتروني قبل شهر الفوترة التالي وسنوقف خطتك أو نلغيها.",
+					"order": 3,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-technical-ar",
+				"slug": "what-you-need",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-technical",
+				"data": {
+					"question": "ماذا أحتاج تقنيًا؟",
+					"answer": "هاتف أو جهاز لوحي أو حاسوب مع اتصال إنترنت مستقر وميكروفون وكاميرا. الدروس فردية عبر الإنترنت، ونرسل لك كل ما تحتاجه للانضمام قبل الحصة الأولى.",
+					"order": 4,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-trial-card-ar",
+				"slug": "card-for-trial",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-trial-card",
+				"data": {
+					"question": "هل أحتاج بطاقة دفع للحصة التجريبية؟",
+					"answer": "لا. الحصة التجريبية مجانية ولا تحتاج إلى بطاقة لحجزها. تختار خطة فقط بعد الحصة التجريبية إذا قررت المتابعة.",
+					"order": 5,
 					"visible": true
 				}
 			},
@@ -1604,7 +1724,7 @@
 				"data": {
 					"question": "هل الحصة التجريبية مجانية فعلاً؟",
 					"answer": "نعم. يبدأ كل طالب بحصة تجريبية مجانية واحدة. يمكنك لقاء المعلم وطرح الأسئلة وتجربة الدرس قبل اختيار الخطة.",
-					"order": 1,
+					"order": 6,
 					"visible": true
 				}
 			},
@@ -1617,7 +1737,7 @@
 				"data": {
 					"question": "كم مدة كل حصة؟",
 					"answer": "مدة الحصة 30 دقيقة. تُحسب الساعات الشهرية لكل خطة على أساس أربع حصص في الأسبوع، لذا تمنحك خطة بحصة واحدة أسبوعيًا ساعتين تعليميتين شهريًا.",
-					"order": 2,
+					"order": 7,
 					"visible": true
 				}
 			},
@@ -1630,7 +1750,7 @@
 				"data": {
 					"question": "أي دورة أختار؟",
 					"answer": "اختر التلاوة القرآنية إذا كنت مبتدئًا أو ترغب في تحسين الطلاقة. اختر إتقان التجويد إذا كنت تقرأ بالفعل وتريد تحسين تلاوتك. اختر التميز في الحفظ إذا كنت مستعدًا لخطة حفظ منظمة. يمكن لمعلمك تعديل الدورة بعد الحصة التجريبية.",
-					"order": 3,
+					"order": 8,
 					"visible": true
 				}
 			},
@@ -1643,7 +1763,7 @@
 				"data": {
 					"question": "هل تعلّمون الأطفال والكبار؟",
 					"answer": "نعم. نعلّم الأطفال والكبار، والدروس فردية. أخبرنا بعمر الطالب وخبرته عند حجز الحصة التجريبية لنختار المعلم المناسب.",
-					"order": 4,
+					"order": 9,
 					"visible": true
 				}
 			},
@@ -1656,7 +1776,7 @@
 				"data": {
 					"question": "كيف أحجز موعدًا؟",
 					"answer": "استخدم نموذج الحصة التجريبية أو تواصل معنا هاتفيًا أو عبر البريد الإلكتروني. أخبرنا بمنطقتك الزمنية والأيام التي تناسبك، وسنؤكد لك موعدًا.",
-					"order": 5,
+					"order": 10,
 					"visible": true
 				}
 			},
@@ -1669,7 +1789,7 @@
 				"data": {
 					"question": "ماذا يحدث بعد اختيار الخطة؟",
 					"answer": "اختر خطة وأكمل نموذج التسجيل. نؤكد جدولك ونختار لك معلمًا ونبدأ أول شهر مدفوع بعد الحصة التجريبية.",
-					"order": 6,
+					"order": 11,
 					"visible": true
 				}
 			}
