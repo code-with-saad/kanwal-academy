@@ -1184,6 +1184,127 @@
 					"type": "string"
 				}
 			]
+		},
+		{
+			"slug": "about_page",
+			"label": "About page",
+			"labelSingular": "About page",
+			"description": "Every editable block of the /about page: hero, philosophy, founder, certifications, approach, infrastructure and the closing call to action. Keep one entry. Images left empty fall back to the bundled photographs.",
+			"icon": "info",
+			"group": "Academy",
+			"sortOrder": 65,
+			"routable": false,
+			"titleField": "hero_heading_highlight",
+			"admin": {
+				"listColumns": [
+					"founder_name"
+				]
+			},
+			"supports": [
+				"drafts",
+				"revisions",
+				"preview"
+			],
+			"fields": [
+				{ "slug": "hero_eyebrow", "label": "Hero: eyebrow", "type": "string" },
+				{ "slug": "hero_heading_before", "label": "Hero: heading before highlight", "type": "string" },
+				{ "slug": "hero_heading_highlight", "label": "Hero: highlighted words", "type": "string" },
+				{ "slug": "hero_heading_after", "label": "Hero: heading after highlight", "type": "string" },
+				{ "slug": "hero_lead", "label": "Hero: lead line", "type": "text" },
+				{ "slug": "hero_image", "label": "Hero: image", "type": "image" },
+				{ "slug": "hero_image_alt", "label": "Hero: image description (alt text)", "type": "string" },
+				{ "slug": "hero_since", "label": "Hero: since badge", "type": "string" },
+				{ "slug": "philosophy_eyebrow", "label": "Philosophy: eyebrow", "type": "string" },
+				{ "slug": "philosophy_heading_before", "label": "Philosophy: heading before highlight", "type": "string" },
+				{ "slug": "philosophy_heading_highlight", "label": "Philosophy: highlighted words", "type": "string" },
+				{ "slug": "philosophy_heading_after", "label": "Philosophy: heading after highlight", "type": "string" },
+				{ "slug": "philosophy_text", "label": "Philosophy: paragraph", "type": "text" },
+				{ "slug": "philosophy_image", "label": "Philosophy: image", "type": "image" },
+				{ "slug": "philosophy_image_alt", "label": "Philosophy: image description (alt text)", "type": "string" },
+				{ "slug": "founder_eyebrow", "label": "Founder: eyebrow", "type": "string" },
+				{ "slug": "founder_heading", "label": "Founder: heading", "type": "string" },
+				{ "slug": "founder_name", "label": "Founder: name", "type": "string" },
+				{ "slug": "founder_role", "label": "Founder: role", "type": "string" },
+				{ "slug": "founder_credential", "label": "Founder: credential chip", "type": "string" },
+				{ "slug": "founder_image", "label": "Founder: portrait", "type": "image" },
+				{ "slug": "founder_image_alt", "label": "Founder: portrait description (alt text)", "type": "string" },
+				{
+					"slug": "founder_paragraphs",
+					"label": "Founder: story paragraphs (in order)",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{ "slug": "paragraph", "label": "Paragraph", "type": "text", "required": true }
+						]
+					}
+				},
+				{ "slug": "founder_closing", "label": "Founder: closing pull-line", "type": "text" },
+				{
+					"slug": "founder_milestones",
+					"label": "Founder: milestone timeline",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{ "slug": "label", "label": "Year or place", "type": "string", "required": true },
+							{ "slug": "title", "label": "Title", "type": "string", "required": true },
+							{ "slug": "text", "label": "Text", "type": "text", "required": true }
+						]
+					}
+				},
+				{ "slug": "credentials_eyebrow", "label": "Certifications: eyebrow", "type": "string" },
+				{ "slug": "credentials_heading", "label": "Certifications: heading", "type": "string" },
+				{ "slug": "credentials_lead", "label": "Certifications: lead line", "type": "text" },
+				{
+					"slug": "credentials",
+					"label": "Certifications: add, rename or replace each certificate",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{ "slug": "title", "label": "Name", "type": "string", "required": true },
+							{ "slug": "issuer", "label": "Issuing authority", "type": "string" },
+							{
+								"slug": "motif",
+								"label": "Fallback plate motif (used when no image)",
+								"type": "select",
+								"validation": { "options": ["book", "pen", "teacher"] }
+							},
+							{ "slug": "image", "label": "Certificate image", "type": "image" }
+						]
+					}
+				},
+				{ "slug": "approach_eyebrow", "label": "Approach: eyebrow", "type": "string" },
+				{ "slug": "approach_heading", "label": "Approach: heading", "type": "string" },
+				{ "slug": "approach_lead", "label": "Approach: lead line", "type": "text" },
+				{
+					"slug": "approach_steps",
+					"label": "Approach: steps (in order)",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{ "slug": "title", "label": "Title", "type": "string", "required": true },
+							{ "slug": "text", "label": "Text", "type": "text", "required": true }
+						]
+					}
+				},
+				{ "slug": "trust_eyebrow", "label": "Infrastructure: eyebrow", "type": "string" },
+				{ "slug": "trust_heading", "label": "Infrastructure: heading", "type": "string" },
+				{ "slug": "trust_intro", "label": "Infrastructure: lead line", "type": "text" },
+				{ "slug": "trust_operator_name", "label": "Infrastructure: operator name", "type": "string" },
+				{ "slug": "trust_operator_place", "label": "Infrastructure: operator place", "type": "string" },
+				{ "slug": "trust_operator", "label": "Infrastructure: operator note", "type": "text" },
+				{
+					"slug": "trust_chips",
+					"label": "Infrastructure: assurance chips",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{ "slug": "label", "label": "Chip text", "type": "string", "required": true }
+						]
+					}
+				},
+				{ "slug": "cta_heading", "label": "Closing CTA: heading", "type": "string" },
+				{ "slug": "cta_text", "label": "Closing CTA: text", "type": "text" }
+			]
 		}
 	],
 	"menus": [
@@ -1231,6 +1352,76 @@
 		}
 	],
 	"content": {
+		"about_page": [
+			{
+				"id": "about-main",
+				"slug": "about",
+				"status": "published",
+				"data": {
+					"hero_eyebrow": "About us",
+					"hero_heading_before": "Where ",
+					"hero_heading_highlight": "young hearts",
+					"hero_heading_after": " meet the Quran.",
+					"hero_lead": "One teacher, one student, one lesson at a time.",
+					"hero_image_alt": "An open Quran on a wooden stand in soft window light",
+					"hero_since": "Teaching since 2017",
+					"philosophy_eyebrow": "Our philosophy",
+					"philosophy_heading_before": "A journey rooted in",
+					"philosophy_heading_highlight": "faith",
+					"philosophy_heading_after": ", patience and global connection",
+					"philosophy_text": "At the heart of Kanwal Quran Academy is a simple, enduring philosophy: learning the Quran should be a journey of love, carried one patient lesson at a time. We bridge the gap between traditional Islamic scholarship and the modern needs of families around the world.",
+					"founder_eyebrow": "Our founder",
+					"founder_heading": "Meet Kanwal Awais",
+					"founder_name": "Kanwal Awais",
+					"founder_role": "Founder & Lead Teacher",
+					"founder_credential": "Hafiz-e-Quran",
+					"founder_image_alt": "Hands holding an open Quran on a study desk",
+					"founder_paragraphs": [
+						{ "paragraph": "Kanwal's dedication to Quranic education began deeply and personally. As a Hafiz-e-Quran, she experienced firsthand the discipline, spiritual connection, and patience required to carry the words of Allah in her heart. In 2017, she translated that personal devotion into a teaching career, taking on her first students and guiding young children through their foundational steps in reading the Quran." },
+						{ "paragraph": "When she relocated to the United Arab Emirates, Kanwal sought to elevate her own linguistic and spiritual knowledge. She pursued formal Arabic studies at the Mohammed bin Rashid Center for Islamic Culture. Immersed in the multicultural landscape of the UAE, she began conducting one-on-one, in-person classes, specializing in creating a comfortable, nurturing environment for young girls and children." },
+						{ "paragraph": "Word of her patient, highly empathetic teaching style quickly spread. Within a few years, her physical classroom transitioned into a digital one as she began teaching students across the wider Emirates." },
+						{ "paragraph": "After three years of refining her online teaching methodology, Kanwal recognized a growing, unfulfilled need. Diaspora families in the United States, the United Kingdom, and globally were struggling to find qualified, patient, and female-led Quran instruction for their children. She expanded her reach internationally, building a curriculum that respects traditional Tajweed and Hifz principles while seamlessly adapting to the schedules and cultural contexts of students living in the West." }
+					],
+					"founder_closing": "Today, Kanwal Quran Academy stands as a testament to that journey: a globally accessible, deeply authentic institution dedicated to nurturing the next generation's love for the Holy Quran.",
+					"founder_milestones": [
+						{ "label": "2017", "title": "First students", "text": "Kanwal begins teaching young children to read the Quran." },
+						{ "label": "UAE", "title": "Formal scholarship", "text": "Arabic and Islamic studies at the Mohammed bin Rashid Center." },
+						{ "label": "Online", "title": "A digital classroom", "text": "One-to-one lessons reach students across the Emirates." },
+						{ "label": "Global", "title": "Worldwide families", "text": "A curriculum for diaspora families in the US, UK and beyond." }
+					],
+					"credentials_eyebrow": "Verified scholarship",
+					"credentials_heading": "Qualifications and certifications",
+					"credentials_lead": "Parents trust us because our foundation is built on verified, traditional scholarship.",
+					"credentials": [
+						{ "title": "Hifz-e-Quran certification", "issuer": "Issuing authority to be confirmed", "motif": "book" },
+						{ "title": "Arabic language and Islamic studies", "issuer": "Mohammed bin Rashid Center for Islamic Culture, UAE", "motif": "pen" },
+						{ "title": "Teaching experience", "issuer": "Active educator since 2017, with specialized experience in early childhood Quranic literacy.", "motif": "teacher" }
+					],
+					"approach_eyebrow": "Our approach",
+					"approach_heading": "How a class works",
+					"approach_lead": "Four steps, one promise: a qualified teacher, a plan that fits your life, and progress you can actually see.",
+					"approach_steps": [
+						{ "title": "You recite", "text": "You read aloud from your own mushaf while your teacher listens without interrupting." },
+						{ "title": "Live correction", "text": "Your teacher stops at the exact letter or rule and models it again until it lands." },
+						{ "title": "Tajweed notes", "text": "Each session ends with short written notes on what to fix before the next class." },
+						{ "title": "Revision and next lesson", "text": "The following class opens with revision, then moves to the next portion at your pace." }
+					],
+					"trust_eyebrow": "Infrastructure",
+					"trust_heading": "Engineered for global reliability",
+					"trust_intro": "While our teaching is rooted in tradition, our infrastructure is built for the modern world.",
+					"trust_operator_name": "Cheeltech LLC",
+					"trust_operator_place": "Missouri, USA",
+					"trust_operator": "Kanwal Quran Academy is proudly backed and operated by Cheeltech LLC (Missouri, USA), ensuring enterprise-grade platform stability, secure international payment processing, and uninterrupted learning for our students worldwide.",
+					"trust_chips": [
+						{ "label": "Enterprise-grade stability" },
+						{ "label": "Secure international payments" },
+						{ "label": "Uninterrupted learning" }
+					],
+					"cta_heading": "Start with a free trial",
+					"cta_text": "Every student starts with a free trial class. No payment details are needed."
+				}
+			}
+		],
 		"courses": [
 			{
 				"id": "course-quranic-recitation",

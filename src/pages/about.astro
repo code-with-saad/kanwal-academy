@@ -1,6 +1,6 @@
 ---
 import { Font } from "astro:assets";
-import { getEmDashEntry } from "emdash";
+import { getEmDashEntry, type ImageValue } from "emdash";
 import Base from "../layouts/Base.astro";
 import Chip from "../components/Chip.astro";
 import Container from "../components/Container.astro";
@@ -37,6 +37,97 @@ const homeText = makeHomeText(
 	t,
 );
 const contact = contactResult.data;
+
+// Every /about block is editable in the CMS (about_page collection). The
+// bundled i18n copy stays as the fallback for empty fields and for Arabic
+// until an editor publishes an Arabic translation.
+let aboutData: Record<string, unknown> | null = null;
+let aboutLocale: string = locale;
+try {
+	const aboutResult = await getEmDashEntry("about_page", "about", { locale });
+	aboutData = (aboutResult.entry?.data as unknown as Record<string, unknown>) ?? null;
+	aboutLocale = aboutResult.fallbackLocale ?? locale;
+	if (Astro.cache?.enabled && aboutResult.cacheHint) {
+		Astro.cache.set(aboutResult.cacheHint);
+	}
+} catch {
+	// Collection not present yet (fresh install before seed): use i18n copy.
+	aboutData = null;
+}
+const useCms = aboutData !== null && (locale === "en" || aboutLocale === locale);
+const txt = (key: string, fallback: string): string => {
+	if (!useCms) return fallback;
+	const value = aboutData?.[key];
+	return typeof value === "string" && value.trim() ? value : fallback;
+};
+const rows = <T,>(key: string, fallback: T[]): T[] => {
+	if (!useCms) return fallback;
+	const value = aboutData?.[key];
+	return Array.isArray(value) && value.length > 0 ? (value as T[]) : fallback;
+};
+const cmsImage = (key: string): ImageValue | null => {
+	const value = aboutData?.[key] as ImageValue | undefined;
+	return value?.src ? value : null;
+};
+
+const heroImage = cmsImage("hero_image");
+const founderImage = cmsImage("founder_image");
+const philosophyImage =
+	cmsImage("philosophy_image") ?? (homePage?.data.about_image as ImageValue | null) ?? null;
+
+const v = {
+	eyebrow: txt("hero_eyebrow", copy.eyebrow),
+	headingBefore: txt("hero_heading_before", copy.headingBefore),
+	headingHighlight: txt("hero_heading_highlight", copy.headingHighlight),
+	headingAfter: txt("hero_heading_after", copy.headingAfter),
+	lead: txt("hero_lead", copy.lead),
+	heroImageAlt: txt("hero_image_alt", copy.heroImageAlt),
+	heroSince: txt("hero_since", copy.heroSince),
+	philosophyEyebrow: txt("philosophy_eyebrow", copy.philosophyEyebrow),
+	philosophyBefore: txt("philosophy_heading_before", copy.philosophyBefore),
+	philosophyHighlight: txt("philosophy_heading_highlight", copy.philosophyHighlight),
+	philosophyAfter: txt("philosophy_heading_after", copy.philosophyAfter),
+	philosophyText: txt("philosophy_text", copy.philosophyText),
+	philosophyImageAlt: txt("philosophy_image_alt", homeText("about_image_alt")),
+	founderEyebrow: txt("founder_eyebrow", copy.founderEyebrow),
+	founderHeading: txt("founder_heading", copy.founderHeading),
+	founderName: txt("founder_name", copy.founderName),
+	founderRole: txt("founder_role", copy.founderRole),
+	founderCredential: txt("founder_credential", copy.founderCredential),
+	founderImageAlt: txt("founder_image_alt", copy.founderImageAlt),
+	founderClosing: txt("founder_closing", copy.founderParagraphs[4]),
+	credentialsEyebrow: txt("credentials_eyebrow", copy.credentialsEyebrow),
+	credentialsHeading: txt("credentials_heading", copy.credentialsHeading),
+	credentialsLead: txt("credentials_lead", copy.credentialsLead),
+	approachEyebrow: txt("approach_eyebrow", copy.approachEyebrow),
+	approachHeading: txt("approach_heading", copy.approachHeading),
+	approachLead: txt("approach_lead", copy.approachLead),
+	trustEyebrow: txt("trust_eyebrow", copy.trustEyebrow),
+	trustHeading: txt("trust_heading", copy.trustHeading),
+	trustIntro: txt("trust_intro", copy.trustIntro),
+	trustOperatorName: txt("trust_operator_name", copy.trustOperatorName),
+	trustOperatorPlace: txt("trust_operator_place", copy.trustOperatorPlace),
+	trustOperator: txt("trust_operator", copy.trustOperator),
+	ctaHeading: txt("cta_heading", copy.ctaHeading),
+	ctaText: txt("cta_text", copy.ctaText),
+};
+
+const founderParagraphs = rows<{ paragraph: string }>(
+	"founder_paragraphs",
+	copy.founderParagraphs.slice(0, 4).map((paragraph) => ({ paragraph })),
+).map((row) => row.paragraph);
+const founderMilestones = rows("founder_milestones", copy.founderMilestones);
+const credentials = rows<{
+	title: string;
+	issuer: string;
+	motif?: "book" | "pen" | "teacher";
+	image?: ImageValue | null;
+}>("credentials", copy.credentials);
+const approachSteps = rows("approach_steps", copy.approachSteps);
+const trustChips = rows<{ label: string }>(
+	"trust_chips",
+	copy.trustChips.map((label) => ({ label })),
+).map((row) => row.label);
 
 const standingItems = [
 	{
@@ -87,11 +178,11 @@ const standingItems = [
 			<Container>
 				<div class="about-hero__grid">
 					<div class="about-hero__copy">
-						<Eyebrow>{copy.eyebrow}</Eyebrow>
+						<Eyebrow>{v.eyebrow}</Eyebrow>
 						<h1 id="about-hero-title">
-							{copy.headingBefore}<span class="heading-highlight about-hero__highlight">{copy.headingHighlight}<svg class="about-hero__underline" viewBox="0 0 220 14" preserveAspectRatio="none" aria-hidden="true"><path d="M4 10C60 3 150 3 216 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" /></svg></span>{copy.headingAfter}
+							{v.headingBefore}<span class="heading-highlight about-hero__highlight">{v.headingHighlight}<svg class="about-hero__underline" viewBox="0 0 220 14" preserveAspectRatio="none" aria-hidden="true"><path d="M4 10C60 3 150 3 216 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" /></svg></span>{v.headingAfter}
 						</h1>
-						<p class="about-hero__lead">{copy.lead}</p>
+						<p class="about-hero__lead">{v.lead}</p>
 						<div class="about-hero__badges">
 							<Chip>{contact.stats.years} {t.stats.yearsShort}</Chip>
 							<Chip>{contact.stats.countries} {t.stats.countriesShort}</Chip>
@@ -106,8 +197,8 @@ const standingItems = [
 						<span class="about-hero__arch-back" aria-hidden="true"></span>
 						<div class="about-hero__arch">
 							<ResponsiveImage
-								src="/images/about-hero-quran.png"
-								alt={copy.heroImageAlt}
+								src={heroImage?.src ?? "/images/about-hero-quran.png"}
+								alt={heroImage?.alt ?? v.heroImageAlt}
 								sizes="(max-width: 900px) 82vw, 400px"
 								priority
 								class="about-hero__image"
@@ -123,7 +214,7 @@ const standingItems = [
 							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
 								<path d="M12 4l2.2 5.8L20 12l-5.8 2.2L12 20l-2.2-5.8L4 12l5.8-2.2z" />
 							</svg>
-							{copy.heroSince}
+							{v.heroSince}
 						</p>
 					</div>
 				</div>
@@ -138,13 +229,13 @@ const standingItems = [
 		<Section id="about" class="section--curve">
 			<Container>
 				<WisdomPanel
-					eyebrow={copy.philosophyEyebrow}
-					titleBefore={copy.philosophyBefore}
-					titleHighlight={copy.philosophyHighlight}
-					titleAfter={copy.philosophyAfter}
-					paragraph1={copy.philosophyText}
-					image={homePage?.data.about_image}
-					imageAlt={homeText("about_image_alt")}
+					eyebrow={v.philosophyEyebrow}
+					titleBefore={v.philosophyBefore}
+					titleHighlight={v.philosophyHighlight}
+					titleAfter={v.philosophyAfter}
+					paragraph1={v.philosophyText}
+					image={philosophyImage}
+					imageAlt={v.philosophyImageAlt}
 					years={contact.stats.years}
 					imageMaxHeight={420}
 				/>
@@ -161,30 +252,30 @@ const standingItems = [
 						<span class="founder__arch-back" aria-hidden="true"></span>
 						<div class="founder__frame">
 							<ResponsiveImage
-								src="/images/about-founder-hands.png"
-								alt={copy.founderImageAlt}
+								src={founderImage?.src ?? "/images/about-founder-hands.png"}
+								alt={founderImage?.alt ?? v.founderImageAlt}
 								sizes="(max-width: 900px) calc(100vw - 40px), 420px"
 								class="founder__image"
 							/>
 						</div>
 						<div class="founder__plate">
-							<strong>{copy.founderName}</strong>
-							<span>{copy.founderRole}</span>
-							<span class="founder__chip">{copy.founderCredential}</span>
+							<strong>{v.founderName}</strong>
+							<span>{v.founderRole}</span>
+							<span class="founder__chip">{v.founderCredential}</span>
 						</div>
 					</div>
 					<div class="founder__copy">
-						<Eyebrow>{copy.founderEyebrow}</Eyebrow>
-						<h2>{copy.founderHeading}</h2>
-						<p class="founder__lead">{copy.founderParagraphs[0]}</p>
-						{copy.founderParagraphs.slice(1, 4).map((paragraph) => <p>{paragraph}</p>)}
-						<p class="founder__closing">{copy.founderParagraphs[4]}</p>
+						<Eyebrow>{v.founderEyebrow}</Eyebrow>
+						<h2>{v.founderHeading}</h2>
+						<p class="founder__lead">{founderParagraphs[0]}</p>
+						{founderParagraphs.slice(1, 4).map((paragraph) => <p>{paragraph}</p>)}
+						<p class="founder__closing">{v.founderClosing}</p>
 					</div>
 				</div>
 
 				<ol class="founder__timeline">
 					{
-						copy.founderMilestones.map((milestone, i) => (
+						founderMilestones.map((milestone, i) => (
 							<li class="founder__milestone" data-reveal="up" data-reveal-delay={i * 100}>
 								<span class="founder__milestone-dot" aria-hidden="true"></span>
 								<span class="founder__milestone-label">{milestone.label}</span>
@@ -203,16 +294,19 @@ const standingItems = [
 			<Container>
 				<div class="creds">
 					<div class="creds__head">
-						<Eyebrow>{copy.credentialsEyebrow}</Eyebrow>
-						<h2>{copy.credentialsHeading}</h2>
-						<p class="creds__lead">{copy.credentialsLead}</p>
+						<Eyebrow>{v.credentialsEyebrow}</Eyebrow>
+						<h2>{v.credentialsHeading}</h2>
+						<p class="creds__lead">{v.credentialsLead}</p>
 					</div>
 					<ul class="creds__grid">
 						{
-							copy.credentials.map((item, i) => (
+							credentials.map((item, i) => (
 								<li class="creds__item" data-reveal="up">
 									<span class="creds__num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
 									<div class="creds__frame">
+										{item.image?.src ? (
+											<img class="creds__photo" src={item.image.src} alt={item.title} loading="lazy" decoding="async" />
+										) : (
 										<svg class="creds__plate" viewBox="0 0 240 180" role="img" aria-label={item.title}>
 											<rect width="240" height="180" rx="8" fill="var(--surface)" />
 											<rect x="10" y="10" width="220" height="160" rx="6" fill="none" stroke="var(--green-deep)" stroke-width="1" opacity="0.3" />
@@ -223,14 +317,14 @@ const standingItems = [
 												<path d="M216 150l2 4 4 2-4 2-2 4-2-4-4-2 4-2z" />
 											</g>
 											<g transform="translate(120 84)" stroke="var(--green-deep)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
-												{item.motif === "book" && (
+												{(item.motif ?? "book") === "book" && (
 													<>
 														<path d="M-34-14c10-6 22-6 34 0 12-6 24-6 34 0v34c-10-6-22-6-34 0-12-6-24-6-34 0z" />
 														<path d="M0-14v34" />
 														<path d="M-24-4c8-3 16-3 24 0M-24 6c8-3 16-3 24 0M24-4c-8-3-16-3-24 0M24 6c-8-3-16-3-24 0" opacity="0.5" />
 													</>
 												)}
-												{item.motif === "pen" && (
+												{(item.motif ?? "book") === "pen" && (
 													<>
 														<path d="M0-32L15-8L0 28L-15-8Z" />
 														<circle cx="0" cy="-6" r="4" />
@@ -238,7 +332,7 @@ const standingItems = [
 														<path d="M-26 34h52" opacity="0.5" />
 													</>
 												)}
-												{item.motif === "teacher" && (
+												{(item.motif ?? "book") === "teacher" && (
 													<>
 														<circle cx="-13" cy="-16" r="9" />
 														<path d="M-30 16c0-10 7-16 17-16s17 6 17 16" />
@@ -253,6 +347,7 @@ const standingItems = [
 												<circle cx="120" cy="148" r="3" fill="var(--green-deep)" stroke="none" />
 											</g>
 										</svg>
+										)}
 									</div>
 									<h3>{item.title}</h3>
 									<p class="creds__issuer">{item.issuer}</p>
@@ -276,14 +371,14 @@ const standingItems = [
 			<Container>
 				<div class="approach">
 					<div class="approach__head">
-						<Eyebrow>{copy.approachEyebrow}</Eyebrow>
-						<h2>{copy.approachHeading}</h2>
-						<p class="approach__lead">{copy.approachLead}</p>
+						<Eyebrow>{v.approachEyebrow}</Eyebrow>
+						<h2>{v.approachHeading}</h2>
+						<p class="approach__lead">{v.approachLead}</p>
 					</div>
 
 					<ol class="approach__steps">
 						{
-							copy.approachSteps.map((step, i) => (
+							approachSteps.map((step, i) => (
 								<li class="approach__step" data-reveal="up" data-reveal-delay={120 + i * 100}>
 									<div class="approach__top">
 										<span class="approach__num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
@@ -387,9 +482,9 @@ const standingItems = [
 						<rect width="100%" height="100%" fill="url(#trust-pattern)" />
 					</svg>
 					<div class="trust-band__copy">
-						<span class="trust-band__eyebrow">{copy.trustEyebrow}</span>
-						<h2>{copy.trustHeading}</h2>
-						<p>{copy.trustIntro}</p>
+						<span class="trust-band__eyebrow">{v.trustEyebrow}</span>
+						<h2>{v.trustHeading}</h2>
+						<p>{v.trustIntro}</p>
 					</div>
 					<div class="trust-band__operator">
 						<div class="trust-band__op-head">
@@ -401,22 +496,22 @@ const standingItems = [
 								</svg>
 							</span>
 							<div class="trust-band__op-id">
-								<strong>{copy.trustOperatorName}</strong>
-								<span>{copy.trustOperatorPlace}</span>
+								<strong>{v.trustOperatorName}</strong>
+								<span>{v.trustOperatorPlace}</span>
 							</div>
 						</div>
 						<ul class="trust-band__chips">
-							{copy.trustChips.map((chip) => <li>{chip}</li>)}
+							{trustChips.map((chip) => <li>{chip}</li>)}
 						</ul>
 					</div>
 				</div>
-				<p class="trust-band__note">{copy.trustOperator}</p>
+				<p class="trust-band__note">{v.trustOperator}</p>
 			</Container>
 		</Section>
 
 		<CtaPanel
-			heading={copy.ctaHeading}
-			text={copy.ctaText}
+			heading={v.ctaHeading}
+			text={v.ctaText}
 			primaryHref={localizePath("/contact-us#book", locale)}
 			primaryLabel={t.actions.bookFreeTrial}
 			secondaryHref={localizePath("/pricing", locale)}
@@ -832,6 +927,13 @@ const standingItems = [
 		border-radius: 8px;
 	}
 
+	.creds__photo {
+		display: block;
+		width: 100%;
+		height: auto;
+		border-radius: 8px;
+	}
+
 	.creds__item h3 {
 		font-size: 1.05rem;
 		font-weight: 600;
@@ -1145,6 +1247,15 @@ const standingItems = [
 	.creds__item {
 		position: relative;
 		transition: translate var(--dur-fast) var(--ease);
+	}
+
+	/* The shared reveal leaves clip-path: inset(0) on revealed elements,
+	 * which would slice the numeral badge hanging above the card edge
+	 * (and the orbit accent above the standing panel). These reveals only
+	 * need opacity + transform, so drop the clip once revealed. */
+	:global(.js-motion .creds__item[data-reveal].is-revealed),
+	:global(.js-motion .standing--compact[data-reveal].is-revealed) {
+		clip-path: none;
 	}
 
 	.creds__item:hover {

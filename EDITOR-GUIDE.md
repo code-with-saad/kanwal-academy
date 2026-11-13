@@ -150,6 +150,26 @@ Each card has a title, text, and the first card also has a **chip label**. Title
 - **Paragraph 1**, **Paragraph 2**
 - **Image alt text**
 
+### About page (/about) — collection "About page"
+Everything on /about lives in one entry (slug `about`) of the **About page**
+collection. English and Arabic are separate translations in the admin. Empty
+text fields fall back to the bundled copy; empty images fall back to the
+bundled photographs.
+- **Hero**: eyebrow, heading before / highlighted words / after, lead line,
+  image + alt text, since badge
+- **Philosophy**: eyebrow, heading before / highlight / after, paragraph,
+  image + alt text
+- **Founder**: eyebrow, heading, name, role, credential chip, portrait + alt,
+  story paragraphs (repeater, in order), closing pull-line, milestone timeline
+- **Certifications**: eyebrow, heading, lead, then one repeater row per
+  certificate: name, issuing authority, fallback plate motif, certificate
+  image. Add a row to add a certificate, edit the name to rename it, upload an
+  image to replace the drawn plate.
+- **Approach**: eyebrow, heading, lead, steps repeater (in order)
+- **Infrastructure**: eyebrow, heading, lead, operator name / place / note,
+  assurance chips repeater
+- **Closing CTA**: heading, text
+
 ### Standing out section
 - **Eyebrow**, **Heading**
 - Item 1/2/3: **title** and **text**

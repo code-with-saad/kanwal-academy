@@ -9,6 +9,8 @@
  *   - Create the `subscribers` collection if missing.
  *   - Add the `lead_status` select field to `enrolments` if missing.
  *   - Add the `owner_email` field to `site_settings` if missing.
+ *   - Create the `about_page` collection (all /about CMS fields) if missing
+ *     and seed its single entry from seed/seed.json when empty.
  *
  * Requirements:
  *   - Node 18+ (uses global fetch).
@@ -28,6 +30,8 @@
  * After this, the site_settings entry still needs `owner_email` populated
  * (in the admin under Site settings). That's one click in the UI.
  */
+
+import { readFileSync } from "node:fs";
 
 const args = process.argv.slice(2);
 function arg(name) {
@@ -190,6 +194,42 @@ async function main() {
 		type: "string",
 		sortOrder: 99,
 	});
+
+	// --- about_page: every editable /about block ---------------------------
+	const seed = JSON.parse(
+		readFileSync(new URL("../seed/seed.json", import.meta.url), "utf8"),
+	);
+	const aboutSpec = seed.collections.find((c) => c.slug === "about_page");
+	await ensureCollection({
+		slug: aboutSpec.slug,
+		label: aboutSpec.label,
+		labelSingular: aboutSpec.labelSingular,
+		description: aboutSpec.description,
+		icon: aboutSpec.icon,
+		group: aboutSpec.group,
+		sortOrder: aboutSpec.sortOrder,
+		routable: aboutSpec.routable,
+		supports: aboutSpec.supports,
+		admin: aboutSpec.admin,
+	});
+	for (const field of aboutSpec.fields) {
+		await ensureField("about_page", field);
+	}
+	await updateCollection("about_page", { titleField: aboutSpec.titleField });
+
+	const aboutEntries = await api("GET", "/_emdash/api/content/about_page");
+	const aboutItems = aboutEntries?.data?.items ?? [];
+	if (aboutItems.length === 0) {
+		const created = await api("POST", "/_emdash/api/content/about_page", {
+			slug: "about",
+			data: seed.content.about_page[0].data,
+		});
+		const createdId = created?.data?.item?.id ?? created?.data?.id;
+		await api("POST", `/_emdash/api/content/about_page/${createdId}/publish`, {});
+		console.log("  created + published: about_page entry");
+	} else {
+		console.log("  skip: about_page entry already exists");
+	}
 
 	console.log("\nDone. Remember to set site_settings.owner_email in the admin UI.");
 }
