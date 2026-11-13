@@ -14,6 +14,15 @@ export interface PageCopy {
 		eyebrow: string;
 		heading: string;
 		lead: string;
+		storyEyebrow: string;
+		storyHeading: string;
+		storyParagraph1: string;
+		storyParagraph2: string;
+		badgeOneToOne: string;
+		approachEyebrow: string;
+		approachHeading: string;
+		approachSteps: Array<{ title: string; text: string }>;
+		values: Array<{ title: string; text: string }>;
 		teachHeading: string;
 		teachLead: string;
 		whyHeading: string;
@@ -68,7 +77,48 @@ const en: PageCopy = {
 			"How Kanwal Quran Academy teaches Qur'anic recitation, tajweed and memorization online, one to one, with a free trial class to begin.",
 		eyebrow: "About us",
 		heading: "A teacher who knows your name",
-		lead: "Kanwal Quran Academy teaches the Qur'an online in live one to one classes. Your teacher listens as you recite, corrects you in the moment, and sets a weekly plan around your level.",
+		lead: "One teacher, one student, one lesson at a time.",
+		storyEyebrow: "Our story",
+		storyHeading: "Why Kanwal exists",
+		storyParagraph1:
+			"Kanwal began with a simple frustration: group classes move at one pace, and most students never get the moment where a teacher stops and fixes just their recitation. We built the academy around that moment.",
+		storyParagraph2:
+			"Every lesson is one teacher and one student, live from your home. Your teacher hears every letter, corrects gently in the moment, and keeps a written plan so progress is visible week after week. It suits children starting out, adults returning to the Qur'an, and anyone who learns better without an audience.",
+		badgeOneToOne: "1-to-1 live",
+		approachEyebrow: "Our approach",
+		approachHeading: "How a class works",
+		approachSteps: [
+			{
+				title: "You recite",
+				text: "You read aloud from your own mushaf while your teacher listens without interrupting.",
+			},
+			{
+				title: "Live correction",
+				text: "Your teacher stops at the exact letter or rule and models it again until it lands.",
+			},
+			{
+				title: "Tajweed notes",
+				text: "Each session ends with short written notes on what to fix before the next class.",
+			},
+			{
+				title: "Revision and next lesson",
+				text: "The following class opens with revision, then moves to the next portion at your pace.",
+			},
+		],
+		values: [
+			{
+				title: "Patience",
+				text: "No rushing and no comparison. The pace is set by the student, not the clock.",
+			},
+			{
+				title: "Tajweed accuracy",
+				text: "Correct pronunciation first, speed later. Rules are taught as they appear in your portion.",
+			},
+			{
+				title: "Safe one-to-one space",
+				text: "A private live room with one vetted teacher. Mistakes are welcome here.",
+			},
+		],
 		teachHeading: "What we teach",
 		teachLead: "Three courses, each taught one to one. Pick the path that matches where you are and your teacher sets the pace from there.",
 		whyHeading: "Why families choose us",
@@ -127,7 +177,48 @@ const ar: PageCopy = {
 			"كيف تعلّم أكاديمية كنول التلاوة والتجويد والحفظ عبر الإنترنت بحصص فردية، مع حصة تجريبية مجانية للبداية.",
 		eyebrow: "من نحن",
 		heading: "معلم يعرف اسمك",
-		lead: "تعلّم أكاديمية كنول القرآن الكريم عبر الإنترنت بحصص فردية مباشرة. يستمع إليك معلمك أثناء التلاوة، ويصحح لك في حينها، ويضع خطة أسبوعية تناسب مستواك.",
+		lead: "معلم واحد، وطالب واحد، ودرس واحد في كل مرة.",
+		storyEyebrow: "قصتنا",
+		storyHeading: "لماذا وُجدت كنول",
+		storyParagraph1:
+			"بدأت كنول من إحباط بسيط: الحصص الجماعية تسير بوتيرة واحدة، ومعظم الطلاب لا يحصلون على اللحظة التي يتوقف فيها المعلم ليصحح تلاوته هو وحده. بنينا الأكاديمية حول تلك اللحظة.",
+		storyParagraph2:
+			"كل درس معلم واحد وطالب واحد، مباشرة من بيتك. يسمع معلمك كل حرف، ويصحح بلطف في حينها، ويحتفظ بخطة مكتوبة حتى يكون التقدم واضحًا أسبوعًا بعد أسبوع. يناسب ذلك الأطفال المبتدئين، والكبار العائدين إلى القرآن، وكل من يتعلم أفضل دون جمهور.",
+		badgeOneToOne: "فردي مباشر",
+		approachEyebrow: "منهجنا",
+		approachHeading: "كيف تسير الحصة",
+		approachSteps: [
+			{
+				title: "أنت تتلو",
+				text: "تقرأ بصوت عالٍ من مصحفك الخاص بينما يستمع معلمك دون مقاطعة.",
+			},
+			{
+				title: "تصحيح مباشر",
+				text: "يتوقف معلمك عند الحرف أو الحكم بالضبط ويعيده حتى يرسخ.",
+			},
+			{
+				title: "ملاحظات التجويد",
+				text: "تنتهي كل حصة بملاحظات مكتوبة قصيرة عما يجب تحسينه قبل الحصة التالية.",
+			},
+			{
+				title: "مراجعة ودرس تالٍ",
+				text: "تبدأ الحصة التالية بالمراجعة، ثم تنتقل إلى المقطع التالي وفق وتيرتك.",
+			},
+		],
+		values: [
+			{
+				title: "صبر",
+				text: "لا استعجال ولا مقارنة. الوتيرة يحددها الطالب لا الساعة.",
+			},
+			{
+				title: "دقة التجويد",
+				text: "النطق الصحيح أولًا والسرعة لاحقًا. تُعلَّم الأحكام كما ترد في مقطعك.",
+			},
+			{
+				title: "مساحة فردية آمنة",
+				text: "غرفة مباشرة خاصة مع معلم واحد موثوق. الأخطاء مرحب بها هنا.",
+			},
+		],
 		teachHeading: "ماذا نعلّم",
 		teachLead: "ثلاث دورات، تُقدَّم كل منها بحصص فردية. اختر المسار الذي يناسب مستواك، ويحدد معلمك الوتيرة بعد ذلك.",
 		whyHeading: "لماذا تختارنا العائلات",

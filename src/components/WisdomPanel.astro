@@ -21,6 +21,8 @@ interface Props {
 	imageAlt?: string;
 	image?: ImageValue | null;
 	years?: string;
+	/** Cap the media height (px) so the copy stays vertically centred. */
+	imageMaxHeight?: number;
 	/** Replaces the default "Book free trial" action with a link. */
 	ctaHref?: string;
 	ctaLabel?: string;
@@ -38,6 +40,7 @@ const {
 	imageAlt = t.home.about_image_alt,
 	image,
 	years = "5+",
+	imageMaxHeight,
 	ctaHref,
 	ctaLabel = t.actions.bookFreeTrial,
 } = Astro.props;
@@ -50,7 +53,11 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 <div class="wisdom">
 	<div class="wisdom__media">
 		<span class="wisdom__block" aria-hidden="true"></span>
-		<div class="wisdom__frame" data-reveal="image">
+		<div
+			class="wisdom__frame"
+			data-reveal="image"
+			style={imageMaxHeight ? `max-height: ${imageMaxHeight}px` : undefined}
+		>
 			{image ? (
 				<Image
 					image={image}

@@ -14,6 +14,8 @@ interface Item {
 interface Props {
 	heading?: string;
 	items?: Item[];
+	/** About-page variant: no number tabs, smaller icon badges. */
+	compact?: boolean;
 }
 
 const defaults: Item[] = [
@@ -42,10 +44,11 @@ const icons: Item["icon"][] = ["clock", "book", "screens"];
 const {
 	heading = t.home.standing_heading,
 	items = defaults,
+	compact = false,
 } = Astro.props;
 ---
 
-<div class="standing" data-reveal="fade">
+<div class:list={["standing", compact && "standing--compact"]} data-reveal="fade">
 	<h2 class="standing__title" data-reveal-words>{heading}</h2>
 
 	<ul class="standing__grid">
@@ -57,9 +60,11 @@ const {
 					data-reveal="up"
 					data-reveal-delay={120 + index * 100}
 				>
-					<span class="standing__tab" aria-hidden="true">
-						<NumberText text={String(index + 1).padStart(2, "0")} />
-					</span>
+					{!compact && (
+						<span class="standing__tab" aria-hidden="true">
+							<NumberText text={String(index + 1).padStart(2, "0")} />
+						</span>
+					)}
 
 					<span class="standing__icon" aria-hidden="true">
 						<svg
@@ -148,6 +153,21 @@ const {
 	.standing__item:hover {
 		transform: translateY(-3px);
 		box-shadow: 0 12px 36px -12px rgba(11, 26, 20, 0.16);
+	}
+
+	/* Compact (About) variant: drop the number tab, tighten the icon badge. */
+	.standing--compact .standing__item {
+		padding-top: 28px;
+	}
+
+	.standing--compact .standing__icon {
+		width: 64px;
+		height: 64px;
+	}
+
+	.standing--compact .standing__icon svg {
+		width: 30px;
+		height: 30px;
 	}
 
 	/* Mint number tab with rounded inner corner */

@@ -1,14 +1,16 @@
 ---
 /**
- * About page. Renders the same full sections as the Home page (About panel,
- * Standing out, stats, free trial steps) with a page-specific h1 and CTA.
+ * About page. Own hero (split copy + geometric art), a distinct "our story"
+ * panel, the standing-out cards, a "how a class works" approach section and
+ * the stats band, closed by the dark CTA. Section rhythm uses --section-gap
+ * (96px desktop / 56px mobile) and alternates white / mint / white / dark.
  */
 import { getEmDashEntry } from "emdash";
 import Base from "../layouts/Base.astro";
+import Chip from "../components/Chip.astro";
 import Container from "../components/Container.astro";
 import CtaPanel from "../components/CtaPanel.astro";
-import HowItWorks from "../components/HowItWorks.astro";
-import PageHeader from "../components/PageHeader.astro";
+import Eyebrow from "../components/Eyebrow.astro";
 import Section from "../components/Section.astro";
 import StandingOut from "../components/StandingOut.astro";
 import StatsBand from "../components/StatsBand.astro";
@@ -59,86 +61,347 @@ const standingItems = [
 		icon: "screens" as const,
 	},
 ];
-
-const howItWorksSteps = [
-	{
-		title: homeText("trial_step_1_title"),
-		text: homeText("trial_step_1_body"),
-		icon: "book-trial" as const,
-	},
-	{
-		title: homeText("trial_step_2_title"),
-		text: homeText("trial_step_2_body"),
-		icon: "teacher" as const,
-	},
-	{
-		title: homeText("trial_step_3_title"),
-		text: homeText("trial_step_3_body"),
-		icon: "calendar-check" as const,
-	},
-];
 ---
 
 <Base
 	title={copy.title}
 	description={copy.description}
 	breadcrumbs={[{ name: t.nav.about, path: "/about" }]}
+	hideNewsletter
 >
-	<Section space="tight">
-		<Container>
-			<PageHeader eyebrow={copy.eyebrow} heading={copy.heading} lead={copy.lead} />
-		</Container>
-	</Section>
+	<div class="about">
+		<!-- Hero: copy left, geometric art right, three reassurance badges. -->
+		<Section space="tight" class="about-hero-section">
+			<Container>
+				<div class="about-hero">
+					<div class="about-hero__copy">
+						<Eyebrow>{copy.eyebrow}</Eyebrow>
+						<h1>{copy.heading}</h1>
+						<p class="about-hero__lead">{copy.lead}</p>
+						<div class="about-hero__badges">
+							<Chip>{contact.stats.years} {t.stats.yearsShort}</Chip>
+							<Chip>{contact.stats.countries} {t.stats.countriesShort}</Chip>
+							<Chip>{copy.badgeOneToOne}</Chip>
+						</div>
+					</div>
 
-	<Section id="about">
-		<Container>
-			<WisdomPanel
-				eyebrow={homeText("about_eyebrow")}
-				titleBefore={homeText("about_title_before")}
-				titleHighlight={homeText("about_title_highlight")}
-				paragraph1={homeText("about_paragraph_1")}
-				paragraph2={homeText("about_paragraph_2")}
-				image={homePage?.data.about_image}
-				imageAlt={homeText("about_image_alt")}
-				years={contact.stats.years}
-			/>
-		</Container>
-	</Section>
+					<div class="about-hero__art" aria-hidden="true">
+						<svg viewBox="0 0 440 440" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<circle cx="220" cy="220" r="190" fill="var(--mint-100)" />
+							<circle cx="220" cy="220" r="160" stroke="var(--line)" stroke-width="1.5" />
+							<circle cx="220" cy="220" r="120" stroke="var(--green)" stroke-width="1.5" stroke-dasharray="3 9" opacity="0.45" />
+							<path d="M130 130H310V310H130Z M220 93L347 220L220 347L93 220Z" stroke="var(--green-deep)" stroke-width="2" stroke-linejoin="round" />
+							<circle cx="220" cy="60" r="5" fill="var(--green)" opacity="0.5" />
+							<circle cx="380" cy="220" r="5" fill="var(--green)" opacity="0.5" />
+							<circle cx="220" cy="380" r="5" fill="var(--green)" opacity="0.5" />
+							<circle cx="60" cy="220" r="5" fill="var(--green)" opacity="0.5" />
+							<circle cx="220" cy="220" r="5" fill="var(--green-deep)" />
+						</svg>
+					</div>
+				</div>
+			</Container>
+		</Section>
 
-	<Section id="standing-out" space="tight">
-		<Container>
-			<StandingOut heading={homeText("standing_heading")} items={standingItems} />
-		</Container>
-	</Section>
+		<!-- Our story: why the academy exists, distinct from the Home copy. -->
+		<Section id="about">
+			<Container>
+				<WisdomPanel
+					eyebrow={copy.storyEyebrow}
+					titleBefore={copy.storyHeading}
+					titleHighlight=""
+					titleAfter=""
+					paragraph1={copy.storyParagraph1}
+					paragraph2={copy.storyParagraph2}
+					image={homePage?.data.about_image}
+					imageAlt={homeText("about_image_alt")}
+					years={contact.stats.years}
+					imageMaxHeight={420}
+				/>
+			</Container>
+		</Section>
 
-	<StatsBand
-		eyebrow={homeText("stats_eyebrow")}
-		heading={homeText("stats_heading")}
-		description={homeText("stats_description")}
-		students={contact.stats.students}
-		sessions={contact.stats.sessions}
-		countries={contact.stats.countries}
-		studentsLabel={contact.stats.labels.students}
-		sessionsLabel={contact.stats.labels.sessions}
-		countriesLabel={contact.stats.labels.countries}
-	/>
+		<!-- Standing out (mint block). -->
+		<Section id="standing-out" space="tight">
+			<Container>
+				<StandingOut heading={homeText("standing_heading")} items={standingItems} compact />
+			</Container>
+		</Section>
 
-	<Section id="how-it-works" space="tight">
-		<Container>
-			<HowItWorks
-				eyebrow={homeText("trial_eyebrow")}
-				heading={homeText("trial_heading")}
-				steps={howItWorksSteps}
-			/>
-		</Container>
-	</Section>
+		<!-- Our approach (white block between the two mint blocks). -->
+		<Section id="how-it-works" space="tight">
+			<Container>
+				<div class="approach">
+					<div class="approach__head">
+						<Eyebrow>{copy.approachEyebrow}</Eyebrow>
+						<h2>{copy.approachHeading}</h2>
+					</div>
 
-	<CtaPanel
-		heading={copy.ctaHeading}
-		text={copy.ctaText}
-		primaryHref={localizePath("/contact-us#book", locale)}
-		primaryLabel={t.actions.bookFreeTrial}
-		secondaryHref={localizePath("/pricing", locale)}
-		secondaryLabel={t.actions.seePlans}
-	/>
+					<ol class="approach__steps">
+						{
+							copy.approachSteps.map((step, i) => (
+								<li class="approach__step" data-reveal="up" data-reveal-delay={120 + i * 100}>
+									<span class="approach__num" aria-hidden="true">{i + 1}</span>
+									<span class="approach__icon" aria-hidden="true">
+										<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+											{i === 0 && (
+												<>
+													<path d="M4 6c3-1.5 6-1.5 8 0 2-1.5 5-1.5 8 0v12c-3-1.5-6-1.5-8 0-2-1.5-5-1.5-8 0z" />
+													<path d="M12 6v12" />
+												</>
+											)}
+											{i === 1 && (
+												<>
+													<path d="M4 5h16v10H9l-5 4z" />
+													<path d="M9 10l2 2 4-4" />
+												</>
+											)}
+											{i === 2 && (
+												<>
+													<rect x="6" y="4" width="12" height="16" rx="2" />
+													<path d="M9 9h6M9 13h4" />
+												</>
+											)}
+											{i === 3 && (
+												<>
+													<path d="M20 12a8 8 0 1 1-2.34-5.66" />
+													<path d="M20 4v4h-4" />
+												</>
+											)}
+										</svg>
+									</span>
+									<h3>{step.title}</h3>
+									<p>{step.text}</p>
+								</li>
+							))
+						}
+					</ol>
+
+					<ul class="approach__values">
+						{
+							copy.values.map((value) => (
+								<li class="approach__value" data-reveal="up">
+									<h3>{value.title}</h3>
+									<p>{value.text}</p>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</Container>
+		</Section>
+
+		<StatsBand
+			eyebrow={homeText("stats_eyebrow")}
+			heading={homeText("stats_heading")}
+			description={homeText("stats_description")}
+			students={contact.stats.students}
+			sessions={contact.stats.sessions}
+			countries={contact.stats.countries}
+			studentsLabel={contact.stats.labels.students}
+			sessionsLabel={contact.stats.labels.sessions}
+			countriesLabel={contact.stats.labels.countries}
+		/>
+
+		<CtaPanel
+			heading={copy.ctaHeading}
+			text={copy.ctaText}
+			primaryHref={localizePath("/contact-us#book", locale)}
+			primaryLabel={t.actions.bookFreeTrial}
+			secondaryHref={localizePath("/pricing", locale)}
+			secondaryLabel={t.actions.seePlans}
+		/>
+	</div>
 </Base>
+
+<style>
+	/* One rhythm for the whole page: 96px desktop, 56px mobile. */
+	.about {
+		--section-gap: clamp(56px, 8vw, 96px);
+	}
+
+	.about :global(.section--space-normal),
+	.about :global(.section--space-tight),
+	.about :global(.stats-band) {
+		padding-block: var(--section-gap);
+	}
+
+	/* Hero keeps a tighter bottom edge so the story sits close beneath it. */
+	.about :global(.about-hero-section) {
+		padding-block-end: clamp(48px, 6vw, 72px);
+	}
+
+	/* ---------- Hero split ---------- */
+	.about-hero {
+		display: grid;
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+		align-items: center;
+		gap: clamp(32px, 6vw, 80px);
+	}
+
+	.about-hero__copy {
+		display: grid;
+		justify-items: start;
+		gap: var(--space-md);
+	}
+
+	.about-hero__copy h1 {
+		max-width: 16ch;
+		font-size: var(--type-display-size);
+		line-height: var(--type-display-line);
+		font-weight: var(--type-display-weight);
+		letter-spacing: -0.03em;
+	}
+
+	.about-hero__lead {
+		max-width: 40ch;
+		color: var(--type-copy-color);
+		font-size: var(--type-lead-size);
+		line-height: var(--type-lead-line);
+	}
+
+	.about-hero__badges {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-sm);
+		margin-top: var(--space-sm);
+	}
+
+	.about-hero__art {
+		display: grid;
+		place-items: center;
+	}
+
+	.about-hero__art svg {
+		display: block;
+		width: min(100%, 420px);
+		height: auto;
+	}
+
+	/* ---------- Approach ---------- */
+	.approach {
+		display: grid;
+		gap: clamp(28px, 4vw, 48px);
+	}
+
+	.approach__head {
+		display: grid;
+		justify-items: start;
+		gap: var(--space-md);
+	}
+
+	.approach__steps {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: clamp(16px, 2.5vw, 24px);
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.approach__step {
+		position: relative;
+		display: grid;
+		align-content: start;
+		gap: var(--space-sm);
+		padding: 28px 22px 24px;
+		border: 1px solid var(--line);
+		border-radius: 20px;
+		background: var(--surface);
+		box-shadow: 0 10px 28px -18px rgba(11, 26, 20, 0.18);
+	}
+
+	/* Faint oversized corner numeral instead of a numbered tab. */
+	.approach__num {
+		position: absolute;
+		top: 14px;
+		inset-inline-end: 18px;
+		color: color-mix(in srgb, var(--ink) 10%, transparent);
+		font-size: 40px;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+		line-height: 1;
+	}
+
+	.approach__icon {
+		display: grid;
+		place-items: center;
+		width: 56px;
+		height: 56px;
+		border: 1px solid var(--line);
+		border-radius: 50%;
+		background: var(--mint-50);
+		color: var(--green-deep);
+	}
+
+	.approach__icon svg {
+		width: 30px;
+		height: 30px;
+	}
+
+	.approach__step h3 {
+		font-size: var(--type-h3-size);
+		font-weight: var(--type-card-title-weight);
+	}
+
+	.approach__step p {
+		color: var(--type-copy-color);
+		font-size: var(--type-small-size);
+		line-height: var(--type-small-line);
+	}
+
+	.approach__values {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: clamp(16px, 2.5vw, 24px);
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.approach__value {
+		display: grid;
+		gap: 6px;
+		padding: 20px 22px;
+		border: 1px solid var(--line);
+		border-radius: 20px;
+		background: var(--mint-50);
+	}
+
+	.approach__value h3 {
+		color: var(--green-deep);
+		font-size: 1.05rem;
+		font-weight: 600;
+	}
+
+	.approach__value p {
+		color: var(--type-copy-color);
+		font-size: var(--type-small-size);
+		line-height: var(--type-small-line);
+	}
+
+	/* ---------- Responsive ---------- */
+	@media (max-width: 900px) {
+		.about-hero {
+			grid-template-columns: 1fr;
+			gap: var(--space-xl);
+		}
+
+		.about-hero__art svg {
+			width: min(100%, 300px);
+		}
+
+		.approach__steps {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+
+		.approach__values {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.approach__steps {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

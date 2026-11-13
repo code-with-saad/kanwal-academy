@@ -302,7 +302,8 @@ const main = async () => {
 				check(`about panel ${label}`, /class="wisdom"/.test(html));
 				check(`about standing out ${label}`, /id="standing-out"/.test(html));
 				check(`about stats ${label}`, /id="success"/.test(html));
-				check(`about trial steps ${label}`, /id="how-it-works"/.test(html));
+				check(`about class steps ${label}`, /id="how-it-works"/.test(html));
+				check(`about no newsletter ${label}`, !/class="footer__news"/.test(html));
 			}
 			if (path === "/courses") {
 				check(`courses rows ${label}`, /class="journey-list"/.test(html));
