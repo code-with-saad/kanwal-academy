@@ -118,13 +118,15 @@ const howItWorksSteps = [
 		</Container>
 	</Section>
 
-	<Section id="faq" space="tight">
-		<Container size="narrow">
-			<h2 class="pricing-faq__heading">{copy.faqHeading}</h2>
-			<FaqAccordion items={pricingFaqs} />
-			{pricingFaqs.length > 0 && <JsonLd data={faqPageJsonLd(pricingFaqs)} />}
-		</Container>
-	</Section>
+	{pricingFaqs.length > 0 && (
+		<Section id="faq" space="tight">
+			<Container size="narrow">
+				<h2 class="pricing-faq__heading">{copy.faqHeading}</h2>
+				<FaqAccordion items={pricingFaqs} />
+				<JsonLd data={faqPageJsonLd(pricingFaqs)} />
+			</Container>
+		</Section>
+	)}
 
 	<CtaPanel
 		heading={copy.ctaHeading}

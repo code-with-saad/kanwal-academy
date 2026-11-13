@@ -795,7 +795,7 @@
 			"slug": "faqs",
 			"label": "FAQs",
 			"labelSingular": "FAQ",
-			"description": "Questions and answers used on the free trial and contact pages. Uncheck Visible to hide a question without deleting it.",
+			"description": "Questions and answers shown on the Home FAQ section, the pricing page and the FAQ page. Home shows the first five in display order. Uncheck Visible to hide a question without deleting it.",
 			"icon": "question",
 			"group": "Academy",
 			"sortOrder": 70,

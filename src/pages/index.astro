@@ -768,31 +768,33 @@ const hasTestimonials = testimonials.length > 0 || demo;
 	)}
 
 	<!-- ===== FAQ ===== -->
-	<Section id="faq" space="tight">
-		<Container>
-			<div class="faq-layout">
-				<div class="faq-intro">
-					<h2>{faqCopy.heading}</h2>
-					<p class="section-lead">{faqCopy.lead}</p>
-					<Button href={localizePath("/faq", locale)} variant="secondary">
-						{t.actions.viewAllFaqs}
-					</Button>
+	{faqs.items.length > 0 && (
+		<Section id="faq" space="tight">
+			<Container>
+				<div class="faq-layout">
+					<div class="faq-intro">
+						<h2>{faqCopy.heading}</h2>
+						<p class="section-lead">{faqCopy.lead}</p>
+						<Button href={localizePath("/faq", locale)} variant="secondary">
+							{t.actions.viewAllFaqs}
+						</Button>
+					</div>
+					<div class="faq-main">
+						<FaqAccordion items={faqs.items} />
+						{faqWaHref && (
+							<div class="faq-more">
+								<p>{faqCopy.moreText}</p>
+								<Button href={faqWaHref} variant="primary" external>
+									{t.actions.whatsappUs}
+								</Button>
+							</div>
+						)}
+					</div>
 				</div>
-				<div class="faq-main">
-					<FaqAccordion items={faqs.items} />
-					{faqWaHref && (
-						<div class="faq-more">
-							<p>{faqCopy.moreText}</p>
-							<Button href={faqWaHref} variant="primary" external>
-								{t.actions.whatsappUs}
-							</Button>
-						</div>
-					)}
-				</div>
-			</div>
-			{faqs.items.length > 0 && <JsonLd data={faqPageJsonLd(faqs.items)} />}
-		</Container>
-	</Section>
+				<JsonLd data={faqPageJsonLd(faqs.items)} />
+			</Container>
+		</Section>
+	)}
 
 	<Section id="book">
 		<Container>
