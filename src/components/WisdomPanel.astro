@@ -21,6 +21,9 @@ interface Props {
 	imageAlt?: string;
 	image?: ImageValue | null;
 	years?: string;
+	/** Replaces the default "Book free trial" action with a link. */
+	ctaHref?: string;
+	ctaLabel?: string;
 }
 
 const {
@@ -35,6 +38,8 @@ const {
 	imageAlt = t.home.about_image_alt,
 	image,
 	years = "5+",
+	ctaHref,
+	ctaLabel = t.actions.bookFreeTrial,
 } = Astro.props;
 
 // Split "5+" into a number and a suffix so the counter can animate it.
@@ -91,7 +96,7 @@ const yearSuffix = years.replace(/[\d.]/g, "") || "+";
 			</p>
 		)}
 		<div class="wisdom__actions" data-reveal="up" data-reveal-delay="240">
-			<Button book variant="primary">{t.actions.bookFreeTrial}</Button>
+			<Button book={!ctaHref} href={ctaHref} variant="primary">{ctaLabel}</Button>
 		</div>
 	</div>
 </div>
