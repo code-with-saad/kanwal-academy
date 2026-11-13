@@ -457,6 +457,18 @@ html[lang="ar"] .about-editorial h2 {
 	letter-spacing: 0;
 }
 
+/* The closing CTA is a UI banner, not editorial copy: keep it on the
+ * interface face even inside the About editorial scope. */
+.about-editorial .cta-panel h2 {
+	font-family: var(--font);
+	font-weight: 600;
+	letter-spacing: 0;
+}
+
+html[lang="ar"] .about-editorial .cta-panel h2 {
+	font-family: var(--font-arabic-ui, "Segoe UI", Tahoma, Arial, sans-serif);
+}
+
 /* The journey numerals share the editorial display face. */
 .about-editorial .approach__num,
 .about-editorial .creds__num,

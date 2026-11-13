@@ -50,6 +50,7 @@ const { heading, text, primaryHref, primaryLabel, secondaryHref, secondaryLabel 
 	.cta-panel__copy {
 		display: grid;
 		gap: var(--space-sm);
+		min-width: 0;
 		max-width: 52ch;
 	}
 
@@ -61,6 +62,29 @@ const { heading, text, primaryHref, primaryLabel, secondaryHref, secondaryLabel 
 		display: flex;
 		flex-wrap: wrap;
 		gap: var(--space-sm);
+	}
+
+	/* Mobile: one column, full-width stacked actions so the banner reads
+	 * as a deliberate block instead of two cramped pills. */
+	@media (max-width: 899px) {
+		.cta-panel {
+			gap: var(--space-md);
+			padding: clamp(20px, 5vw, 32px);
+		}
+
+		.cta-panel__copy {
+			max-width: none;
+		}
+
+		.cta-panel__actions {
+			display: grid;
+			grid-template-columns: 1fr;
+		}
+
+		.cta-panel__actions :global(a) {
+			width: 100%;
+			justify-content: center;
+		}
 	}
 
 	@media (min-width: 900px) {
