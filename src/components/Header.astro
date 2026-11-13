@@ -31,13 +31,17 @@ const {
 
 const rawPath = stripLocalePrefix(currentPath).path;
 const path = rawPath.length > 1 ? rawPath.replace(/\/+$/, "") : "/";
-const isLinkCurrent = (item: NavItem) => {
-	if (item.anchor || item.href.includes("#")) return false;
-	const target = stripLocalePrefix(item.href.split("#")[0] ?? "/").path;
-	return target === "/" ? path === "/" : path === target;
+/** A nav item is current on its page and on any page below it. */
+const isLinkCurrent = (href: string) => {
+	const target = stripLocalePrefix(href.split("#")[0] || "/").path;
+	const normalized = target.length > 1 ? target.replace(/\/+$/, "") : "/";
+	return normalized === "/"
+		? path === "/"
+		: path === normalized || path.startsWith(`${normalized}/`);
 };
-const initialAnchor = path === "/" ? Astro.url.hash.slice(1) || "home" : "";
-const isAnchorCurrent = (item: NavItem) => Boolean(item.anchor && item.anchor === initialAnchor);
+// FAQ is deliberately not in the desktop navigation: it lives in the footer
+// and in the hamburger panel.
+const faqItem = { label: t.nav.faq, href: localizePath("/faq", locale) };
 const homeHref = localizePath("/", locale);
 ---
 
@@ -95,9 +99,7 @@ const homeHref = localizePath("/", locale);
 					<a
 						href={item.href}
 						class="header__link"
-						data-nav-link
-						data-nav-anchor={item.anchor}
-						aria-current={isAnchorCurrent(item) ? "location" : isLinkCurrent(item) ? "page" : undefined}
+						aria-current={isLinkCurrent(item.href) ? "page" : undefined}
 					>
 						{item.label}
 					</a>
@@ -157,14 +159,19 @@ const homeHref = localizePath("/", locale);
 					<a
 						href={item.href}
 						class="header__mobile-link"
-						data-nav-link
-						data-nav-anchor={item.anchor}
-						aria-current={isAnchorCurrent(item) ? "location" : isLinkCurrent(item) ? "page" : undefined}
+						aria-current={isLinkCurrent(item.href) ? "page" : undefined}
 					>
 						{item.label}
 					</a>
 				))
 			}
+			<a
+				href={faqItem.href}
+				class="header__mobile-link"
+				aria-current={isLinkCurrent(faqItem.href) ? "page" : undefined}
+			>
+				{faqItem.label}
+			</a>
 		</nav>
 		<div class="header__panel-end">
 			<div class="header__language header__language--panel">
@@ -237,12 +244,10 @@ const homeHref = localizePath("/", locale);
 </script>
 
 <script>
-	// In-page navigation: smooth scroll, hash without a jump, and an active
-	// link that follows the section in view. Reduced motion means instant.
+	// In-page actions (the Home free trial form) scroll smoothly and keep the
+	// hash without a jump. Reduced motion means instant. Navigation no longer
+	// depends on the scroll position: the active item comes from the route.
 	const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-	const navLinks = Array.from(
-		document.querySelectorAll<HTMLElement>("[data-nav-link][data-nav-anchor]"),
-	);
 
 	const targetFrom = (href: string) => {
 		const url = new URL(href, window.location.href);
@@ -265,76 +270,6 @@ const homeHref = localizePath("/", locale);
 			if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
 			target.focus({ preventScroll: true });
 		});
-	}
-
-	if (navLinks.length > 0) {
-		// Sections map to nav links. Sections without their own nav item inherit
-		// the previous link: standing-out -> about, success -> courses, and the
-		// free-trial steps + testimonials -> pricing.
-		const SECTION_ANCHORS = [
-			["home", "home"],
-			["about", "about"],
-			["standing-out", "about"],
-			["courses", "courses"],
-			["success", "courses"],
-			["how-it-works", "pricing"],
-			["pricing", "pricing"],
-			["testimonials", "pricing"],
-			["book", "book"],
-		] as const;
-
-		const spySections: Array<{ anchor: string; el: HTMLElement }> = [];
-		for (const [id, anchor] of SECTION_ANCHORS) {
-			const el = document.getElementById(id);
-			if (el) spySections.push({ anchor, el });
-		}
-
-		let currentAnchor: string | null = null;
-		const setActive = (anchor: string) => {
-			for (const link of navLinks) {
-				if (link.dataset.navAnchor === anchor) link.setAttribute("aria-current", "location");
-				else link.removeAttribute("aria-current");
-			}
-		};
-
-		if (spySections.length > 0) {
-			let scheduledFrame: number | null = null;
-
-			const updateActive = () => {
-				scheduledFrame = null;
-				const triggerLine = window.innerHeight * 0.35;
-				let active: string | null = spySections[0]?.anchor ?? null;
-
-				for (const section of spySections) {
-					if (section.el.getBoundingClientRect().top > triggerLine) break;
-					active = section.anchor;
-				}
-
-				const atPageBottom =
-					window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 1;
-				if (atPageBottom) {
-					active = spySections[spySections.length - 1]?.anchor ?? active;
-				}
-
-				if (active && active !== currentAnchor) {
-					currentAnchor = active;
-					setActive(active);
-				}
-			};
-
-			const scheduleUpdate = () => {
-				if (scheduledFrame !== null) return;
-				scheduledFrame = window.requestAnimationFrame(updateActive);
-			};
-
-			window.addEventListener("scroll", scheduleUpdate, { passive: true });
-			window.addEventListener("resize", scheduleUpdate, { passive: true });
-			window.addEventListener("pageshow", scheduleUpdate);
-			window.addEventListener("hashchange", scheduleUpdate);
-			window.addEventListener("popstate", scheduleUpdate);
-			window.addEventListener("load", scheduleUpdate, { once: true });
-			scheduleUpdate();
-		}
 	}
 </script>
 

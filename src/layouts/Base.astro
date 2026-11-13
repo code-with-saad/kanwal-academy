@@ -5,6 +5,7 @@ import { createPublicPageContext } from "emdash/page";
 import { EmDashBodyEnd, EmDashBodyStart, EmDashHead } from "emdash/ui";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
+import JsonLd from "../components/JsonLd.astro";
 import MobileBar from "../components/MobileBar.astro";
 import { site, type NavItem } from "../config/site";
 import { getSiteContact } from "../utils/site-config";
@@ -31,6 +32,8 @@ interface Props {
 	canonical?: string | null;
 	robots?: string | null;
 	content?: { collection: string; id: string; slug?: string | null };
+	/** Localized breadcrumb trail; Home is prepended automatically. */
+	breadcrumbs?: Array<{ name: string; path: string }>;
 	nav?: NavItem[];
 	siteContact?: Awaited<ReturnType<typeof getSiteContact>>;
 	footerCourses?: { name: string }[];
@@ -50,6 +53,7 @@ const {
 	canonical,
 	robots,
 	content,
+	breadcrumbs,
 	nav,
 	siteContact: providedContact,
 	footerCourses: providedFooterCourses,
@@ -127,12 +131,57 @@ const pageCtx = createPublicPageContext({
 	title: fullTitle,
 	pageTitle: pageTitle ?? title ?? siteTitle,
 	description: description || siteTagline || site.description,
-	canonical: canonical ?? `${Astro.url.origin}${Astro.url.pathname}`,
+	canonical: canonical ?? `${Astro.url.origin}${pathForLocale(locale)}`,
 	image,
 	content,
 	seo: { ogImage: image, robots },
 	siteName: siteTitle,
 });
+
+// Structured data: the organization is described once per page, and the
+// breadcrumb trail follows the visible page hierarchy in the active locale.
+const origin = Astro.url.origin;
+const organizationUrl = `${origin}${localizePath("/", locale)}`;
+const logoUrl = new URL(
+	contactResult.data.logoLight?.src || "/images/kanwal-logo-on-light.png",
+	origin,
+).href;
+const crumbTrail = [{ name: t.nav.home, path: "/" }, ...(breadcrumbs ?? [])];
+const organizationJsonLd = {
+	"@context": "https://schema.org",
+	"@type": "Organization",
+	name: localizedSiteName,
+	url: organizationUrl,
+	logo: logoUrl,
+	email: contactResult.data.email,
+	telephone: contactResult.data.phone,
+	address: {
+		"@type": "PostalAddress",
+		addressLocality: contactResult.data.address,
+	},
+	contactPoint: [
+		{
+			"@type": "ContactPoint",
+			telephone: contactResult.data.phone,
+			email: contactResult.data.email,
+			contactType: "customer support",
+			availableLanguage: ["English", "Arabic"],
+		},
+	],
+	...(contactResult.data.socialLinks.length > 0
+		? { sameAs: contactResult.data.socialLinks.map((link) => link.url) }
+		: {}),
+};
+const breadcrumbJsonLd = {
+	"@context": "https://schema.org",
+	"@type": "BreadcrumbList",
+	itemListElement: crumbTrail.map((crumb, index) => ({
+		"@type": "ListItem",
+		position: index + 1,
+		name: crumb.name,
+		item: `${origin}${localizePath(crumb.path, locale)}`,
+	})),
+};
 ---
 
 <!doctype html>
@@ -239,6 +288,8 @@ const pageCtx = createPublicPageContext({
 				))
 		}
 		<EmDashHead page={pageCtx} />
+		<JsonLd data={organizationJsonLd} />
+		<JsonLd data={breadcrumbJsonLd} />
 		<Font cssVariable="--font-body" preload={[{ weight: 400, subset: "latin" }]} />
 		{
 			// The Arabic UI font ships only on /ar. Preload just the two
@@ -328,7 +379,7 @@ const pageCtx = createPublicPageContext({
 					if (course) params.set("course", course);
 					const qs = params.toString();
 					const prefix = document.body.dataset.localePrefix ?? "";
-					window.location.href = `${prefix}/${qs ? `?${qs}` : ""}#book`;
+					window.location.href = `${prefix}/contact-us${qs ? `?${qs}` : ""}#book`;
 					return;
 				}
 

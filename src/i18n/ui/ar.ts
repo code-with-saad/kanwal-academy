@@ -12,12 +12,16 @@ export const ar: UiDictionary = {
 		courses: "الدورات",
 		pricing: "الأسعار",
 		contact: "تواصل معنا",
+		faq: "الأسئلة الشائعة",
 		teachers: "المعلمون",
 	},
 	actions: {
 		bookFreeTrial: "احجز حصة تجريبية مجانية",
 		selectPlan: "اختر الخطة",
 		seeDetails: "عرض التفاصيل",
+		learnMore: "اعرف المزيد",
+		seePlans: "عرض الخطط",
+		viewAllFaqs: "عرض جميع الأسئلة",
 		readMore: "اقرأ المزيد",
 		readAllArticles: "اقرأ جميع المقالات",
 		goHome: "العودة إلى الرئيسية",
@@ -66,6 +70,7 @@ export const ar: UiDictionary = {
 		contactLinkLabel: "تواصل",
 		termsLabel: "شروط الخدمة",
 		privacyLabel: "سياسة الخصوصية",
+		refundLabel: "سياسة الاسترداد",
 		copyrightLabel: "جميع الحقوق محفوظة.",
 		newsletterHeading: "ابقَ على تواصل",
 		newsletterConsent:
@@ -145,6 +150,9 @@ export const ar: UiDictionary = {
 		unavailableBody:
 			"نعمل على إعداد نسخة عربية من هذه الصفحة. يمكنك قراءة النسخة الإنجليزية الآن.",
 		englishVersion: "اقرأ النسخة الإنجليزية",
+		lastUpdated: "آخر تحديث",
+		fallbackNotice: "لم تُترجم هذه الصفحة إلى العربية بعد. يظهر النص الإنجليزي أدناه.",
+		policyDescription: "اقرأ {title} الحالية لأكاديمية كنول.",
 	},
 	catalog: {
 		address: "ميزوري، الولايات المتحدة",

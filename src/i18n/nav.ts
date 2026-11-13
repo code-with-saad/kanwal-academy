@@ -3,15 +3,15 @@
  *
  * NavItem stays the single structural definition (src/config/site.ts); this
  * only swaps the label and prefixes the href, so the Arabic navigation points
- * at /ar/#courses instead of jumping back to English.
+ * at /ar/about instead of the English page.
  */
 import type { NavItem } from "../config/site";
 import { localizePath, type Locale } from "./config";
 import type { UiDictionary } from "./ui/en";
 
-/** Nav anchors that have a translated label. "book" is the contact section. */
+/** Nav items that have a translated label. Unknown keys fall back to the label. */
 function labelFor(item: NavItem, t: UiDictionary): string {
-	switch (item.anchor) {
+	switch (item.key) {
 		case "home":
 			return t.nav.home;
 		case "about":
@@ -20,19 +20,15 @@ function labelFor(item: NavItem, t: UiDictionary): string {
 			return t.nav.courses;
 		case "pricing":
 			return t.nav.pricing;
+		case "contact":
+			return t.nav.contact;
+		case "faq":
+			return t.nav.faq;
 		case "teachers":
 			return t.nav.teachers;
-		case "book":
-			return t.nav.contact;
 		default:
-			break;
+			return item.label;
 	}
-
-	// Legal and other non-anchor links are matched by path.
-	if (item.href.includes("terms-of-service")) return t.footer.termsLabel;
-	if (item.href.includes("privacy-policy")) return t.footer.privacyLabel;
-	if (item.href.includes("free-trial")) return t.footer.trialLabel;
-	return item.label;
 }
 
 export function localizedNav(items: NavItem[], t: UiDictionary, locale: Locale): NavItem[] {
@@ -40,7 +36,6 @@ export function localizedNav(items: NavItem[], t: UiDictionary, locale: Locale):
 		...item,
 		label: labelFor(item, t),
 		href: localizePath(item.href, locale),
-		page: item.page ? localizePath(item.page, locale) : undefined,
 	}));
 }
 

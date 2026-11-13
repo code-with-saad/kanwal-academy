@@ -31,18 +31,19 @@ const lightLogoSize = logoSize(logoLight);
 const darkLogoSize = logoSize(logoDark);
 
 const links = courseNames?.length
-	? courseNames.map((c) => ({ label: c.name, href: localizePath(c.href ?? "/#courses", locale) }))
+	? courseNames.map((c) => ({ label: c.name, href: localizePath("/courses", locale) }))
 	: [
-			{ label: t.footer.courseRecitation, href: localizePath("/#courses", locale) },
-			{ label: t.footer.courseTajweed, href: localizePath("/#courses", locale) },
-			{ label: t.footer.courseMemorization, href: localizePath("/#courses", locale) },
+			{ label: t.footer.courseRecitation, href: localizePath("/courses", locale) },
+			{ label: t.footer.courseTajweed, href: localizePath("/courses", locale) },
+			{ label: t.footer.courseMemorization, href: localizePath("/courses", locale) },
 		];
 
 const academyLinks = [
-	{ label: t.footer.aboutLabel, href: localizePath("/#about", locale) },
-	{ label: contact.footer.pricingLabel, href: localizePath("/#pricing", locale), field: "footer_pricing_label" as const },
-	{ label: contact.footer.trialLabel, href: localizePath("/#book", locale), field: "footer_trial_label" as const },
-	{ label: contact.footer.contactLinkLabel, href: localizePath("/#book", locale), field: "footer_contact_link_label" as const },
+	{ label: t.footer.aboutLabel, href: localizePath("/about", locale) },
+	{ label: contact.footer.pricingLabel, href: localizePath("/pricing", locale), field: "footer_pricing_label" as const },
+	{ label: contact.footer.trialLabel, href: localizePath("/contact-us#book", locale), field: "footer_trial_label" as const },
+	{ label: t.nav.faq, href: localizePath("/faq", locale) },
+	{ label: contact.footer.contactLinkLabel, href: localizePath("/contact-us", locale), field: "footer_contact_link_label" as const },
 ];
 ---
 
@@ -166,12 +167,21 @@ const academyLinks = [
 			<ul class="footer__legal">
 				{
 					site.legal.map((item) => {
-						const isTerms = item.href.includes("terms");
-						const field = isTerms ? "footer_terms_label" : "footer_privacy_label";
-						const label = isTerms ? contact.footer.termsLabel : contact.footer.privacyLabel;
+						const field =
+							item.key === "terms"
+								? ("footer_terms_label" as const)
+								: item.key === "privacy"
+									? ("footer_privacy_label" as const)
+									: ("footer_refund_label" as const);
+						const label =
+							item.key === "terms"
+								? contact.footer.termsLabel
+								: item.key === "privacy"
+									? contact.footer.privacyLabel
+									: contact.footer.refundLabel;
 						return (
 							<li>
-								<a href={localizePath(item.href, locale)} {...(field ? settingsEdit?.[field] : {})}>{label}</a>
+								<a href={localizePath(item.href, locale)} {...settingsEdit?.[field]}>{label}</a>
 							</li>
 						);
 					})

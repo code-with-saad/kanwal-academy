@@ -1,0 +1,13 @@
+---
+/**
+ * Renders one JSON-LD block. `<` is escaped so CMS copy can never close the
+ * script tag early.
+ */
+interface Props {
+	data: Record<string, unknown>;
+}
+
+const json = JSON.stringify(Astro.props.data).replace(/</g, "\\u003c");
+---
+
+<script type="application/ld+json" is:inline set:html={json} />

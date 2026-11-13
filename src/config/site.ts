@@ -5,28 +5,21 @@
  * only holds the navigation, legal links, contact details and Arabic text that
  * the shell needs before a CMS entry exists.
  *
- * The site ships as one page. Each navigation item points at an anchor for
- * now, and keeps the future standalone page path beside it. To switch an item
- * from an anchor to a real page, change its `href` to the value in `page`.
- * That is the only edit needed.
+ * Every navigation item points at a real page. In-page anchors are only used
+ * for actions on the Home page (the free trial form at #book); they are never
+ * part of the primary navigation.
  */
+
+/** Identifies which dictionary key supplies the localized label. */
+export type NavKey = "home" | "about" | "courses" | "pricing" | "contact" | "faq" | "teachers";
+
 export interface NavItem {
 	label: string;
-	/** Active target: an in-page anchor ("#about") or a page path ("/about"). */
+	/** Internal path of a real page ("/about") or an in-page action ("/#book"). */
 	href: string;
-	/** Section id this item scrolls to, used by the scroll-spy. */
-	anchor?: string;
-	/** Future standalone page path, unused while `href` is an anchor. */
-	page?: string;
+	/** Dictionary key used to translate the label. */
+	key?: NavKey;
 }
-
-/** Added to the navigation only when the teachers collection has data. */
-export const teacherNavItem: NavItem = {
-	label: "Teachers",
-	href: "/#teachers",
-	anchor: "teachers",
-	page: "/teachers",
-};
 
 export const site = {
 	name: "Kanwal Quran Academy",
@@ -46,22 +39,29 @@ export const site = {
 		sessions: "[000]+",
 	},
 	nav: [
-		{ label: "Home", href: "/#home", anchor: "home", page: "/" },
-		{ label: "About", href: "/#about", anchor: "about", page: "/about" },
-		{ label: "Courses", href: "/#courses", anchor: "courses", page: "/courses" },
-		{ label: "Pricing", href: "/#pricing", anchor: "pricing", page: "/pricing" },
-		{ label: "Contact", href: "/#book", anchor: "book", page: "/contact" },
+		{ label: "Home", href: "/", key: "home" },
+		{ label: "About", href: "/about", key: "about" },
+		{ label: "Courses", href: "/courses", key: "courses" },
+		{ label: "Pricing", href: "/pricing", key: "pricing" },
+		{ label: "Contact", href: "/contact-us", key: "contact" },
 	] satisfies NavItem[],
-	cta: { label: "Book free trial", href: "/#book", anchor: "book" } satisfies NavItem,
+	cta: { label: "Book free trial", href: "/contact-us#book" } satisfies NavItem,
+	/** Links shown in the footer bottom row, in order. `key` selects the label. */
 	legal: [
-		{ label: "Terms of Service", href: "/terms-of-service" },
-		{ label: "Privacy Policy", href: "/privacy-policy" },
-	] satisfies Array<{ label: string; href: string }>,
-	footerLinks: [
-		{ label: "Courses", href: "/#courses", anchor: "courses" },
-		{ label: "Pricing", href: "/#pricing", anchor: "pricing" },
-		{ label: "About", href: "/#about", anchor: "about" },
-		{ label: "Free trial", href: "/#book", anchor: "book" },
-		{ label: "Contact", href: "/#book", anchor: "book" },
-	] satisfies NavItem[],
+		{ label: "Terms of Service", href: "/terms-of-service", key: "terms" },
+		{ label: "Privacy Policy", href: "/privacy-policy", key: "privacy" },
+		{ label: "Refund Policy", href: "/refund-policy", key: "refund" },
+	] satisfies Array<{ label: string; href: string; key: "terms" | "privacy" | "refund" }>,
+	/** Paths that have a real page and are listed in the sitemap. */
+	indexablePaths: [
+		"/",
+		"/about",
+		"/courses",
+		"/pricing",
+		"/contact-us",
+		"/faq",
+		"/privacy-policy",
+		"/terms-of-service",
+		"/refund-policy",
+	],
 } as const;

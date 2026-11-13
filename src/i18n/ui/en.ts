@@ -17,12 +17,16 @@ export const en = {
 		courses: "Courses",
 		pricing: "Pricing",
 		contact: "Contact",
+		faq: "Frequently asked questions",
 		teachers: "Teachers",
 	},
 	actions: {
 		bookFreeTrial: "Book free trial",
 		selectPlan: "Select plan",
 		seeDetails: "See details",
+		learnMore: "Learn more",
+		seePlans: "See plans",
+		viewAllFaqs: "View all FAQs",
 		readMore: "Read more",
 		readAllArticles: "Read all articles",
 		goHome: "Go home",
@@ -71,6 +75,7 @@ export const en = {
 		contactLinkLabel: "Contact",
 		termsLabel: "Terms of Service",
 		privacyLabel: "Privacy Policy",
+		refundLabel: "Refund Policy",
 		copyrightLabel: "All rights reserved.",
 		newsletterHeading: "Stay in touch",
 		newsletterConsent:
@@ -151,6 +156,10 @@ export const en = {
 		unavailableBody:
 			"We are preparing an Arabic version of this page. You can read the English version for now.",
 		englishVersion: "Read the English version",
+		lastUpdated: "Last updated",
+		fallbackNotice:
+			"This page has not been translated into Arabic yet. The English version is shown below.",
+		policyDescription: "Read the current {title} for Kanwal Quran Academy.",
 	},
 	catalog: {
 		address: "Missouri, USA",

@@ -45,6 +45,7 @@ export interface SiteContact {
 		contactLinkLabel: string;
 		termsLabel: string;
 		privacyLabel: string;
+		refundLabel: string;
 		copyrightLabel: string;
 		newsletterHeading: string;
 		newsletterConsent: string;
@@ -84,6 +85,7 @@ interface SiteSettingsData {
 	footer_contact_link_label?: string | null;
 	footer_terms_label?: string | null;
 	footer_privacy_label?: string | null;
+	footer_refund_label?: string | null;
 	footer_copyright_label?: string | null;
 	footer_newsletter_heading?: string | null;
 	footer_newsletter_consent?: string | null;
@@ -119,6 +121,7 @@ const fallback = (t: UiDictionary, locale: Locale): SiteContact => ({
 		contactLinkLabel: t.footer.contactLinkLabel,
 		termsLabel: t.footer.termsLabel,
 		privacyLabel: t.footer.privacyLabel,
+		refundLabel: t.footer.refundLabel,
 		copyrightLabel: t.footer.copyrightLabel,
 		newsletterHeading: t.footer.newsletterHeading,
 		newsletterConsent: t.footer.newsletterConsent,
@@ -179,6 +182,7 @@ function normalize(data: SiteSettingsData | undefined, t: UiDictionary, locale: 
 			contactLinkLabel: clean(data?.footer_contact_link_label, FALLBACK.footer.contactLinkLabel),
 			termsLabel: clean(data?.footer_terms_label, FALLBACK.footer.termsLabel),
 			privacyLabel: clean(data?.footer_privacy_label, FALLBACK.footer.privacyLabel),
+			refundLabel: clean(data?.footer_refund_label, FALLBACK.footer.refundLabel),
 			copyrightLabel: clean(data?.footer_copyright_label, FALLBACK.footer.copyrightLabel),
 			newsletterHeading: clean(data?.footer_newsletter_heading, FALLBACK.footer.newsletterHeading),
 			newsletterConsent: clean(data?.footer_newsletter_consent, FALLBACK.footer.newsletterConsent),
@@ -232,6 +236,7 @@ export async function getSiteContact(locale: Locale = DEFAULT_LOCALE) {
 					footer_contact_link_label: undefined,
 					footer_terms_label: undefined,
 					footer_privacy_label: undefined,
+					footer_refund_label: undefined,
 					footer_copyright_label: undefined,
 					footer_newsletter_heading: undefined,
 					footer_newsletter_consent: undefined,
