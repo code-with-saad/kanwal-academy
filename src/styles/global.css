@@ -19,7 +19,7 @@
 	--mint-100: #d6ece2; /* Tinted panels. */
 	--mint-50: #eaf5f0;
 	--ink: #0b1a14;
-	--ink-muted: #5a6c63;
+	--ink-muted: #44564c; /* ~7.7:1 on the page, ~4.6:1 on mint-100 (was #5a6c63). */
 	--line: #e1ebe6;
 	--green: #0e8660; /* Primary. White text on it passes 4.5:1. */
 	--green-deep: #0a6b4b; /* Hover, links. */
@@ -53,7 +53,7 @@
 	--type-lead-line: 1.6;
 	--type-body-size: 1.0625rem; /* 17 */
 	--type-body-line: 1.6;
-	--type-small-size: 0.875rem; /* 14 */
+	--type-small-size: 1rem; /* 16, never below 16 for body copy contrast */
 	--type-small-line: 1.5;
 	--type-small-weight: 500;
 	--type-eyebrow-size: 0.8125rem; /* 13 */
@@ -103,7 +103,8 @@
 	--container: 1200px;
 	--container-narrow: 760px;
 	--gutter: 32px;
-	--section-space: clamp(72px, 9vw, 128px);
+	--section-space: clamp(56px, 8vw, 80px); /* 80 desktop / 56 mobile */
+	--section-space-tight: clamp(40px, 6vw, 56px);
 	--header-height: 76px;
 	--mobile-bar-height: 56px; /* Mobile bottom bar content height (safe area added separately). */
 
