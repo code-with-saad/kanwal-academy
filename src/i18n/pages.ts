@@ -56,6 +56,7 @@ export interface PageCopy {
 		eyebrow: string;
 		heading: string;
 		lead: string;
+		moreText: string;
 	};
 }
 
@@ -113,6 +114,7 @@ const en: PageCopy = {
 		eyebrow: "FAQ",
 		heading: "Frequently asked questions",
 		lead: "Answers to the questions students and parents ask most. If your question is not here, contact us.",
+		moreText: "Still have questions? Chat with us on WhatsApp.",
 	},
 };
 
@@ -170,6 +172,7 @@ const ar: PageCopy = {
 		eyebrow: "الأسئلة الشائعة",
 		heading: "الأسئلة الشائعة",
 		lead: "إجابات عن الأسئلة التي يطرحها الطلاب وأولياء الأمور كثيرًا. إن لم تجد سؤالك، تواصل معنا.",
+		moreText: "ما زالت لديك أسئلة؟ تحدث معنا عبر واتساب.",
 	},
 };
 

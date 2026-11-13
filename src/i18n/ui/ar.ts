@@ -22,6 +22,7 @@ export const ar: UiDictionary = {
 		learnMore: "اعرف المزيد",
 		seePlans: "عرض الخطط",
 		viewAllFaqs: "عرض جميع الأسئلة",
+		whatsappUs: "تحدث عبر واتساب",
 		readMore: "اقرأ المزيد",
 		readAllArticles: "اقرأ جميع المقالات",
 		goHome: "العودة إلى الرئيسية",

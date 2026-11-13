@@ -27,6 +27,7 @@ export const en = {
 		learnMore: "Learn more",
 		seePlans: "See plans",
 		viewAllFaqs: "View all FAQs",
+		whatsappUs: "Chat on WhatsApp",
 		readMore: "Read more",
 		readAllArticles: "Read all articles",
 		goHome: "Go home",
