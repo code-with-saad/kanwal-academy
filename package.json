@@ -15,6 +15,7 @@
     "typecheck": "astro check",
     "db:reset": "node scripts/reset-db.mjs",
     "check:fonts": "node scripts/check-fonts.mjs",
+    "check:pages": "node scripts/check-pages.mjs",
     "images:optimize": "node scripts/optimize-images.mjs"
   },
   "dependencies": {
