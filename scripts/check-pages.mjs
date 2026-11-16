@@ -241,7 +241,7 @@ const main = async () => {
 			// FAQ accordion.
 			const details = html.match(/<details\b[^>]*>/g) ?? [];
 			if (path === "/faq") {
-				check(`FAQ count 11 ${label}`, details.length === 11, `${details.length}`);
+				check(`FAQ count 23 ${label}`, details.length === 23, `${details.length}`);
 			}
 			if (path === "/pricing") {
 				check(`pricing FAQ count 4 ${label}`, details.length === 4, `${details.length}`);

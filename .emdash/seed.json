@@ -985,6 +985,86 @@
 							}
 						]
 					}
+				},
+				{
+					"slug": "split1_heading_before",
+					"label": "Split 1: heading before highlight",
+					"type": "string"
+				},
+				{
+					"slug": "split1_heading_highlight",
+					"label": "Split 1: highlighted word",
+					"type": "string"
+				},
+				{
+					"slug": "split1_heading_after",
+					"label": "Split 1: heading after highlight",
+					"type": "string"
+				},
+				{
+					"slug": "split1_paragraph_1",
+					"label": "Split 1: paragraph 1",
+					"type": "text"
+				},
+				{
+					"slug": "split1_paragraph_2",
+					"label": "Split 1: paragraph 2",
+					"type": "text"
+				},
+				{
+					"slug": "split1_image",
+					"label": "Split 1: image",
+					"type": "image"
+				},
+				{
+					"slug": "split1_image_alt",
+					"label": "Split 1: image alt text",
+					"type": "string"
+				},
+				{
+					"slug": "split1_image_label",
+					"label": "Split 1: image label",
+					"type": "string"
+				},
+				{
+					"slug": "split2_heading_before",
+					"label": "Split 2: heading before highlight",
+					"type": "string"
+				},
+				{
+					"slug": "split2_heading_highlight",
+					"label": "Split 2: highlighted word",
+					"type": "string"
+				},
+				{
+					"slug": "split2_heading_after",
+					"label": "Split 2: heading after highlight",
+					"type": "string"
+				},
+				{
+					"slug": "split2_paragraph_1",
+					"label": "Split 2: paragraph 1",
+					"type": "text"
+				},
+				{
+					"slug": "split2_list_items",
+					"label": "Split 2: list items (one per line)",
+					"type": "text"
+				},
+				{
+					"slug": "split2_image",
+					"label": "Split 2: image",
+					"type": "image"
+				},
+				{
+					"slug": "split2_image_alt",
+					"label": "Split 2: image alt text",
+					"type": "string"
+				},
+				{
+					"slug": "split2_image_label",
+					"label": "Split 2: image label",
+					"type": "string"
 				}
 			]
 		},
@@ -1694,7 +1774,7 @@
 			"slug": "faqs",
 			"label": "FAQs",
 			"labelSingular": "FAQ",
-			"description": "Questions and answers shown on the Home FAQ section, the pricing page and the FAQ page. Home shows the first five in display order. Uncheck Visible to hide a question without deleting it.",
+			"description": "Questions and answers shown on the Home FAQ section, the pricing page and the FAQ page. The FAQ page groups them by category; Home shows the first five in display order. Uncheck Visible to hide a question without deleting it.",
 			"icon": "question",
 			"group": "Academy",
 			"sortOrder": 70,
@@ -1703,7 +1783,8 @@
 			"admin": {
 				"listColumns": [
 					"order",
-					"visible"
+					"visible",
+					"category"
 				]
 			},
 			"supports": [
@@ -1726,6 +1807,22 @@
 					"type": "text",
 					"required": true,
 					"searchable": true
+				},
+				{
+					"slug": "category",
+					"label": "Category",
+					"type": "select",
+					"required": true,
+					"validation": {
+						"options": [
+							"Free trial",
+							"Classes and teachers",
+							"Courses",
+							"Plans and billing",
+							"Getting started"
+						]
+					},
+					"description": "Groups the question on the FAQ page. The home teaser and the pricing FAQ pick questions by order and slug, not by category."
 				},
 				{
 					"slug": "order",
@@ -2436,7 +2533,8 @@
 					"question": "Are there female teachers for girls and kids?",
 					"answer": "Yes. Female teachers are available for girls and children. Tell us your preference when you book the free trial and we will match the right teacher.",
 					"order": 1,
-					"visible": true
+					"visible": true,
+					"category": "Classes and teachers"
 				}
 			},
 			{
@@ -2447,7 +2545,8 @@
 					"question": "Which time zones do you cover?",
 					"answer": "We teach students worldwide and schedule classes around your time zone. Tell us your country and the times that suit you when you book the trial, and we will confirm a slot that works for you.",
 					"order": 2,
-					"visible": true
+					"visible": true,
+					"category": "Classes and teachers"
 				}
 			},
 			{
@@ -2458,7 +2557,8 @@
 					"question": "Can I cancel or pause anytime?",
 					"answer": "Yes. Plans are billed monthly with no long-term contract. Contact us on WhatsApp or by email before your next billing month and we will pause or cancel your plan.",
 					"order": 3,
-					"visible": true
+					"visible": true,
+					"category": "Plans and billing"
 				}
 			},
 			{
@@ -2469,7 +2569,8 @@
 					"question": "What do I need technically?",
 					"answer": "A phone, tablet or computer with a stable internet connection, a microphone and a camera. Classes are one to one online, and we send you everything you need to join before the first class.",
 					"order": 4,
-					"visible": true
+					"visible": true,
+					"category": "Getting started"
 				}
 			},
 			{
@@ -2480,7 +2581,8 @@
 					"question": "Is a card required for the trial?",
 					"answer": "No. The trial class is free and you do not need a card to book it. You only choose a plan after the trial, if you decide to continue.",
 					"order": 5,
-					"visible": true
+					"visible": true,
+					"category": "Free trial"
 				}
 			},
 			{
@@ -2491,7 +2593,8 @@
 					"question": "Is the trial class really free?",
 					"answer": "Yes. Every student starts with one free trial class. You can meet the teacher, ask questions and try the lesson before choosing a plan.",
 					"order": 6,
-					"visible": true
+					"visible": true,
+					"category": "Free trial"
 				}
 			},
 			{
@@ -2502,7 +2605,8 @@
 					"question": "How long is each class?",
 					"answer": "Classes are 30 minutes. The monthly hours for each plan are based on four classes in a week, so a plan with one class each week gives two teaching hours each month.",
 					"order": 7,
-					"visible": true
+					"visible": true,
+					"category": "Classes and teachers"
 				}
 			},
 			{
@@ -2513,7 +2617,8 @@
 					"question": "Which course should I choose?",
 					"answer": "Choose Qur'anic Recitation if you are starting out or want to improve fluency. Choose Tajweed Proficiency if you can already read and want to refine your recitation. Choose Memorization Excellence if you are ready for a structured hifz plan. Your teacher can adjust the course after the trial class.",
 					"order": 8,
-					"visible": true
+					"visible": true,
+					"category": "Courses"
 				}
 			},
 			{
@@ -2524,7 +2629,8 @@
 					"question": "Do you teach children and adults?",
 					"answer": "Yes. We teach children and adults, and lessons are one to one. Tell us the student's age and experience when you book the trial so we can match the right teacher.",
 					"order": 9,
-					"visible": true
+					"visible": true,
+					"category": "Classes and teachers"
 				}
 			},
 			{
@@ -2535,7 +2641,8 @@
 					"question": "How do I book a time?",
 					"answer": "Use the free trial form or contact us by phone or email. Tell us your time zone and the days that suit you, and we will confirm a slot.",
 					"order": 10,
-					"visible": true
+					"visible": true,
+					"category": "Getting started"
 				}
 			},
 			{
@@ -2546,7 +2653,8 @@
 					"question": "What happens after I choose a plan?",
 					"answer": "Select a plan and complete the enrolment form. We confirm your schedule, match you with a teacher and start your first paid month after the free trial.",
 					"order": 11,
-					"visible": true
+					"visible": true,
+					"category": "Getting started"
 				}
 			},
 			{
@@ -2559,7 +2667,8 @@
 					"question": "هل توجد معلمات للبنات والأطفال؟",
 					"answer": "نعم. تتوفر معلمات للبنات والأطفال. أخبرينا بتفضيلك عند حجز الحصة التجريبية وسنختار المعلمة المناسبة.",
 					"order": 1,
-					"visible": true
+					"visible": true,
+					"category": "Classes and teachers"
 				}
 			},
 			{
@@ -2572,7 +2681,8 @@
 					"question": "ما المناطق الزمنية التي تغطونها؟",
 					"answer": "نعلّم طلابًا حول العالم ونرتب الحصص حسب منطقتك الزمنية. أخبرنا ببلدك والأوقات التي تناسبك عند حجز الحصة التجريبية، وسنؤكد لك موعدًا مناسبًا.",
 					"order": 2,
-					"visible": true
+					"visible": true,
+					"category": "Classes and teachers"
 				}
 			},
 			{
@@ -2585,7 +2695,8 @@
 					"question": "هل يمكنني الإلغاء أو الإيقاف في أي وقت؟",
 					"answer": "نعم. تُدفع الخطط شهريًا دون عقد طويل الأمد. تواصل معنا عبر واتساب أو البريد الإلكتروني قبل شهر الفوترة التالي وسنوقف خطتك أو نلغيها.",
 					"order": 3,
-					"visible": true
+					"visible": true,
+					"category": "Plans and billing"
 				}
 			},
 			{
@@ -2598,7 +2709,8 @@
 					"question": "ماذا أحتاج تقنيًا؟",
 					"answer": "هاتف أو جهاز لوحي أو حاسوب مع اتصال إنترنت مستقر وميكروفون وكاميرا. الدروس فردية عبر الإنترنت، ونرسل لك كل ما تحتاجه للانضمام قبل الحصة الأولى.",
 					"order": 4,
-					"visible": true
+					"visible": true,
+					"category": "Getting started"
 				}
 			},
 			{
@@ -2611,7 +2723,8 @@
 					"question": "هل أحتاج بطاقة دفع للحصة التجريبية؟",
 					"answer": "لا. الحصة التجريبية مجانية ولا تحتاج إلى بطاقة لحجزها. تختار خطة فقط بعد الحصة التجريبية إذا قررت المتابعة.",
 					"order": 5,
-					"visible": true
+					"visible": true,
+					"category": "Free trial"
 				}
 			},
 			{
@@ -2624,7 +2737,8 @@
 					"question": "هل الحصة التجريبية مجانية فعلاً؟",
 					"answer": "نعم. يبدأ كل طالب بحصة تجريبية مجانية واحدة. يمكنك لقاء المعلم وطرح الأسئلة وتجربة الدرس قبل اختيار الخطة.",
 					"order": 6,
-					"visible": true
+					"visible": true,
+					"category": "Free trial"
 				}
 			},
 			{
@@ -2637,7 +2751,8 @@
 					"question": "كم مدة كل حصة؟",
 					"answer": "مدة الحصة 30 دقيقة. تُحسب الساعات الشهرية لكل خطة على أساس أربع حصص في الأسبوع، لذا تمنحك خطة بحصة واحدة أسبوعيًا ساعتين تعليميتين شهريًا.",
 					"order": 7,
-					"visible": true
+					"visible": true,
+					"category": "Classes and teachers"
 				}
 			},
 			{
@@ -2650,7 +2765,8 @@
 					"question": "أي دورة أختار؟",
 					"answer": "اختر التلاوة القرآنية إذا كنت مبتدئًا أو ترغب في تحسين الطلاقة. اختر إتقان التجويد إذا كنت تقرأ بالفعل وتريد تحسين تلاوتك. اختر التميز في الحفظ إذا كنت مستعدًا لخطة حفظ منظمة. يمكن لمعلمك تعديل الدورة بعد الحصة التجريبية.",
 					"order": 8,
-					"visible": true
+					"visible": true,
+					"category": "Courses"
 				}
 			},
 			{
@@ -2663,7 +2779,8 @@
 					"question": "هل تعلّمون الأطفال والكبار؟",
 					"answer": "نعم. نعلّم الأطفال والكبار، والدروس فردية. أخبرنا بعمر الطالب وخبرته عند حجز الحصة التجريبية لنختار المعلم المناسب.",
 					"order": 9,
-					"visible": true
+					"visible": true,
+					"category": "Classes and teachers"
 				}
 			},
 			{
@@ -2676,7 +2793,8 @@
 					"question": "كيف أحجز موعدًا؟",
 					"answer": "استخدم نموذج الحصة التجريبية أو تواصل معنا هاتفيًا أو عبر البريد الإلكتروني. أخبرنا بمنطقتك الزمنية والأيام التي تناسبك، وسنؤكد لك موعدًا.",
 					"order": 10,
-					"visible": true
+					"visible": true,
+					"category": "Getting started"
 				}
 			},
 			{
@@ -2689,6 +2807,319 @@
 					"question": "ماذا يحدث بعد اختيار الخطة؟",
 					"answer": "اختر خطة وأكمل نموذج التسجيل. نؤكد جدولك ونختار لك معلمًا ونبدأ أول شهر مدفوع بعد الحصة التجريبية.",
 					"order": 11,
+					"visible": true,
+					"category": "Getting started"
+				}
+			},
+			{
+				"id": "faq-trial-what-happens",
+				"slug": "trial-what-happens",
+				"status": "published",
+				"data": {
+					"question": "What happens in the free trial class?",
+					"answer": "The teacher meets the student, checks the current level with a short recitation, and teaches a real lesson. At the end you get an honest recommendation for the right course and plan. There is no obligation to enrol.",
+					"category": "Free trial",
+					"order": 12,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-trial-what-happens-ar",
+				"slug": "trial-what-happens",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-trial-what-happens",
+				"data": {
+					"question": "ماذا يحدث في الحصة التجريبية؟",
+					"answer": "يلتقي المعلم بالطالب، ويقيّم مستواه الحالي بتلاوة قصيرة، ثم يقدّم درسًا حقيقيًا. وفي النهاية تحصل على توصية صادقة بالدورة والخطة المناسبتين، دون أي التزام بالتسجيل.",
+					"category": "Free trial",
+					"order": 12,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-enrol-after-trial",
+				"slug": "enrol-after-trial",
+				"status": "published",
+				"data": {
+					"question": "Do I have to enrol after the trial?",
+					"answer": "No. The trial class is free with no card required and no pressure to continue. If it feels right, you choose a plan; if not, you simply keep the experience of the lesson.",
+					"category": "Free trial",
+					"order": 13,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-enrol-after-trial-ar",
+				"slug": "enrol-after-trial",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-enrol-after-trial",
+				"data": {
+					"question": "هل يجب التسجيل بعد الحصة التجريبية؟",
+					"answer": "لا. الحصة التجريبية مجانية دون حاجة إلى بطاقة ودون ضغط للمتابعة. إن شعرت أنها مناسبة تختار خطة، وإلا تحتفظ ببساطة بتجربة الدرس.",
+					"category": "Free trial",
+					"order": 13,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-one-to-one",
+				"slug": "one-to-one",
+				"status": "published",
+				"data": {
+					"question": "Are classes one to one or in groups?",
+					"answer": "Every class is one to one: one teacher and one student on a live video call. There are no group classes and no recorded lessons, so the whole class is about your recitation.",
+					"category": "Classes and teachers",
+					"order": 14,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-one-to-one-ar",
+				"slug": "one-to-one",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-one-to-one",
+				"data": {
+					"question": "هل الحصص فردية أم جماعية؟",
+					"answer": "كل حصة فردية: معلم واحد وطالب واحد عبر مكالمة فيديو مباشرة. لا توجد حصص جماعية ولا دروس مسجلة، فالحصة كلها من أجل تلاوتك.",
+					"category": "Classes and teachers",
+					"order": 14,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-our-teachers",
+				"slug": "our-teachers",
+				"status": "published",
+				"data": {
+					"question": "Who will teach my child?",
+					"answer": "You are matched with a teacher who fits the student's age, level and time zone. Teachers are trained in recitation, tajweed and memorization, and you meet your teacher in the free trial before deciding.",
+					"category": "Classes and teachers",
+					"order": 15,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-our-teachers-ar",
+				"slug": "our-teachers",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-our-teachers",
+				"data": {
+					"question": "من سيعلّم طفلي؟",
+					"answer": "نختار لك معلمًا يناسب عمر الطالب ومستواه ومنطقته الزمنية. المعلمون مدرَّبون على التلاوة والتجويد والحفظ، وتلتقي بمعلمك في الحصة التجريبية قبل أن تقرر.",
+					"category": "Classes and teachers",
+					"order": 15,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-miss-a-class",
+				"slug": "miss-a-class",
+				"status": "published",
+				"data": {
+					"question": "What if we miss a class?",
+					"answer": "Tell your teacher or message us on WhatsApp as early as you can. We arrange a make-up class at a time that suits you, so a busy week does not break the learning routine.",
+					"category": "Classes and teachers",
+					"order": 16,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-miss-a-class-ar",
+				"slug": "miss-a-class",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-miss-a-class",
+				"data": {
+					"question": "ماذا لو فاتتنا حصة؟",
+					"answer": "أخبر معلمك أو راسلنا عبر واتساب في أقرب وقت ممكن. نرتب حصة تعويضية في وقت يناسبك، حتى لا يقطع الأسبوع المزدحم روتين التعلّم.",
+					"category": "Classes and teachers",
+					"order": 16,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-teaching-languages",
+				"slug": "teaching-languages",
+				"status": "published",
+				"data": {
+					"question": "Which languages do teachers speak?",
+					"answer": "Classes run in English or Urdu, and the Qur'anic text itself is always taught in Arabic. Tell us your preferred language when you book and we will match a teacher who speaks it.",
+					"category": "Classes and teachers",
+					"order": 17,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-teaching-languages-ar",
+				"slug": "teaching-languages",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-teaching-languages",
+				"data": {
+					"question": "ما اللغات التي يتحدث بها المعلمون؟",
+					"answer": "تُقدَّم الحصص بالإنجليزية أو الأردية، ويُعلَّم النص القرآني نفسه دائمًا بالعربية. أخبرنا بلغتك المفضلة عند الحجز وسنختار معلمًا يتحدث بها.",
+					"category": "Classes and teachers",
+					"order": 17,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-complete-beginner",
+				"slug": "complete-beginner",
+				"status": "published",
+				"data": {
+					"question": "I cannot read Arabic yet. Can I still join?",
+					"answer": "Yes. Qur'anic Recitation starts from the letters and sounds, so complete beginners are welcome. Your teacher moves at your pace, and many students start with no Arabic at all.",
+					"category": "Courses",
+					"order": 18,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-complete-beginner-ar",
+				"slug": "complete-beginner",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-complete-beginner",
+				"data": {
+					"question": "لا أستطيع قراءة العربية بعد. هل يمكنني الانضمام؟",
+					"answer": "نعم. تبدأ دورة التلاوة القرآنية من الحروف والأصوات، فالمبتدئون تمامًا مرحب بهم. يسير معلمك وفق وتيرتك، ويبدأ كثير من الطلاب دون أي معرفة بالعربية.",
+					"category": "Courses",
+					"order": 18,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-recitation-vs-tajweed",
+				"slug": "recitation-vs-tajweed",
+				"status": "published",
+				"data": {
+					"question": "What is the difference between recitation and tajweed?",
+					"answer": "Recitation is learning to read the Qur'an fluently and correctly. Tajweed is the set of rules that perfects each sound: where a letter is pronounced, how long a vowel is held and when sounds merge. Most students start with recitation and add tajweed as they grow.",
+					"category": "Courses",
+					"order": 19,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-recitation-vs-tajweed-ar",
+				"slug": "recitation-vs-tajweed",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-recitation-vs-tajweed",
+				"data": {
+					"question": "ما الفرق بين التلاوة والتجويد؟",
+					"answer": "التلاوة هي تعلّم قراءة القرآن بطلاقة وصحة. أما التجويد فهو قواعد إتقان كل صوت: مخرج الحرف، ومقد المد، ومواضع الإدغام. يبدأ معظم الطلاب بالتلاوة ثم يضيفون التجويد مع تقدمهم.",
+					"category": "Courses",
+					"order": 19,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-memorization-pace",
+				"slug": "memorization-pace",
+				"status": "published",
+				"data": {
+					"question": "How fast will I memorize the Qur'an?",
+					"answer": "Pace is personal. Your teacher sets a realistic weekly target after the trial and adjusts it around school, work and revision. Steady daily practice matters more than speed, and the plan grows with you.",
+					"category": "Courses",
+					"order": 20,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-memorization-pace-ar",
+				"slug": "memorization-pace",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-memorization-pace",
+				"data": {
+					"question": "ما سرعة حفظ القرآن؟",
+					"answer": "الوتيرة شخصية. يحدد معلمك هدفًا أسبوعيًا واقعيًا بعد الحصة التجريبية ويعدّله حول الدراسة والعمل والمراجعة. الممارسة اليومية الثابتة أهم من السرعة، والخطة تنمو معك.",
+					"category": "Courses",
+					"order": 20,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-how-to-pay",
+				"slug": "how-to-pay",
+				"status": "published",
+				"data": {
+					"question": "How do I pay each month?",
+					"answer": "After you choose a plan we confirm your schedule and share the payment details with you directly. The website never asks for or stores card details, and the first class is always the free trial.",
+					"category": "Plans and billing",
+					"order": 21,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-how-to-pay-ar",
+				"slug": "how-to-pay",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-how-to-pay",
+				"data": {
+					"question": "كيف أدفع كل شهر؟",
+					"answer": "بعد اختيار خطتك نؤكد جدولك ونشارك معك تفاصيل الدفع مباشرة. لا يطلب الموقع بيانات بطاقتك ولا يخزنها أبدًا، والحصة الأولى دائمًا هي الحصة التجريبية المجانية.",
+					"category": "Plans and billing",
+					"order": 21,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-change-plan",
+				"slug": "change-plan",
+				"status": "published",
+				"data": {
+					"question": "Can I change my plan later?",
+					"answer": "Yes. Message us on WhatsApp or by email before your next billing month and we will move you to the plan that fits, whether that means more classes or fewer.",
+					"category": "Plans and billing",
+					"order": 22,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-change-plan-ar",
+				"slug": "change-plan",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-change-plan",
+				"data": {
+					"question": "هل يمكنني تغيير خطتي لاحقًا؟",
+					"answer": "نعم. راسلنا عبر واتساب أو البريد الإلكتروني قبل شهر الفوترة التالي وسننقلك إلى الخطة التي تناسبك، سواء بحصص أكثر أو أقل.",
+					"category": "Plans and billing",
+					"order": 22,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-refund-policy",
+				"slug": "refund-policy",
+				"status": "published",
+				"data": {
+					"question": "What is your refund policy?",
+					"answer": "Our Refund Policy page explains the full terms, linked in the footer of every page. If anything is unclear, message us on WhatsApp and we will explain it before you pay.",
+					"category": "Plans and billing",
+					"order": 23,
+					"visible": true
+				}
+			},
+			{
+				"id": "faq-refund-policy-ar",
+				"slug": "refund-policy",
+				"status": "published",
+				"locale": "ar",
+				"translationOf": "faq-refund-policy",
+				"data": {
+					"question": "ما سياسة الاسترداد لديكم؟",
+					"answer": "تشرح صفحة سياسة الاسترداد الشروط كاملة، وهي مرتبطة في تذييل كل صفحة. إن كان أي شيء غير واضح، راسلنا عبر واتساب وسنشرحه لك قبل أن تدفع.",
+					"category": "Plans and billing",
+					"order": 23,
 					"visible": true
 				}
 			}
@@ -3079,7 +3510,7 @@
 					"hero_heading_before": "Three paths to the ",
 					"hero_heading_highlight": "Qur'an",
 					"hero_heading_after": "",
-					"hero_image_alt": "An open Qur'an on a wooden rehal, ready for a recitation lesson",
+					"hero_image_alt": "An open Qur'an on a wooden rehal against a soft mint backdrop",
 					"hero_badge": "Live, one to one",
 					"hero_chips": [
 						{
@@ -3113,7 +3544,21 @@
 							"title": "A plan for the week",
 							"text": "The teacher leaves a short practice plan sized to your chosen plan, so the next class builds on this one."
 						}
-					]
+					],
+					"split1_heading_before": "A routine that fits ",
+					"split1_heading_highlight": "your day",
+					"split1_heading_after": "",
+					"split1_paragraph_1": "Classes are thirty minutes, one to one, at a time you choose. Morning, evening or weekend, your schedule stays yours.",
+					"split1_paragraph_2": "Your teacher keeps a simple plan for the week, so every class builds on the last one and practice at home stays light.",
+					"split1_image_alt": "A student joining a Qur'an lesson on a phone",
+					"split1_image_label": "Live, one to one",
+					"split2_heading_before": "Progress you can ",
+					"split2_heading_highlight": "hear",
+					"split2_heading_after": "",
+					"split2_paragraph_1": "Recitation is a skill you can hear growing. From the first letters to fluent pages, your teacher corrects gently and marks every step.",
+					"split2_list_items": "A level check in your free trial\nA weekly plan matched to your pace\nGentle correction, never pressure\nRegular updates for parents",
+					"split2_image_alt": "The Qur'an open beside notes for a memorization lesson",
+					"split2_image_label": "From letters to fluent pages"
 				}
 			}
 		],
@@ -3134,7 +3579,7 @@
 					"hero_heading_before": "Plans that fit ",
 					"hero_heading_highlight": "your week",
 					"hero_heading_after": "",
-					"hero_image_alt": "An open Qur'an on a wooden rehal, ready for a tajweed lesson",
+					"hero_image_alt": "A closed Qur'an beside a notebook and a cup of tea on a study desk",
 					"hero_badge": "Free trial first",
 					"hero_chips": [
 						{
@@ -3185,7 +3630,7 @@
 					"hero_heading_before": "Talk to ",
 					"hero_heading_highlight": "the academy",
 					"hero_heading_after": "",
-					"hero_image_alt": "A student joining a Qur'an lesson on a phone",
+					"hero_image_alt": "A phone on a wooden stand beside an open Qur'an, ready for a live lesson",
 					"hero_badge": "Free trial first",
 					"hero_chips": [
 						{
@@ -3244,7 +3689,7 @@
 					"hero_heading_before": "Frequently asked ",
 					"hero_heading_highlight": "questions",
 					"hero_heading_after": "",
-					"hero_image_alt": "A student reciting the Qur'an during a live online lesson",
+					"hero_image_alt": "A stack of books with an open book and reading glasses on a desk",
 					"hero_badge": "Parents welcome",
 					"facts_items": [
 						{

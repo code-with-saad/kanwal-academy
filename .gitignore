@@ -40,3 +40,12 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# Chrome profile
+.tmp-chrome-profile*
+
+# IDE cache
+.qoder/
+
+# Screenshots
+screenshots/

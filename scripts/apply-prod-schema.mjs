@@ -17,6 +17,10 @@
  *     their fields, and fill their single entries from seed/seed.json.
  *     Existing editor values are never overwritten: only empty fields are
  *     filled.
+ *   - Ensure the `faqs` collection has the `category` select field, then
+ *     sync the seed questions: missing entries are created (Arabic ones
+ *     linked as translations), existing entries only get empty fields
+ *     filled. Existing questions and answers are never overwritten.
  *   - Regroup the admin: the page collections move to the Content group
  *     with SEO enabled; `pages` is renamed to "Legal Pages".
  *   - With --cleanup (run only after the new code is deployed and verified):
@@ -353,6 +357,59 @@ async function main() {
 		await api("POST", `/_emdash/api/content/${collection}/${existing.id}/publish`, {});
 		console.log(`  filled ${Object.keys(fill).length} empty field(s) + published: ${collection}/${slug}`);
 	}
+
+	// --- faqs: category field + seed questions (additive, fill-only-empty) ---
+	const faqsSpec = seed.collections.find((c) => c.slug === "faqs");
+	await ensureSeedCollection(faqsSpec);
+	await updateCollection("faqs", {
+		description: faqsSpec.description,
+		admin: faqsSpec.admin,
+	});
+
+	async function listFaqs(locale) {
+		const data = await api(
+			"GET",
+			`/_emdash/api/content/faqs?locale=${locale}&limit=100`,
+		);
+		return data?.data?.items ?? [];
+	}
+	const enBySlug = new Map((await listFaqs("en")).map((e) => [e.slug, e]));
+	const arBySlug = new Map((await listFaqs("ar")).map((e) => [e.slug, e]));
+	let faqCreated = 0;
+	let faqFilled = 0;
+	async function syncFaq(seedFaq, bySlug, locale, sourceId) {
+		let existing = bySlug.get(seedFaq.slug);
+		if (!existing) {
+			const body = { slug: seedFaq.slug, data: seedFaq.data };
+			if (locale !== "en") {
+				body.locale = locale;
+				if (sourceId) body.translationOf = sourceId;
+			}
+			const created = await api("POST", "/_emdash/api/content/faqs", body);
+			const createdId = created?.data?.item?.id ?? created?.data?.id;
+			await api("POST", `/_emdash/api/content/faqs/${createdId}/publish`, {});
+			bySlug.set(seedFaq.slug, { id: createdId, slug: seedFaq.slug, data: seedFaq.data });
+			faqCreated++;
+			return;
+		}
+		const fill = {};
+		for (const [key, value] of Object.entries(seedFaq.data)) {
+			if (isEmpty(existing.data?.[key])) fill[key] = value;
+		}
+		if (Object.keys(fill).length === 0) return;
+		await api("PUT", `/_emdash/api/content/faqs/${existing.id}`, { data: fill });
+		await api("POST", `/_emdash/api/content/faqs/${existing.id}/publish`, {});
+		faqFilled++;
+	}
+	for (const seedFaq of seed.content.faqs.filter((e) => !e.locale)) {
+		await syncFaq(seedFaq, enBySlug, "en");
+	}
+	for (const seedFaq of seed.content.faqs.filter((e) => e.locale === "ar")) {
+		await syncFaq(seedFaq, arBySlug, "ar", enBySlug.get(seedFaq.slug)?.id);
+	}
+	console.log(
+		`  faqs: ${faqCreated} created, ${faqFilled} filled + published (existing answers untouched)`,
+	);
 
 	// --- admin regroup: Content group, SEO, Legal Pages label ---------------
 	const pagesSpec = seed.collections.find((c) => c.slug === "pages");
