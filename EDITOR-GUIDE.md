@@ -220,27 +220,48 @@ the bundled photographs.
 - **Submit button** label
 
 ### Courses page (/courses) — Content → Courses page
-One entry with: eyebrow, heading, lead paragraph, and the closing CTA
-heading + text. The course rows and the two image+text panels below them
-are shared with the home page: edit them on the **Home page** entry (Courses
-section and Feature split panels) or in **Academy → Courses**.
+One entry, same design language as the About page (mint hero panel with
+arch photograph, tinted section bands, wave dividers):
+- **Hero**: eyebrow, heading before / highlighted word / after, lead,
+  image + alt text, badge pill, fact chips repeater
+- **Method panel**: eyebrow, heading before / highlight / after, paragraph,
+  image + alt text
+- **Lesson steps**: eyebrow, heading, steps repeater (title + text, in order)
+- **Closing CTA**: heading, text
+The plain **Heading** field is the list title in the admin; the hero itself
+uses the before / highlight / after fields. The course rows and the two
+image+text panels are shared with the home page: edit them on the
+**Home page** entry (Courses section and Feature split panels) or in
+**Academy → Courses**.
 
 ### Pricing page (/pricing) — Content → Pricing page
-One entry with: eyebrow, heading, lead paragraph, cancel note, billing
-note, FAQ heading, and the closing CTA heading + text. The plan cards,
-labels and trial steps are shared with the home page: edit them on the
-**Home page** entry (Pricing section, How it works) or in **Academy → Plans**.
-The short FAQ questions come from **Academy → FAQs**.
+One entry:
+- **Hero**: eyebrow, heading before / highlighted word / after, lead,
+  image + alt text, badge pill, fact chips repeater
+- **Includes panel**: eyebrow, heading, lead, list items repeater (one row
+  per included item)
+- Cancel note, billing note, FAQ heading, closing CTA heading + text
+The plan cards, labels and trial steps are shared with the home page: edit
+them on the **Home page** entry (Pricing section, How it works) or in
+**Academy → Plans**. The short FAQ questions come from **Academy → FAQs**.
 
 ### Contact page (/contact-us) — Content → Contact page
-One entry with: eyebrow, heading and lead paragraph. The trial form copy
-is shared with the home page: edit it on the **Home page** entry (Book trial
-section). Phone, email and address come from **Settings → Site settings**.
+One entry:
+- **Hero**: eyebrow, heading before / highlighted word / after, lead,
+  image + alt text, badge pill, fact chips repeater
+- **Next steps**: eyebrow, heading, steps repeater (title + text, in order)
+- **Assurance panel**: heading, paragraph, chips repeater
+The trial form copy is shared with the home page: edit it on the
+**Home page** entry (Book trial section). Phone, email and address come
+from **Settings → Site settings**.
 
 ### FAQ page (/faq) — Content → FAQ page
-One entry with: eyebrow, heading, lead paragraph, and the closing CTA
-heading + text. The questions and answers themselves come from
-**Academy → FAQs**.
+One entry:
+- **Hero**: eyebrow, heading before / highlighted word / after, lead,
+  image + alt text, badge pill, fact chips repeater
+- **WhatsApp line** under the answers
+- Closing CTA heading + text
+The questions and answers themselves come from **Academy → FAQs**.
 
 ### Legal pages — Content → Legal Pages → Terms of Service / Privacy Policy / Refund Policy
 Each legal page is one entry with a rich text **Content** field. Edit the
