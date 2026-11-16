@@ -874,6 +874,117 @@
 					"slug": "cta_text",
 					"label": "CTA text",
 					"type": "text"
+				},
+				{
+					"slug": "hero_heading_before",
+					"label": "Hero: heading before highlight",
+					"type": "string"
+				},
+				{
+					"slug": "hero_heading_highlight",
+					"label": "Hero: highlighted word",
+					"type": "string"
+				},
+				{
+					"slug": "hero_heading_after",
+					"label": "Hero: heading after highlight",
+					"type": "string"
+				},
+				{
+					"slug": "hero_image",
+					"label": "Hero: image",
+					"type": "image"
+				},
+				{
+					"slug": "hero_image_alt",
+					"label": "Hero: image alt text",
+					"type": "string"
+				},
+				{
+					"slug": "hero_badge",
+					"label": "Hero: badge pill",
+					"type": "string"
+				},
+				{
+					"slug": "hero_chips",
+					"label": "Hero: fact chips",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "label",
+								"label": "Chip text",
+								"type": "string",
+								"required": true
+							}
+						]
+					}
+				},
+				{
+					"slug": "method_eyebrow",
+					"label": "Method: eyebrow",
+					"type": "string"
+				},
+				{
+					"slug": "method_heading_before",
+					"label": "Method: heading before highlight",
+					"type": "string"
+				},
+				{
+					"slug": "method_heading_highlight",
+					"label": "Method: highlighted word",
+					"type": "string"
+				},
+				{
+					"slug": "method_heading_after",
+					"label": "Method: heading after highlight",
+					"type": "string"
+				},
+				{
+					"slug": "method_text",
+					"label": "Method: paragraph",
+					"type": "text"
+				},
+				{
+					"slug": "method_image",
+					"label": "Method: image",
+					"type": "image"
+				},
+				{
+					"slug": "method_image_alt",
+					"label": "Method: image alt text",
+					"type": "string"
+				},
+				{
+					"slug": "lessons_eyebrow",
+					"label": "Lesson steps: eyebrow",
+					"type": "string"
+				},
+				{
+					"slug": "lessons_heading",
+					"label": "Lesson steps: heading",
+					"type": "string"
+				},
+				{
+					"slug": "lessons_steps",
+					"label": "Lesson steps: steps",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "title",
+								"label": "Title",
+								"type": "string",
+								"required": true
+							},
+							{
+								"slug": "text",
+								"label": "Text",
+								"type": "text",
+								"required": true
+							}
+						]
+					}
 				}
 			]
 		},
@@ -939,6 +1050,81 @@
 					"slug": "cta_text",
 					"label": "CTA text",
 					"type": "text"
+				},
+				{
+					"slug": "hero_heading_before",
+					"label": "Hero: heading before highlight",
+					"type": "string"
+				},
+				{
+					"slug": "hero_heading_highlight",
+					"label": "Hero: highlighted word",
+					"type": "string"
+				},
+				{
+					"slug": "hero_heading_after",
+					"label": "Hero: heading after highlight",
+					"type": "string"
+				},
+				{
+					"slug": "hero_image",
+					"label": "Hero: image",
+					"type": "image"
+				},
+				{
+					"slug": "hero_image_alt",
+					"label": "Hero: image alt text",
+					"type": "string"
+				},
+				{
+					"slug": "hero_badge",
+					"label": "Hero: badge pill",
+					"type": "string"
+				},
+				{
+					"slug": "hero_chips",
+					"label": "Hero: fact chips",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "label",
+								"label": "Chip text",
+								"type": "string",
+								"required": true
+							}
+						]
+					}
+				},
+				{
+					"slug": "includes_eyebrow",
+					"label": "Includes: eyebrow",
+					"type": "string"
+				},
+				{
+					"slug": "includes_heading",
+					"label": "Includes: heading",
+					"type": "string"
+				},
+				{
+					"slug": "includes_lead",
+					"label": "Includes: lead",
+					"type": "text"
+				},
+				{
+					"slug": "includes_items",
+					"label": "Includes: list items",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "label",
+								"label": "Chip text",
+								"type": "string",
+								"required": true
+							}
+						]
+					}
 				}
 			]
 		},
@@ -979,6 +1165,107 @@
 					"slug": "lead",
 					"label": "Lead",
 					"type": "text"
+				},
+				{
+					"slug": "hero_heading_before",
+					"label": "Hero: heading before highlight",
+					"type": "string"
+				},
+				{
+					"slug": "hero_heading_highlight",
+					"label": "Hero: highlighted word",
+					"type": "string"
+				},
+				{
+					"slug": "hero_heading_after",
+					"label": "Hero: heading after highlight",
+					"type": "string"
+				},
+				{
+					"slug": "hero_image",
+					"label": "Hero: image",
+					"type": "image"
+				},
+				{
+					"slug": "hero_image_alt",
+					"label": "Hero: image alt text",
+					"type": "string"
+				},
+				{
+					"slug": "hero_badge",
+					"label": "Hero: badge pill",
+					"type": "string"
+				},
+				{
+					"slug": "hero_chips",
+					"label": "Hero: fact chips",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "label",
+								"label": "Chip text",
+								"type": "string",
+								"required": true
+							}
+						]
+					}
+				},
+				{
+					"slug": "next_eyebrow",
+					"label": "Next steps: eyebrow",
+					"type": "string"
+				},
+				{
+					"slug": "next_heading",
+					"label": "Next steps: heading",
+					"type": "string"
+				},
+				{
+					"slug": "next_steps",
+					"label": "Next steps: steps",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "title",
+								"label": "Title",
+								"type": "string",
+								"required": true
+							},
+							{
+								"slug": "text",
+								"label": "Text",
+								"type": "text",
+								"required": true
+							}
+						]
+					}
+				},
+				{
+					"slug": "assurance_heading",
+					"label": "Assurance: heading",
+					"type": "string"
+				},
+				{
+					"slug": "assurance_text",
+					"label": "Assurance: paragraph",
+					"type": "text"
+				},
+				{
+					"slug": "assurance_chips",
+					"label": "Assurance: chips",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "label",
+								"label": "Chip text",
+								"type": "string",
+								"required": true
+							}
+						]
+					}
 				}
 			]
 		},
@@ -1029,6 +1316,56 @@
 					"slug": "cta_text",
 					"label": "CTA text",
 					"type": "text"
+				},
+				{
+					"slug": "hero_heading_before",
+					"label": "Hero: heading before highlight",
+					"type": "string"
+				},
+				{
+					"slug": "hero_heading_highlight",
+					"label": "Hero: highlighted word",
+					"type": "string"
+				},
+				{
+					"slug": "hero_heading_after",
+					"label": "Hero: heading after highlight",
+					"type": "string"
+				},
+				{
+					"slug": "hero_image",
+					"label": "Hero: image",
+					"type": "image"
+				},
+				{
+					"slug": "hero_image_alt",
+					"label": "Hero: image alt text",
+					"type": "string"
+				},
+				{
+					"slug": "hero_badge",
+					"label": "Hero: badge pill",
+					"type": "string"
+				},
+				{
+					"slug": "facts_items",
+					"label": "Hero: fact chips",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "label",
+								"label": "Chip text",
+								"type": "string",
+								"required": true
+							}
+						]
+					}
+				},
+				{
+					"slug": "more_text",
+					"label": "WhatsApp line under the answers",
+					"type": "string"
 				}
 			]
 		},
@@ -2738,7 +3075,45 @@
 					"heading": "Three paths to the Qur'an",
 					"lead": "Every course is taught live, one to one. Choose the course that matches where you are today, and your teacher adjusts the pace after the trial class.",
 					"cta_heading": "Not sure which course?",
-					"cta_text": "Book a free trial and your teacher will help you choose the right path."
+					"cta_text": "Book a free trial and your teacher will help you choose the right path.",
+					"hero_heading_before": "Three paths to the ",
+					"hero_heading_highlight": "Qur'an",
+					"hero_heading_after": "",
+					"hero_image_alt": "An open Qur'an on a wooden rehal, ready for a recitation lesson",
+					"hero_badge": "Live, one to one",
+					"hero_chips": [
+						{
+							"label": "3 courses"
+						},
+						{
+							"label": "All levels"
+						},
+						{
+							"label": "30-minute classes"
+						}
+					],
+					"method_eyebrow": "The method",
+					"method_heading_before": "One teacher, one student, one ",
+					"method_heading_highlight": "focus",
+					"method_heading_after": "",
+					"method_text": "Every class is a live video call with your teacher, never a recording and never a group. Your teacher listens to every ayah, corrects gently and sets the pace around the student, so progress stays steady from the very first class.",
+					"method_image_alt": "A student joining a Qur'an lesson on a phone",
+					"lessons_eyebrow": "Inside a lesson",
+					"lessons_heading": "How a class works",
+					"lessons_steps": [
+						{
+							"title": "Warm-up recitation",
+							"text": "The student recites the last lesson aloud. The teacher listens and notes what needs more practice."
+						},
+						{
+							"title": "New lesson, live",
+							"text": "New ayat or a new tajweed rule, taught one to one on a video call with the Qur'an on screen."
+						},
+						{
+							"title": "A plan for the week",
+							"text": "The teacher leaves a short practice plan sized to your chosen plan, so the next class builds on this one."
+						}
+					]
 				}
 			}
 		],
@@ -2755,7 +3130,46 @@
 					"billing_note": "All plans are billed monthly in US dollars and include one free trial class before the first payment.",
 					"faq_heading": "Questions about plans",
 					"cta_heading": "Ready to start?",
-					"cta_text": "Book a free trial class and choose a plan after you meet your teacher."
+					"cta_text": "Book a free trial class and choose a plan after you meet your teacher.",
+					"hero_heading_before": "Plans that fit ",
+					"hero_heading_highlight": "your week",
+					"hero_heading_after": "",
+					"hero_image_alt": "An open Qur'an on a wooden rehal, ready for a tajweed lesson",
+					"hero_badge": "Free trial first",
+					"hero_chips": [
+						{
+							"label": "4 plans"
+						},
+						{
+							"label": "Monthly billing"
+						},
+						{
+							"label": "Cancel anytime"
+						}
+					],
+					"includes_eyebrow": "Every plan",
+					"includes_heading": "What every plan includes",
+					"includes_lead": "Whichever plan you choose, the teaching stays the same: live, one to one and built around the student.",
+					"includes_items": [
+						{
+							"label": "One to one live classes on a video call"
+						},
+						{
+							"label": "A free trial class before the first payment"
+						},
+						{
+							"label": "A teacher matched to level and time zone"
+						},
+						{
+							"label": "A practice plan after every class"
+						},
+						{
+							"label": "Monthly billing in US dollars"
+						},
+						{
+							"label": "Cancel or pause whenever you need"
+						}
+					]
 				}
 			}
 		],
@@ -2767,7 +3181,52 @@
 				"data": {
 					"eyebrow": "Contact",
 					"heading": "Talk to the academy",
-					"lead": "Tell us a little about the student and the times that suit you. We will reply with the next available trial slot."
+					"lead": "Tell us a little about the student and the times that suit you. We will reply with the next available trial slot.",
+					"hero_heading_before": "Talk to ",
+					"hero_heading_highlight": "the academy",
+					"hero_heading_after": "",
+					"hero_image_alt": "A student joining a Qur'an lesson on a phone",
+					"hero_badge": "Free trial first",
+					"hero_chips": [
+						{
+							"label": "Phone"
+						},
+						{
+							"label": "WhatsApp"
+						},
+						{
+							"label": "Email"
+						}
+					],
+					"next_eyebrow": "After you write",
+					"next_heading": "What happens next",
+					"next_steps": [
+						{
+							"title": "We read your message",
+							"text": "Tell us the student's age, level and time zone. We look for a teacher who fits."
+						},
+						{
+							"title": "We offer a trial slot",
+							"text": "You get the next available free trial time by email or WhatsApp, whichever you prefer."
+						},
+						{
+							"title": "You meet your teacher",
+							"text": "The trial class is a real lesson. Choose a plan afterwards, only if it feels right."
+						}
+					],
+					"assurance_heading": "A calm start, every time",
+					"assurance_text": "No payment details for the trial, no group calls and no pressure to enrol. The first class is simply a lesson, so you can see how your teacher works before you decide.",
+					"assurance_chips": [
+						{
+							"label": "Free trial first"
+						},
+						{
+							"label": "One to one"
+						},
+						{
+							"label": "Children and adults"
+						}
+					]
 				}
 			}
 		],
@@ -2781,7 +3240,27 @@
 					"heading": "Frequently asked questions",
 					"lead": "Answers to the questions students and parents ask most. If your question is not here, contact us.",
 					"cta_heading": "Book a free trial class",
-					"cta_text": "Every student starts with one free trial class."
+					"cta_text": "Every student starts with one free trial class.",
+					"hero_heading_before": "Frequently asked ",
+					"hero_heading_highlight": "questions",
+					"hero_heading_after": "",
+					"hero_image_alt": "A student reciting the Qur'an during a live online lesson",
+					"hero_badge": "Parents welcome",
+					"facts_items": [
+						{
+							"label": "Free trial class"
+						},
+						{
+							"label": "30-minute classes"
+						},
+						{
+							"label": "Billed monthly"
+						},
+						{
+							"label": "Cancel anytime"
+						}
+					],
+					"more_text": "Still have questions? Chat with us on WhatsApp."
 				}
 			}
 		],
