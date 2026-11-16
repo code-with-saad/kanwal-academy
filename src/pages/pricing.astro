@@ -19,22 +19,25 @@ import { getPageCopy } from "../i18n/pages";
 import { toPlanCard } from "../utils/catalog";
 import { getFaqs, faqPageJsonLd, type FaqItem } from "../utils/faqs";
 import { makeHomeText } from "../utils/home-copy";
+import { makePageText } from "../utils/page-copy";
 
 const { locale, t } = useUi(Astro);
 const copy = getPageCopy(locale).pricing;
 
-const [homeResult, plansResult, faqs] = await Promise.all([
+const [homeResult, plansResult, faqs, pageResult] = await Promise.all([
 	getEmDashEntry("pages", "home", { locale }),
 	getLocalizedCollection("plans", locale, {
 		status: "published",
 		orderBy: { order: "asc" },
 	}),
 	getFaqs(locale),
+	getEmDashEntry("pricing_page", "pricing", { locale }),
 ]);
 if (Astro.cache?.enabled) {
 	Astro.cache.set(homeResult.cacheHint);
 	Astro.cache.set(plansResult.cacheHint);
 	Astro.cache.set(faqs.cacheHint);
+	Astro.cache.set(pageResult.cacheHint);
 }
 
 const homePage = homeResult.entry;
@@ -43,6 +46,13 @@ const homeText = makeHomeText(
 	homeResult.fallbackLocale,
 	locale,
 	t,
+);
+// Page-specific copy lives in the Pricing page collection; plan labels and
+// trial steps still read the Home entry.
+const pageText = makePageText(
+	pageResult.entry?.data as Record<string, unknown> | undefined,
+	pageResult.fallbackLocale,
+	locale,
 );
 
 const plans = plansResult.entries
@@ -82,7 +92,11 @@ const howItWorksSteps = [
 >
 	<Section space="tight">
 		<Container>
-			<PageHeader eyebrow={copy.eyebrow} heading={copy.heading} lead={copy.lead} />
+			<PageHeader
+				eyebrow={pageText("eyebrow", copy.eyebrow)}
+				heading={pageText("heading", copy.heading)}
+				lead={pageText("lead", copy.lead)}
+			/>
 		</Container>
 	</Section>
 
@@ -110,11 +124,11 @@ const howItWorksSteps = [
 						<circle cx="12" cy="12" r="9" />
 						<path d="M8.5 12.2l2.4 2.4 4.6-4.8" />
 					</svg>
-					{copy.cancelNote}
+					{pageText("cancel_note", copy.cancelNote)}
 				</p>
 			</div>
 
-			<p class="billing-note">{copy.note}</p>
+			<p class="billing-note">{pageText("billing_note", copy.note)}</p>
 		</Container>
 	</Section>
 
@@ -131,7 +145,7 @@ const howItWorksSteps = [
 	{pricingFaqs.length > 0 && (
 		<Section id="faq" space="tight">
 			<Container size="narrow">
-				<h2 class="pricing-faq__heading">{copy.faqHeading}</h2>
+				<h2 class="pricing-faq__heading">{pageText("faq_heading", copy.faqHeading)}</h2>
 				<FaqAccordion items={pricingFaqs} />
 				<JsonLd data={faqPageJsonLd(pricingFaqs)} />
 			</Container>
@@ -139,8 +153,8 @@ const howItWorksSteps = [
 	)}
 
 	<CtaPanel
-		heading={copy.ctaHeading}
-		text={copy.ctaText}
+		heading={pageText("cta_heading", copy.ctaHeading)}
+		text={pageText("cta_text", copy.ctaText)}
 		primaryHref={localizePath("/contact-us#book", locale)}
 		primaryLabel={t.actions.bookFreeTrial}
 	/>

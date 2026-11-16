@@ -15,20 +15,23 @@ import { getLocalizedCollection, localizePath, useUi } from "../../i18n";
 import { getPageCopy } from "../../i18n/pages";
 import { getCourseCopy } from "../../utils/catalog";
 import { makeHomeText } from "../../utils/home-copy";
+import { makePageText } from "../../utils/page-copy";
 
 const { locale, t } = useUi(Astro);
 const copy = getPageCopy(locale).courses;
 
-const [homeResult, coursesResult] = await Promise.all([
+const [homeResult, coursesResult, pageResult] = await Promise.all([
 	getEmDashEntry("pages", "home", { locale }),
 	getLocalizedCollection("courses", locale, {
 		status: "published",
 		orderBy: { order: "asc" },
 	}),
+	getEmDashEntry("courses_page", "courses", { locale }),
 ]);
 if (Astro.cache?.enabled) {
 	Astro.cache.set(homeResult.cacheHint);
 	Astro.cache.set(coursesResult.cacheHint);
+	Astro.cache.set(pageResult.cacheHint);
 }
 
 const homePage = homeResult.entry;
@@ -37,6 +40,13 @@ const homeText = makeHomeText(
 	homeResult.fallbackLocale,
 	locale,
 	t,
+);
+// Page-specific copy lives in the Courses page collection; shared Home
+// sections (journey, splits) still read the Home entry.
+const pageText = makePageText(
+	pageResult.entry?.data as Record<string, unknown> | undefined,
+	pageResult.fallbackLocale,
+	locale,
 );
 
 const courses = coursesResult.entries.filter((course) => course.data.visible !== false);
@@ -54,7 +64,11 @@ const split2List = homeText("split2_list_items")
 >
 	<Section space="tight">
 		<Container>
-			<PageHeader eyebrow={copy.eyebrow} heading={copy.heading} lead={copy.lead} />
+			<PageHeader
+				eyebrow={pageText("eyebrow", copy.eyebrow)}
+				heading={pageText("heading", copy.heading)}
+				lead={pageText("lead", copy.lead)}
+			/>
 		</Container>
 	</Section>
 
@@ -116,8 +130,8 @@ const split2List = homeText("split2_list_items")
 	</Section>
 
 	<CtaPanel
-		heading={copy.ctaHeading}
-		text={copy.ctaText}
+		heading={pageText("cta_heading", copy.ctaHeading)}
+		text={pageText("cta_text", copy.ctaText)}
 		primaryHref={localizePath("/contact-us#book", locale)}
 		primaryLabel={t.actions.bookFreeTrial}
 		secondaryHref={localizePath("/pricing", locale)}

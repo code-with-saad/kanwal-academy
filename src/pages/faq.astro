@@ -1,4 +1,5 @@
 ---
+import { getEmDashEntry } from "emdash";
 import Base from "../layouts/Base.astro";
 import Container from "../components/Container.astro";
 import CtaPanel from "../components/CtaPanel.astro";
@@ -9,12 +10,27 @@ import Section from "../components/Section.astro";
 import { localizePath, useUi } from "../i18n";
 import { getPageCopy } from "../i18n/pages";
 import { getFaqs, faqPageJsonLd } from "../utils/faqs";
+import { makePageText } from "../utils/page-copy";
 
 const { locale, t } = useUi(Astro);
 const copy = getPageCopy(locale).faq;
 
-const faqs = await getFaqs(locale);
-if (Astro.cache?.enabled) Astro.cache.set(faqs.cacheHint);
+const [faqs, pageResult] = await Promise.all([
+	getFaqs(locale),
+	getEmDashEntry("faq_page", "faq", { locale }),
+]);
+if (Astro.cache?.enabled) {
+	Astro.cache.set(faqs.cacheHint);
+	Astro.cache.set(pageResult.cacheHint);
+}
+
+// Page-specific copy lives in the FAQ page collection; the questions
+// themselves stay in the faqs collection.
+const pageText = makePageText(
+	pageResult.entry?.data as Record<string, unknown> | undefined,
+	pageResult.fallbackLocale,
+	locale,
+);
 ---
 
 <Base
@@ -24,15 +40,19 @@ if (Astro.cache?.enabled) Astro.cache.set(faqs.cacheHint);
 >
 	<Section space="tight">
 		<Container size="narrow">
-			<PageHeader eyebrow={copy.eyebrow} heading={copy.heading} lead={copy.lead} />
+			<PageHeader
+				eyebrow={pageText("eyebrow", copy.eyebrow)}
+				heading={pageText("heading", copy.heading)}
+				lead={pageText("lead", copy.lead)}
+			/>
 			<FaqAccordion items={faqs.items} />
 			{faqs.items.length > 0 && <JsonLd data={faqPageJsonLd(faqs.items)} />}
 		</Container>
 	</Section>
 
 	<CtaPanel
-		heading={t.home.book_heading}
-		text={t.home.book_form_sub}
+		heading={pageText("cta_heading", t.home.book_heading)}
+		text={pageText("cta_text", t.home.book_form_sub)}
 		primaryHref={localizePath("/contact-us#book", locale)}
 		primaryLabel={t.actions.bookFreeTrial}
 	/>
