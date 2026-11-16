@@ -76,7 +76,7 @@ if (!baseUrl || (!local && !token)) {
 
 let headers = { "Content-Type": "application/json" };
 if (local) {
-	const auth = await fetch(`${baseUrl}/_emdash/api/auth/dev-bypass`);
+	const auth = await fetch(`${baseUrl}/_emdash/api/auth/dev-bypass`, { signal: AbortSignal.timeout(30000) });
 	if (!auth.ok) {
 		console.error(`dev-bypass failed: HTTP ${auth.status}`);
 		process.exit(1);
@@ -94,6 +94,7 @@ async function api(method, path, body) {
 		method,
 		headers,
 		body: body ? JSON.stringify(body) : undefined,
+		signal: AbortSignal.timeout(60000),
 	});
 	const text = await res.text();
 	let data = null;
