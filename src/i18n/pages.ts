@@ -81,6 +81,20 @@ export interface PageCopy {
 		lessonsEyebrow: string;
 		lessonsHeading: string;
 		lessonsSteps: { title: string; text: string }[];
+		split1Before: string;
+		split1Highlight: string;
+		split1After: string;
+		split1Text1: string;
+		split1Text2: string;
+		split1ImageAlt: string;
+		split1ImageLabel: string;
+		split2Before: string;
+		split2Highlight: string;
+		split2After: string;
+		split2Text1: string;
+		split2List: string[];
+		split2ImageAlt: string;
+		split2ImageLabel: string;
 		ctaHeading: string;
 		ctaText: string;
 	};
@@ -139,6 +153,8 @@ export interface PageCopy {
 		factsItems: string[];
 		lead: string;
 		moreText: string;
+		categoryLabels: Record<string, string>;
+		generalCategory: string;
 	};
 }
 
@@ -282,7 +298,7 @@ const en: PageCopy = {
 		headingBefore: "Three paths to the ",
 		headingHighlight: "Qur'an",
 		headingAfter: "",
-		heroImageAlt: "An open Qur'an on a wooden rehal, ready for a recitation lesson",
+		heroImageAlt: "An open Qur'an on a wooden rehal against a soft mint backdrop",
 		heroBadge: "Live, one to one",
 		heroChips: ["3 courses", "All levels", "30-minute classes"],
 		lead: "Every course is taught live, one to one. Choose the course that matches where you are today, and your teacher adjusts the pace after the trial class.",
@@ -311,6 +327,28 @@ const en: PageCopy = {
 				text: "The teacher leaves a short practice plan sized to your chosen plan, so the next class builds on this one.",
 			},
 		],
+		split1Before: "A routine that fits ",
+		split1Highlight: "your day",
+		split1After: "",
+		split1Text1:
+			"Classes are thirty minutes, one to one, at a time you choose. Morning, evening or weekend, your schedule stays yours.",
+		split1Text2:
+			"Your teacher keeps a simple plan for the week, so every class builds on the last one and practice at home stays light.",
+		split1ImageAlt: "A student joining a Qur'an lesson on a phone",
+		split1ImageLabel: "Live, one to one",
+		split2Before: "Progress you can ",
+		split2Highlight: "hear",
+		split2After: "",
+		split2Text1:
+			"Recitation is a skill you can hear growing. From the first letters to fluent pages, your teacher corrects gently and marks every step.",
+		split2List: [
+			"A level check in your free trial",
+			"A weekly plan matched to your pace",
+			"Gentle correction, never pressure",
+			"Regular updates for parents",
+		],
+		split2ImageAlt: "The Qur'an open beside notes for a memorization lesson",
+		split2ImageLabel: "From letters to fluent pages",
 		ctaHeading: "Not sure which course?",
 		ctaText: "Book a free trial and your teacher will help you choose the right path.",
 	},
@@ -323,7 +361,7 @@ const en: PageCopy = {
 		headingBefore: "Plans that fit ",
 		headingHighlight: "your week",
 		headingAfter: "",
-		heroImageAlt: "An open Qur'an on a wooden rehal, ready for a tajweed lesson",
+		heroImageAlt: "A closed Qur'an beside a notebook and a cup of tea on a study desk",
 		heroBadge: "Free trial first",
 		heroChips: ["4 plans", "Monthly billing", "Cancel anytime"],
 		lead: "Every plan is billed monthly and starts with a free trial class. Prices are in US dollars.",
@@ -354,7 +392,7 @@ const en: PageCopy = {
 		headingBefore: "Talk to ",
 		headingHighlight: "the academy",
 		headingAfter: "",
-		heroImageAlt: "A student joining a Qur'an lesson on a phone",
+		heroImageAlt: "A phone on a wooden stand beside an open Qur'an, ready for a live lesson",
 		heroBadge: "Free trial first",
 		heroChips: ["Phone", "WhatsApp", "Email"],
 		lead: "Tell us a little about the student and the times that suit you. We will reply with the next available trial slot.",
@@ -389,11 +427,19 @@ const en: PageCopy = {
 		headingBefore: "Frequently asked ",
 		headingHighlight: "questions",
 		headingAfter: "",
-		heroImageAlt: "A student reciting the Qur'an during a live online lesson",
+		heroImageAlt: "A stack of books with an open book and reading glasses on a desk",
 		heroBadge: "Parents welcome",
 		factsItems: ["Free trial class", "30-minute classes", "Billed monthly", "Cancel anytime"],
 		lead: "Answers to the questions students and parents ask most. If your question is not here, contact us.",
 		moreText: "Still have questions? Chat with us on WhatsApp.",
+		categoryLabels: {
+			"Free trial": "Free trial",
+			"Classes and teachers": "Classes and teachers",
+			Courses: "Courses",
+			"Plans and billing": "Plans and billing",
+			"Getting started": "Getting started",
+		},
+		generalCategory: "General",
 	},
 };
 
@@ -536,7 +582,7 @@ const ar: PageCopy = {
 		headingBefore: "ثلاثة مسارات إلى ",
 		headingHighlight: "القرآن",
 		headingAfter: "",
-		heroImageAlt: "مصحف مفتوح على حامل خشبي، استعدادًا لدرس التلاوة",
+		heroImageAlt: "مصحف مفتوح على حامل خشبي أمام خلفية نعناعية ناعمة",
 		heroBadge: "مباشر وفردي",
 		heroChips: ["3 دورات", "جميع المستويات", "حصص 30 دقيقة"],
 		lead: "كل دورة تُقدَّم مباشرة وبشكل فردي. اختر الدورة التي تناسب مستواك اليوم، ويعدّل معلمك الوتيرة بعد الحصة التجريبية.",
@@ -565,6 +611,28 @@ const ar: PageCopy = {
 				text: "يترك المعلم خطة تدريب قصيرة بحجم خطتك المختارة، لتبني الحصة التالية على هذه الحصة.",
 			},
 		],
+		split1Before: "روتين يناسب ",
+		split1Highlight: "يومك",
+		split1After: "",
+		split1Text1:
+			"الحصص ثلاثون دقيقة، فردية، في وقت تختاره أنت. صباحًا أو مساءً أو في عطلة نهاية الأسبوع، يبقى جدولك ملكك.",
+		split1Text2:
+			"يحتفظ معلمك بخطة بسيطة للأسبوع، لتبني كل حصة على السابقة ويبقى التدريب في البيت خفيفًا.",
+		split1ImageAlt: "طالب يحضر درسًا في القرآن عبر الهاتف",
+		split1ImageLabel: "مباشر وفردي",
+		split2Before: "تقدم يمكنك ",
+		split2Highlight: "سماعه",
+		split2After: "",
+		split2Text1:
+			"التلاوة مهارة تسمع نموها. من الحروف الأولى إلى الصفحات الطلقة، يصحح معلمك بلطف ويسجل كل خطوة.",
+		split2List: [
+			"فحص مستوى في حصتك التجريبية",
+			"خطة أسبوعية تناسب وتيرتك",
+			"تصحيح بلطف دون ضغط",
+			"تحديثات منتظمة لأولياء الأمور",
+		],
+		split2ImageAlt: "مصحف مفتوح بجانب ملاحظات لدرس حفظ",
+		split2ImageLabel: "من الحروف إلى الصفحات الطلقة",
 		ctaHeading: "لست متأكدًا من الدورة؟",
 		ctaText: "احجز حصة تجريبية وسيساعدك معلمك على اختيار المسار المناسب.",
 	},
@@ -577,7 +645,7 @@ const ar: PageCopy = {
 		headingBefore: "خطط تناسب ",
 		headingHighlight: "أسبوعك",
 		headingAfter: "",
-		heroImageAlt: "مصحف مفتوح على حامل خشبي، استعدادًا لدرس التجويد",
+		heroImageAlt: "مصحف مغلق بجانب دفتر وكوب شاي على مكتب دراسة",
 		heroBadge: "الحصة التجريبية أولًا",
 		heroChips: ["4 خطط", "دفع شهري", "إلغاء في أي وقت"],
 		lead: "تُدفع قيمة كل خطة شهريًا، وتبدأ بحصة تجريبية مجانية. الأسعار بالدولار الأمريكي.",
@@ -607,7 +675,7 @@ const ar: PageCopy = {
 		headingBefore: "تحدث مع ",
 		headingHighlight: "الأكاديمية",
 		headingAfter: "",
-		heroImageAlt: "طالب يحضر درسًا في القرآن عبر الهاتف",
+		heroImageAlt: "هاتف على حامل خشبي بجانب مصحف مفتوح، استعدادًا لدرس مباشر",
 		heroBadge: "الحصة التجريبية أولًا",
 		heroChips: ["هاتف", "واتساب", "بريد إلكتروني"],
 		lead: "أخبرنا قليلًا عن الطالب والأوقات التي تناسبك. سنرد عليك بأقرب موعد متاح للحصة التجريبية.",
@@ -642,11 +710,19 @@ const ar: PageCopy = {
 		headingBefore: "الأسئلة ",
 		headingHighlight: "الشائعة",
 		headingAfter: "",
-		heroImageAlt: "طالب يتلو القرآن خلال درس مباشر عبر الإنترنت",
+		heroImageAlt: "كومة كتب مع كتاب مفتوح ونظارة قراءة على مكتب",
 		heroBadge: "أهلًا بأولياء الأمور",
 		factsItems: ["حصة تجريبية مجانية", "حصص 30 دقيقة", "دفع شهري", "إلغاء في أي وقت"],
 		lead: "إجابات عن الأسئلة التي يطرحها الطلاب وأولياء الأمور كثيرًا. إن لم تجد سؤالك، تواصل معنا.",
 		moreText: "ما زالت لديك أسئلة؟ تحدث معنا عبر واتساب.",
+		categoryLabels: {
+			"Free trial": "الحصة التجريبية",
+			"Classes and teachers": "الحصص والمعلمون",
+			Courses: "الدورات",
+			"Plans and billing": "الخطط والدفع",
+			"Getting started": "البدء معنا",
+		},
+		generalCategory: "عام",
 	},
 };
 

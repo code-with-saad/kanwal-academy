@@ -73,6 +73,7 @@ export const en = {
 		contactLabel: "Contact",
 		coursesLabel: "Courses",
 		academyLabel: "Academy",
+		faqLabel: "FAQs",
 		pricingLabel: "Pricing",
 		teachersLabel: "Teachers",
 		trialLabel: "Free trial",

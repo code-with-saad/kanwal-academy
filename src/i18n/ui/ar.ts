@@ -68,6 +68,7 @@ export const ar: UiDictionary = {
 		contactLabel: "تواصل",
 		coursesLabel: "الدورات",
 		academyLabel: "الأكاديمية",
+		faqLabel: "الأسئلة الشائعة",
 		pricingLabel: "الأسعار",
 		teachersLabel: "المعلمون",
 		trialLabel: "الحصة التجريبية المجانية",

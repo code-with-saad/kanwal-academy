@@ -177,6 +177,134 @@ export const optimizedImages: Record<string, OptimizedImage> = {
     ],
     "avif": []
   },
+  "/images/hero-contact.png": {
+    "width": 768,
+    "height": 1024,
+    "webp": [
+      {
+        "src": "/images/optimized/hero-contact-96.webp",
+        "width": 96,
+        "bytes": 1106
+      },
+      {
+        "src": "/images/optimized/hero-contact-160.webp",
+        "width": 160,
+        "bytes": 2110
+      },
+      {
+        "src": "/images/optimized/hero-contact-320.webp",
+        "width": 320,
+        "bytes": 5372
+      },
+      {
+        "src": "/images/optimized/hero-contact-480.webp",
+        "width": 480,
+        "bytes": 9442
+      },
+      {
+        "src": "/images/optimized/hero-contact-768.webp",
+        "width": 768,
+        "bytes": 18470
+      }
+    ],
+    "avif": []
+  },
+  "/images/hero-courses.png": {
+    "width": 768,
+    "height": 1024,
+    "webp": [
+      {
+        "src": "/images/optimized/hero-courses-96.webp",
+        "width": 96,
+        "bytes": 1334
+      },
+      {
+        "src": "/images/optimized/hero-courses-160.webp",
+        "width": 160,
+        "bytes": 2782
+      },
+      {
+        "src": "/images/optimized/hero-courses-320.webp",
+        "width": 320,
+        "bytes": 7412
+      },
+      {
+        "src": "/images/optimized/hero-courses-480.webp",
+        "width": 480,
+        "bytes": 13312
+      },
+      {
+        "src": "/images/optimized/hero-courses-768.webp",
+        "width": 768,
+        "bytes": 26354
+      }
+    ],
+    "avif": []
+  },
+  "/images/hero-faq.png": {
+    "width": 768,
+    "height": 1024,
+    "webp": [
+      {
+        "src": "/images/optimized/hero-faq-96.webp",
+        "width": 96,
+        "bytes": 774
+      },
+      {
+        "src": "/images/optimized/hero-faq-160.webp",
+        "width": 160,
+        "bytes": 1558
+      },
+      {
+        "src": "/images/optimized/hero-faq-320.webp",
+        "width": 320,
+        "bytes": 4340
+      },
+      {
+        "src": "/images/optimized/hero-faq-480.webp",
+        "width": 480,
+        "bytes": 8012
+      },
+      {
+        "src": "/images/optimized/hero-faq-768.webp",
+        "width": 768,
+        "bytes": 16450
+      }
+    ],
+    "avif": []
+  },
+  "/images/hero-pricing.png": {
+    "width": 768,
+    "height": 1024,
+    "webp": [
+      {
+        "src": "/images/optimized/hero-pricing-96.webp",
+        "width": 96,
+        "bytes": 1014
+      },
+      {
+        "src": "/images/optimized/hero-pricing-160.webp",
+        "width": 160,
+        "bytes": 1996
+      },
+      {
+        "src": "/images/optimized/hero-pricing-320.webp",
+        "width": 320,
+        "bytes": 5312
+      },
+      {
+        "src": "/images/optimized/hero-pricing-480.webp",
+        "width": 480,
+        "bytes": 9526
+      },
+      {
+        "src": "/images/optimized/hero-pricing-768.webp",
+        "width": 768,
+        "bytes": 20022
+      }
+    ],
+    "avif": []
+  },
   "/images/hero-quran.png": {
     "width": 479,
     "height": 320,

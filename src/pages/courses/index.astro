@@ -2,8 +2,9 @@
 /**
  * Courses page, in the About design language: mint hero panel with an
  * arch-framed photograph, the course journey rows, a method panel, the
- * "how a class works" steps and both feature splits. Page copy lives in
- * the courses_page collection; journey and split copy stay shared with Home.
+ * "how a class works" steps and two course-specific feature splits. Page
+ * copy lives in the courses_page collection; the journey copy stays shared
+ * with Home.
  */
 import { Font } from "astro:assets";
 import { getEmDashEntry, getSeoMeta } from "emdash";
@@ -50,8 +51,8 @@ const homeText = makeHomeText(
 	locale,
 	t,
 );
-// Page-specific copy lives in the Courses page collection; shared Home
-// sections (journey, splits) still read the Home entry.
+// Page-specific copy lives in the Courses page collection; the shared Home
+// journey heading and introduction still read the Home entry.
 const pageData = pageResult.entry?.data as Record<string, unknown> | undefined;
 const pageText = makePageText(pageData, pageResult.fallbackLocale, locale);
 const pageRows = makePageRows(pageData, pageResult.fallbackLocale, locale);
@@ -78,7 +79,7 @@ const lessonSteps = pageRows<{ title: string; text: string }>(
 	copy.lessonsSteps,
 ).map((step, i) => ({ ...step, icon: lessonIcons[i] ?? "book-trial" }));
 
-const split2List = homeText("split2_list_items")
+const split2List = pageText("split2_list_items", copy.split2List.join("\n"))
 	.split("\n")
 	.map((line) => line.trim())
 	.filter(Boolean);
@@ -103,7 +104,7 @@ const split2List = homeText("split2_list_items")
 			headingAfter={pageText("hero_heading_after", copy.headingAfter)}
 			heading={pageText("heading", copy.heading)}
 			lead={pageText("lead", copy.lead)}
-			imageSrc={pageImage("hero_image")?.src ?? "/images/course-recitation.jpg"}
+			imageSrc={pageImage("hero_image")?.src ?? "/images/hero-courses.png"}
 			imageAlt={pageText("hero_image_alt", copy.heroImageAlt)}
 			badge={pageText("hero_badge", copy.heroBadge)}
 			chips={heroChips}
@@ -169,28 +170,30 @@ const split2List = homeText("split2_list_items")
 			<Container>
 				<div class="study-stack">
 					<FeatureSplit
-						headingBefore={homeText("split1_heading_before")}
-						headingHighlight={homeText("split1_heading_highlight")}
+						headingBefore={pageText("split1_heading_before", copy.split1Before)}
+						headingHighlight={pageText("split1_heading_highlight", copy.split1Highlight)}
+						headingAfter={pageText("split1_heading_after", copy.split1After)}
 						paragraphs={[
-							homeText("split1_paragraph_1"),
-							homeText("split1_paragraph_2"),
+							pageText("split1_paragraph_1", copy.split1Text1),
+							pageText("split1_paragraph_2", copy.split1Text2),
 						]}
-						image={homePage?.data.split1_image}
+						image={pageImage("split1_image")}
 						imageSrc="/images/section-phone.png"
-						imageAlt={homeText("split1_image_alt") || t.images.split1}
-						imageLabel={homeText("split1_image_label")}
+						imageAlt={pageText("split1_image_alt", copy.split1ImageAlt)}
+						imageLabel={pageText("split1_image_label", copy.split1ImageLabel)}
 						imageRatio="4 / 3"
 						buttonLabel={t.actions.bookFreeTrial}
 					/>
 
 					<FeatureSplit
-						headingBefore={homeText("split2_heading_before")}
-						headingHighlight={homeText("split2_heading_highlight")}
-						paragraphs={[homeText("split2_paragraph_1")]}
-						image={homePage?.data.split2_image}
+						headingBefore={pageText("split2_heading_before", copy.split2Before)}
+						headingHighlight={pageText("split2_heading_highlight", copy.split2Highlight)}
+						headingAfter={pageText("split2_heading_after", copy.split2After)}
+						paragraphs={[pageText("split2_paragraph_1", copy.split2Text1)]}
+						image={pageImage("split2_image")}
 						imageSrc="/images/section-memorize.jpg"
-						imageAlt={homeText("split2_image_alt") || t.images.split2}
-						imageLabel={homeText("split2_image_label")}
+						imageAlt={pageText("split2_image_alt", copy.split2ImageAlt)}
+						imageLabel={pageText("split2_image_label", copy.split2ImageLabel)}
 						imageRatio="4 / 3"
 						list={split2List}
 						buttonLabel={t.actions.bookFreeTrial}

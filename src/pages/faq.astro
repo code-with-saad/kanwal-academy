@@ -53,6 +53,29 @@ const factChips = pageRows<{ label: string }>(
 	"facts_items",
 	copy.factsItems.map((label) => ({ label })),
 ).map((row) => row.label);
+
+// Group the questions by category, in the order the copy defines. Anything
+// without a known category lands in a final General group.
+const categoryOrder = Object.keys(copy.categoryLabels);
+const faqGroups = categoryOrder
+	.map((category) => ({
+		category,
+		label: copy.categoryLabels[category] ?? category,
+		items: faqs.items.filter((item) => item.category === category),
+	}))
+	.filter((group) => group.items.length > 0);
+const uncategorized = faqs.items.filter(
+	(item) => !categoryOrder.includes(item.category),
+);
+if (uncategorized.length > 0) {
+	faqGroups.push({
+		category: "",
+		label: copy.generalCategory,
+		items: uncategorized,
+	});
+}
+const groupAnchor = (category: string) =>
+	`faq-${category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "general"}`;
 ---
 
 <Base
@@ -74,7 +97,7 @@ const factChips = pageRows<{ label: string }>(
 			headingAfter={pageText("hero_heading_after", copy.headingAfter)}
 			heading={pageText("heading", copy.heading)}
 			lead={pageText("lead", copy.lead)}
-			imageSrc={pageImage("hero_image")?.src ?? "/images/wisdom.jpg"}
+			imageSrc={pageImage("hero_image")?.src ?? "/images/hero-faq.png"}
 			imageAlt={pageText("hero_image_alt", copy.heroImageAlt)}
 			badge={pageText("hero_badge", copy.heroBadge)}
 			chips={factChips}
@@ -82,7 +105,27 @@ const factChips = pageRows<{ label: string }>(
 
 		<Section id="faq">
 			<Container size="narrow">
-				<FaqAccordion items={faqs.items} />
+				{faqGroups.length > 1 && (
+					<nav class="faq-toc" aria-label={copy.title}>
+						{faqGroups.map((group) => (
+							<a class="faq-toc__chip" href={`#${groupAnchor(group.category)}`}>
+								{group.label}
+							</a>
+						))}
+					</nav>
+				)}
+				<div class="faq-groups">
+					{faqGroups.map((group, index) => (
+						<section
+							class="faq-group"
+							id={groupAnchor(group.category)}
+							aria-label={group.label}
+						>
+							<h2 class="faq-group__heading">{group.label}</h2>
+							<FaqAccordion items={group.items} openFirst={index === 0} />
+						</section>
+					))}
+				</div>
 				{faqs.items.length > 0 && <JsonLd data={faqPageJsonLd(faqs.items)} />}
 				<p class="faq-more">
 					<a
@@ -114,6 +157,53 @@ const factChips = pageRows<{ label: string }>(
 	.inner :global(.section--space-normal),
 	.inner :global(.section--space-tight) {
 		padding-block: var(--section-gap);
+	}
+
+	.faq-toc {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-sm);
+		margin-bottom: var(--space-xl);
+	}
+
+	.faq-toc__chip {
+		display: inline-flex;
+		align-items: center;
+		height: 36px;
+		padding-inline: 18px;
+		border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+		border-radius: 999px;
+		color: var(--ink);
+		font-size: var(--type-small-size);
+		text-decoration: none;
+		transition:
+			background-color var(--transition),
+			color var(--transition),
+			border-color var(--transition);
+	}
+
+	.faq-toc__chip:hover,
+	.faq-toc__chip:focus-visible {
+		background: var(--green);
+		border-color: var(--green);
+		color: var(--on-accent);
+	}
+
+	.faq-groups {
+		display: grid;
+		gap: clamp(40px, 6vw, 64px);
+	}
+
+	.faq-group {
+		scroll-margin-top: calc(var(--header-height) + 32px);
+	}
+
+	.faq-group__heading {
+		margin-bottom: var(--space-md);
+		font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+		font-weight: 500;
+		line-height: 1.2;
+		letter-spacing: -0.01em;
 	}
 
 	.faq-more {

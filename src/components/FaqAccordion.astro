@@ -11,16 +11,18 @@ import type { FaqItem } from "../utils/faqs";
 
 interface Props {
 	items: FaqItem[];
+	/** Only the first group on the FAQ page opens its first answer. */
+	openFirst?: boolean;
 }
 
-const { items } = Astro.props;
+const { items, openFirst = true } = Astro.props;
 ---
 
 <ul class="faq">
 	{
 		items.map((item, index) => (
 			<li class="faq__item">
-				<details class="faq__details" open={index === 0}>
+				<details class="faq__details" open={openFirst && index === 0}>
 					<summary class="faq__summary">
 						<h3 class="faq__question">{item.question}</h3>
 						<span class="faq__icon" aria-hidden="true">

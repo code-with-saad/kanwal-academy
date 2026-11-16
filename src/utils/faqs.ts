@@ -6,6 +6,7 @@ export interface FaqItem {
 	slug: string;
 	question: string;
 	answer: string;
+	category: string;
 }
 
 /**
@@ -27,6 +28,7 @@ export async function getFaqs(locale: Locale, limit?: number) {
 			slug: (entry as typeof entry & { slug?: string }).slug ?? entry.id,
 			question: String(entry.data.question ?? ""),
 			answer: String(entry.data.answer ?? ""),
+			category: String(entry.data.category ?? ""),
 		}))
 		.filter((item) => item.question && item.answer);
 
