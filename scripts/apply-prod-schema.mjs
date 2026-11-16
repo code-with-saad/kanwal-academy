@@ -9,12 +9,18 @@
  *   - Create the `subscribers` collection if missing.
  *   - Add the `lead_status` select field to `enrolments` if missing.
  *   - Add the `owner_email` field to `site_settings` if missing.
- *   - Create the `about_page` collection (all /about CMS fields) if missing
- *     and seed its single entry from seed/seed.json when empty.
+ *   - Ensure the five per-page copy collections exist (`about_page`,
+ *     `courses_page`, `pricing_page`, `contact_page`, `faq_page`) with all
+ *     their fields, and fill their single entries from seed/seed.json.
+ *     Existing editor values are never overwritten: only empty fields are
+ *     filled.
+ *   - Ensure the courses, pricing, contact-us and faq entries in `pages`
+ *     exist (title + SEO only; their copy lives in the per-page collections).
  *
  * Requirements:
  *   - Node 18+ (uses global fetch).
- *   - An EmDash API token with `schema:read` + `schema:manage` scopes.
+ *   - An EmDash API token with `schema:read` + `schema:manage` +
+ *     `content:read` + `content:manage` scopes.
  *     Create one in the admin panel under "API tokens" or via the CLI.
  *
  * Usage:
@@ -195,40 +201,109 @@ async function main() {
 		sortOrder: 99,
 	});
 
-	// --- about_page: every editable /about block ---------------------------
+	// --- per-page copy collections -----------------------------------------
+	// Each inner page reads its copy from its own collection (D1 caps tables
+	// at 100 columns, so all copy cannot live in `pages`). Additive only:
+	// existing collections, fields and editor values are left untouched.
 	const seed = JSON.parse(
 		readFileSync(new URL("../seed/seed.json", import.meta.url), "utf8"),
 	);
-	const aboutSpec = seed.collections.find((c) => c.slug === "about_page");
-	await ensureCollection({
-		slug: aboutSpec.slug,
-		label: aboutSpec.label,
-		labelSingular: aboutSpec.labelSingular,
-		description: aboutSpec.description,
-		icon: aboutSpec.icon,
-		group: aboutSpec.group,
-		sortOrder: aboutSpec.sortOrder,
-		routable: aboutSpec.routable,
-		supports: aboutSpec.supports,
-		admin: aboutSpec.admin,
-	});
-	for (const field of aboutSpec.fields) {
-		await ensureField("about_page", field);
-	}
-	await updateCollection("about_page", { titleField: aboutSpec.titleField });
 
-	const aboutEntries = await api("GET", "/_emdash/api/content/about_page");
-	const aboutItems = aboutEntries?.data?.items ?? [];
-	if (aboutItems.length === 0) {
-		const created = await api("POST", "/_emdash/api/content/about_page", {
-			slug: "about",
-			data: seed.content.about_page[0].data,
-		});
-		const createdId = created?.data?.item?.id ?? created?.data?.id;
-		await api("POST", `/_emdash/api/content/about_page/${createdId}/publish`, {});
-		console.log("  created + published: about_page entry");
-	} else {
-		console.log("  skip: about_page entry already exists");
+	const isEmpty = (value) =>
+		value == null ||
+		(typeof value === "string" && value.trim() === "") ||
+		(Array.isArray(value) && value.length === 0);
+
+	const pageCollections = [
+		{ collection: "about_page", slug: "about" },
+		{ collection: "courses_page", slug: "courses" },
+		{ collection: "pricing_page", slug: "pricing" },
+		{ collection: "contact_page", slug: "contact-us" },
+		{ collection: "faq_page", slug: "faq" },
+	];
+
+	for (const { collection, slug } of pageCollections) {
+		const spec = seed.collections.find((c) => c.slug === collection);
+		await ensureCollection(spec);
+
+		const existingFields = new Set((await listFields(collection)).map((f) => f.slug));
+		for (const field of spec.fields) {
+			if (existingFields.has(field.slug)) continue;
+			await api("POST", `/_emdash/api/schema/collections/${collection}/fields`, field);
+			console.log(`  created: ${collection}.${field.slug}`);
+		}
+
+		const seedEntry = seed.content[collection].find((e) => e.slug === slug);
+		const seedData = seedEntry.data;
+
+		let existing = null;
+		try {
+			const got = await api("GET", `/_emdash/api/content/${collection}/${slug}`);
+			existing = got?.data?.item ?? null;
+		} catch {
+			// NOT_FOUND: create below.
+		}
+
+		if (!existing) {
+			const created = await api("POST", `/_emdash/api/content/${collection}`, {
+				slug,
+				data: seedData,
+			});
+			const createdId = created?.data?.item?.id ?? created?.data?.id;
+			await api("POST", `/_emdash/api/content/${collection}/${createdId}/publish`, {});
+			console.log(`  created + published: ${collection}/${slug}`);
+			continue;
+		}
+
+		// Fill only empty fields; the update API merges into existing data, so
+		// sending just the filled keys leaves every editor value untouched.
+		const fill = {};
+		for (const [key, value] of Object.entries(seedData)) {
+			if (isEmpty(existing.data?.[key])) fill[key] = value;
+		}
+		if (Object.keys(fill).length === 0) {
+			console.log(`  skip: ${collection}/${slug} already complete`);
+			continue;
+		}
+		await api("PUT", `/_emdash/api/content/${collection}/${existing.id}`, { data: fill });
+		await api("POST", `/_emdash/api/content/${collection}/${existing.id}/publish`, {});
+		console.log(`  filled ${Object.keys(fill).length} empty field(s) + published: ${collection}/${slug}`);
+	}
+
+	// --- pages: title + SEO entries for the four inner pages ----------------
+	for (const slug of ["courses", "pricing", "contact-us", "faq"]) {
+		const seedEntry = seed.content.pages.find((e) => e.slug === slug && !e.locale);
+
+		let existing = null;
+		try {
+			const got = await api("GET", `/_emdash/api/content/pages/${slug}`);
+			existing = got?.data?.item ?? null;
+		} catch {
+			// NOT_FOUND: create below.
+		}
+
+		if (!existing) {
+			const created = await api("POST", "/_emdash/api/content/pages", {
+				slug,
+				data: seedEntry.data,
+			});
+			const createdId = created?.data?.item?.id ?? created?.data?.id;
+			await api("POST", `/_emdash/api/content/pages/${createdId}/publish`, {});
+			console.log(`  created + published: pages/${slug} (title + SEO)`);
+			continue;
+		}
+
+		const fill = {};
+		for (const [key, value] of Object.entries(seedEntry.data)) {
+			if (isEmpty(existing.data?.[key])) fill[key] = value;
+		}
+		if (Object.keys(fill).length === 0) {
+			console.log(`  skip: pages/${slug} already complete`);
+			continue;
+		}
+		await api("PUT", `/_emdash/api/content/pages/${existing.id}`, { data: fill });
+		await api("POST", `/_emdash/api/content/pages/${existing.id}/publish`, {});
+		console.log(`  filled ${Object.keys(fill).length} empty field(s) + published: pages/${slug}`);
 	}
 
 	console.log("\nDone. Remember to set site_settings.owner_email in the admin UI.");
