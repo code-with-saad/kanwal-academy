@@ -229,10 +229,13 @@ arch photograph, tinted section bands, wave dividers):
 - **Lesson steps**: eyebrow, heading, steps repeater (title + text, in order)
 - **Closing CTA**: heading, text
 The plain **Heading** field is the list title in the admin; the hero itself
-uses the before / highlight / after fields. The course rows and the two
-image+text panels are shared with the home page: edit them on the
-**Home page** entry (Courses section and Feature split panels) or in
-**Academy → Courses**.
+uses the before / highlight / after fields. The course rows come from
+**Academy → Courses**. The two image+text panels below the course list
+belong to this page (the home page keeps its own panels):
+- **Split 1**: heading before / highlighted word / after, paragraph 1,
+  paragraph 2, image + alt text, image label
+- **Split 2**: heading before / highlighted word / after, paragraph 1,
+  list items (one per line), image + alt text, image label
 
 ### Pricing page (/pricing) — Content → Pricing page
 One entry:
@@ -261,7 +264,9 @@ One entry:
   image + alt text, badge pill, fact chips repeater
 - **WhatsApp line** under the answers
 - Closing CTA heading + text
-The questions and answers themselves come from **Academy → FAQs**.
+The questions and answers themselves come from **Academy → FAQs**. The
+page groups them by their **Category** and shows jump chips at the top;
+questions without a category appear under "General" at the end.
 
 ### Legal pages — Content → Legal Pages → Terms of Service / Privacy Policy / Refund Policy
 Each legal page is one entry with a rich text **Content** field. Edit the
@@ -279,7 +284,11 @@ Each row has: name, role, photo (from Media Library), bio, qualifications (one p
 ### FAQs
 **Academy → FAQs**
 
-Each row has: question, answer, display order, and **Visible on the site**.
+Each row has: question, answer, **Category** (Free trial, Classes and
+teachers, Courses, Plans and billing, Getting started), display order, and
+**Visible on the site**. The FAQ page groups answers by category. The home
+page shows the first five visible questions; the pricing page shows its
+four plan-related questions.
 
 ---
 
