@@ -1,17 +1,21 @@
 ---
 /**
- * Pricing page. Renders the full Home pricing section (cards and mobile
- * carousel) plus the free trial steps, a short FAQ and a closing CTA.
+ * Pricing page, in the About design language: mint hero panel, the full
+ * Home pricing section (cards and mobile carousel), an "every plan
+ * includes" panel, the free trial steps, a short FAQ and a closing CTA.
  */
+import { Font } from "astro:assets";
 import { getEmDashEntry, getSeoMeta } from "emdash";
 import Base from "../layouts/Base.astro";
 import Container from "../components/Container.astro";
 import CtaPanel from "../components/CtaPanel.astro";
+import Curve from "../components/Curve.astro";
 import Eyebrow from "../components/Eyebrow.astro";
 import FaqAccordion from "../components/FaqAccordion.astro";
 import HowItWorks from "../components/HowItWorks.astro";
+import IncludesPanel from "../components/IncludesPanel.astro";
 import JsonLd from "../components/JsonLd.astro";
-import PageHeader from "../components/PageHeader.astro";
+import PageHero from "../components/PageHero.astro";
 import PlanGrid from "../components/PlanGrid.astro";
 import Section from "../components/Section.astro";
 import { getLocalizedCollection, localizePath, useUi } from "../i18n";
@@ -19,7 +23,7 @@ import { getPageCopy } from "../i18n/pages";
 import { toPlanCard } from "../utils/catalog";
 import { getFaqs, faqPageJsonLd, type FaqItem } from "../utils/faqs";
 import { makeHomeText } from "../utils/home-copy";
-import { makePageText } from "../utils/page-copy";
+import { makePageImage, makePageRows, makePageText } from "../utils/page-copy";
 
 const { locale, t } = useUi(Astro);
 const copy = getPageCopy(locale).pricing;
@@ -49,11 +53,10 @@ const homeText = makeHomeText(
 );
 // Page-specific copy lives in the Pricing page collection; plan labels and
 // trial steps still read the Home entry.
-const pageText = makePageText(
-	pageResult.entry?.data as Record<string, unknown> | undefined,
-	pageResult.fallbackLocale,
-	locale,
-);
+const pageData = pageResult.entry?.data as Record<string, unknown> | undefined;
+const pageText = makePageText(pageData, pageResult.fallbackLocale, locale);
+const pageRows = makePageRows(pageData, pageResult.fallbackLocale, locale);
+const pageImage = makePageImage(pageData, pageResult.fallbackLocale, locale);
 const seo =
 	pageResult.entry && !pageResult.fallbackLocale
 		? getSeoMeta(pageResult.entry, {
@@ -67,6 +70,15 @@ const seo =
 const plans = plansResult.entries
 	.filter((plan) => plan.data.visible !== false)
 	.map((plan) => toPlanCard(plan, plansResult.fallbackLocale, t, locale));
+
+const heroChips = pageRows<{ label: string }>(
+	"hero_chips",
+	copy.heroChips.map((label) => ({ label })),
+).map((row) => row.label);
+const includesItems = pageRows<{ label: string }>(
+	"includes_items",
+	copy.includesItems.map((label) => ({ label })),
+).map((row) => row.label);
 
 // Keep the short FAQ about plans and payment, not the general parent questions.
 const planFaqSlugs = ["card-for-trial", "cancel-or-pause", "free-trial", "class-length"];
@@ -100,78 +112,114 @@ const howItWorksSteps = [
 	image={seo?.ogImage ?? undefined}
 	robots={seo?.robots ?? undefined}
 	breadcrumbs={[{ name: t.nav.pricing, path: "/pricing" }]}
+	overlayHeader
 >
-	<Section space="tight">
-		<Container>
-			<PageHeader
-				eyebrow={pageText("eyebrow", copy.eyebrow)}
-				heading={pageText("heading", copy.heading)}
-				lead={pageText("lead", copy.lead)}
-			/>
-		</Container>
-	</Section>
+	<!-- Amiri carries the Arabic brand watermark in the hero. -->
+	<Font slot="head" cssVariable="--font-arabic" />
 
-	<Section id="pricing">
-		<Container>
-			<div class="section-head">
-				<Eyebrow>{homeText("pricing_eyebrow")}</Eyebrow>
-				<h2>{homeText("pricing_heading")}</h2>
-				<p class="section-lead">{homeText("pricing_intro")}</p>
-			</div>
+	<div class="inner">
+		<PageHero
+			eyebrow={pageText("eyebrow", copy.eyebrow)}
+			headingBefore={pageText("hero_heading_before", copy.headingBefore)}
+			headingHighlight={pageText("hero_heading_highlight", copy.headingHighlight)}
+			headingAfter={pageText("hero_heading_after", copy.headingAfter)}
+			heading={pageText("heading", copy.heading)}
+			lead={pageText("lead", copy.lead)}
+			imageSrc={pageImage("hero_image")?.src ?? "/images/course-tajweed.jpg"}
+			imageAlt={pageText("hero_image_alt", copy.heroImageAlt)}
+			badge={pageText("hero_badge", copy.heroBadge)}
+			chips={heroChips}
+		/>
 
-			<PlanGrid
-				plans={plans}
-				periodLabel={homeText("pricing_period_label")}
-				classesWeekLabel={homeText("pricing_classes_week_label")}
-				classesMonthLabel={homeText("pricing_classes_month_label")}
-				hoursLabel={homeText("pricing_hours_label")}
-				popularLabel={homeText("pricing_popular_label")}
-				selectCta={homeText("pricing_select_cta")}
-			/>
+		<Section id="pricing">
+			<Container>
+				<div class="section-head">
+					<Eyebrow>{homeText("pricing_eyebrow")}</Eyebrow>
+					<h2>{homeText("pricing_heading")}</h2>
+					<p class="section-lead">{homeText("pricing_intro")}</p>
+				</div>
 
-			<div class="cancel-row">
-				<p class="cancel-note">
-					<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-						<circle cx="12" cy="12" r="9" />
-						<path d="M8.5 12.2l2.4 2.4 4.6-4.8" />
-					</svg>
-					{pageText("cancel_note", copy.cancelNote)}
-				</p>
-			</div>
+				<PlanGrid
+					plans={plans}
+					periodLabel={homeText("pricing_period_label")}
+					classesWeekLabel={homeText("pricing_classes_week_label")}
+					classesMonthLabel={homeText("pricing_classes_month_label")}
+					hoursLabel={homeText("pricing_hours_label")}
+					popularLabel={homeText("pricing_popular_label")}
+					selectCta={homeText("pricing_select_cta")}
+				/>
 
-			<p class="billing-note">{pageText("billing_note", copy.note)}</p>
-		</Container>
-	</Section>
+				<div class="cancel-row">
+					<p class="cancel-note">
+						<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<circle cx="12" cy="12" r="9" />
+							<path d="M8.5 12.2l2.4 2.4 4.6-4.8" />
+						</svg>
+						{pageText("cancel_note", copy.cancelNote)}
+					</p>
+				</div>
 
-	<Section id="how-it-works" space="tight">
-		<Container>
-			<HowItWorks
-				eyebrow={homeText("trial_eyebrow")}
-				heading={homeText("trial_heading")}
-				steps={howItWorksSteps}
-			/>
-		</Container>
-	</Section>
-
-	{pricingFaqs.length > 0 && (
-		<Section id="faq" space="tight">
-			<Container size="narrow">
-				<h2 class="pricing-faq__heading">{pageText("faq_heading", copy.faqHeading)}</h2>
-				<FaqAccordion items={pricingFaqs} />
-				<JsonLd data={faqPageJsonLd(pricingFaqs)} />
+				<p class="billing-note">{pageText("billing_note", copy.note)}</p>
 			</Container>
 		</Section>
-	)}
 
-	<CtaPanel
-		heading={pageText("cta_heading", copy.ctaHeading)}
-		text={pageText("cta_text", copy.ctaText)}
-		primaryHref={localizePath("/contact-us#book", locale)}
-		primaryLabel={t.actions.bookFreeTrial}
-	/>
+		<Section id="includes" tone="sand" class="section--curve">
+			<Container>
+				<IncludesPanel
+					eyebrow={pageText("includes_eyebrow", copy.includesEyebrow)}
+					heading={pageText("includes_heading", copy.includesHeading)}
+					lead={pageText("includes_lead", copy.includesLead)}
+					items={includesItems}
+				/>
+			</Container>
+			<Curve fill="var(--page)" line="var(--mint-300)" />
+		</Section>
+
+		<Section id="how-it-works">
+			<Container>
+				<HowItWorks
+					eyebrow={homeText("trial_eyebrow")}
+					heading={homeText("trial_heading")}
+					steps={howItWorksSteps}
+				/>
+			</Container>
+		</Section>
+
+		{pricingFaqs.length > 0 && (
+			<Section id="faq" space="tight">
+				<Container size="narrow">
+					<h2 class="pricing-faq__heading">{pageText("faq_heading", copy.faqHeading)}</h2>
+					<FaqAccordion items={pricingFaqs} />
+					<JsonLd data={faqPageJsonLd(pricingFaqs)} />
+				</Container>
+			</Section>
+		)}
+
+		<CtaPanel
+			heading={pageText("cta_heading", copy.ctaHeading)}
+			text={pageText("cta_text", copy.ctaText)}
+			primaryHref={localizePath("/contact-us#book", locale)}
+			primaryLabel={t.actions.bookFreeTrial}
+		/>
+	</div>
 </Base>
 
 <style>
+	/* One rhythm for the whole page, same as About: 96px desktop, 56px mobile. */
+	.inner {
+		--section-gap: clamp(56px, 8vw, 96px);
+	}
+
+	.inner :global(.section--space-normal),
+	.inner :global(.section--space-tight) {
+		padding-block: var(--section-gap);
+	}
+
+	.inner :global(.section--curve) {
+		position: relative;
+		overflow: clip;
+	}
+
 	.section-head {
 		max-width: 56ch;
 		margin-bottom: var(--space-xl);

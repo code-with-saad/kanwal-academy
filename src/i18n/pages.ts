@@ -63,9 +63,24 @@ export interface PageCopy {
 		description: string;
 		eyebrow: string;
 		heading: string;
+		headingBefore: string;
+		headingHighlight: string;
+		headingAfter: string;
+		heroImageAlt: string;
+		heroBadge: string;
+		heroChips: string[];
 		lead: string;
 		listHeading: string;
 		note: string;
+		methodEyebrow: string;
+		methodBefore: string;
+		methodHighlight: string;
+		methodAfter: string;
+		methodText: string;
+		methodImageAlt: string;
+		lessonsEyebrow: string;
+		lessonsHeading: string;
+		lessonsSteps: { title: string; text: string }[];
 		ctaHeading: string;
 		ctaText: string;
 	};
@@ -74,9 +89,19 @@ export interface PageCopy {
 		description: string;
 		eyebrow: string;
 		heading: string;
+		headingBefore: string;
+		headingHighlight: string;
+		headingAfter: string;
+		heroImageAlt: string;
+		heroBadge: string;
+		heroChips: string[];
 		lead: string;
 		note: string;
 		cancelNote: string;
+		includesEyebrow: string;
+		includesHeading: string;
+		includesLead: string;
+		includesItems: string[];
 		faqHeading: string;
 		ctaHeading: string;
 		ctaText: string;
@@ -86,7 +111,19 @@ export interface PageCopy {
 		description: string;
 		eyebrow: string;
 		heading: string;
+		headingBefore: string;
+		headingHighlight: string;
+		headingAfter: string;
+		heroImageAlt: string;
+		heroBadge: string;
+		heroChips: string[];
 		lead: string;
+		nextEyebrow: string;
+		nextHeading: string;
+		nextSteps: { title: string; text: string }[];
+		assuranceHeading: string;
+		assuranceText: string;
+		assuranceChips: string[];
 		faqHeading: string;
 	};
 	faq: {
@@ -94,6 +131,12 @@ export interface PageCopy {
 		description: string;
 		eyebrow: string;
 		heading: string;
+		headingBefore: string;
+		headingHighlight: string;
+		headingAfter: string;
+		heroImageAlt: string;
+		heroBadge: string;
+		factsItems: string[];
 		lead: string;
 		moreText: string;
 	};
@@ -236,9 +279,38 @@ const en: PageCopy = {
 			"Three one to one online courses: Qur'anic Recitation, Tajweed Proficiency and Memorization Excellence. See what each course covers and book a free trial.",
 		eyebrow: "Courses",
 		heading: "Three paths to the Qur'an",
+		headingBefore: "Three paths to the ",
+		headingHighlight: "Qur'an",
+		headingAfter: "",
+		heroImageAlt: "An open Qur'an on a wooden rehal, ready for a recitation lesson",
+		heroBadge: "Live, one to one",
+		heroChips: ["3 courses", "All levels", "30-minute classes"],
 		lead: "Every course is taught live, one to one. Choose the course that matches where you are today, and your teacher adjusts the pace after the trial class.",
 		listHeading: "Choose a course",
 		note: "Classes are 30 minutes and run live in a video call. Every student starts with one free trial class.",
+		methodEyebrow: "The method",
+		methodBefore: "One teacher, one student, one ",
+		methodHighlight: "focus",
+		methodAfter: "",
+		methodText:
+			"Every class is a live video call with your teacher, never a recording and never a group. Your teacher listens to every ayah, corrects gently and sets the pace around the student, so progress stays steady from the very first class.",
+		methodImageAlt: "A student joining a Qur'an lesson on a phone",
+		lessonsEyebrow: "Inside a lesson",
+		lessonsHeading: "How a class works",
+		lessonsSteps: [
+			{
+				title: "Warm-up recitation",
+				text: "The student recites the last lesson aloud. The teacher listens and notes what needs more practice.",
+			},
+			{
+				title: "New lesson, live",
+				text: "New ayat or a new tajweed rule, taught one to one on a video call with the Qur'an on screen.",
+			},
+			{
+				title: "A plan for the week",
+				text: "The teacher leaves a short practice plan sized to your chosen plan, so the next class builds on this one.",
+			},
+		],
 		ctaHeading: "Not sure which course?",
 		ctaText: "Book a free trial and your teacher will help you choose the right path.",
 	},
@@ -248,9 +320,27 @@ const en: PageCopy = {
 			"Four monthly plans from $20 to $102, with one to four classes each week. Every plan starts with a free trial class.",
 		eyebrow: "Pricing",
 		heading: "Plans that fit your week",
+		headingBefore: "Plans that fit ",
+		headingHighlight: "your week",
+		headingAfter: "",
+		heroImageAlt: "An open Qur'an on a wooden rehal, ready for a tajweed lesson",
+		heroBadge: "Free trial first",
+		heroChips: ["4 plans", "Monthly billing", "Cancel anytime"],
 		lead: "Every plan is billed monthly and starts with a free trial class. Prices are in US dollars.",
 		note: "All plans are billed monthly in US dollars and include one free trial class before the first payment.",
 		cancelNote: "Cancel anytime.",
+		includesEyebrow: "Every plan",
+		includesHeading: "What every plan includes",
+		includesLead:
+			"Whichever plan you choose, the teaching stays the same: live, one to one and built around the student.",
+		includesItems: [
+			"One to one live classes on a video call",
+			"A free trial class before the first payment",
+			"A teacher matched to level and time zone",
+			"A practice plan after every class",
+			"Monthly billing in US dollars",
+			"Cancel or pause whenever you need",
+		],
 		faqHeading: "Questions about plans",
 		ctaHeading: "Ready to start?",
 		ctaText: "Book a free trial class and choose a plan after you meet your teacher.",
@@ -261,7 +351,33 @@ const en: PageCopy = {
 			"Contact Kanwal Quran Academy by phone, email or the free trial form. Tell us your time zone and the times that suit you.",
 		eyebrow: "Contact",
 		heading: "Talk to the academy",
+		headingBefore: "Talk to ",
+		headingHighlight: "the academy",
+		headingAfter: "",
+		heroImageAlt: "A student joining a Qur'an lesson on a phone",
+		heroBadge: "Free trial first",
+		heroChips: ["Phone", "WhatsApp", "Email"],
 		lead: "Tell us a little about the student and the times that suit you. We will reply with the next available trial slot.",
+		nextEyebrow: "After you write",
+		nextHeading: "What happens next",
+		nextSteps: [
+			{
+				title: "We read your message",
+				text: "Tell us the student's age, level and time zone. We look for a teacher who fits.",
+			},
+			{
+				title: "We offer a trial slot",
+				text: "You get the next available free trial time by email or WhatsApp, whichever you prefer.",
+			},
+			{
+				title: "You meet your teacher",
+				text: "The trial class is a real lesson. Choose a plan afterwards, only if it feels right.",
+			},
+		],
+		assuranceHeading: "A calm start, every time",
+		assuranceText:
+			"No payment details for the trial, no group calls and no pressure to enrol. The first class is simply a lesson, so you can see how your teacher works before you decide.",
+		assuranceChips: ["Free trial first", "One to one", "Children and adults"],
 		faqHeading: "Before you write",
 	},
 	faq: {
@@ -270,6 +386,12 @@ const en: PageCopy = {
 			"Answers about the free trial, class length, choosing a course, children and adults, booking a time and starting a plan.",
 		eyebrow: "FAQ",
 		heading: "Frequently asked questions",
+		headingBefore: "Frequently asked ",
+		headingHighlight: "questions",
+		headingAfter: "",
+		heroImageAlt: "A student reciting the Qur'an during a live online lesson",
+		heroBadge: "Parents welcome",
+		factsItems: ["Free trial class", "30-minute classes", "Billed monthly", "Cancel anytime"],
 		lead: "Answers to the questions students and parents ask most. If your question is not here, contact us.",
 		moreText: "Still have questions? Chat with us on WhatsApp.",
 	},
@@ -411,9 +533,38 @@ const ar: PageCopy = {
 			"ثلاث دورات فردية عبر الإنترنت: التلاوة القرآنية وإتقان التجويد والتميز في الحفظ. تعرّف على كل دورة واحجز حصة تجريبية مجانية.",
 		eyebrow: "الدورات",
 		heading: "ثلاثة مسارات إلى القرآن",
+		headingBefore: "ثلاثة مسارات إلى ",
+		headingHighlight: "القرآن",
+		headingAfter: "",
+		heroImageAlt: "مصحف مفتوح على حامل خشبي، استعدادًا لدرس التلاوة",
+		heroBadge: "مباشر وفردي",
+		heroChips: ["3 دورات", "جميع المستويات", "حصص 30 دقيقة"],
 		lead: "كل دورة تُقدَّم مباشرة وبشكل فردي. اختر الدورة التي تناسب مستواك اليوم، ويعدّل معلمك الوتيرة بعد الحصة التجريبية.",
 		listHeading: "اختر دورة",
 		note: "مدة الحصة 30 دقيقة وتُعقد مباشرة عبر مكالمة فيديو. يبدأ كل طالب بحصة تجريبية مجانية واحدة.",
+		methodEyebrow: "المنهجية",
+		methodBefore: "معلم واحد، طالب واحد، ",
+		methodHighlight: "تركيز واحد",
+		methodAfter: "",
+		methodText:
+			"كل حصة مكالمة فيديو مباشرة مع معلمك، وليست تسجيلًا ولا مجموعة. يستمع معلمك إلى كل آية ويصحح بلطف ويضبط الوتيرة حول الطالب، ليبقى التقدم ثابتًا من الحصة الأولى.",
+		methodImageAlt: "طالب يحضر درسًا في القرآن عبر الهاتف",
+		lessonsEyebrow: "داخل الحصة",
+		lessonsHeading: "كيف تسير الحصة",
+		lessonsSteps: [
+			{
+				title: "تلاوة للمراجعة",
+				text: "يتلو الطالب الدرس السابق بصوت مسموع. يستمع المعلم ويلاحظ ما يحتاج إلى مزيد من التدريب.",
+			},
+			{
+				title: "درس جديد مباشر",
+				text: "آيات جديدة أو قاعدة تجويد جديدة، تُدرَّس بشكل فردي عبر مكالمة فيديو والمصحف على الشاشة.",
+			},
+			{
+				title: "خطة للأسبوع",
+				text: "يترك المعلم خطة تدريب قصيرة بحجم خطتك المختارة، لتبني الحصة التالية على هذه الحصة.",
+			},
+		],
 		ctaHeading: "لست متأكدًا من الدورة؟",
 		ctaText: "احجز حصة تجريبية وسيساعدك معلمك على اختيار المسار المناسب.",
 	},
@@ -423,9 +574,26 @@ const ar: PageCopy = {
 			"أربع خطط شهرية من 20 إلى 102 دولارًا، بحصة إلى أربع حصص كل أسبوع. تبدأ كل خطة بحصة تجريبية مجانية.",
 		eyebrow: "الأسعار",
 		heading: "خطط تناسب أسبوعك",
+		headingBefore: "خطط تناسب ",
+		headingHighlight: "أسبوعك",
+		headingAfter: "",
+		heroImageAlt: "مصحف مفتوح على حامل خشبي، استعدادًا لدرس التجويد",
+		heroBadge: "الحصة التجريبية أولًا",
+		heroChips: ["4 خطط", "دفع شهري", "إلغاء في أي وقت"],
 		lead: "تُدفع قيمة كل خطة شهريًا، وتبدأ بحصة تجريبية مجانية. الأسعار بالدولار الأمريكي.",
 		note: "تُدفع جميع الخطط شهريًا بالدولار الأمريكي، وتشمل حصة تجريبية مجانية قبل أول دفعة.",
 		cancelNote: "يمكنك الإلغاء في أي وقت.",
+		includesEyebrow: "كل خطة",
+		includesHeading: "ما تشمله كل خطة",
+		includesLead: "مهما كانت خطتك، يبقى التعليم كما هو: مباشر وفردي ومبني حول الطالب.",
+		includesItems: [
+			"حصص مباشرة فردية عبر مكالمة فيديو",
+			"حصة تجريبية مجانية قبل أول دفعة",
+			"معلم يناسب المستوى والمنطقة الزمنية",
+			"خطة تدريب بعد كل حصة",
+			"دفع شهري بالدولار الأمريكي",
+			"إلغاء أو إيقاف مؤقت متى احتجت",
+		],
 		faqHeading: "أسئلة عن الخطط",
 		ctaHeading: "جاهز للبدء؟",
 		ctaText: "احجز حصة تجريبية واختر خطتك بعد لقاء معلمك.",
@@ -436,7 +604,33 @@ const ar: PageCopy = {
 			"تواصل مع أكاديمية كنول عبر الهاتف أو البريد الإلكتروني أو نموذج الحصة التجريبية. أخبرنا بمنطقتك الزمنية والأوقات التي تناسبك.",
 		eyebrow: "تواصل",
 		heading: "تحدث مع الأكاديمية",
+		headingBefore: "تحدث مع ",
+		headingHighlight: "الأكاديمية",
+		headingAfter: "",
+		heroImageAlt: "طالب يحضر درسًا في القرآن عبر الهاتف",
+		heroBadge: "الحصة التجريبية أولًا",
+		heroChips: ["هاتف", "واتساب", "بريد إلكتروني"],
 		lead: "أخبرنا قليلًا عن الطالب والأوقات التي تناسبك. سنرد عليك بأقرب موعد متاح للحصة التجريبية.",
+		nextEyebrow: "بعد مراسلتنا",
+		nextHeading: "ماذا يحدث بعد ذلك",
+		nextSteps: [
+			{
+				title: "نقرأ رسالتك",
+				text: "أخبرنا بعمر الطالب ومستواه ومنطقته الزمنية. نبحث عن معلم يناسبه.",
+			},
+			{
+				title: "نعرض موعدًا تجريبيًا",
+				text: "يصلك أقرب موعد متاح للحصة التجريبية عبر البريد أو واتساب، أيهما تفضل.",
+			},
+			{
+				title: "تلتقي بمعلمك",
+				text: "الحصة التجريبية درس حقيقي. اختر خطة بعدها، وفقط إن شعرت أنها مناسبة.",
+			},
+		],
+		assuranceHeading: "بداية هادئة في كل مرة",
+		assuranceText:
+			"لا بيانات دفع للحصة التجريبية، ولا مكالمات جماعية، ولا ضغط للتسجيل. الحصة الأولى ببساطة درس، لترى كيف يعمل معلمك قبل أن تقرر.",
+		assuranceChips: ["الحصة التجريبية أولًا", "فردي", "أطفال وكبار"],
 		faqHeading: "قبل أن تراسلنا",
 	},
 	faq: {
@@ -445,6 +639,12 @@ const ar: PageCopy = {
 			"إجابات عن الحصة التجريبية ومدة الحصة واختيار الدورة والأطفال والكبار وحجز الوقت وبدء الخطة.",
 		eyebrow: "الأسئلة الشائعة",
 		heading: "الأسئلة الشائعة",
+		headingBefore: "الأسئلة ",
+		headingHighlight: "الشائعة",
+		headingAfter: "",
+		heroImageAlt: "طالب يتلو القرآن خلال درس مباشر عبر الإنترنت",
+		heroBadge: "أهلًا بأولياء الأمور",
+		factsItems: ["حصة تجريبية مجانية", "حصص 30 دقيقة", "دفع شهري", "إلغاء في أي وقت"],
 		lead: "إجابات عن الأسئلة التي يطرحها الطلاب وأولياء الأمور كثيرًا. إن لم تجد سؤالك، تواصل معنا.",
 		moreText: "ما زالت لديك أسئلة؟ تحدث معنا عبر واتساب.",
 	},

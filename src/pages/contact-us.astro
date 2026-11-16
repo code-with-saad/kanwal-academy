@@ -1,15 +1,25 @@
 ---
+/**
+ * Contact page, in the About design language: mint hero panel, the
+ * "what happens next" steps, a calm-start assurance panel and the full
+ * trial booking form. Page copy lives in the contact_page collection;
+ * the form copy still reads the shared book_* fields on the Home entry.
+ */
+import { Font } from "astro:assets";
 import { getEmDashEntry, getSeoMeta } from "emdash";
 import Base from "../layouts/Base.astro";
 import BookTrial from "../components/BookTrial.astro";
+import Chip from "../components/Chip.astro";
 import Container from "../components/Container.astro";
-import PageHeader from "../components/PageHeader.astro";
+import Curve from "../components/Curve.astro";
+import HowItWorks from "../components/HowItWorks.astro";
+import PageHero from "../components/PageHero.astro";
 import Section from "../components/Section.astro";
 import { getSiteContact } from "../utils/site-config";
 import { getLocalizedCollection, localizePath, useUi } from "../i18n";
 import { getPageCopy } from "../i18n/pages";
 import { getCourseCopy, getPlanName } from "../utils/catalog";
-import { makePageText } from "../utils/page-copy";
+import { makePageImage, makePageRows, makePageText } from "../utils/page-copy";
 
 const { locale, t } = useUi(Astro);
 const copy = getPageCopy(locale).contact;
@@ -33,13 +43,10 @@ if (Astro.cache?.enabled) {
 	Astro.cache.set(pageResult.cacheHint);
 }
 
-// Page-specific copy lives in the Contact page collection; the trial form
-// copy still reads the shared book_* fields on the Home entry.
-const pageText = makePageText(
-	pageResult.entry?.data as Record<string, unknown> | undefined,
-	pageResult.fallbackLocale,
-	locale,
-);
+const pageData = pageResult.entry?.data as Record<string, unknown> | undefined;
+const pageText = makePageText(pageData, pageResult.fallbackLocale, locale);
+const pageRows = makePageRows(pageData, pageResult.fallbackLocale, locale);
+const pageImage = makePageImage(pageData, pageResult.fallbackLocale, locale);
 const seo =
 	pageResult.entry && !pageResult.fallbackLocale
 		? getSeoMeta(pageResult.entry, {
@@ -65,6 +72,19 @@ const plans = plansResult.entries
 		slug: plan.id,
 		name: getPlanName(plan, plansResult.fallbackLocale, t),
 	}));
+
+const heroChips = pageRows<{ label: string }>(
+	"hero_chips",
+	copy.heroChips.map((label) => ({ label })),
+).map((row) => row.label);
+const nextIcons = ["book-trial", "teacher", "calendar-check"] as const;
+const nextSteps = pageRows<{ title: string; text: string }>("next_steps", copy.nextSteps).map(
+	(step, i) => ({ ...step, icon: nextIcons[i] ?? "book-trial" }),
+);
+const assuranceChips = pageRows<{ label: string }>(
+	"assurance_chips",
+	copy.assuranceChips.map((label) => ({ label })),
+).map((row) => row.label);
 ---
 
 <Base
@@ -74,26 +94,96 @@ const plans = plansResult.entries
 	robots={seo?.robots ?? undefined}
 	breadcrumbs={[{ name: t.nav.contact, path: "/contact-us" }]}
 	siteContact={contactResult}
+	overlayHeader
 >
-	<Section space="tight">
-		<Container>
-			<PageHeader
-				eyebrow={pageText("eyebrow", copy.eyebrow)}
-				heading={pageText("heading", copy.heading)}
-				lead={pageText("lead", copy.lead)}
-			/>
-		</Container>
-	</Section>
+	<!-- Amiri carries the Arabic brand watermark in the hero. -->
+	<Font slot="head" cssVariable="--font-arabic" />
 
-	<Section id="book" space="tight">
-		<Container>
-			<BookTrial
-				contact={contactResult.data}
-				{courses}
-				{plans}
-				initialPlan={Astro.url.searchParams.get("plan") ?? ""}
-				initialCourse={Astro.url.searchParams.get("course") ?? ""}
-			/>
-		</Container>
-	</Section>
+	<div class="inner">
+		<PageHero
+			eyebrow={pageText("eyebrow", copy.eyebrow)}
+			headingBefore={pageText("hero_heading_before", copy.headingBefore)}
+			headingHighlight={pageText("hero_heading_highlight", copy.headingHighlight)}
+			headingAfter={pageText("hero_heading_after", copy.headingAfter)}
+			heading={pageText("heading", copy.heading)}
+			lead={pageText("lead", copy.lead)}
+			imageSrc={pageImage("hero_image")?.src ?? "/images/section-phone.png"}
+			imageAlt={pageText("hero_image_alt", copy.heroImageAlt)}
+			badge={pageText("hero_badge", copy.heroBadge)}
+			chips={heroChips}
+		/>
+
+		<Section id="next">
+			<Container>
+				<HowItWorks
+					eyebrow={pageText("next_eyebrow", copy.nextEyebrow)}
+					heading={pageText("next_heading", copy.nextHeading)}
+					steps={nextSteps}
+				/>
+			</Container>
+		</Section>
+
+		<Section id="assurance" tone="sand" class="section--curve">
+			<Container>
+				<div class="assurance">
+					<h2>{pageText("assurance_heading", copy.assuranceHeading)}</h2>
+					<p class="assurance__text">{pageText("assurance_text", copy.assuranceText)}</p>
+					<div class="assurance__chips">
+						{assuranceChips.map((chip) => <Chip>{chip}</Chip>)}
+					</div>
+				</div>
+			</Container>
+			<Curve fill="var(--page)" line="var(--mint-300)" />
+		</Section>
+
+		<Section id="book">
+			<Container>
+				<BookTrial
+					contact={contactResult.data}
+					{courses}
+					{plans}
+					initialPlan={Astro.url.searchParams.get("plan") ?? ""}
+					initialCourse={Astro.url.searchParams.get("course") ?? ""}
+				/>
+			</Container>
+		</Section>
+	</div>
 </Base>
+
+<style>
+	/* One rhythm for the whole page, same as About: 96px desktop, 56px mobile. */
+	.inner {
+		--section-gap: clamp(56px, 8vw, 96px);
+	}
+
+	.inner :global(.section--space-normal),
+	.inner :global(.section--space-tight) {
+		padding-block: var(--section-gap);
+	}
+
+	.inner :global(.section--curve) {
+		position: relative;
+		overflow: clip;
+	}
+
+	.assurance {
+		display: grid;
+		justify-items: center;
+		gap: var(--space-md);
+		max-width: 64ch;
+		margin-inline: auto;
+		text-align: center;
+	}
+
+	.assurance__text {
+		color: var(--type-copy-color);
+	}
+
+	.assurance__chips {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: var(--space-sm);
+		margin-top: var(--space-sm);
+	}
+</style>

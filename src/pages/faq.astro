@@ -1,36 +1,44 @@
 ---
+/**
+ * FAQ page, in the About design language: mint hero panel with fact chips,
+ * the full accordion from the faqs collection and a closing CTA with a
+ * WhatsApp line. Page copy lives in the faq_page collection.
+ */
+import { Font } from "astro:assets";
 import { getEmDashEntry, getSeoMeta } from "emdash";
 import Base from "../layouts/Base.astro";
 import Container from "../components/Container.astro";
 import CtaPanel from "../components/CtaPanel.astro";
 import FaqAccordion from "../components/FaqAccordion.astro";
 import JsonLd from "../components/JsonLd.astro";
-import PageHeader from "../components/PageHeader.astro";
+import PageHero from "../components/PageHero.astro";
 import Section from "../components/Section.astro";
 import { localizePath, useUi } from "../i18n";
 import { getPageCopy } from "../i18n/pages";
 import { getFaqs, faqPageJsonLd } from "../utils/faqs";
-import { makePageText } from "../utils/page-copy";
+import { makePageImage, makePageRows, makePageText } from "../utils/page-copy";
+import { getSiteContact } from "../utils/site-config";
 
 const { locale, t } = useUi(Astro);
 const copy = getPageCopy(locale).faq;
 
-const [faqs, pageResult] = await Promise.all([
+const [faqs, pageResult, contactResult] = await Promise.all([
 	getFaqs(locale),
 	getEmDashEntry("faq_page", "faq", { locale }),
+	getSiteContact(locale),
 ]);
 if (Astro.cache?.enabled) {
 	Astro.cache.set(faqs.cacheHint);
 	Astro.cache.set(pageResult.cacheHint);
+	Astro.cache.set(contactResult.cacheHint);
 }
 
 // Page-specific copy lives in the FAQ page collection; the questions
 // themselves stay in the faqs collection.
-const pageText = makePageText(
-	pageResult.entry?.data as Record<string, unknown> | undefined,
-	pageResult.fallbackLocale,
-	locale,
-);
+const pageData = pageResult.entry?.data as Record<string, unknown> | undefined;
+const pageText = makePageText(pageData, pageResult.fallbackLocale, locale);
+const pageRows = makePageRows(pageData, pageResult.fallbackLocale, locale);
+const pageImage = makePageImage(pageData, pageResult.fallbackLocale, locale);
 const seo =
 	pageResult.entry && !pageResult.fallbackLocale
 		? getSeoMeta(pageResult.entry, {
@@ -40,6 +48,11 @@ const seo =
 				defaultDescription: copy.description,
 			})
 		: null;
+
+const factChips = pageRows<{ label: string }>(
+	"facts_items",
+	copy.factsItems.map((label) => ({ label })),
+).map((row) => row.label);
 ---
 
 <Base
@@ -48,23 +61,70 @@ const seo =
 	image={seo?.ogImage ?? undefined}
 	robots={seo?.robots ?? undefined}
 	breadcrumbs={[{ name: t.nav.faq, path: "/faq" }]}
+	overlayHeader
 >
-	<Section space="tight">
-		<Container size="narrow">
-			<PageHeader
-				eyebrow={pageText("eyebrow", copy.eyebrow)}
-				heading={pageText("heading", copy.heading)}
-				lead={pageText("lead", copy.lead)}
-			/>
-			<FaqAccordion items={faqs.items} />
-			{faqs.items.length > 0 && <JsonLd data={faqPageJsonLd(faqs.items)} />}
-		</Container>
-	</Section>
+	<!-- Amiri carries the Arabic brand watermark in the hero. -->
+	<Font slot="head" cssVariable="--font-arabic" />
 
-	<CtaPanel
-		heading={pageText("cta_heading", t.home.book_heading)}
-		text={pageText("cta_text", t.home.book_form_sub)}
-		primaryHref={localizePath("/contact-us#book", locale)}
-		primaryLabel={t.actions.bookFreeTrial}
-	/>
+	<div class="inner">
+		<PageHero
+			eyebrow={pageText("eyebrow", copy.eyebrow)}
+			headingBefore={pageText("hero_heading_before", copy.headingBefore)}
+			headingHighlight={pageText("hero_heading_highlight", copy.headingHighlight)}
+			headingAfter={pageText("hero_heading_after", copy.headingAfter)}
+			heading={pageText("heading", copy.heading)}
+			lead={pageText("lead", copy.lead)}
+			imageSrc={pageImage("hero_image")?.src ?? "/images/wisdom.jpg"}
+			imageAlt={pageText("hero_image_alt", copy.heroImageAlt)}
+			badge={pageText("hero_badge", copy.heroBadge)}
+			chips={factChips}
+		/>
+
+		<Section id="faq">
+			<Container size="narrow">
+				<FaqAccordion items={faqs.items} />
+				{faqs.items.length > 0 && <JsonLd data={faqPageJsonLd(faqs.items)} />}
+				<p class="faq-more">
+					<a
+						href={`https://wa.me/${contactResult.data.whatsappNumber}`}
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						{pageText("more_text", copy.moreText)}
+					</a>
+				</p>
+			</Container>
+		</Section>
+
+		<CtaPanel
+			heading={pageText("cta_heading", t.home.book_heading)}
+			text={pageText("cta_text", t.home.book_form_sub)}
+			primaryHref={localizePath("/contact-us#book", locale)}
+			primaryLabel={t.actions.bookFreeTrial}
+		/>
+	</div>
 </Base>
+
+<style>
+	/* One rhythm for the whole page, same as About: 96px desktop, 56px mobile. */
+	.inner {
+		--section-gap: clamp(56px, 8vw, 96px);
+	}
+
+	.inner :global(.section--space-normal),
+	.inner :global(.section--space-tight) {
+		padding-block: var(--section-gap);
+	}
+
+	.faq-more {
+		margin-top: var(--space-xl);
+		text-align: center;
+	}
+
+	.faq-more a {
+		color: var(--green-deep);
+		font-weight: 500;
+		text-decoration: underline;
+		text-underline-offset: 4px;
+	}
+</style>

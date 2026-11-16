@@ -1,37 +1,46 @@
 ---
 /**
- * Courses page. Renders the same "Start your journey" section as the Home
- * page: course rows and both feature splits with their images.
+ * Courses page, in the About design language: mint hero panel with an
+ * arch-framed photograph, the course journey rows, a method panel, the
+ * "how a class works" steps and both feature splits. Page copy lives in
+ * the courses_page collection; journey and split copy stay shared with Home.
  */
+import { Font } from "astro:assets";
 import { getEmDashEntry, getSeoMeta } from "emdash";
 import Base from "../../layouts/Base.astro";
 import Container from "../../components/Container.astro";
 import CourseRow from "../../components/CourseRow.astro";
 import CtaPanel from "../../components/CtaPanel.astro";
+import Curve from "../../components/Curve.astro";
 import FeatureSplit from "../../components/FeatureSplit.astro";
-import PageHeader from "../../components/PageHeader.astro";
+import HowItWorks from "../../components/HowItWorks.astro";
+import PageHero from "../../components/PageHero.astro";
 import Section from "../../components/Section.astro";
+import WisdomPanel from "../../components/WisdomPanel.astro";
 import { getLocalizedCollection, localizePath, useUi } from "../../i18n";
 import { getPageCopy } from "../../i18n/pages";
 import { getCourseCopy } from "../../utils/catalog";
 import { makeHomeText } from "../../utils/home-copy";
-import { makePageText } from "../../utils/page-copy";
+import { makePageImage, makePageRows, makePageText } from "../../utils/page-copy";
+import { getSiteContact } from "../../utils/site-config";
 
 const { locale, t } = useUi(Astro);
 const copy = getPageCopy(locale).courses;
 
-const [homeResult, coursesResult, pageResult] = await Promise.all([
+const [homeResult, coursesResult, pageResult, contactResult] = await Promise.all([
 	getEmDashEntry("home_page", "home", { locale }),
 	getLocalizedCollection("courses", locale, {
 		status: "published",
 		orderBy: { order: "asc" },
 	}),
 	getEmDashEntry("courses_page", "courses", { locale }),
+	getSiteContact(locale),
 ]);
 if (Astro.cache?.enabled) {
 	Astro.cache.set(homeResult.cacheHint);
 	Astro.cache.set(coursesResult.cacheHint);
 	Astro.cache.set(pageResult.cacheHint);
+	Astro.cache.set(contactResult.cacheHint);
 }
 
 const homePage = homeResult.entry;
@@ -43,11 +52,10 @@ const homeText = makeHomeText(
 );
 // Page-specific copy lives in the Courses page collection; shared Home
 // sections (journey, splits) still read the Home entry.
-const pageText = makePageText(
-	pageResult.entry?.data as Record<string, unknown> | undefined,
-	pageResult.fallbackLocale,
-	locale,
-);
+const pageData = pageResult.entry?.data as Record<string, unknown> | undefined;
+const pageText = makePageText(pageData, pageResult.fallbackLocale, locale);
+const pageRows = makePageRows(pageData, pageResult.fallbackLocale, locale);
+const pageImage = makePageImage(pageData, pageResult.fallbackLocale, locale);
 const seo =
 	pageResult.entry && !pageResult.fallbackLocale
 		? getSeoMeta(pageResult.entry, {
@@ -59,6 +67,16 @@ const seo =
 		: null;
 
 const courses = coursesResult.entries.filter((course) => course.data.visible !== false);
+
+const heroChips = pageRows<{ label: string }>(
+	"hero_chips",
+	copy.heroChips.map((label) => ({ label })),
+).map((row) => row.label);
+const lessonIcons = ["book-trial", "teacher", "calendar-check"] as const;
+const lessonSteps = pageRows<{ title: string; text: string }>(
+	"lessons_steps",
+	copy.lessonsSteps,
+).map((step, i) => ({ ...step, icon: lessonIcons[i] ?? "book-trial" }));
 
 const split2List = homeText("split2_list_items")
 	.split("\n")
@@ -72,85 +90,144 @@ const split2List = homeText("split2_list_items")
 	image={seo?.ogImage ?? undefined}
 	robots={seo?.robots ?? undefined}
 	breadcrumbs={[{ name: t.nav.courses, path: "/courses" }]}
+	overlayHeader
 >
-	<Section space="tight">
-		<Container>
-			<PageHeader
-				eyebrow={pageText("eyebrow", copy.eyebrow)}
-				heading={pageText("heading", copy.heading)}
-				lead={pageText("lead", copy.lead)}
-			/>
-		</Container>
-	</Section>
+	<!-- Amiri carries the Arabic brand watermark in the hero. -->
+	<Font slot="head" cssVariable="--font-arabic" />
 
-	<Section id="courses">
-		<Container>
-			<div class="journey-head">
-				<div class="journey-head__copy">
-					<h2>{homeText("courses_journey_heading")}</h2>
-					<p>{homeText("courses_journey_intro")}</p>
+	<div class="inner">
+		<PageHero
+			eyebrow={pageText("eyebrow", copy.eyebrow)}
+			headingBefore={pageText("hero_heading_before", copy.headingBefore)}
+			headingHighlight={pageText("hero_heading_highlight", copy.headingHighlight)}
+			headingAfter={pageText("hero_heading_after", copy.headingAfter)}
+			heading={pageText("heading", copy.heading)}
+			lead={pageText("lead", copy.lead)}
+			imageSrc={pageImage("hero_image")?.src ?? "/images/course-recitation.jpg"}
+			imageAlt={pageText("hero_image_alt", copy.heroImageAlt)}
+			badge={pageText("hero_badge", copy.heroBadge)}
+			chips={heroChips}
+		/>
+
+		<Section id="courses">
+			<Container>
+				<div class="journey-head">
+					<div class="journey-head__copy">
+						<h2>{homeText("courses_journey_heading")}</h2>
+						<p>{homeText("courses_journey_intro")}</p>
+					</div>
 				</div>
-			</div>
 
-			<ol class="journey-list">
-				{
-					courses.map((course, index) => (
-						<CourseRow
-							index={index + 1}
-							title={getCourseCopy(course, coursesResult.fallbackLocale, t).name}
-							summary={getCourseCopy(course, coursesResult.fallbackLocale, t).summary}
-							level={getCourseCopy(course, coursesResult.fallbackLocale, t).level}
-							arabic={locale === "ar" ? undefined : course.data.arabic_name}
-							prefillCourse={course.id}
-						/>
-					))
-				}
-			</ol>
+				<ol class="journey-list">
+					{
+						courses.map((course, index) => (
+							<CourseRow
+								index={index + 1}
+								title={getCourseCopy(course, coursesResult.fallbackLocale, t).name}
+								summary={getCourseCopy(course, coursesResult.fallbackLocale, t).summary}
+								level={getCourseCopy(course, coursesResult.fallbackLocale, t).level}
+								arabic={locale === "ar" ? undefined : course.data.arabic_name}
+								prefillCourse={course.id}
+							/>
+						))
+					}
+				</ol>
 
-			<div class="study-stack">
-				<FeatureSplit
-					headingBefore={homeText("split1_heading_before")}
-					headingHighlight={homeText("split1_heading_highlight")}
-					paragraphs={[
-						homeText("split1_paragraph_1"),
-						homeText("split1_paragraph_2"),
-					]}
-					image={homePage?.data.split1_image}
+				<p class="journey-note">{pageText("note", copy.note)}</p>
+			</Container>
+		</Section>
+
+		<Section tone="sand" class="section--curve">
+			<Container>
+				<WisdomPanel
+					eyebrow={pageText("method_eyebrow", copy.methodEyebrow)}
+					titleBefore={pageText("method_heading_before", copy.methodBefore)}
+					titleHighlight={pageText("method_heading_highlight", copy.methodHighlight)}
+					titleAfter={pageText("method_heading_after", copy.methodAfter)}
+					paragraph1={pageText("method_text", copy.methodText)}
+					image={pageImage("method_image")}
 					imageSrc="/images/section-phone.png"
-					imageAlt={homeText("split1_image_alt") || t.images.split1}
-					imageLabel={homeText("split1_image_label")}
-					imageRatio="4 / 3"
-					buttonLabel={t.actions.bookFreeTrial}
+					imageAlt={pageText("method_image_alt", copy.methodImageAlt)}
+					years={contactResult.data.stats.years}
+					imageMaxHeight={420}
 				/>
+			</Container>
+			<Curve fill="var(--page)" line="var(--mint-300)" />
+		</Section>
 
-				<FeatureSplit
-					headingBefore={homeText("split2_heading_before")}
-					headingHighlight={homeText("split2_heading_highlight")}
-					paragraphs={[homeText("split2_paragraph_1")]}
-					image={homePage?.data.split2_image}
-					imageSrc="/images/section-memorize.jpg"
-					imageAlt={homeText("split2_image_alt") || t.images.split2}
-					imageLabel={homeText("split2_image_label")}
-					imageRatio="4 / 3"
-					list={split2List}
-					buttonLabel={t.actions.bookFreeTrial}
-					imageFirst
+		<Section id="how-it-works">
+			<Container>
+				<HowItWorks
+					eyebrow={pageText("lessons_eyebrow", copy.lessonsEyebrow)}
+					heading={pageText("lessons_heading", copy.lessonsHeading)}
+					steps={lessonSteps}
 				/>
-			</div>
-		</Container>
-	</Section>
+			</Container>
+		</Section>
 
-	<CtaPanel
-		heading={pageText("cta_heading", copy.ctaHeading)}
-		text={pageText("cta_text", copy.ctaText)}
-		primaryHref={localizePath("/contact-us#book", locale)}
-		primaryLabel={t.actions.bookFreeTrial}
-		secondaryHref={localizePath("/pricing", locale)}
-		secondaryLabel={t.actions.seePlans}
-	/>
+		<Section tone="sand" class="section--curve">
+			<Container>
+				<div class="study-stack">
+					<FeatureSplit
+						headingBefore={homeText("split1_heading_before")}
+						headingHighlight={homeText("split1_heading_highlight")}
+						paragraphs={[
+							homeText("split1_paragraph_1"),
+							homeText("split1_paragraph_2"),
+						]}
+						image={homePage?.data.split1_image}
+						imageSrc="/images/section-phone.png"
+						imageAlt={homeText("split1_image_alt") || t.images.split1}
+						imageLabel={homeText("split1_image_label")}
+						imageRatio="4 / 3"
+						buttonLabel={t.actions.bookFreeTrial}
+					/>
+
+					<FeatureSplit
+						headingBefore={homeText("split2_heading_before")}
+						headingHighlight={homeText("split2_heading_highlight")}
+						paragraphs={[homeText("split2_paragraph_1")]}
+						image={homePage?.data.split2_image}
+						imageSrc="/images/section-memorize.jpg"
+						imageAlt={homeText("split2_image_alt") || t.images.split2}
+						imageLabel={homeText("split2_image_label")}
+						imageRatio="4 / 3"
+						list={split2List}
+						buttonLabel={t.actions.bookFreeTrial}
+						imageFirst
+					/>
+				</div>
+			</Container>
+			<Curve fill="var(--page)" line="var(--mint-300)" />
+		</Section>
+
+		<CtaPanel
+			heading={pageText("cta_heading", copy.ctaHeading)}
+			text={pageText("cta_text", copy.ctaText)}
+			primaryHref={localizePath("/contact-us#book", locale)}
+			primaryLabel={t.actions.bookFreeTrial}
+			secondaryHref={localizePath("/pricing", locale)}
+			secondaryLabel={t.actions.seePlans}
+		/>
+	</div>
 </Base>
 
 <style>
+	/* One rhythm for the whole page, same as About: 96px desktop, 56px mobile. */
+	.inner {
+		--section-gap: clamp(56px, 8vw, 96px);
+	}
+
+	.inner :global(.section--space-normal),
+	.inner :global(.section--space-tight) {
+		padding-block: var(--section-gap);
+	}
+
+	.inner :global(.section--curve) {
+		position: relative;
+		overflow: clip;
+	}
+
 	.journey-head {
 		display: flex;
 		flex-wrap: wrap;
@@ -175,9 +252,16 @@ const split2List = homeText("split2_list_items")
 		display: grid;
 	}
 
+	.journey-note {
+		margin-top: var(--space-lg);
+		max-width: 60ch;
+		color: var(--type-copy-color);
+		font-size: var(--type-small-size);
+		line-height: var(--type-small-line);
+	}
+
 	.study-stack {
 		display: grid;
 		gap: clamp(56px, 8vw, 104px);
-		margin-top: clamp(56px, 8vw, 104px);
 	}
 </style>
