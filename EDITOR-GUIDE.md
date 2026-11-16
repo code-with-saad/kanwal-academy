@@ -11,7 +11,7 @@ The admin sidebar has three groups:
 | Group      | Collections inside                                                        |
 | ---------- | ----------------------------------------------------------------------- |
 | **Content** | Pages, Blog posts                                                       |
-| **Academy** | Courses, Plans, Teachers, Testimonials, FAQs                            |
+| **Academy** | About page, Courses page, Pricing page, Contact page, FAQ page, Courses, Plans, Teachers, Testimonials, FAQs |
 | **Settings** | Site settings, Enrolments, Subscribers                                 |
 
 Everything below maps to one of these collections.
@@ -123,11 +123,20 @@ Each row has:
 
 ---
 
-## 5. Home page content (hero, sections, headings)
+## 5. Pages: Home, About, Courses, Pricing, Contact, FAQ
 
-**Content → Pages → Home**
+**Content → Pages**
 
-This single entry controls every piece of text on the home page. Open it and scroll down.
+Every page of the site is one entry here: Home, About, Courses, Pricing,
+Contact us, FAQ, and the legal pages (Terms of Service, Privacy Policy,
+Refund Policy). The Home entry controls every piece of text on the home
+page. The About, Courses, Pricing, Contact us and FAQ entries carry only
+the page title and SEO; their copy lives in the matching collection under
+**Academy** (About page, Courses page, Pricing page, Contact page, FAQ
+page). Open an entry and scroll down. Empty text fields fall back to the
+bundled copy, so you only need to fill in what you want to change.
+
+### Home page
 
 ### Hero
 - **Eyebrow** (small label above the headline)
@@ -150,11 +159,11 @@ Each card has a title, text, and the first card also has a **chip label**. Title
 - **Paragraph 1**, **Paragraph 2**
 - **Image alt text**
 
-### About page (/about) — collection "About page"
+### About page (/about) — Academy → About page
 Everything on /about lives in one entry (slug `about`) of the **About page**
-collection. English and Arabic are separate translations in the admin. Empty
-text fields fall back to the bundled copy; empty images fall back to the
-bundled photographs.
+collection. English and Arabic are separate translations in the admin.
+Empty text fields fall back to the bundled copy; empty images fall back to
+the bundled photographs.
 - **Hero**: eyebrow, heading before / highlighted words / after, lead line,
   image + alt text, since badge
 - **Philosophy**: eyebrow, heading before / highlight / after, paragraph,
@@ -208,6 +217,33 @@ bundled photographs.
 - **Lesson note**
 - **Form card heading** and **Subheading**
 - **Submit button** label
+
+### Courses page (/courses) — Academy → Courses page
+One entry with: eyebrow, heading, lead paragraph, and the closing CTA
+heading + text. The course rows and the two image+text panels below them
+are shared with the home page: edit them on the **Home** entry (Courses
+section and Feature split panels) or in **Academy → Courses**.
+
+### Pricing page (/pricing) — Academy → Pricing page
+One entry with: eyebrow, heading, lead paragraph, cancel note, billing
+note, FAQ heading, and the closing CTA heading + text. The plan cards,
+labels and trial steps are shared with the home page: edit them on the
+**Home** entry (Pricing section, How it works) or in **Academy → Plans**.
+The short FAQ questions come from **Academy → FAQs**.
+
+### Contact page (/contact-us) — Academy → Contact page
+One entry with: eyebrow, heading and lead paragraph. The trial form copy
+is shared with the home page: edit it on the **Home** entry (Book trial
+section). Phone, email and address come from **Settings → Site settings**.
+
+### FAQ page (/faq) — Academy → FAQ page
+One entry with: eyebrow, heading, lead paragraph, and the closing CTA
+heading + text. The questions and answers themselves come from
+**Academy → FAQs**.
+
+### Legal pages — Pages → Terms of Service / Privacy Policy / Refund Policy
+Each legal page is one entry with a rich text **Content** field. Edit the
+text there; the layout stays the same.
 
 ---
 
