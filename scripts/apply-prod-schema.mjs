@@ -9,13 +9,19 @@
  *   - Create the `subscribers` collection if missing.
  *   - Add the `lead_status` select field to `enrolments` if missing.
  *   - Add the `owner_email` field to `site_settings` if missing.
+ *   - Ensure the `home_page` collection exists with every home field, and
+ *     copy the `pages/home` entry (data + SEO) into it. Falls back to the
+ *     seed when `pages/home` is already gone.
  *   - Ensure the five per-page copy collections exist (`about_page`,
  *     `courses_page`, `pricing_page`, `contact_page`, `faq_page`) with all
  *     their fields, and fill their single entries from seed/seed.json.
  *     Existing editor values are never overwritten: only empty fields are
  *     filled.
- *   - Ensure the courses, pricing, contact-us and faq entries in `pages`
- *     exist (title + SEO only; their copy lives in the per-page collections).
+ *   - Regroup the admin: the page collections move to the Content group
+ *     with SEO enabled; `pages` is renamed to "Legal Pages".
+ *   - With --cleanup (run only after the new code is deployed and verified):
+ *     soft-delete the home/about/courses/pricing/contact-us/faq entries from
+ *     `pages` and drop the home fields, leaving the three legal pages.
  *
  * Requirements:
  *   - Node 18+ (uses global fetch).
@@ -33,6 +39,10 @@
  *   EMDASH_TOKEN=em_pat_xxxxxxxxxxxxx \
  *     node scripts/apply-prod-schema.mjs
  *
+ * Local dev (no token needed, uses the dev bypass):
+ *   node scripts/apply-prod-schema.mjs --local
+ *   node scripts/apply-prod-schema.mjs --local --cleanup
+ *
  * After this, the site_settings entry still needs `owner_email` populated
  * (in the admin under Site settings). That's one click in the UI.
  */
@@ -46,19 +56,34 @@ function arg(name) {
 	return undefined;
 }
 
-const baseUrl = (arg("--url") ?? process.env.EMDASH_URL ?? "").replace(/\/$/, "");
+const local = args.includes("--local");
+const cleanup = args.includes("--cleanup");
+
+const baseUrl = (
+	arg("--url") ?? process.env.EMDASH_URL ?? (local ? "http://localhost:4322" : "")
+).replace(/\/$/, "");
 const token = arg("--token") ?? process.env.EMDASH_TOKEN ?? "";
 
-if (!baseUrl || !token) {
+if (!baseUrl || (!local && !token)) {
 	console.error("Usage: node apply-prod-schema.mjs --url <site> --token <api-token>");
-	console.error("       (or set EMDASH_URL and EMDASH_TOKEN env vars)");
+	console.error("       (or set EMDASH_URL and EMDASH_TOKEN env vars, or --local)");
 	process.exit(1);
 }
 
-const headers = {
-	Authorization: `Bearer ${token}`,
-	"Content-Type": "application/json",
-};
+let headers = { "Content-Type": "application/json" };
+if (local) {
+	const auth = await fetch(`${baseUrl}/_emdash/api/auth/dev-bypass`);
+	if (!auth.ok) {
+		console.error(`dev-bypass failed: HTTP ${auth.status}`);
+		process.exit(1);
+	}
+	const cookie = (auth.headers.getSetCookie?.() ?? [])
+		.map((c) => c.split(";")[0])
+		.join("; ");
+	headers = { ...headers, Cookie: cookie, "X-EmDash-Request": "1" };
+} else {
+	headers.Authorization = `Bearer ${token}`;
+}
 
 async function api(method, path, body) {
 	const res = await fetch(`${baseUrl}${path}`, {
@@ -96,9 +121,35 @@ async function ensureCollection(spec) {
 		console.log(`  skip: ${spec.slug} already exists`);
 		return false;
 	}
-	await api("POST", "/_emdash/api/schema/collections", spec);
+	const { fields, titleField, ...rest } = spec;
+	await api("POST", "/_emdash/api/schema/collections", rest);
 	console.log(`  created: ${spec.slug}`);
 	return true;
+}
+
+// Create a seed-defined collection, then its fields and title field.
+async function ensureSeedCollection(spec) {
+	await ensureCollection(spec);
+	const existing = new Set((await listFields(spec.slug)).map((f) => f.slug));
+	for (const field of spec.fields ?? []) {
+		if (existing.has(field.slug)) continue;
+		await api("POST", `/_emdash/api/schema/collections/${spec.slug}/fields`, field);
+		console.log(`  created: ${spec.slug}.${field.slug}`);
+	}
+	if (spec.titleField) {
+		await api("PUT", `/_emdash/api/schema/collections/${spec.slug}`, {
+			titleField: spec.titleField,
+		});
+	}
+}
+
+async function getEntry(collection, slug) {
+	try {
+		const got = await api("GET", `/_emdash/api/content/${collection}/${slug}`);
+		return got?.data?.item ?? null;
+	} catch {
+		return null;
+	}
 }
 
 async function ensureField(collectionSlug, spec) {
@@ -214,6 +265,46 @@ async function main() {
 		(typeof value === "string" && value.trim() === "") ||
 		(Array.isArray(value) && value.length === 0);
 
+	// --- home_page: extract the home entry out of pages ---------------------
+	const homeSpec = seed.collections.find((c) => c.slug === "home_page");
+	await ensureSeedCollection(homeSpec);
+	const seedHome = seed.content.home_page.find((e) => e.slug === "home");
+	const sourceHome = await getEntry("pages", "home");
+	let home = await getEntry("home_page", "home");
+	if (!home) {
+		const created = await api("POST", "/_emdash/api/content/home_page", {
+			slug: "home",
+			data: sourceHome?.data ?? seedHome.data,
+		});
+		const createdId = created?.data?.item?.id ?? created?.data?.id;
+		await api("POST", `/_emdash/api/content/home_page/${createdId}/publish`, {});
+		home = await getEntry("home_page", "home");
+		console.log("  created + published: home_page/home");
+	} else if (sourceHome) {
+		const fill = {};
+		for (const [key, value] of Object.entries(sourceHome.data)) {
+			if (isEmpty(home.data?.[key])) fill[key] = value;
+		}
+		if (Object.keys(fill).length === 0) {
+			console.log("  skip: home_page/home already complete");
+		} else {
+			await api("PUT", `/_emdash/api/content/home_page/${home.id}`, { data: fill });
+			await api("POST", `/_emdash/api/content/home_page/${home.id}/publish`, {});
+			console.log(`  filled ${Object.keys(fill).length} empty field(s) + published: home_page/home`);
+		}
+	}
+	// Carry SEO across (only keys the target does not have yet).
+	if (sourceHome?.seo && home) {
+		const seoFill = {};
+		for (const key of ["title", "description", "image"]) {
+			if (sourceHome.seo[key] && !home.seo?.[key]) seoFill[key] = sourceHome.seo[key];
+		}
+		if (Object.keys(seoFill).length > 0) {
+			await api("PUT", `/_emdash/api/content/home_page/${home.id}`, { seo: seoFill });
+			console.log(`  carried ${Object.keys(seoFill).length} SEO value(s) into home_page/home`);
+		}
+	}
+
 	const pageCollections = [
 		{ collection: "about_page", slug: "about" },
 		{ collection: "courses_page", slug: "courses" },
@@ -224,14 +315,7 @@ async function main() {
 
 	for (const { collection, slug } of pageCollections) {
 		const spec = seed.collections.find((c) => c.slug === collection);
-		await ensureCollection(spec);
-
-		const existingFields = new Set((await listFields(collection)).map((f) => f.slug));
-		for (const field of spec.fields) {
-			if (existingFields.has(field.slug)) continue;
-			await api("POST", `/_emdash/api/schema/collections/${collection}/fields`, field);
-			console.log(`  created: ${collection}.${field.slug}`);
-		}
+		await ensureSeedCollection(spec);
 
 		const seedEntry = seed.content[collection].find((e) => e.slug === slug);
 		const seedData = seedEntry.data;
@@ -270,40 +354,54 @@ async function main() {
 		console.log(`  filled ${Object.keys(fill).length} empty field(s) + published: ${collection}/${slug}`);
 	}
 
-	// --- pages: title + SEO entries for the four inner pages ----------------
-	for (const slug of ["courses", "pricing", "contact-us", "faq"]) {
-		const seedEntry = seed.content.pages.find((e) => e.slug === slug && !e.locale);
+	// --- admin regroup: Content group, SEO, Legal Pages label ---------------
+	const pagesSpec = seed.collections.find((c) => c.slug === "pages");
+	await updateCollection("pages", {
+		label: pagesSpec.label,
+		labelSingular: pagesSpec.labelSingular,
+		description: pagesSpec.description,
+		sortOrder: pagesSpec.sortOrder,
+	});
+	for (const { collection } of pageCollections) {
+		const spec = seed.collections.find((c) => c.slug === collection);
+		await updateCollection(collection, {
+			group: spec.group,
+			sortOrder: spec.sortOrder,
+			hasSeo: true,
+			supports: spec.supports,
+		});
+	}
 
-		let existing = null;
-		try {
-			const got = await api("GET", `/_emdash/api/content/pages/${slug}`);
-			existing = got?.data?.item ?? null;
-		} catch {
-			// NOT_FOUND: create below.
+	// --- cleanup: only with --cleanup, after the new code is verified -------
+	if (cleanup) {
+		const homeNow = await getEntry("home_page", "home");
+		if (!homeNow || homeNow.status !== "published") {
+			throw new Error("cleanup refused: home_page/home is not published");
 		}
-
-		if (!existing) {
-			const created = await api("POST", "/_emdash/api/content/pages", {
-				slug,
-				data: seedEntry.data,
-			});
-			const createdId = created?.data?.item?.id ?? created?.data?.id;
-			await api("POST", `/_emdash/api/content/pages/${createdId}/publish`, {});
-			console.log(`  created + published: pages/${slug} (title + SEO)`);
-			continue;
+		const source = await getEntry("pages", "home");
+		if (source) {
+			for (const key of Object.keys(source.data)) {
+				if (!(key in (homeNow.data ?? {}))) {
+					throw new Error(`cleanup refused: home_page/home is missing key ${key}`);
+				}
+			}
 		}
-
-		const fill = {};
-		for (const [key, value] of Object.entries(seedEntry.data)) {
-			if (isEmpty(existing.data?.[key])) fill[key] = value;
+		for (const slug of ["home", "about", "courses", "pricing", "contact-us", "faq"]) {
+			const entry = await getEntry("pages", slug);
+			if (!entry) {
+				console.log(`  skip: pages/${slug} absent`);
+				continue;
+			}
+			await api("DELETE", `/_emdash/api/content/pages/${entry.id}`);
+			console.log(`  deleted: pages/${slug}`);
 		}
-		if (Object.keys(fill).length === 0) {
-			console.log(`  skip: pages/${slug} already complete`);
-			continue;
+		let dropped = 0;
+		for (const field of await listFields("pages")) {
+			if (field.slug === "title" || field.slug === "content") continue;
+			await api("DELETE", `/_emdash/api/schema/collections/pages/fields/${field.slug}`);
+			dropped++;
 		}
-		await api("PUT", `/_emdash/api/content/pages/${existing.id}`, { data: fill });
-		await api("POST", `/_emdash/api/content/pages/${existing.id}/publish`, {});
-		console.log(`  filled ${Object.keys(fill).length} empty field(s) + published: pages/${slug}`);
+		console.log(`  dropped ${dropped} home field(s) from pages`);
 	}
 
 	console.log("\nDone. Remember to set site_settings.owner_email in the admin UI.");
