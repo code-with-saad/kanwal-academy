@@ -1,12 +1,12 @@
 ---
-import { getEmDashEntry } from "emdash";
+import { getEmDashEntry, getSeoMeta } from "emdash";
 import Base from "../layouts/Base.astro";
 import BookTrial from "../components/BookTrial.astro";
 import Container from "../components/Container.astro";
 import PageHeader from "../components/PageHeader.astro";
 import Section from "../components/Section.astro";
 import { getSiteContact } from "../utils/site-config";
-import { getLocalizedCollection, useUi } from "../i18n";
+import { getLocalizedCollection, localizePath, useUi } from "../i18n";
 import { getPageCopy } from "../i18n/pages";
 import { getCourseCopy, getPlanName } from "../utils/catalog";
 import { makePageText } from "../utils/page-copy";
@@ -40,6 +40,15 @@ const pageText = makePageText(
 	pageResult.fallbackLocale,
 	locale,
 );
+const seo =
+	pageResult.entry && !pageResult.fallbackLocale
+		? getSeoMeta(pageResult.entry, {
+				siteUrl: Astro.url.origin,
+				path: localizePath("/contact-us", locale),
+				defaultTitle: copy.title,
+				defaultDescription: copy.description,
+			})
+		: null;
 
 const courses = coursesResult.entries
 	.filter((course) => course.data.visible !== false)
@@ -59,8 +68,10 @@ const plans = plansResult.entries
 ---
 
 <Base
-	title={copy.title}
-	description={copy.description}
+	title={seo?.title ?? copy.title}
+	description={seo?.description ?? copy.description}
+	image={seo?.ogImage ?? undefined}
+	robots={seo?.robots ?? undefined}
 	breadcrumbs={[{ name: t.nav.contact, path: "/contact-us" }]}
 	siteContact={contactResult}
 >

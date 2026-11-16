@@ -1,6 +1,6 @@
 ---
 import { Font } from "astro:assets";
-import { getEmDashEntry, type ImageValue } from "emdash";
+import { getEmDashEntry, getSeoMeta, type ImageValue } from "emdash";
 import Base from "../layouts/Base.astro";
 import Chip from "../components/Chip.astro";
 import Container from "../components/Container.astro";
@@ -21,7 +21,7 @@ const { locale, t } = useUi(Astro);
 const copy = getPageCopy(locale).about;
 
 const [homeResult, contactResult] = await Promise.all([
-	getEmDashEntry("pages", "home", { locale }),
+	getEmDashEntry("home_page", "home", { locale }),
 	getSiteContact(locale),
 ]);
 if (Astro.cache?.enabled) {
@@ -43,10 +43,19 @@ const contact = contactResult.data;
 // until an editor publishes an Arabic translation.
 let aboutData: Record<string, unknown> | null = null;
 let aboutLocale: string = locale;
+let aboutSeo: ReturnType<typeof getSeoMeta> | null = null;
 try {
 	const aboutResult = await getEmDashEntry("about_page", "about", { locale });
 	aboutData = (aboutResult.entry?.data as unknown as Record<string, unknown>) ?? null;
 	aboutLocale = aboutResult.fallbackLocale ?? locale;
+	if (aboutResult.entry && !aboutResult.fallbackLocale) {
+		aboutSeo = getSeoMeta(aboutResult.entry, {
+			siteUrl: Astro.url.origin,
+			path: localizePath("/about", locale),
+			defaultTitle: copy.title,
+			defaultDescription: copy.description,
+		});
+	}
 	if (Astro.cache?.enabled && aboutResult.cacheHint) {
 		Astro.cache.set(aboutResult.cacheHint);
 	}
@@ -152,8 +161,10 @@ const standingItems = [
 ---
 
 <Base
-	title={copy.title}
-	description={copy.description}
+	title={aboutSeo?.title ?? copy.title}
+	description={aboutSeo?.description ?? copy.description}
+	image={aboutSeo?.ogImage ?? undefined}
+	robots={aboutSeo?.robots ?? undefined}
 	breadcrumbs={[{ name: t.nav.about, path: "/about" }]}
 	hideNewsletter
 	overlayHeader

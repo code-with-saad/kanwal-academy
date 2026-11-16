@@ -149,7 +149,7 @@ const [
 		orderBy: { order: "asc" },
 	}),
 	getSiteContact(locale),
-	getEmDashEntry("pages", "home", { locale }),
+	getEmDashEntry("home_page", "home", { locale }),
 	getFaqs(locale, 5),
 ]);
 
@@ -364,7 +364,7 @@ const hasTestimonials = testimonials.length > 0 || demo;
 	}
 	robots={seo?.robots}
 	content={
-		homePage ? { collection: "pages", id: homePage.data.id, slug: homePage.id } : undefined
+		homePage ? { collection: "home_page", id: homePage.data.id, slug: homePage.id } : undefined
 	}
 	nav={navItems}
 >

@@ -3,7 +3,7 @@
  * Courses page. Renders the same "Start your journey" section as the Home
  * page: course rows and both feature splits with their images.
  */
-import { getEmDashEntry } from "emdash";
+import { getEmDashEntry, getSeoMeta } from "emdash";
 import Base from "../../layouts/Base.astro";
 import Container from "../../components/Container.astro";
 import CourseRow from "../../components/CourseRow.astro";
@@ -21,7 +21,7 @@ const { locale, t } = useUi(Astro);
 const copy = getPageCopy(locale).courses;
 
 const [homeResult, coursesResult, pageResult] = await Promise.all([
-	getEmDashEntry("pages", "home", { locale }),
+	getEmDashEntry("home_page", "home", { locale }),
 	getLocalizedCollection("courses", locale, {
 		status: "published",
 		orderBy: { order: "asc" },
@@ -48,6 +48,15 @@ const pageText = makePageText(
 	pageResult.fallbackLocale,
 	locale,
 );
+const seo =
+	pageResult.entry && !pageResult.fallbackLocale
+		? getSeoMeta(pageResult.entry, {
+				siteUrl: Astro.url.origin,
+				path: localizePath("/courses", locale),
+				defaultTitle: copy.title,
+				defaultDescription: copy.description,
+			})
+		: null;
 
 const courses = coursesResult.entries.filter((course) => course.data.visible !== false);
 
@@ -58,8 +67,10 @@ const split2List = homeText("split2_list_items")
 ---
 
 <Base
-	title={copy.title}
-	description={copy.description}
+	title={seo?.title ?? copy.title}
+	description={seo?.description ?? copy.description}
+	image={seo?.ogImage ?? undefined}
+	robots={seo?.robots ?? undefined}
 	breadcrumbs={[{ name: t.nav.courses, path: "/courses" }]}
 >
 	<Section space="tight">

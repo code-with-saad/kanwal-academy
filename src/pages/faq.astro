@@ -1,5 +1,5 @@
 ---
-import { getEmDashEntry } from "emdash";
+import { getEmDashEntry, getSeoMeta } from "emdash";
 import Base from "../layouts/Base.astro";
 import Container from "../components/Container.astro";
 import CtaPanel from "../components/CtaPanel.astro";
@@ -31,11 +31,22 @@ const pageText = makePageText(
 	pageResult.fallbackLocale,
 	locale,
 );
+const seo =
+	pageResult.entry && !pageResult.fallbackLocale
+		? getSeoMeta(pageResult.entry, {
+				siteUrl: Astro.url.origin,
+				path: localizePath("/faq", locale),
+				defaultTitle: copy.title,
+				defaultDescription: copy.description,
+			})
+		: null;
 ---
 
 <Base
-	title={copy.title}
-	description={copy.description}
+	title={seo?.title ?? copy.title}
+	description={seo?.description ?? copy.description}
+	image={seo?.ogImage ?? undefined}
+	robots={seo?.robots ?? undefined}
 	breadcrumbs={[{ name: t.nav.faq, path: "/faq" }]}
 >
 	<Section space="tight">

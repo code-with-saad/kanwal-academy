@@ -3,7 +3,7 @@
  * Pricing page. Renders the full Home pricing section (cards and mobile
  * carousel) plus the free trial steps, a short FAQ and a closing CTA.
  */
-import { getEmDashEntry } from "emdash";
+import { getEmDashEntry, getSeoMeta } from "emdash";
 import Base from "../layouts/Base.astro";
 import Container from "../components/Container.astro";
 import CtaPanel from "../components/CtaPanel.astro";
@@ -25,7 +25,7 @@ const { locale, t } = useUi(Astro);
 const copy = getPageCopy(locale).pricing;
 
 const [homeResult, plansResult, faqs, pageResult] = await Promise.all([
-	getEmDashEntry("pages", "home", { locale }),
+	getEmDashEntry("home_page", "home", { locale }),
 	getLocalizedCollection("plans", locale, {
 		status: "published",
 		orderBy: { order: "asc" },
@@ -54,6 +54,15 @@ const pageText = makePageText(
 	pageResult.fallbackLocale,
 	locale,
 );
+const seo =
+	pageResult.entry && !pageResult.fallbackLocale
+		? getSeoMeta(pageResult.entry, {
+				siteUrl: Astro.url.origin,
+				path: localizePath("/pricing", locale),
+				defaultTitle: copy.title,
+				defaultDescription: copy.description,
+			})
+		: null;
 
 const plans = plansResult.entries
 	.filter((plan) => plan.data.visible !== false)
@@ -86,8 +95,10 @@ const howItWorksSteps = [
 ---
 
 <Base
-	title={copy.title}
-	description={copy.description}
+	title={seo?.title ?? copy.title}
+	description={seo?.description ?? copy.description}
+	image={seo?.ogImage ?? undefined}
+	robots={seo?.robots ?? undefined}
 	breadcrumbs={[{ name: t.nav.pricing, path: "/pricing" }]}
 >
 	<Section space="tight">
