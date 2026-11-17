@@ -44,6 +44,9 @@ npm-debug.log*
 # Chrome profile
 .tmp-chrome-profile*
 
+# Locale repair snapshots/reports (scripts/fix-prod-locales.mjs)
+.tmp-locale-repair/
+
 # IDE cache
 .qoder/
 
