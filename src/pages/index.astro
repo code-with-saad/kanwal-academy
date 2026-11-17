@@ -785,6 +785,20 @@ const hasTestimonials = testimonials.length > 0 || demo;
 </Base>
 
 <script>
+	// The pre-deploy build linked the About nav at "/#about". That URL still
+	// lives in browser histories and stale tabs, landing visitors on Home's
+	// about section instead of the About page. Send it to the real page:
+	// nothing on the current site links to "#about", so this only fires for
+	// those old deep links. replace() keeps the broken URL out of history.
+	const homePath = window.location.pathname.replace(/\/+$/, "");
+	const aboutPath = `${homePath === "" ? "" : homePath}/about`;
+	if (window.location.hash === "#about") {
+		history.replaceState(null, "", aboutPath);
+		window.location.replace(aboutPath);
+	}
+</script>
+
+<script>
 	// Pause decorative loops while the hero is off screen.
 	const hero = document.querySelector<HTMLElement>("[data-hero]");
 	if (hero) {
